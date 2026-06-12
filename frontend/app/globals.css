@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   CUSTOM PROPERTIES
+   ============================================================ */
+:root {
+  --bg-0: #060610;
+  --bg-1: #09091A;
+  --bg-2: #0D0D20;
+  --bg-3: #131328;
+  --accent: #7C3AED;
+  --accent-glow: rgba(124,58,237,0.25);
+  --gold: #C9A84C;
+  --gold-glow: rgba(201,168,76,0.2);
+  --text-1: #F0EFE9;
+  --text-2: #94A3B8;
+  --text-3: #4A5568;
+  --border: rgba(255,255,255,0.06);
+  --border-accent: rgba(124,58,237,0.3);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--bg-0);
+  color: var(--text-1);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(124,58,237,0.35);
+  color: #fff;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.font-display { font-family: var(--font-playfair), 'Playfair Display', serif; }
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 40%, #C9A84C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-gold {
+  background: linear-gradient(135deg, #F59E0B, #C9A84C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+
+/* ============================================================
+   GLASS CARD
+   ============================================================ */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+.glass-md {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ============================================================
+   GLOW EFFECTS
+   ============================================================ */
+.glow-purple { box-shadow: 0 0 30px var(--accent-glow); }
+.glow-purple-sm { box-shadow: 0 0 15px var(--accent-glow); }
+.glow-gold { box-shadow: 0 0 30px var(--gold-glow); }
+
+/* ============================================================
+   ANIMATED GRADIENT BORDER
+   ============================================================ */
+.border-glow {
+  position: relative;
+}
+.border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #7C3AED, #2563EB, #C9A84C, #7C3AED);
+  background-size: 300% 300%;
+  animation: borderGlow 4s ease infinite;
+  z-index: -1;
+  opacity: 0.6;
+}
+@keyframes borderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ============================================================
+   GRID BACKGROUND
+   ============================================================ */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ============================================================
+   CHAT MARKDOWN
+   ============================================================ */
+.chat-content h1,
+.chat-content h2,
+.chat-content h3 {
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 12px 0 6px;
+}
+.chat-content strong { color: var(--text-1); font-weight: 600; }
+.chat-content em { color: #C9A84C; }
+.chat-content code {
+  font-family: monospace;
+  background: rgba(255,255,255,0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.875em;
+  color: #93C5FD;
+}
+.chat-content ul, .chat-content ol {
+  padding-left: 16px;
+  margin: 8px 0;
+}
+.chat-content li { margin: 4px 0; color: var(--text-2); }
+.chat-content li strong { color: var(--text-1); }
+.chat-content hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+.chat-content p { margin: 6px 0; }
+
+/* ============================================================
+   TYPING CURSOR
+   ============================================================ */
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: #7C3AED;
+  margin-left: 2px;
+  animation: cursorBlink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* ============================================================
+   STATUS PULSE
+   ============================================================ */
+.status-active { animation: statusPulse 2s ease-in-out infinite; }
+@keyframes statusPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); opacity: 1; }
+  50% { box-shadow: 0 0 0 5px rgba(16,185,129,0); opacity: 0.8; }
+}
+
+/* ============================================================
+   SIDEBAR ACTIVE LINK
+   ============================================================ */
+.nav-link-active {
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.25);
+  color: #A78BFA;
+}
+
+/* ============================================================
+   SHIMMER LOADING
+   ============================================================ */
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ============================================================
+   AGENT NETWORK CANVAS
+   ============================================================ */
+#agentNetworkCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* ============================================================
+   LANDING PAGE SPECIFIC
+   ============================================================ */
+.hero-title-word { display: inline-block; overflow: hidden; }
