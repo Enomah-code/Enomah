@@ -96,7 +96,7 @@ class Raphael:
         """Enregistre les agents core si pas déjà présents."""
         from raphael.agents import (
             Sophie, Victor, Elena, Marcus, Aurora,
-            Felix, Diana, Noah, Luna, Axel,
+            Felix, Diana, Noah, Luna, Axel, Kofi, Aminata,
         )
 
         core_agents = [
@@ -139,6 +139,16 @@ class Raphael:
              ["analyse de données", "data science", "business intelligence", "statistiques",
               "machine learning", "visualisation de données", "KPIs", "forecasting",
               "A/B testing", "analyse de cohorte"]),
+            ("kofi", "Kofi", "Analyste Marchés BRVM",
+             ["BRVM", "actions cotées BRVM", "analyse technique BRVM", "analyse fondamentale",
+              "dividendes BRVM", "sectoriel Afrique Ouest", "BRVM 10", "BRVM Composite",
+              "investissement boursier UEMOA", "valorisation d'entreprises africaines",
+              "PER sectoriel Afrique", "reporting financier BRVM"]),
+            ("aminata", "Aminata", "Économiste UEMOA & Stratégie d'Investissement",
+             ["macroéconomie UEMOA", "zone franc CFA", "BCEAO politique monétaire",
+              "économie Afrique Ouest", "risque pays", "secteurs porteurs Afrique",
+              "obligations État UEMOA", "marché obligataire BRVM", "financement PME africaines",
+              "régulation AMF-UMOA", "stratégie patrimoniale Afrique", "investissement impact"]),
         ]
 
         for _, name, role, expertise in core_agents:
@@ -156,12 +166,13 @@ class Raphael:
         """Instancie les classes d'agents."""
         from raphael.agents import (
             Sophie, Victor, Elena, Marcus, Aurora,
-            Felix, Diana, Noah, Luna, Axel,
+            Felix, Diana, Noah, Luna, Axel, Kofi, Aminata,
         )
         agent_map = {
             "sophie": Sophie, "victor": Victor, "elena": Elena,
             "marcus": Marcus, "aurora": Aurora, "felix": Felix,
             "diana": Diana, "noah": Noah, "luna": Luna, "axel": Axel,
+            "kofi": Kofi, "aminata": Aminata,
         }
         for name, cls in agent_map.items():
             self._agent_instances[name] = cls(self._short_memory, self._long_memory)

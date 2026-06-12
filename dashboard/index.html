@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raphaël AI Network</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
+    .glass-hover:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); }
+    .gradient-text { background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .agent-pulse { animation: pulse-glow 2s infinite; }
+    @keyframes pulse-glow { 0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,0.4)} 50%{box-shadow:0 0 0 8px rgba(167,139,250,0)} }
+    .chat-msg { animation: slide-up 0.3s ease-out; }
+    @keyframes slide-up { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .ticker-scroll { animation: ticker 30s linear infinite; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .typing-dot { animation: typing 1.4s infinite; }
+    .typing-dot:nth-child(2){animation-delay:0.2s}
+    .typing-dot:nth-child(3){animation-delay:0.4s}
+    @keyframes typing{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
+    ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:#374151;border-radius:2px}
+    .sidebar-agent { transition: all 0.2s; }
+    .sidebar-agent.active { border-color: rgba(167,139,250,0.6) !important; background: rgba(167,139,250,0.08) !important; }
+  </style>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#f5f3ff',100:'#ede9fe',500:'#a78bfa',600:'#7c3aed',700:'#6d28d9' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="text-gray-100 min-h-screen" x-data="raphaelApp()" x-init="init()">
+
+  <!-- TOP BAR -->
+  <header class="glass border-b border-white/5 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center text-sm font-bold agent-pulse">R</div>
+      <div>
+        <span class="font-semibold text-white">Raphaël</span>
+        <span class="text-gray-500 text-sm ml-2">AI Network</span>
+      </div>
+      <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-medium" :class="networkOnline ? 'bg-green-500/15 text-green-400' : 'bg-yellow-500/15 text-yellow-400'">
+        <span class="inline-block w-1.5 h-1.5 rounded-full mr-1" :class="networkOnline ? 'bg-green-400' : 'bg-yellow-400'"></span>
+        <span x-text="networkOnline ? 'Opérationnel' : 'Initialisation...'"></span>
+      </span>
+    </div>
+
+    <!-- TICKER BRVM + CRYPTO -->
+    <div class="flex-1 mx-8 overflow-hidden">
+      <div class="flex">
+        <div class="ticker-scroll flex gap-8 whitespace-nowrap text-xs mono">
+          <template x-for="t in ticker" :key="t.symbol">
+            <span class="flex items-center gap-1">
+              <span class="text-gray-400" x-text="t.symbol"></span>
+              <span class="font-medium" :class="t.change >= 0 ? 'text-green-400' : 'text-red-400'" x-text="t.price"></span>
+              <span :class="t.change >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(t.change >= 0 ? '+' : '') + t.change + '%'"></span>
+            </span>
+          </template>
+          <!-- Duplicate for seamless loop -->
+          <template x-for="t in ticker" :key="'dup_'+t.symbol">
+            <span class="flex items-center gap-1">
+              <span class="text-gray-400" x-text="t.symbol"></span>
+              <span class="font-medium" :class="t.change >= 0 ? 'text-green-400' : 'text-red-400'" x-text="t.price"></span>
+              <span :class="t.change >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(t.change >= 0 ? '+' : '') + t.change + '%'"></span>
+            </span>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button @click="showMarket = !showMarket" class="glass glass-hover px-3 py-1.5 rounded-lg text-xs text-gray-300 flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+        Marchés
+      </button>
+      <button @click="showEvolution = !showEvolution" class="glass glass-hover px-3 py-1.5 rounded-lg text-xs text-gray-300 flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Évolution
+      </button>
+      <div class="w-px h-5 bg-white/10"></div>
+      <span class="text-xs text-gray-500 mono" x-text="currentTime"></span>
+    </div>
+  </header>
+
+  <div class="flex h-[calc(100vh-57px)]">
+
+    <!-- LEFT SIDEBAR — AGENTS -->
+    <aside class="w-64 border-r border-white/5 flex flex-col overflow-hidden">
+      <div class="p-4 border-b border-white/5">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Réseau Agents</p>
+        <div class="mt-2 flex gap-2 text-xs">
+          <span class="text-white font-medium" x-text="agents.length"></span>
+          <span class="text-gray-500">actifs</span>
+          <span class="ml-auto text-gray-500" x-text="totalTasks + ' tâches'"></span>
+        </div>
+        <!-- Network Health Bar -->
+        <div class="mt-2">
+          <div class="flex justify-between text-xs text-gray-500 mb-1">
+            <span>Santé du réseau</span>
+            <span x-text="Math.round(networkHealth * 100) + '%'"></span>
+          </div>
+          <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-1000"
+                 :class="networkHealth > 0.8 ? 'bg-green-500' : networkHealth > 0.6 ? 'bg-yellow-500' : 'bg-red-500'"
+                 :style="'width:' + (networkHealth * 100) + '%'"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-3 space-y-2">
+        <template x-for="agent in agents" :key="agent.name">
+          <div class="sidebar-agent glass rounded-xl p-3 cursor-pointer border border-white/5 glass-hover"
+               :class="activeAgent === agent.name ? 'active' : ''"
+               @click="selectAgent(agent)">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
+                   :style="'background:' + agentColor(agent.name) + '22; color:' + agentColor(agent.name)">
+                <span x-text="agent.name[0]"></span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-medium text-white truncate" x-text="agent.name"></p>
+                <p class="text-xs text-gray-500 truncate" x-text="agent.role"></p>
+              </div>
+              <div class="flex flex-col items-end gap-1 flex-shrink-0">
+                <div class="w-2 h-2 rounded-full" :class="agent.active ? 'bg-green-400' : 'bg-gray-600'"></div>
+                <span class="text-xs mono text-gray-500" x-text="agent.tasks + 't'"></span>
+              </div>
+            </div>
+            <!-- Performance bar -->
+            <div class="mt-2">
+              <div class="h-0.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all"
+                     :style="'width:' + Math.round(agent.success_rate * 100) + '%; background:' + agentColor(agent.name)"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Spawn Agent Button -->
+      <div class="p-3 border-t border-white/5">
+        <button @click="showSpawnModal = true"
+                class="w-full glass glass-hover rounded-xl py-2.5 text-xs text-gray-400 flex items-center justify-center gap-2 border border-dashed border-white/10 hover:border-violet-500/40 hover:text-violet-400 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Créer un agent
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN — CHAT -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+
+      <!-- Chat header -->
+      <div class="glass border-b border-white/5 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center font-bold text-sm">R</div>
+          <div>
+            <p class="font-medium text-white text-sm">Raphaël</p>
+            <p class="text-xs text-gray-500">Orchestrateur central · claude-opus-4-8</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500">Session:</span>
+          <span class="mono text-xs text-violet-400" x-text="sessionId.slice(0,8) + '...'"></span>
+          <button @click="newSession()" class="glass glass-hover px-2 py-1 rounded text-xs text-gray-400">Nouvelle session</button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4" id="chat-messages" x-ref="chatBox">
+
+        <!-- Welcome message -->
+        <div class="chat-msg flex gap-3" x-show="messages.length === 0">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">R</div>
+          <div class="glass rounded-2xl rounded-tl-sm px-4 py-3 max-w-2xl">
+            <p class="text-sm text-gray-200 leading-relaxed">
+              Bonjour ! Je suis <strong class="text-white">Raphaël</strong>, votre orchestrateur IA central.
+              Je dirige un réseau de <strong class="text-violet-400" x-text="agents.length + ' agents spécialisés'"></strong> — experts dans leur domaine.
+            </p>
+            <p class="text-sm text-gray-400 mt-2">Comment puis-je vous aider aujourd'hui ?</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <template x-for="s in suggestions">
+                <button @click="sendSuggestion(s)" class="px-3 py-1.5 bg-white/5 hover:bg-violet-500/20 hover:text-violet-300 rounded-full text-xs text-gray-400 transition-all border border-white/5 hover:border-violet-500/30" x-text="s"></button>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <template x-for="(msg, idx) in messages" :key="idx">
+          <div class="chat-msg flex gap-3" :class="msg.role === 'user' ? 'flex-row-reverse' : ''">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5"
+                 :class="msg.role === 'user' ? 'bg-blue-600' : 'bg-gradient-to-br from-violet-500 to-blue-500'">
+              <span x-text="msg.role === 'user' ? 'V' : 'R'"></span>
+            </div>
+            <div class="max-w-2xl">
+              <div class="glass rounded-2xl px-4 py-3" :class="msg.role === 'user' ? 'rounded-tr-sm bg-blue-600/10 border-blue-500/20' : 'rounded-tl-sm'">
+                <p class="text-sm leading-relaxed whitespace-pre-wrap" x-html="formatMessage(msg.content)"></p>
+              </div>
+              <div class="mt-1 px-1 flex items-center gap-2" :class="msg.role === 'user' ? 'justify-end' : ''">
+                <span class="text-xs text-gray-600 mono" x-text="msg.time"></span>
+                <template x-if="msg.agents && msg.agents.length > 0">
+                  <span class="text-xs text-gray-600">via
+                    <template x-for="a in msg.agents" :key="a">
+                      <span class="text-violet-500" x-text="a + ' '"></span>
+                    </template>
+                  </span>
+                </template>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Typing indicator -->
+        <div class="flex gap-3" x-show="isTyping">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center font-bold text-xs flex-shrink-0">R</div>
+          <div class="glass rounded-2xl rounded-tl-sm px-4 py-3">
+            <div class="flex gap-1 items-center">
+              <span class="text-xs text-gray-500 mr-2" x-text="typingAgent ? typingAgent + ' réfléchit...' : 'Raphaël réfléchit...'"></span>
+              <div class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></div>
+              <div class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></div>
+              <div class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="glass border-t border-white/5 p-4">
+        <div class="flex gap-3 items-end">
+          <div class="flex-1 glass rounded-2xl border border-white/10 focus-within:border-violet-500/50 transition-all overflow-hidden">
+            <textarea
+              x-model="input"
+              @keydown.enter.prevent="if (!$event.shiftKey) sendMessage()"
+              @keydown.shift.enter.prevent="input += '\n'"
+              placeholder="Demandez à Raphaël... (Entrée pour envoyer, Maj+Entrée pour nouvelle ligne)"
+              class="w-full bg-transparent px-4 py-3 text-sm text-gray-100 placeholder-gray-600 focus:outline-none resize-none"
+              rows="1"
+              :rows="Math.min(4, (input.match(/\n/g)||[]).length + 1)"
+            ></textarea>
+            <div class="px-4 pb-2 flex items-center justify-between">
+              <div class="flex gap-2">
+                <button class="text-gray-600 hover:text-gray-400 text-xs transition-colors">📎</button>
+                <button class="text-gray-600 hover:text-gray-400 text-xs transition-colors">🎤</button>
+              </div>
+              <span class="text-xs text-gray-600" x-text="input.length + ' car.'"></span>
+            </div>
+          </div>
+          <button @click="sendMessage()"
+                  :disabled="!input.trim() || isTyping"
+                  class="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg shadow-violet-500/20">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR — MARKETS + ACTIVITY -->
+    <aside class="w-72 border-l border-white/5 flex flex-col overflow-hidden">
+
+      <!-- Tabs -->
+      <div class="flex border-b border-white/5">
+        <button @click="rightTab = 'market'"
+                class="flex-1 py-3 text-xs font-medium transition-colors"
+                :class="rightTab === 'market' ? 'text-white border-b-2 border-violet-500' : 'text-gray-500 hover:text-gray-300'">
+          Marchés
+        </button>
+        <button @click="rightTab = 'activity'"
+                class="flex-1 py-3 text-xs font-medium transition-colors"
+                :class="rightTab === 'activity' ? 'text-white border-b-2 border-violet-500' : 'text-gray-500 hover:text-gray-300'">
+          Activité
+        </button>
+        <button @click="rightTab = 'brvm'"
+                class="flex-1 py-3 text-xs font-medium transition-colors"
+                :class="rightTab === 'brvm' ? 'text-white border-b-2 border-violet-500' : 'text-gray-500 hover:text-gray-300'">
+          BRVM
+        </button>
+      </div>
+
+      <!-- MARKET TAB -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4" x-show="rightTab === 'market'">
+        <!-- Crypto section -->
+        <div>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Crypto (Binance)</p>
+          <div class="space-y-2">
+            <template x-for="c in cryptoMarket" :key="c.symbol">
+              <div class="glass rounded-xl p-3 glass-hover">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-semibold text-white" x-text="c.symbol"></p>
+                    <p class="text-xs text-gray-500 mono" x-text="'Vol: ' + c.volume"></p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-semibold mono" x-text="c.price"></p>
+                    <span class="text-xs px-1.5 py-0.5 rounded font-medium mono"
+                          :class="c.change >= 0 ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'"
+                          x-text="(c.change >= 0 ? '+' : '') + c.change + '%'"></span>
+                  </div>
+                </div>
+                <!-- Mini sparkline placeholder -->
+                <div class="mt-2 h-8">
+                  <canvas :id="'chart-' + c.symbol" width="200" height="32"></canvas>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Fear & Greed indicator -->
+        <div class="glass rounded-xl p-3">
+          <p class="text-xs text-gray-400 mb-2">Fear & Greed Index</p>
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full border-4 flex items-center justify-center"
+                 :class="fearGreed > 60 ? 'border-green-500 text-green-400' : fearGreed > 40 ? 'border-yellow-500 text-yellow-400' : 'border-red-500 text-red-400'">
+              <span class="text-sm font-bold" x-text="fearGreed"></span>
+            </div>
+            <div>
+              <p class="text-sm font-medium" x-text="fearGreedLabel"></p>
+              <p class="text-xs text-gray-500">Marché crypto</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY TAB -->
+      <div class="flex-1 overflow-y-auto p-4" x-show="rightTab === 'activity'">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Journal d'activité</p>
+        <div class="space-y-2">
+          <template x-for="(log, idx) in activityLog.slice().reverse()" :key="idx">
+            <div class="glass rounded-lg px-3 py-2 text-xs">
+              <div class="flex justify-between items-start mb-1">
+                <span class="font-medium" :style="'color:' + agentColor(log.agent)" x-text="log.agent"></span>
+                <span class="text-gray-600 mono" x-text="log.time"></span>
+              </div>
+              <p class="text-gray-400 truncate" x-text="log.action"></p>
+              <span class="mt-1 inline-block px-1.5 py-0.5 rounded text-xs"
+                    :class="log.success ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'"
+                    x-text="log.success ? '✓ Succès' : '✗ Échec'"></span>
+            </div>
+          </template>
+          <p class="text-xs text-gray-600 text-center py-4" x-show="activityLog.length === 0">
+            Aucune activité récente
+          </p>
+        </div>
+      </div>
+
+      <!-- BRVM TAB -->
+      <div class="flex-1 overflow-y-auto p-4" x-show="rightTab === 'brvm'">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">BRVM</p>
+          <button @click="refreshBrvm()" class="text-xs text-violet-400 hover:text-violet-300">↻ Actualiser</button>
+        </div>
+
+        <!-- Indices -->
+        <div class="space-y-2 mb-4">
+          <template x-for="idx in brvmIndices" :key="idx.name">
+            <div class="glass rounded-xl p-3">
+              <div class="flex justify-between">
+                <span class="text-xs font-medium text-white" x-text="idx.name"></span>
+                <span class="text-xs px-1.5 py-0.5 rounded mono"
+                      :class="idx.change >= 0 ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'"
+                      x-text="(idx.change >= 0 ? '+' : '') + idx.change + '%'"></span>
+              </div>
+              <p class="text-lg font-bold mono mt-1" x-text="idx.value.toLocaleString()"></p>
+            </div>
+          </template>
+        </div>
+
+        <!-- Top BRVM stocks -->
+        <p class="text-xs text-gray-500 mb-2">Top hausses</p>
+        <div class="space-y-1.5">
+          <template x-for="s in brvmTopGainers" :key="s.symbol">
+            <div class="flex items-center justify-between glass rounded-lg px-2.5 py-2">
+              <div>
+                <p class="text-xs font-medium text-white" x-text="s.symbol"></p>
+                <p class="text-xs text-gray-600" x-text="s.name"></p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs mono" x-text="s.price + ' F'"></p>
+                <span class="text-xs text-green-400 mono" x-text="'+' + s.change + '%'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <p class="text-xs text-gray-500 mb-2 mt-3">Top baisses</p>
+        <div class="space-y-1.5">
+          <template x-for="s in brvmTopLosers" :key="s.symbol">
+            <div class="flex items-center justify-between glass rounded-lg px-2.5 py-2">
+              <div>
+                <p class="text-xs font-medium text-white" x-text="s.symbol"></p>
+                <p class="text-xs text-gray-600" x-text="s.name"></p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs mono" x-text="s.price + ' F'"></p>
+                <span class="text-xs text-red-400 mono" x-text="s.change + '%'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <button @click="askBrvmAnalysis()" class="mt-4 w-full glass glass-hover rounded-xl py-2.5 text-xs text-violet-400 hover:text-violet-300 border border-violet-500/20 hover:border-violet-500/40 transition-all">
+          Analyse IA par Kofi & Aminata →
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- SPAWN AGENT MODAL -->
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center" x-show="showSpawnModal" x-transition>
+    <div class="glass rounded-2xl p-6 w-96 border border-white/10">
+      <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+        <span class="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-sm">+</span>
+        Créer un nouvel agent
+      </h3>
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block">Domaine d'expertise</label>
+          <input x-model="spawnForm.domain" type="text" placeholder="ex: juridique, SEO, comptabilité..."
+                 class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block">Compétences (séparées par des virgules)</label>
+          <input x-model="spawnForm.skills" type="text" placeholder="ex: droit des sociétés, OHADA, contrats..."
+                 class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50" />
+        </div>
+      </div>
+      <div class="flex gap-3 mt-5">
+        <button @click="showSpawnModal = false" class="flex-1 glass glass-hover py-2 rounded-xl text-sm text-gray-400">Annuler</button>
+        <button @click="spawnAgent()" :disabled="!spawnForm.domain" class="flex-1 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 py-2 rounded-xl text-sm text-white transition-colors">Créer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGENT DETAIL PANEL -->
+  <div class="fixed right-72 top-14 bottom-0 w-80 glass border-l border-white/5 z-40 transition-transform"
+       :class="showAgentDetail ? 'translate-x-0' : 'translate-x-full'"
+       x-show="showAgentDetail">
+    <div class="p-4">
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex items-center gap-3" x-show="selectedAgent">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold"
+               :style="'background:' + agentColor(selectedAgent?.name) + '22; color:' + agentColor(selectedAgent?.name)">
+            <span x-text="selectedAgent?.name[0]"></span>
+          </div>
+          <div>
+            <p class="font-medium text-white" x-text="selectedAgent?.name"></p>
+            <p class="text-xs text-gray-500" x-text="selectedAgent?.role"></p>
+          </div>
+        </div>
+        <button @click="showAgentDetail = false" class="text-gray-500 hover:text-gray-300">✕</button>
+      </div>
+      <div x-show="selectedAgent">
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between text-xs">
+            <span class="text-gray-500">Tâches traitées</span>
+            <span class="text-white font-mono" x-text="selectedAgent?.tasks"></span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-gray-500">Taux de succès</span>
+            <span class="text-green-400 font-mono" x-text="Math.round((selectedAgent?.success_rate || 0) * 100) + '%'"></span>
+          </div>
+          <div class="flex justify-between text-xs">
+            <span class="text-gray-500">Score performance</span>
+            <span class="text-violet-400 font-mono" x-text="Math.round((selectedAgent?.performance_score || 0) * 100) + '%'"></span>
+          </div>
+        </div>
+        <div class="mb-4">
+          <p class="text-xs text-gray-400 mb-2">Expertises</p>
+          <div class="flex flex-wrap gap-1.5">
+            <template x-for="exp in (selectedAgent?.expertise || []).slice(0, 8)" :key="exp">
+              <span class="px-2 py-0.5 bg-white/5 rounded-full text-xs text-gray-400" x-text="exp"></span>
+            </template>
+          </div>
+        </div>
+        <button @click="askAgent(selectedAgent)" class="w-full glass glass-hover rounded-xl py-2 text-xs text-violet-400 border border-violet-500/20">
+          Consulter directement →
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const API_BASE = window.location.origin + '/api/v1';
+
+function raphaelApp() {
+  return {
+    // State
+    messages: [],
+    input: '',
+    isTyping: false,
+    typingAgent: '',
+    sessionId: crypto.randomUUID(),
+    networkOnline: false,
+    networkHealth: 0,
+    totalTasks: 0,
+    agents: [],
+    activityLog: [],
+    rightTab: 'market',
+    activeAgent: null,
+    selectedAgent: null,
+    showAgentDetail: false,
+    showSpawnModal: false,
+    showMarket: false,
+    showEvolution: false,
+    currentTime: '',
+    fearGreed: 52,
+    fearGreedLabel: 'Neutre',
+    spawnForm: { domain: '', skills: '' },
+
+    // Market data
+    ticker: [
+      { symbol: 'BTC/USDT', price: '67,420', change: 2.34 },
+      { symbol: 'ETH/USDT', price: '3,521', change: 1.87 },
+      { symbol: 'SOL/USDT', price: '168.4', change: -0.92 },
+      { symbol: 'SNTS', price: '17,000', change: 0.59 },
+      { symbol: 'ETIT', price: '18.10', change: -1.20 },
+      { symbol: 'ORAC', price: '12,600', change: 2.10 },
+      { symbol: 'SGBC', price: '14,000', change: 0.71 },
+      { symbol: 'PALC', price: '6,500', change: -0.30 },
+    ],
+    cryptoMarket: [
+      { symbol: 'BTC/USDT', price: '$67,420', change: 2.34, volume: '28.4B' },
+      { symbol: 'ETH/USDT', price: '$3,521', change: 1.87, volume: '14.2B' },
+      { symbol: 'BNB/USDT', price: '$578', change: 0.43, volume: '1.8B' },
+      { symbol: 'SOL/USDT', price: '$168.4', change: -0.92, volume: '3.1B' },
+    ],
+    brvmIndices: [
+      { name: 'BRVM Composite', value: 217.45, change: 0.38 },
+      { name: 'BRVM 10', value: 186.32, change: 0.52 },
+    ],
+    brvmTopGainers: [
+      { symbol: 'ORAC', name: 'Orange CI', price: '12,600', change: 2.10 },
+      { symbol: 'SNTS', name: 'Sonatel', price: '17,000', change: 0.59 },
+      { symbol: 'SGBC', name: 'SGB CI', price: '14,000', change: 0.71 },
+    ],
+    brvmTopLosers: [
+      { symbol: 'ETIT', name: 'Ecobank TI', price: '18.10', change: -1.20 },
+      { symbol: 'PALC', name: 'Palm CI', price: '6,500', change: -0.30 },
+    ],
+
+    suggestions: [
+      'Analyse le marché BRVM aujourd\'hui',
+      'Crée une campagne Meta Ads',
+      'Analyse BTC/USDT setup de trade',
+      'Stratégie marketing pour mon produit digital',
+      'Rédige un email de vente percutant',
+    ],
+
+    async init() {
+      this.updateTime();
+      setInterval(() => this.updateTime(), 1000);
+      await this.loadNetworkStatus();
+      setInterval(() => this.loadNetworkStatus(), 30000);
+      setInterval(() => this.simulateMarketUpdates(), 8000);
+    },
+
+    updateTime() {
+      this.currentTime = new Date().toLocaleTimeString('fr-FR');
+    },
+
+    async loadNetworkStatus() {
+      try {
+        const r = await fetch(`${API_BASE}/agents`);
+        const data = await r.json();
+        this.networkOnline = true;
+        this.totalTasks = data.total_tasks_processed || 0;
+        this.networkHealth = data.agents?.reduce((s, a) => s + (a.success_rate || 1), 0) / (data.agents?.length || 1) || 0.9;
+        this.agents = (data.agents || []).map(a => ({
+          ...a,
+          tasks: a.tasks || 0,
+          success_rate: a.success_rate || 1.0,
+          performance_score: a.performance_score || 1.0,
+          active: true,
+        }));
+      } catch {
+        this.networkOnline = false;
+        // Agents par défaut pour la démo
+        this.agents = [
+          { name: 'Sophie', role: 'Recherche Web', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Victor', role: 'Rédaction & Copywriting', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Elena', role: 'Marketing & Ads', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Marcus', role: 'Stratégie Business', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Aurora', role: 'Création Visuelle', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Felix', role: 'Trading & Finance', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Diana', role: 'E-commerce', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Noah', role: 'Sécurité & Risques', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Luna', role: 'Réseaux Sociaux', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Axel', role: 'Analyse de Données', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Kofi', role: 'Analyste BRVM', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+          { name: 'Aminata', role: 'Économiste UEMOA', tasks: 0, success_rate: 1, performance_score: 1, active: true },
+        ];
+        this.networkHealth = 0.95;
+      }
+    },
+
+    async sendMessage() {
+      const text = this.input.trim();
+      if (!text || this.isTyping) return;
+      this.input = '';
+      this.addMessage('user', text);
+      this.isTyping = true;
+      this.typingAgent = 'Raphaël';
+      this.scrollToBottom();
+
+      try {
+        const r = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, session_id: this.sessionId }),
+        });
+        const data = await r.json();
+        this.isTyping = false;
+        this.addMessage('assistant', data.response || 'Désolé, une erreur est survenue.', data.agents_used || []);
+        this.logActivity('Raphaël', 'Chat: ' + text.slice(0, 50), true);
+        await this.loadNetworkStatus();
+      } catch (err) {
+        this.isTyping = false;
+        this.addMessage('assistant',
+          '⚠️ **Connexion à l\'API non disponible.**\n\nAssurez-vous que le serveur Raphaël tourne:\n```\npython main.py api\n```\nPuis rechargez cette page.');
+      }
+      this.scrollToBottom();
+    },
+
+    addMessage(role, content, agents = []) {
+      this.messages.push({
+        role,
+        content,
+        agents,
+        time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      });
+    },
+
+    sendSuggestion(s) {
+      this.input = s;
+      this.sendMessage();
+    },
+
+    askAgent(agent) {
+      if (!agent) return;
+      this.showAgentDetail = false;
+      this.input = `[${agent.name}] `;
+      document.querySelector('textarea').focus();
+    },
+
+    askBrvmAnalysis() {
+      this.input = 'Kofi et Aminata, faites-moi une analyse complète du marché BRVM aujourd\'hui avec vos meilleures recommandations d\'investissement.';
+      this.rightTab = 'activity';
+      this.sendMessage();
+    },
+
+    selectAgent(agent) {
+      this.activeAgent = agent.name;
+      this.selectedAgent = agent;
+      this.showAgentDetail = true;
+    },
+
+    async spawnAgent() {
+      if (!this.spawnForm.domain) return;
+      const skills = this.spawnForm.skills.split(',').map(s => s.trim()).filter(Boolean);
+      try {
+        const r = await fetch(`${API_BASE}/agents/spawn`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ domain: this.spawnForm.domain, skills }),
+        });
+        const data = await r.json();
+        this.showSpawnModal = false;
+        this.spawnForm = { domain: '', skills: '' };
+        this.addMessage('assistant', `✅ Nouvel agent **${data.name}** créé avec succès!\n\nRôle: ${data.role}\nExpertises: ${data.expertise?.join(', ')}`);
+        await this.loadNetworkStatus();
+      } catch {
+        this.addMessage('assistant', '⚠️ Impossible de créer l\'agent. Vérifiez que l\'API est démarrée.');
+      }
+    },
+
+    async refreshBrvm() {
+      try {
+        const r = await fetch(`${API_BASE}/market/brvm`);
+        const data = await r.json();
+        if (data.indices) this.brvmIndices = data.indices;
+        if (data.top_gainers) this.brvmTopGainers = data.top_gainers;
+        if (data.top_losers) this.brvmTopLosers = data.top_losers;
+      } catch { /* keep existing data */ }
+    },
+
+    newSession() {
+      this.sessionId = crypto.randomUUID();
+      this.messages = [];
+    },
+
+    logActivity(agent, action, success) {
+      this.activityLog.push({
+        agent,
+        action,
+        success,
+        time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      });
+      if (this.activityLog.length > 50) this.activityLog.shift();
+    },
+
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const el = document.getElementById('chat-messages');
+        if (el) el.scrollTop = el.scrollHeight;
+      });
+    },
+
+    simulateMarketUpdates() {
+      this.cryptoMarket = this.cryptoMarket.map(c => ({
+        ...c,
+        change: +(c.change + (Math.random() - 0.5) * 0.4).toFixed(2),
+      }));
+      this.brvmIndices = this.brvmIndices.map(i => ({
+        ...i,
+        change: +(i.change + (Math.random() - 0.5) * 0.15).toFixed(2),
+      }));
+      this.fearGreed = Math.min(100, Math.max(0, this.fearGreed + Math.round((Math.random() - 0.5) * 4)));
+      this.fearGreedLabel = this.fearGreed > 75 ? 'Avidité extrême' : this.fearGreed > 55 ? 'Avidité' : this.fearGreed > 45 ? 'Neutre' : this.fearGreed > 25 ? 'Peur' : 'Peur extrême';
+    },
+
+    agentColor(name) {
+      const colors = {
+        'Sophie': '#60a5fa', 'Victor': '#34d399', 'Elena': '#f472b6',
+        'Marcus': '#a78bfa', 'Aurora': '#fb923c', 'Felix': '#facc15',
+        'Diana': '#2dd4bf', 'Noah': '#f87171', 'Luna': '#e879f9',
+        'Axel': '#38bdf8', 'Kofi': '#86efac', 'Aminata': '#fda4af',
+      };
+      return colors[name] || '#a78bfa';
+    },
+
+    formatMessage(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code class="mono bg-white/10 px-1 rounded text-violet-300">$1</code>')
+        .replace(/```[\s\S]*?```/g, m => '<pre class="mono bg-black/40 rounded p-2 mt-2 text-xs overflow-x-auto">' + m.replace(/```\w*\n?/g, '') + '</pre>')
+        .replace(/^#{1,3} (.+)$/gm, '<strong class="text-white block mt-2">$1</strong>')
+        .replace(/^[•\-] (.+)$/gm, '<span class="block pl-2 text-gray-300">• $1</span>');
+    },
+  };
+}
+</script>
+</body>
+</html>

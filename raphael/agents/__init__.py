@@ -9,9 +9,12 @@ from .diana import Diana
 from .noah import Noah
 from .luna import Luna
 from .axel import Axel
+from .kofi import Kofi
+from .aminata import Aminata
 
 __all__ = [
     "BaseAgent", "AgentResponse",
     "Sophie", "Victor", "Elena", "Marcus", "Aurora",
     "Felix", "Diana", "Noah", "Luna", "Axel",
+    "Kofi", "Aminata",
 ]
