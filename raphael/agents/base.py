@@ -105,15 +105,14 @@ class BaseAgent(ABC):
         """Boucle agentic: appelle Claude et gère les tool calls jusqu'à la réponse finale."""
         kwargs: dict[str, Any] = {
             "model": self._model,
-            "max_tokens": 8192,
+            "max_tokens": 4096,
             "system": self.system_prompt,
             "messages": messages,
-            "thinking": {"type": "adaptive"},
         }
         if tools:
             kwargs["tools"] = tools
 
-        for _iteration in range(20):  # Max 20 tours d'outils
+        for _iteration in range(8):  # Max 8 tours d'outils
             response = await self.async_client.messages.create(**kwargs)
 
             if response.stop_reason == "end_turn":

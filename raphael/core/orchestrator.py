@@ -291,9 +291,8 @@ Réponds UNIQUEMENT avec le JSON."""
 
         try:
             response = await self._client.messages.create(
-                model=self._settings.orchestrator_model,
-                max_tokens=2048,
-                thinking={"type": "adaptive"},
+                model=self._settings.fast_model,
+                max_tokens=1024,
                 system=RAPHAEL_SYSTEM_PROMPT,
                 messages=[{"role": "user", "content": plan_prompt}],
             )
@@ -355,9 +354,8 @@ Synthétise maintenant une réponse finale COMPLÈTE et COHÉRENTE qui:
 Commence directement par la réponse synthétique, sans mentionner la mécanique interne."""
 
         response = await self._client.messages.create(
-            model=self._settings.orchestrator_model,
-            max_tokens=8192,
-            thinking={"type": "adaptive"},
+            model=self._settings.specialist_model,
+            max_tokens=4096,
             system=RAPHAEL_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": synthesis_prompt}],
         )
@@ -371,9 +369,8 @@ Commence directement par la réponse synthétique, sans mentionner la mécanique
         context.append({"role": "user", "content": message})
 
         response = await self._client.messages.create(
-            model=self._settings.orchestrator_model,
-            max_tokens=4096,
-            thinking={"type": "adaptive"},
+            model=self._settings.specialist_model,
+            max_tokens=2048,
             system=RAPHAEL_SYSTEM_PROMPT,
             messages=context,
         )

@@ -1,761 +1,784 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raphaël AI Network</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
-    .glass-hover:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); }
-    .gradient-text { background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .agent-pulse { animation: pulse-glow 2s infinite; }
-    @keyframes pulse-glow { 0%,100%{box-shadow:0 0 0 0 rgba(167,139,250,0.4)} 50%{box-shadow:0 0 0 8px rgba(167,139,250,0)} }
-    .chat-msg { animation: slide-up 0.3s ease-out; }
-    @keyframes slide-up { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-    .ticker-scroll { animation: ticker 30s linear infinite; }
-    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-    .typing-dot { animation: typing 1.4s infinite; }
-    .typing-dot:nth-child(2){animation-delay:0.2s}
-    .typing-dot:nth-child(3){animation-delay:0.4s}
-    @keyframes typing{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
-    ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:#374151;border-radius:2px}
-    .sidebar-agent { transition: all 0.2s; }
-    .sidebar-agent.active { border-color: rgba(167,139,250,0.6) !important; background: rgba(167,139,250,0.08) !important; }
-  </style>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: { 50:'#f5f3ff',100:'#ede9fe',500:'#a78bfa',600:'#7c3aed',700:'#6d28d9' }
-          }
-        }
-      }
-    }
-  </script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Raphaël — Command Center</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#05050f;color:#e2e8f0;overflow:hidden;height:100vh}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* ===== BACKGROUND ===== */
+#stars-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.grid-bg{position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(139,92,246,0.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(139,92,246,0.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none}
+
+/* ===== GLASS ===== */
+.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.07)}
+.glass-md{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.1)}
+
+/* ===== TOPBAR ===== */
+.topbar{height:52px;display:flex;align-items:center;gap:12px;
+  padding:0 20px;background:rgba(5,5,20,0.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(139,92,246,0.2);position:relative;z-index:100}
+.logo-ring{width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#7c3aed,#2563eb);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;
+  box-shadow:0 0 20px rgba(124,58,237,0.5),inset 0 0 10px rgba(255,255,255,0.1);
+  animation:logo-pulse 3s ease-in-out infinite}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 20px rgba(124,58,237,0.5)}
+  50%{box-shadow:0 0 35px rgba(124,58,237,0.8),0 0 60px rgba(124,58,237,0.3)}}
+
+/* ===== TICKER ===== */
+.ticker-wrap{flex:1;overflow:hidden;margin:0 16px}
+.ticker-inner{display:flex;gap:28px;white-space:nowrap;animation:ticker-slide 35s linear infinite}
+@keyframes ticker-slide{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ===== STATUS BADGE ===== */
+.status-dot{width:7px;height:7px;border-radius:50%;animation:dot-blink 2s infinite}
+@keyframes dot-blink{0%,100%{opacity:1;box-shadow:0 0 6px currentColor}50%{opacity:0.4;box-shadow:none}}
+
+/* ===== MAIN LAYOUT ===== */
+.main-layout{display:grid;grid-template-columns:220px 1fr 260px;grid-template-rows:1fr;
+  height:calc(100vh - 52px - 180px);position:relative;z-index:10}
+
+/* ===== AGENT TEAM ===== */
+.agent-team{height:180px;display:flex;align-items:center;padding:0 16px;gap:10px;
+  background:rgba(5,5,20,0.85);border-top:1px solid rgba(139,92,246,0.2);
+  overflow-x:auto;position:relative;z-index:10}
+.agent-team::-webkit-scrollbar{height:3px}
+.agent-team::-webkit-scrollbar-thumb{background:#4c1d95;border-radius:2px}
+
+/* ===== AGENT CARD ===== */
+.agent-card{flex-shrink:0;width:105px;height:158px;border-radius:14px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:10px;position:relative;overflow:visible;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.02);transition:all 0.3s}
+.agent-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,0.15)}
+.agent-card.is-orchestrator{width:120px;height:158px;
+  background:linear-gradient(180deg,rgba(124,58,237,0.15),rgba(37,99,235,0.08));
+  border-color:rgba(124,58,237,0.4)}
+
+/* ===== AVATAR WRAPPER ===== */
+.avatar-wrap{width:80px;height:100px;position:relative;display:flex;justify-content:center}
+.avatar-svg{width:72px;height:88px;position:relative;z-index:2}
+.avatar-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:50px;height:10px;border-radius:50%;filter:blur(8px);opacity:0.6;
+  animation:glow-breathe 3s ease-in-out infinite}
+@keyframes glow-breathe{0%,100%{opacity:0.4;transform:translateX(-50%) scaleX(1)}
+  50%{opacity:0.8;transform:translateX(-50%) scaleX(1.2)}}
+
+/* ===== SOUND WAVES ===== */
+.sound-waves{position:absolute;top:28px;left:50%;transform:translateX(-50%);
+  width:72px;height:72px;pointer-events:none;display:none}
+.sound-wave{position:absolute;top:50%;left:50%;border-radius:50%;
+  border:1.5px solid currentColor;opacity:0;
+  transform:translate(-50%,-50%) scale(0.5)}
+.sw1{animation:sw-expand 1.8s 0s infinite}
+.sw2{animation:sw-expand 1.8s 0.5s infinite}
+.sw3{animation:sw-expand 1.8s 1s infinite}
+@keyframes sw-expand{0%{opacity:0.7;transform:translate(-50%,-50%) scale(0.5)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.2)}}
+
+/* ===== THINKING RING ===== */
+.think-ring{position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:82px;height:82px;display:none}
+.think-ring svg{animation:spin-ring 1.5s linear infinite}
+@keyframes spin-ring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ===== AGENT STATES ===== */
+.agent-card.state-thinking .think-ring{display:block}
+.agent-card.state-thinking .avatar-svg{opacity:0.7;filter:brightness(0.8)}
+.agent-card.state-active .sound-waves{display:block}
+.agent-card.state-active{border-color:currentColor;
+  box-shadow:0 0 20px -4px currentColor,inset 0 0 20px -10px currentColor}
+.agent-card.state-active .avatar-glow{opacity:1;animation:none}
+
+/* ===== AGENT LABELS ===== */
+.agent-name{font-size:11px;font-weight:600;letter-spacing:0.3px;margin-top:4px}
+.agent-role{font-size:9px;opacity:0.5;text-align:center;max-width:90px;line-height:1.3}
+.agent-tasks{font-size:9px;font-family:'JetBrains Mono',monospace;opacity:0.4;margin-top:2px}
+
+/* ===== CHAT ===== */
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:#374151;border-radius:2px}
+.msg-wrap{display:flex;gap:10px;animation:msg-in 0.25s ease-out}
+.msg-wrap.user{flex-direction:row-reverse}
+@keyframes msg-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-bubble{max-width:85%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6}
+.msg-bubble.assistant{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);
+  border-radius:16px 16px 16px 4px}
+.msg-bubble.user{background:rgba(124,58,237,0.25);border:1px solid rgba(124,58,237,0.3);
+  border-radius:16px 16px 4px 16px}
+.msg-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:2px}
+
+/* ===== STREAMING CURSOR ===== */
+.stream-cursor{display:inline-block;width:2px;height:14px;background:#a78bfa;
+  margin-left:2px;animation:blink-cur 0.8s step-end infinite;vertical-align:text-bottom}
+@keyframes blink-cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ===== INPUT ===== */
+.chat-input-wrap{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.chat-input-box{display:flex;gap:10px;align-items:flex-end;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px;padding:10px 14px;transition:border-color 0.2s}
+.chat-input-box:focus-within{border-color:rgba(124,58,237,0.5)}
+.chat-input-box textarea{flex:1;background:transparent;border:none;outline:none;
+  color:#e2e8f0;font-size:13px;resize:none;font-family:'Inter',sans-serif;
+  line-height:1.5;max-height:100px}
+.chat-input-box textarea::placeholder{color:#4b5563}
+.send-btn{width:36px;height:36px;border-radius:10px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#2563eb);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all 0.2s;box-shadow:0 4px 12px rgba(124,58,237,0.3)}
+.send-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(124,58,237,0.5)}
+.send-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+/* ===== SIDEBAR LEFT ===== */
+.sidebar-left{border-right:1px solid rgba(255,255,255,0.05);
+  overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.sidebar-left::-webkit-scrollbar{width:2px}
+.sidebar-left::-webkit-scrollbar-thumb{background:#374151}
+.quick-action{padding:10px 12px;border-radius:10px;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.06);font-size:11px;
+  background:rgba(255,255,255,0.02);transition:all 0.2s;
+  display:flex;align-items:center;gap:8px;color:#94a3b8}
+.quick-action:hover{background:rgba(255,255,255,0.06);color:#e2e8f0;
+  border-color:rgba(255,255,255,0.12)}
+.quick-action-icon{width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* ===== SIDEBAR RIGHT ===== */
+.sidebar-right{border-left:1px solid rgba(255,255,255,0.05);
+  overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.sidebar-right::-webkit-scrollbar{width:2px}
+.market-card{border-radius:10px;padding:10px 12px;
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07)}
+.price-tag{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+.change-badge{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:600;
+  font-family:'JetBrains Mono',monospace}
+.pos{background:rgba(16,185,129,0.15);color:#34d399}
+.neg{background:rgba(239,68,68,0.15);color:#f87171}
+
+/* ===== SECTION HEADERS ===== */
+.section-label{font-size:9px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:#4b5563;margin-bottom:6px}
+
+/* ===== TYPING INDICATOR ===== */
+.typing-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#7c3aed;animation:td 1.2s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
+
+/* ===== NETWORK HEALTH ===== */
+.health-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.05);overflow:hidden}
+.health-fill{height:100%;border-radius:2px;transition:width 1s;
+  background:linear-gradient(90deg,#10b981,#3b82f6)}
+</style>
 </head>
-<body class="text-gray-100 min-h-screen" x-data="raphaelApp()" x-init="init()">
+<body x-data="raphaelApp()" x-init="init()">
+<canvas id="stars-canvas"></canvas>
+<div class="grid-bg"></div>
 
-  <!-- TOP BAR -->
-  <header class="glass border-b border-white/5 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center text-sm font-bold agent-pulse">R</div>
-      <div>
-        <span class="font-semibold text-white">Raphaël</span>
-        <span class="text-gray-500 text-sm ml-2">AI Network</span>
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <div class="logo-ring">R</div>
+  <div>
+    <div style="font-size:13px;font-weight:700;letter-spacing:0.5px">RAPHAËL</div>
+    <div style="font-size:9px;opacity:0.4;letter-spacing:1px">AI NETWORK</div>
+  </div>
+  <div class="flex items-center gap-2 ml-2">
+    <div class="status-dot" :style="networkOnline ? 'background:#10b981;color:#10b981' : 'background:#f59e0b;color:#f59e0b'"></div>
+    <span style="font-size:10px;opacity:0.6" x-text="networkOnline ? 'OPÉRATIONNEL' : 'CONNEXION...'"></span>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <template x-for="t in [...ticker, ...ticker]" :key="Math.random()">
+        <span style="font-size:11px;display:inline-flex;align-items:center;gap:6px">
+          <span style="color:#94a3b8;font-family:monospace" x-text="t.symbol"></span>
+          <span style="font-weight:600;font-family:monospace" :style="'color:'+(t.change>=0?'#34d399':'#f87171')" x-text="t.price"></span>
+          <span style="font-size:10px;font-family:monospace" :style="'color:'+(t.change>=0?'#10b981':'#ef4444')" x-text="(t.change>=0?'+':'')+t.change+'%'"></span>
+        </span>
+      </template>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;margin-left:auto;flex-shrink:0">
+    <div class="health-bar" style="width:80px">
+      <div class="health-fill" :style="'width:'+Math.round(networkHealth*100)+'%'"></div>
+    </div>
+    <span style="font-size:10px;opacity:0.5;font-family:monospace" x-text="currentTime"></span>
+  </div>
+</header>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="main-layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+    <div class="section-label">Actions rapides</div>
+
+    <template x-for="action in quickActions" :key="action.label">
+      <div class="quick-action" @click="sendSuggestion(action.prompt)">
+        <div class="quick-action-icon" :style="'background:'+action.color+'22;font-size:16px'">
+          <span x-text="action.icon"></span>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:500;color:#cbd5e1" x-text="action.label"></div>
+          <div style="font-size:9px;opacity:0.4" x-text="action.agent"></div>
+        </div>
       </div>
-      <span class="ml-3 px-2 py-0.5 rounded-full text-xs font-medium" :class="networkOnline ? 'bg-green-500/15 text-green-400' : 'bg-yellow-500/15 text-yellow-400'">
-        <span class="inline-block w-1.5 h-1.5 rounded-full mr-1" :class="networkOnline ? 'bg-green-400' : 'bg-yellow-400'"></span>
-        <span x-text="networkOnline ? 'Opérationnel' : 'Initialisation...'"></span>
-      </span>
+    </template>
+
+    <div class="section-label" style="margin-top:8px">Réseau</div>
+    <div class="market-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:10px;opacity:0.5">Agents actifs</span>
+        <span style="font-size:12px;font-weight:700;color:#a78bfa" x-text="agents.length"></span>
+      </div>
+      <div class="health-bar">
+        <div class="health-fill" :style="'width:'+Math.round(networkHealth*100)+'%'"></div>
+      </div>
+      <div style="font-size:9px;opacity:0.4;margin-top:4px" x-text="Math.round(networkHealth*100)+'% santé réseau'"></div>
     </div>
 
-    <!-- TICKER BRVM + CRYPTO -->
-    <div class="flex-1 mx-8 overflow-hidden">
-      <div class="flex">
-        <div class="ticker-scroll flex gap-8 whitespace-nowrap text-xs mono">
-          <template x-for="t in ticker" :key="t.symbol">
-            <span class="flex items-center gap-1">
-              <span class="text-gray-400" x-text="t.symbol"></span>
-              <span class="font-medium" :class="t.change >= 0 ? 'text-green-400' : 'text-red-400'" x-text="t.price"></span>
-              <span :class="t.change >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(t.change >= 0 ? '+' : '') + t.change + '%'"></span>
-            </span>
-          </template>
-          <!-- Duplicate for seamless loop -->
-          <template x-for="t in ticker" :key="'dup_'+t.symbol">
-            <span class="flex items-center gap-1">
-              <span class="text-gray-400" x-text="t.symbol"></span>
-              <span class="font-medium" :class="t.change >= 0 ? 'text-green-400' : 'text-red-400'" x-text="t.price"></span>
-              <span :class="t.change >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(t.change >= 0 ? '+' : '') + t.change + '%'"></span>
-            </span>
-          </template>
-        </div>
-      </div>
+    <div class="market-card">
+      <div style="font-size:10px;opacity:0.5;margin-bottom:6px">Tâches totales</div>
+      <div style="font-size:20px;font-weight:700;font-family:monospace;color:#60a5fa" x-text="totalTasks"></div>
     </div>
 
-    <div class="flex items-center gap-3">
-      <button @click="showMarket = !showMarket" class="glass glass-hover px-3 py-1.5 rounded-lg text-xs text-gray-300 flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
-        Marchés
-      </button>
-      <button @click="showEvolution = !showEvolution" class="glass glass-hover px-3 py-1.5 rounded-lg text-xs text-gray-300 flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        Évolution
-      </button>
-      <div class="w-px h-5 bg-white/10"></div>
-      <span class="text-xs text-gray-500 mono" x-text="currentTime"></span>
-    </div>
-  </header>
-
-  <div class="flex h-[calc(100vh-57px)]">
-
-    <!-- LEFT SIDEBAR — AGENTS -->
-    <aside class="w-64 border-r border-white/5 flex flex-col overflow-hidden">
-      <div class="p-4 border-b border-white/5">
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Réseau Agents</p>
-        <div class="mt-2 flex gap-2 text-xs">
-          <span class="text-white font-medium" x-text="agents.length"></span>
-          <span class="text-gray-500">actifs</span>
-          <span class="ml-auto text-gray-500" x-text="totalTasks + ' tâches'"></span>
+    <div class="section-label" style="margin-top:8px">Activité récente</div>
+    <template x-for="log in activityLog.slice(-4).reverse()" :key="log.time+log.agent">
+      <div style="padding:7px 10px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+          <span style="font-size:10px;font-weight:600" :style="'color:'+agentColor(log.agent)" x-text="log.agent"></span>
+          <span style="font-size:9px;opacity:0.4;font-family:monospace" x-text="log.time"></span>
         </div>
-        <!-- Network Health Bar -->
-        <div class="mt-2">
-          <div class="flex justify-between text-xs text-gray-500 mb-1">
-            <span>Santé du réseau</span>
-            <span x-text="Math.round(networkHealth * 100) + '%'"></span>
+        <div style="font-size:9px;opacity:0.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="log.action"></div>
+      </div>
+    </template>
+  </aside>
+
+  <!-- CENTER CHAT -->
+  <main style="display:flex;flex-direction:column;overflow:hidden">
+    <div class="chat-messages" id="chat-box" x-ref="chatBox">
+
+      <!-- Welcome -->
+      <template x-if="messages.length===0">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px;padding:30px">
+          <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;box-shadow:0 0 40px rgba(124,58,237,0.4)">R</div>
+          <div style="text-align:center">
+            <div style="font-size:18px;font-weight:700;margin-bottom:6px">Bonjour, je suis <span style="background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Raphaël</span></div>
+            <div style="font-size:12px;opacity:0.5;max-width:340px">Je coordonne <strong x-text="agents.length" style="color:#a78bfa"></strong> agents spécialisés pour vous aider à gérer votre business digital, investir sur la BRVM, créer du contenu et bien plus.</div>
           </div>
-          <div class="h-1 bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full rounded-full transition-all duration-1000"
-                 :class="networkHealth > 0.8 ? 'bg-green-500' : networkHealth > 0.6 ? 'bg-yellow-500' : 'bg-red-500'"
-                 :style="'width:' + (networkHealth * 100) + '%'"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:500px">
+            <template x-for="s in suggestions" :key="s">
+              <button @click="sendSuggestion(s)" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(139,92,246,0.3);background:rgba(139,92,246,0.08);font-size:11px;color:#a78bfa;cursor:pointer;transition:all 0.2s;white-space:nowrap" onmouseover="this.style.background='rgba(139,92,246,0.2)'" onmouseout="this.style.background='rgba(139,92,246,0.08)'" x-text="s"></button>
+            </template>
           </div>
         </div>
-      </div>
-
-      <div class="flex-1 overflow-y-auto p-3 space-y-2">
-        <template x-for="agent in agents" :key="agent.name">
-          <div class="sidebar-agent glass rounded-xl p-3 cursor-pointer border border-white/5 glass-hover"
-               :class="activeAgent === agent.name ? 'active' : ''"
-               @click="selectAgent(agent)">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
-                   :style="'background:' + agentColor(agent.name) + '22; color:' + agentColor(agent.name)">
-                <span x-text="agent.name[0]"></span>
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-medium text-white truncate" x-text="agent.name"></p>
-                <p class="text-xs text-gray-500 truncate" x-text="agent.role"></p>
-              </div>
-              <div class="flex flex-col items-end gap-1 flex-shrink-0">
-                <div class="w-2 h-2 rounded-full" :class="agent.active ? 'bg-green-400' : 'bg-gray-600'"></div>
-                <span class="text-xs mono text-gray-500" x-text="agent.tasks + 't'"></span>
-              </div>
-            </div>
-            <!-- Performance bar -->
-            <div class="mt-2">
-              <div class="h-0.5 bg-white/5 rounded-full overflow-hidden">
-                <div class="h-full rounded-full transition-all"
-                     :style="'width:' + Math.round(agent.success_rate * 100) + '%; background:' + agentColor(agent.name)"></div>
-              </div>
-            </div>
-          </div>
-        </template>
-      </div>
-
-      <!-- Spawn Agent Button -->
-      <div class="p-3 border-t border-white/5">
-        <button @click="showSpawnModal = true"
-                class="w-full glass glass-hover rounded-xl py-2.5 text-xs text-gray-400 flex items-center justify-center gap-2 border border-dashed border-white/10 hover:border-violet-500/40 hover:text-violet-400 transition-all">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Créer un agent
-        </button>
-      </div>
-    </aside>
-
-    <!-- MAIN — CHAT -->
-    <main class="flex-1 flex flex-col overflow-hidden">
-
-      <!-- Chat header -->
-      <div class="glass border-b border-white/5 px-6 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center font-bold text-sm">R</div>
-          <div>
-            <p class="font-medium text-white text-sm">Raphaël</p>
-            <p class="text-xs text-gray-500">Orchestrateur central · claude-opus-4-8</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500">Session:</span>
-          <span class="mono text-xs text-violet-400" x-text="sessionId.slice(0,8) + '...'"></span>
-          <button @click="newSession()" class="glass glass-hover px-2 py-1 rounded text-xs text-gray-400">Nouvelle session</button>
-        </div>
-      </div>
+      </template>
 
       <!-- Messages -->
-      <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4" id="chat-messages" x-ref="chatBox">
-
-        <!-- Welcome message -->
-        <div class="chat-msg flex gap-3" x-show="messages.length === 0">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">R</div>
-          <div class="glass rounded-2xl rounded-tl-sm px-4 py-3 max-w-2xl">
-            <p class="text-sm text-gray-200 leading-relaxed">
-              Bonjour ! Je suis <strong class="text-white">Raphaël</strong>, votre orchestrateur IA central.
-              Je dirige un réseau de <strong class="text-violet-400" x-text="agents.length + ' agents spécialisés'"></strong> — experts dans leur domaine.
-            </p>
-            <p class="text-sm text-gray-400 mt-2">Comment puis-je vous aider aujourd'hui ?</p>
-            <div class="mt-3 flex flex-wrap gap-2">
-              <template x-for="s in suggestions">
-                <button @click="sendSuggestion(s)" class="px-3 py-1.5 bg-white/5 hover:bg-violet-500/20 hover:text-violet-300 rounded-full text-xs text-gray-400 transition-all border border-white/5 hover:border-violet-500/30" x-text="s"></button>
+      <template x-for="(msg,i) in messages" :key="i">
+        <div class="msg-wrap" :class="msg.role==='user'?'user':''">
+          <div class="msg-avatar" :style="msg.role==='user'?'background:rgba(37,99,235,0.3);color:#93c5fd':'background:linear-gradient(135deg,#7c3aed,#2563eb);color:white'">
+            <span x-text="msg.role==='user'?'V':'R'"></span>
+          </div>
+          <div>
+            <div class="msg-bubble" :class="msg.role" x-html="md(msg.content)"></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:3px;padding:0 4px">
+              <span style="font-size:9px;opacity:0.3;font-family:monospace" x-text="msg.time"></span>
+              <template x-if="msg.agents && msg.agents.length">
+                <span style="font-size:9px;opacity:0.4">
+                  via <template x-for="a in msg.agents" :key="a"><span :style="'color:'+agentColor(a)" x-text="a+' '"></span></template>
+                </span>
               </template>
             </div>
           </div>
         </div>
+      </template>
 
-        <!-- Messages -->
-        <template x-for="(msg, idx) in messages" :key="idx">
-          <div class="chat-msg flex gap-3" :class="msg.role === 'user' ? 'flex-row-reverse' : ''">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5"
-                 :class="msg.role === 'user' ? 'bg-blue-600' : 'bg-gradient-to-br from-violet-500 to-blue-500'">
-              <span x-text="msg.role === 'user' ? 'V' : 'R'"></span>
-            </div>
-            <div class="max-w-2xl">
-              <div class="glass rounded-2xl px-4 py-3" :class="msg.role === 'user' ? 'rounded-tr-sm bg-blue-600/10 border-blue-500/20' : 'rounded-tl-sm'">
-                <p class="text-sm leading-relaxed whitespace-pre-wrap" x-html="formatMessage(msg.content)"></p>
-              </div>
-              <div class="mt-1 px-1 flex items-center gap-2" :class="msg.role === 'user' ? 'justify-end' : ''">
-                <span class="text-xs text-gray-600 mono" x-text="msg.time"></span>
-                <template x-if="msg.agents && msg.agents.length > 0">
-                  <span class="text-xs text-gray-600">via
-                    <template x-for="a in msg.agents" :key="a">
-                      <span class="text-violet-500" x-text="a + ' '"></span>
-                    </template>
-                  </span>
-                </template>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <!-- Typing indicator -->
-        <div class="flex gap-3" x-show="isTyping">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center font-bold text-xs flex-shrink-0">R</div>
-          <div class="glass rounded-2xl rounded-tl-sm px-4 py-3">
-            <div class="flex gap-1 items-center">
-              <span class="text-xs text-gray-500 mr-2" x-text="typingAgent ? typingAgent + ' réfléchit...' : 'Raphaël réfléchit...'"></span>
-              <div class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></div>
-              <div class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></div>
-              <div class="w-2 h-2 rounded-full bg-violet-400 typing-dot"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Input area -->
-      <div class="glass border-t border-white/5 p-4">
-        <div class="flex gap-3 items-end">
-          <div class="flex-1 glass rounded-2xl border border-white/10 focus-within:border-violet-500/50 transition-all overflow-hidden">
-            <textarea
-              x-model="input"
-              @keydown.enter.prevent="if (!$event.shiftKey) sendMessage()"
-              @keydown.shift.enter.prevent="input += '\n'"
-              placeholder="Demandez à Raphaël... (Entrée pour envoyer, Maj+Entrée pour nouvelle ligne)"
-              class="w-full bg-transparent px-4 py-3 text-sm text-gray-100 placeholder-gray-600 focus:outline-none resize-none"
-              rows="1"
-              :rows="Math.min(4, (input.match(/\n/g)||[]).length + 1)"
-            ></textarea>
-            <div class="px-4 pb-2 flex items-center justify-between">
-              <div class="flex gap-2">
-                <button class="text-gray-600 hover:text-gray-400 text-xs transition-colors">📎</button>
-                <button class="text-gray-600 hover:text-gray-400 text-xs transition-colors">🎤</button>
-              </div>
-              <span class="text-xs text-gray-600" x-text="input.length + ' car.'"></span>
-            </div>
-          </div>
-          <button @click="sendMessage()"
-                  :disabled="!input.trim() || isTyping"
-                  class="w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg shadow-violet-500/20">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </main>
-
-    <!-- RIGHT SIDEBAR — MARKETS + ACTIVITY -->
-    <aside class="w-72 border-l border-white/5 flex flex-col overflow-hidden">
-
-      <!-- Tabs -->
-      <div class="flex border-b border-white/5">
-        <button @click="rightTab = 'market'"
-                class="flex-1 py-3 text-xs font-medium transition-colors"
-                :class="rightTab === 'market' ? 'text-white border-b-2 border-violet-500' : 'text-gray-500 hover:text-gray-300'">
-          Marchés
-        </button>
-        <button @click="rightTab = 'activity'"
-                class="flex-1 py-3 text-xs font-medium transition-colors"
-                :class="rightTab === 'activity' ? 'text-white border-b-2 border-violet-500' : 'text-gray-500 hover:text-gray-300'">
-          Activité
-        </button>
-        <button @click="rightTab = 'brvm'"
-                class="flex-1 py-3 text-xs font-medium transition-colors"
-                :class="rightTab === 'brvm' ? 'text-white border-b-2 border-violet-500' : 'text-gray-500 hover:text-gray-300'">
-          BRVM
-        </button>
-      </div>
-
-      <!-- MARKET TAB -->
-      <div class="flex-1 overflow-y-auto p-4 space-y-4" x-show="rightTab === 'market'">
-        <!-- Crypto section -->
-        <div>
-          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Crypto (Binance)</p>
-          <div class="space-y-2">
-            <template x-for="c in cryptoMarket" :key="c.symbol">
-              <div class="glass rounded-xl p-3 glass-hover">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <p class="text-sm font-semibold text-white" x-text="c.symbol"></p>
-                    <p class="text-xs text-gray-500 mono" x-text="'Vol: ' + c.volume"></p>
-                  </div>
-                  <div class="text-right">
-                    <p class="text-sm font-semibold mono" x-text="c.price"></p>
-                    <span class="text-xs px-1.5 py-0.5 rounded font-medium mono"
-                          :class="c.change >= 0 ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'"
-                          x-text="(c.change >= 0 ? '+' : '') + c.change + '%'"></span>
-                  </div>
-                </div>
-                <!-- Mini sparkline placeholder -->
-                <div class="mt-2 h-8">
-                  <canvas :id="'chart-' + c.symbol" width="200" height="32"></canvas>
-                </div>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <!-- Fear & Greed indicator -->
-        <div class="glass rounded-xl p-3">
-          <p class="text-xs text-gray-400 mb-2">Fear & Greed Index</p>
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full border-4 flex items-center justify-center"
-                 :class="fearGreed > 60 ? 'border-green-500 text-green-400' : fearGreed > 40 ? 'border-yellow-500 text-yellow-400' : 'border-red-500 text-red-400'">
-              <span class="text-sm font-bold" x-text="fearGreed"></span>
-            </div>
-            <div>
-              <p class="text-sm font-medium" x-text="fearGreedLabel"></p>
-              <p class="text-xs text-gray-500">Marché crypto</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ACTIVITY TAB -->
-      <div class="flex-1 overflow-y-auto p-4" x-show="rightTab === 'activity'">
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Journal d'activité</p>
-        <div class="space-y-2">
-          <template x-for="(log, idx) in activityLog.slice().reverse()" :key="idx">
-            <div class="glass rounded-lg px-3 py-2 text-xs">
-              <div class="flex justify-between items-start mb-1">
-                <span class="font-medium" :style="'color:' + agentColor(log.agent)" x-text="log.agent"></span>
-                <span class="text-gray-600 mono" x-text="log.time"></span>
-              </div>
-              <p class="text-gray-400 truncate" x-text="log.action"></p>
-              <span class="mt-1 inline-block px-1.5 py-0.5 rounded text-xs"
-                    :class="log.success ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'"
-                    x-text="log.success ? '✓ Succès' : '✗ Échec'"></span>
-            </div>
-          </template>
-          <p class="text-xs text-gray-600 text-center py-4" x-show="activityLog.length === 0">
-            Aucune activité récente
-          </p>
-        </div>
-      </div>
-
-      <!-- BRVM TAB -->
-      <div class="flex-1 overflow-y-auto p-4" x-show="rightTab === 'brvm'">
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">BRVM</p>
-          <button @click="refreshBrvm()" class="text-xs text-violet-400 hover:text-violet-300">↻ Actualiser</button>
-        </div>
-
-        <!-- Indices -->
-        <div class="space-y-2 mb-4">
-          <template x-for="idx in brvmIndices" :key="idx.name">
-            <div class="glass rounded-xl p-3">
-              <div class="flex justify-between">
-                <span class="text-xs font-medium text-white" x-text="idx.name"></span>
-                <span class="text-xs px-1.5 py-0.5 rounded mono"
-                      :class="idx.change >= 0 ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'"
-                      x-text="(idx.change >= 0 ? '+' : '') + idx.change + '%'"></span>
-              </div>
-              <p class="text-lg font-bold mono mt-1" x-text="idx.value.toLocaleString()"></p>
-            </div>
-          </template>
-        </div>
-
-        <!-- Top BRVM stocks -->
-        <p class="text-xs text-gray-500 mb-2">Top hausses</p>
-        <div class="space-y-1.5">
-          <template x-for="s in brvmTopGainers" :key="s.symbol">
-            <div class="flex items-center justify-between glass rounded-lg px-2.5 py-2">
-              <div>
-                <p class="text-xs font-medium text-white" x-text="s.symbol"></p>
-                <p class="text-xs text-gray-600" x-text="s.name"></p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs mono" x-text="s.price + ' F'"></p>
-                <span class="text-xs text-green-400 mono" x-text="'+' + s.change + '%'"></span>
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <p class="text-xs text-gray-500 mb-2 mt-3">Top baisses</p>
-        <div class="space-y-1.5">
-          <template x-for="s in brvmTopLosers" :key="s.symbol">
-            <div class="flex items-center justify-between glass rounded-lg px-2.5 py-2">
-              <div>
-                <p class="text-xs font-medium text-white" x-text="s.symbol"></p>
-                <p class="text-xs text-gray-600" x-text="s.name"></p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs mono" x-text="s.price + ' F'"></p>
-                <span class="text-xs text-red-400 mono" x-text="s.change + '%'"></span>
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <button @click="askBrvmAnalysis()" class="mt-4 w-full glass glass-hover rounded-xl py-2.5 text-xs text-violet-400 hover:text-violet-300 border border-violet-500/20 hover:border-violet-500/40 transition-all">
-          Analyse IA par Kofi & Aminata →
-        </button>
-      </div>
-    </aside>
-  </div>
-
-  <!-- SPAWN AGENT MODAL -->
-  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center" x-show="showSpawnModal" x-transition>
-    <div class="glass rounded-2xl p-6 w-96 border border-white/10">
-      <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
-        <span class="w-6 h-6 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-sm">+</span>
-        Créer un nouvel agent
-      </h3>
-      <div class="space-y-3">
-        <div>
-          <label class="text-xs text-gray-400 mb-1 block">Domaine d'expertise</label>
-          <input x-model="spawnForm.domain" type="text" placeholder="ex: juridique, SEO, comptabilité..."
-                 class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50" />
-        </div>
-        <div>
-          <label class="text-xs text-gray-400 mb-1 block">Compétences (séparées par des virgules)</label>
-          <input x-model="spawnForm.skills" type="text" placeholder="ex: droit des sociétés, OHADA, contrats..."
-                 class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-violet-500/50" />
-        </div>
-      </div>
-      <div class="flex gap-3 mt-5">
-        <button @click="showSpawnModal = false" class="flex-1 glass glass-hover py-2 rounded-xl text-sm text-gray-400">Annuler</button>
-        <button @click="spawnAgent()" :disabled="!spawnForm.domain" class="flex-1 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 py-2 rounded-xl text-sm text-white transition-colors">Créer</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- AGENT DETAIL PANEL -->
-  <div class="fixed right-72 top-14 bottom-0 w-80 glass border-l border-white/5 z-40 transition-transform"
-       :class="showAgentDetail ? 'translate-x-0' : 'translate-x-full'"
-       x-show="showAgentDetail">
-    <div class="p-4">
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-3" x-show="selectedAgent">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold"
-               :style="'background:' + agentColor(selectedAgent?.name) + '22; color:' + agentColor(selectedAgent?.name)">
-            <span x-text="selectedAgent?.name[0]"></span>
-          </div>
+      <!-- Streaming message -->
+      <template x-if="isStreaming || streamText">
+        <div class="msg-wrap">
+          <div class="msg-avatar" style="background:linear-gradient(135deg,#7c3aed,#2563eb);color:white">R</div>
           <div>
-            <p class="font-medium text-white" x-text="selectedAgent?.name"></p>
-            <p class="text-xs text-gray-500" x-text="selectedAgent?.role"></p>
+            <div class="msg-bubble assistant">
+              <template x-if="!streamText">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:11px;opacity:0.6" x-text="thinkingLabel"></span>
+                  <div class="typing-dots"><span></span><span></span><span></span></div>
+                </div>
+              </template>
+              <template x-if="streamText">
+                <span x-html="md(streamText)"></span>
+              </template>
+              <span class="stream-cursor" x-show="isStreaming"></span>
+            </div>
           </div>
         </div>
-        <button @click="showAgentDetail = false" class="text-gray-500 hover:text-gray-300">✕</button>
-      </div>
-      <div x-show="selectedAgent">
-        <div class="space-y-2 mb-4">
-          <div class="flex justify-between text-xs">
-            <span class="text-gray-500">Tâches traitées</span>
-            <span class="text-white font-mono" x-text="selectedAgent?.tasks"></span>
-          </div>
-          <div class="flex justify-between text-xs">
-            <span class="text-gray-500">Taux de succès</span>
-            <span class="text-green-400 font-mono" x-text="Math.round((selectedAgent?.success_rate || 0) * 100) + '%'"></span>
-          </div>
-          <div class="flex justify-between text-xs">
-            <span class="text-gray-500">Score performance</span>
-            <span class="text-violet-400 font-mono" x-text="Math.round((selectedAgent?.performance_score || 0) * 100) + '%'"></span>
-          </div>
-        </div>
-        <div class="mb-4">
-          <p class="text-xs text-gray-400 mb-2">Expertises</p>
-          <div class="flex flex-wrap gap-1.5">
-            <template x-for="exp in (selectedAgent?.expertise || []).slice(0, 8)" :key="exp">
-              <span class="px-2 py-0.5 bg-white/5 rounded-full text-xs text-gray-400" x-text="exp"></span>
-            </template>
-          </div>
-        </div>
-        <button @click="askAgent(selectedAgent)" class="w-full glass glass-hover rounded-xl py-2 text-xs text-violet-400 border border-violet-500/20">
-          Consulter directement →
+      </template>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-wrap">
+      <div class="chat-input-box">
+        <textarea x-model="input" @keydown.enter.prevent="if(!$event.shiftKey&&input.trim())send()"
+          placeholder="Demandez à Raphaël... (Entrée pour envoyer, Maj+Entrée = nouvelle ligne)"
+          :rows="Math.min(4,(input.match(/\n/g)||[]).length+1)"></textarea>
+        <button class="send-btn" @click="send()" :disabled="!input.trim()||isStreaming">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+          </svg>
         </button>
       </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 4px 0;font-size:9px;opacity:0.3">
+        <span>Entrée = envoyer · Maj+Entrée = saut de ligne</span>
+        <span x-text="input.length+' car.'"></span>
+      </div>
     </div>
-  </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+    <!-- BRVM -->
+    <div class="section-label">BRVM — Afrique Ouest</div>
+    <template x-for="idx in brvmIndices" :key="idx.name">
+      <div class="market-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:10px;font-weight:600;color:#94a3b8" x-text="idx.name"></span>
+          <span class="change-badge" :class="idx.change>=0?'pos':'neg'" x-text="(idx.change>=0?'+':'')+idx.change+'%'"></span>
+        </div>
+        <div class="price-tag" x-text="idx.value.toLocaleString('fr-FR',{minimumFractionDigits:2})"></div>
+      </div>
+    </template>
+
+    <div style="display:flex;gap:6px">
+      <button @click="sendSuggestion('Kofi, analyse le marché BRVM aujourd\\'hui et donne tes meilleures recommandations d\\'investissement')"
+        style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(132,204,22,0.3);background:rgba(132,204,22,0.06);font-size:10px;color:#a3e635;cursor:pointer">
+        📊 Analyse Kofi
+      </button>
+      <button @click="sendSuggestion('Aminata, quelle est ta stratégie d\\'investissement recommandée pour l\\'Afrique de l\\'Ouest cette semaine?')"
+        style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(251,113,133,0.3);background:rgba(251,113,133,0.06);font-size:10px;color:#fda4af;cursor:pointer">
+        🌍 Conseil Aminata
+      </button>
+    </div>
+
+    <template x-for="s in brvmStocks" :key="s.symbol">
+      <div class="market-card" style="padding:8px 12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:11px;font-weight:600" x-text="s.symbol"></div>
+            <div style="font-size:9px;opacity:0.4" x-text="s.name"></div>
+          </div>
+          <div style="text-align:right">
+            <div class="price-tag" style="font-size:11px" x-text="s.price+' F'"></div>
+            <span class="change-badge" :class="s.change>=0?'pos':'neg'" x-text="(s.change>=0?'+':'')+s.change+'%'"></span>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- CRYPTO -->
+    <div class="section-label" style="margin-top:4px">Crypto (Binance)</div>
+    <template x-for="c in cryptoData" :key="c.symbol">
+      <div class="market-card" style="padding:8px 12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:11px;font-weight:600" x-text="c.symbol"></div>
+            <div style="font-size:9px;opacity:0.4" x-text="'Vol: '+c.volume"></div>
+          </div>
+          <div style="text-align:right">
+            <div class="price-tag" style="font-size:11px" x-text="c.price"></div>
+            <span class="change-badge" :class="c.change>=0?'pos':'neg'" x-text="(c.change>=0?'+':'')+c.change+'%'"></span>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <button @click="sendSuggestion('Felix, analyse le marché crypto et donne-moi les meilleurs setups de trade du moment sur Binance')"
+      style="padding:8px;border-radius:8px;border:1px solid rgba(234,179,8,0.3);background:rgba(234,179,8,0.06);font-size:10px;color:#fbbf24;cursor:pointer;width:100%">
+      ₿ Analyse Felix (Trading)
+    </button>
+  </aside>
+</div>
+
+<!-- ===== AGENT TEAM ===== -->
+<div class="agent-team">
+  <template x-for="agent in allAgents" :key="agent.name">
+    <div class="agent-card"
+         :class="[agent.name==='Raphaël'?'is-orchestrator':'', 'state-'+agentStates[agent.name]]"
+         :style="'color:'+agentColor(agent.name)"
+         @click="askAgent(agent)"
+         :title="agent.role">
+
+      <!-- Sound waves (active state) -->
+      <div class="sound-waves" :style="'color:'+agentColor(agent.name)">
+        <div class="sound-wave sw1"></div>
+        <div class="sound-wave sw2"></div>
+        <div class="sound-wave sw3"></div>
+      </div>
+
+      <!-- Thinking ring -->
+      <div class="think-ring">
+        <svg viewBox="0 0 82 82" fill="none">
+          <circle cx="41" cy="41" r="38" :stroke="agentColor(agent.name)" stroke-width="2"
+            stroke-dasharray="60 180" stroke-linecap="round" opacity="0.8"/>
+        </svg>
+      </div>
+
+      <div class="avatar-wrap">
+        <!-- SVG Character -->
+        <svg class="avatar-svg" viewBox="0 0 72 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shadow/Ground glow -->
+          <ellipse cx="36" cy="84" rx="20" ry="4" :fill="agentColor(agent.name)" opacity="0.15"/>
+          <!-- Body/Uniform -->
+          <path d="M16 52 Q36 64 56 52 L60 84 L12 84 Z" :fill="agentColor(agent.name)" opacity="0.55"/>
+          <!-- Shirt collar V -->
+          <path d="M30 52 L36 62 L42 52" :stroke="agentColor(agent.name)" fill="rgba(0,0,0,0.25)" stroke-width="1.2" opacity="0.7"/>
+          <!-- Neck -->
+          <rect x="32" y="41" width="8" height="13" rx="3" :fill="agentColor(agent.name)" opacity="0.75"/>
+          <!-- Head -->
+          <circle cx="36" cy="30" r="16" :fill="agentColor(agent.name)" class="head"/>
+          <!-- Face shine highlight -->
+          <ellipse cx="31" cy="24" rx="5" ry="6" fill="rgba(255,255,255,0.12)"/>
+          <!-- Eyes left -->
+          <circle cx="30" cy="29" r="2.8" fill="rgba(0,0,0,0.55)"/>
+          <circle cx="31" cy="28" r="1.1" fill="rgba(255,255,255,0.75)"/>
+          <!-- Eyes right -->
+          <circle cx="42" cy="29" r="2.8" fill="rgba(0,0,0,0.55)"/>
+          <circle cx="43" cy="28" r="1.1" fill="rgba(255,255,255,0.75)"/>
+          <!-- Smile -->
+          <path d="M30 36 Q36 41 42 36" stroke="rgba(0,0,0,0.4)" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Headset band over head -->
+          <path d="M20 30 Q36 12 52 30" stroke="rgba(80,80,100,0.9)" fill="none" stroke-width="4" stroke-linecap="round"/>
+          <!-- Left ear cup outer -->
+          <ellipse cx="20" cy="30" rx="7" ry="9" fill="#0d0d1e" stroke="rgba(140,140,160,0.5)" stroke-width="1.5"/>
+          <!-- Left ear cup inner (colored) -->
+          <ellipse cx="20" cy="30" rx="4" ry="6" :fill="agentColor(agent.name)" opacity="0.55"/>
+          <!-- Left LED -->
+          <circle cx="20" cy="36" r="1.5" :fill="agentColor(agent.name)" opacity="0.9"/>
+          <!-- Right ear cup outer -->
+          <ellipse cx="52" cy="30" rx="7" ry="9" fill="#0d0d1e" stroke="rgba(140,140,160,0.5)" stroke-width="1.5"/>
+          <!-- Right ear cup inner (colored) -->
+          <ellipse cx="52" cy="30" rx="4" ry="6" :fill="agentColor(agent.name)" opacity="0.55"/>
+          <!-- Mic boom arm -->
+          <path d="M20 36 L12 50" stroke="rgba(120,120,140,0.8)" fill="none" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- Mic capsule body -->
+          <ellipse cx="11" cy="52" rx="5" ry="3.5" fill="#0d0d1e" stroke="rgba(140,140,160,0.5)" stroke-width="1"/>
+          <!-- Mic active dot -->
+          <circle cx="11" cy="52" r="2" :fill="agentColor(agent.name)" opacity="0.85"/>
+          <!-- ID Badge -->
+          <rect x="28" y="66" width="16" height="10" rx="2" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+          <rect x="29" y="67" width="14" height="3" rx="1" :fill="agentColor(agent.name)" opacity="0.4"/>
+          <!-- Orchestrator crown for Raphaël -->
+          <template x-if="agent.name==='Raphaël'">
+            <path d="M28 16 L32 10 L36 14 L40 10 L44 16 L42 16 L36 18 L30 16 Z" fill="#fbbf24" opacity="0.9"/>
+          </template>
+        </svg>
+        <!-- Glow under avatar -->
+        <div class="avatar-glow" :style="'background:'+agentColor(agent.name)"></div>
+      </div>
+
+      <div class="agent-name" :style="'color:'+agentColor(agent.name)" x-text="agent.name"></div>
+      <div class="agent-role" x-text="agentShortRole(agent.role)"></div>
+      <div class="agent-tasks mono" x-text="(agent.tasks||0)+' tâches'"></div>
+    </div>
+  </template>
+</div>
 
 <script>
-const API_BASE = window.location.origin + '/api/v1';
+const API = window.location.origin + '/api/v1';
 
-function raphaelApp() {
-  return {
-    // State
-    messages: [],
-    input: '',
-    isTyping: false,
-    typingAgent: '',
-    sessionId: crypto.randomUUID(),
-    networkOnline: false,
-    networkHealth: 0,
-    totalTasks: 0,
-    agents: [],
-    activityLog: [],
-    rightTab: 'market',
-    activeAgent: null,
-    selectedAgent: null,
-    showAgentDetail: false,
-    showSpawnModal: false,
-    showMarket: false,
-    showEvolution: false,
-    currentTime: '',
-    fearGreed: 52,
-    fearGreedLabel: 'Neutre',
-    spawnForm: { domain: '', skills: '' },
+// ===== STARS =====
+(function(){
+  const c = document.getElementById('stars-canvas');
+  const ctx = c.getContext('2d');
+  let stars = [];
+  function resize(){c.width=innerWidth;c.height=innerHeight;stars=[];
+    for(let i=0;i<120;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,
+      r:Math.random()*1.2,o:Math.random(),s:Math.random()*0.015+0.005})}
+  resize();window.addEventListener('resize',resize);
+  function draw(){ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{s.o+=s.s;if(s.o>1||s.o<0)s.s=-s.s;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(167,139,250,${s.o*0.5})`;ctx.fill()});
+    requestAnimationFrame(draw)}
+  draw();
+})();
 
-    // Market data
-    ticker: [
-      { symbol: 'BTC/USDT', price: '67,420', change: 2.34 },
-      { symbol: 'ETH/USDT', price: '3,521', change: 1.87 },
-      { symbol: 'SOL/USDT', price: '168.4', change: -0.92 },
-      { symbol: 'SNTS', price: '17,000', change: 0.59 },
-      { symbol: 'ETIT', price: '18.10', change: -1.20 },
-      { symbol: 'ORAC', price: '12,600', change: 2.10 },
-      { symbol: 'SGBC', price: '14,000', change: 0.71 },
-      { symbol: 'PALC', price: '6,500', change: -0.30 },
-    ],
-    cryptoMarket: [
-      { symbol: 'BTC/USDT', price: '$67,420', change: 2.34, volume: '28.4B' },
-      { symbol: 'ETH/USDT', price: '$3,521', change: 1.87, volume: '14.2B' },
-      { symbol: 'BNB/USDT', price: '$578', change: 0.43, volume: '1.8B' },
-      { symbol: 'SOL/USDT', price: '$168.4', change: -0.92, volume: '3.1B' },
-    ],
-    brvmIndices: [
-      { name: 'BRVM Composite', value: 217.45, change: 0.38 },
-      { name: 'BRVM 10', value: 186.32, change: 0.52 },
-    ],
-    brvmTopGainers: [
-      { symbol: 'ORAC', name: 'Orange CI', price: '12,600', change: 2.10 },
-      { symbol: 'SNTS', name: 'Sonatel', price: '17,000', change: 0.59 },
-      { symbol: 'SGBC', name: 'SGB CI', price: '14,000', change: 0.71 },
-    ],
-    brvmTopLosers: [
-      { symbol: 'ETIT', name: 'Ecobank TI', price: '18.10', change: -1.20 },
-      { symbol: 'PALC', name: 'Palm CI', price: '6,500', change: -0.30 },
-    ],
+function raphaelApp(){return{
+  messages:[],input:'',isStreaming:false,streamText:'',thinkingLabel:'Raphaël réfléchit...',
+  sessionId:crypto.randomUUID(),networkOnline:false,networkHealth:0.95,
+  totalTasks:0,agents:[],allAgents:[],activityLog:[],agentStates:{},
+  currentTime:'',
 
-    suggestions: [
-      'Analyse le marché BRVM aujourd\'hui',
-      'Crée une campagne Meta Ads',
-      'Analyse BTC/USDT setup de trade',
-      'Stratégie marketing pour mon produit digital',
-      'Rédige un email de vente percutant',
-    ],
+  ticker:[
+    {symbol:'BTC/USDT',price:'$67,420',change:2.34},
+    {symbol:'ETH/USDT',price:'$3,521',change:1.87},
+    {symbol:'BNB/USDT',price:'$578',change:0.43},
+    {symbol:'SOL/USDT',price:'$168',change:-0.92},
+    {symbol:'SNTS',price:'17 000 F',change:0.59},
+    {symbol:'ETIT',price:'18.10 F',change:-1.20},
+    {symbol:'ORAC',price:'12 600 F',change:2.10},
+    {symbol:'SGBC',price:'14 000 F',change:0.71},
+  ],
+  cryptoData:[
+    {symbol:'BTC/USDT',price:'$67,420',change:2.34,volume:'28.4B'},
+    {symbol:'ETH/USDT',price:'$3,521',change:1.87,volume:'14.2B'},
+    {symbol:'BNB/USDT',price:'$578',change:0.43,volume:'1.8B'},
+    {symbol:'SOL/USDT',price:'$168.4',change:-0.92,volume:'3.1B'},
+  ],
+  brvmIndices:[
+    {name:'BRVM Composite',value:217.45,change:0.38},
+    {name:'BRVM 10',value:186.32,change:0.52},
+  ],
+  brvmStocks:[
+    {symbol:'SNTS',name:'Sonatel',price:'17 000',change:0.59},
+    {symbol:'ORAC',name:'Orange CI',price:'12 600',change:2.10},
+    {symbol:'SGBC',name:'SGB CI',price:'14 000',change:0.71},
+    {symbol:'ETIT',name:'Ecobank TI',price:'18.10',change:-1.20},
+    {symbol:'CBIBF',name:'Coris Bank',price:'9 200',change:1.45},
+  ],
+  suggestions:[
+    'Analyse le marché BRVM aujourd\'hui',
+    'Setup de trade BTC/USDT',
+    'Stratégie Meta Ads pour mon produit',
+    'Plan business pour ma boutique en ligne',
+    'Crée un post viral Instagram',
+    'Quels titres acheter sur la BRVM ?',
+  ],
+  quickActions:[
+    {icon:'📊',label:'Analyse BRVM',agent:'Kofi + Aminata',color:'#84cc16',
+      prompt:'Kofi et Aminata, faites une analyse complète du marché BRVM et donnez vos recommandations d\'investissement pour cette semaine.'},
+    {icon:'₿',label:'Analyse Crypto',agent:'Felix (Binance)',color:'#eab308',
+      prompt:'Felix, analyse les marchés crypto sur Binance, identifie les meilleurs setups de trade et évalue les risques.'},
+    {icon:'📢',label:'Campagne Ads',agent:'Elena (Meta/Google)',color:'#ec4899',
+      prompt:'Elena, crée une stratégie complète de campagne publicitaire Meta Ads avec ciblage, budget et créatifs recommandés.'},
+    {icon:'🎬',label:'Créer du contenu',agent:'Aurora + Victor',color:'#f97316',
+      prompt:'Aurora et Victor, créez une stratégie de contenu complète avec visuels et textes percutants pour mes réseaux sociaux.'},
+    {icon:'🛒',label:'Boutique en ligne',agent:'Diana (E-commerce)',color:'#14b8a6',
+      prompt:'Diana, fais un audit complet de ma boutique en ligne et donne-moi les optimisations prioritaires pour booster mes ventes.'},
+    {icon:'🔍',label:'Veille marché',agent:'Sophie (Recherche)',color:'#3b82f6',
+      prompt:'Sophie, fais une veille complète sur les tendances de mon secteur et identifie les opportunités à saisir maintenant.'},
+    {icon:'📈',label:'Stratégie business',agent:'Marcus',color:'#7c3aed',
+      prompt:'Marcus, analyse ma situation business et propose une stratégie de croissance ambitieuse et réaliste pour les 6 prochains mois.'},
+    {icon:'📱',label:'Social Media',agent:'Luna (Community)',color:'#d946ef',
+      prompt:'Luna, crée un calendrier éditorial complet pour mes réseaux sociaux et des scripts de posts viraux pour cette semaine.'},
+  ],
 
-    async init() {
-      this.updateTime();
-      setInterval(() => this.updateTime(), 1000);
-      await this.loadNetworkStatus();
-      setInterval(() => this.loadNetworkStatus(), 30000);
-      setInterval(() => this.simulateMarketUpdates(), 8000);
-    },
+  agentColors:{
+    'Raphaël':'#a78bfa','Sophie':'#60a5fa','Victor':'#34d399','Elena':'#f472b6',
+    'Marcus':'#8b5cf6','Aurora':'#fb923c','Felix':'#fbbf24','Diana':'#2dd4bf',
+    'Noah':'#f87171','Luna':'#e879f9','Axel':'#38bdf8','Kofi':'#a3e635','Aminata':'#fda4af',
+  },
 
-    updateTime() {
-      this.currentTime = new Date().toLocaleTimeString('fr-FR');
-    },
+  async init(){
+    this.updateTime();setInterval(()=>this.updateTime(),1000);
+    this.buildDefaultAgents();
+    await this.loadNetwork();
+    setInterval(()=>this.loadNetwork(),30000);
+    setInterval(()=>this.tickMarket(),6000);
+  },
 
-    async loadNetworkStatus() {
-      try {
-        const r = await fetch(`${API_BASE}/agents`);
-        const data = await r.json();
-        this.networkOnline = true;
-        this.totalTasks = data.total_tasks_processed || 0;
-        this.networkHealth = data.agents?.reduce((s, a) => s + (a.success_rate || 1), 0) / (data.agents?.length || 1) || 0.9;
-        this.agents = (data.agents || []).map(a => ({
-          ...a,
-          tasks: a.tasks || 0,
-          success_rate: a.success_rate || 1.0,
-          performance_score: a.performance_score || 1.0,
-          active: true,
-        }));
-      } catch {
-        this.networkOnline = false;
-        // Agents par défaut pour la démo
-        this.agents = [
-          { name: 'Sophie', role: 'Recherche Web', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Victor', role: 'Rédaction & Copywriting', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Elena', role: 'Marketing & Ads', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Marcus', role: 'Stratégie Business', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Aurora', role: 'Création Visuelle', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Felix', role: 'Trading & Finance', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Diana', role: 'E-commerce', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Noah', role: 'Sécurité & Risques', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Luna', role: 'Réseaux Sociaux', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Axel', role: 'Analyse de Données', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Kofi', role: 'Analyste BRVM', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-          { name: 'Aminata', role: 'Économiste UEMOA', tasks: 0, success_rate: 1, performance_score: 1, active: true },
-        ];
-        this.networkHealth = 0.95;
-      }
-    },
+  buildDefaultAgents(){
+    const list=[
+      {name:'Raphaël',role:'Orchestrateur Central',tasks:0},
+      {name:'Sophie',role:'Recherche Web & Intelligence',tasks:0},
+      {name:'Victor',role:'Rédaction & Copywriting',tasks:0},
+      {name:'Elena',role:'Marketing & Publicité',tasks:0},
+      {name:'Marcus',role:'Stratégie Business',tasks:0},
+      {name:'Aurora',role:'Création Visuelle',tasks:0},
+      {name:'Felix',role:'Trading & Finance',tasks:0},
+      {name:'Diana',role:'E-commerce',tasks:0},
+      {name:'Noah',role:'Sécurité & Risques',tasks:0},
+      {name:'Luna',role:'Réseaux Sociaux',tasks:0},
+      {name:'Axel',role:'Analyse de Données',tasks:0},
+      {name:'Kofi',role:'Analyste BRVM',tasks:0},
+      {name:'Aminata',role:'Économiste UEMOA',tasks:0},
+    ];
+    this.allAgents=list;
+    list.forEach(a=>this.agentStates[a.name]='idle');
+  },
 
-    async sendMessage() {
-      const text = this.input.trim();
-      if (!text || this.isTyping) return;
-      this.input = '';
-      this.addMessage('user', text);
-      this.isTyping = true;
-      this.typingAgent = 'Raphaël';
-      this.scrollToBottom();
-
-      try {
-        const r = await fetch(`${API_BASE}/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, session_id: this.sessionId }),
+  async loadNetwork(){
+    try{
+      const r=await fetch(`${API}/agents`);
+      const d=await r.json();
+      this.networkOnline=true;
+      this.totalTasks=d.total_tasks_processed||0;
+      if(d.agents&&d.agents.length){
+        this.networkHealth=d.agents.reduce((s,a)=>s+(a.success_rate||1),0)/d.agents.length;
+        d.agents.forEach(a=>{
+          const found=this.allAgents.find(x=>x.name.toLowerCase()===a.name.toLowerCase());
+          if(found)found.tasks=a.tasks||0;
         });
-        const data = await r.json();
-        this.isTyping = false;
-        this.addMessage('assistant', data.response || 'Désolé, une erreur est survenue.', data.agents_used || []);
-        this.logActivity('Raphaël', 'Chat: ' + text.slice(0, 50), true);
-        await this.loadNetworkStatus();
-      } catch (err) {
-        this.isTyping = false;
-        this.addMessage('assistant',
-          '⚠️ **Connexion à l\'API non disponible.**\n\nAssurez-vous que le serveur Raphaël tourne:\n```\npython main.py api\n```\nPuis rechargez cette page.');
       }
-      this.scrollToBottom();
-    },
+    }catch{this.networkOnline=false}
+  },
 
-    addMessage(role, content, agents = []) {
-      this.messages.push({
-        role,
-        content,
-        agents,
-        time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+  async send(){
+    const txt=this.input.trim();
+    if(!txt||this.isStreaming)return;
+    this.input='';
+    this.addMsg('user',txt);
+    this.isStreaming=true;this.streamText='';
+    this.thinkingLabel='Raphaël analyse...';
+    this.setAgent('Raphaël','thinking');
+    this.scroll();
+
+    // Détection des agents dans le message
+    const agentKeywords={
+      'sophie':['recherche','cherche','trouve','veille','actualité'],
+      'victor':['rédige','écris','texte','copy','article','email'],
+      'elena':['campagne','publicité','ads','marketing','meta','google'],
+      'marcus':['stratégie','business','plan','croissance'],
+      'aurora':['image','vidéo','visuel','créer','design'],
+      'felix':['trading','crypto','bitcoin','binance','bourse','trade'],
+      'diana':['boutique','shop','e-commerce','vente'],
+      'noah':['sécurité','risque'],
+      'luna':['instagram','tiktok','réseaux','social','viral'],
+      'axel':['données','analyse','statistique','rapport'],
+      'kofi':['brvm','action','côte d','sénégal','investir','bourse afrique'],
+      'aminata':['uemoa','cfa','afrique','économ','portefeuille'],
+    };
+    const txtLow=txt.toLowerCase();
+    Object.entries(agentKeywords).forEach(([name,kws])=>{
+      if(kws.some(k=>txtLow.includes(k))){
+        setTimeout(()=>this.setAgent(name.charAt(0).toUpperCase()+name.slice(1),'thinking'),500);
+      }
+    });
+
+    try{
+      // Essaie d'abord le streaming SSE
+      const resp=await fetch(`${API}/chat/stream`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({message:txt,session_id:this.sessionId})
       });
-    },
 
-    sendSuggestion(s) {
-      this.input = s;
-      this.sendMessage();
-    },
+      if(!resp.ok)throw new Error('Stream not available');
+      const reader=resp.body.getReader();
+      const dec=new TextDecoder();
+      let full='';
 
-    askAgent(agent) {
-      if (!agent) return;
-      this.showAgentDetail = false;
-      this.input = `[${agent.name}] `;
-      document.querySelector('textarea').focus();
-    },
-
-    askBrvmAnalysis() {
-      this.input = 'Kofi et Aminata, faites-moi une analyse complète du marché BRVM aujourd\'hui avec vos meilleures recommandations d\'investissement.';
-      this.rightTab = 'activity';
-      this.sendMessage();
-    },
-
-    selectAgent(agent) {
-      this.activeAgent = agent.name;
-      this.selectedAgent = agent;
-      this.showAgentDetail = true;
-    },
-
-    async spawnAgent() {
-      if (!this.spawnForm.domain) return;
-      const skills = this.spawnForm.skills.split(',').map(s => s.trim()).filter(Boolean);
-      try {
-        const r = await fetch(`${API_BASE}/agents/spawn`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ domain: this.spawnForm.domain, skills }),
+      while(true){
+        const{done,value}=await reader.read();
+        if(done)break;
+        const chunk=dec.decode(value);
+        for(const line of chunk.split('\n')){
+          if(line.startsWith('data: ')){
+            const data=line.slice(6);
+            if(data==='[DONE]'){
+              this.finalizeStream(full);return;
+            }
+            try{
+              const p=JSON.parse(data);
+              if(p.chunk){full+=p.chunk;this.streamText=full;this.scroll();}
+              else if(p.type==='agent_thinking'){this.setAgent(p.agent,'active');this.thinkingLabel=p.agent+' traite...';}
+              else if(p.type==='agent_done'){this.setAgent(p.agent,'idle');}
+            }catch{}
+          }
+        }
+      }
+      this.finalizeStream(full);
+    }catch{
+      // Fallback: endpoint normal
+      try{
+        const r=await fetch(`${API}/chat`,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({message:txt,session_id:this.sessionId})
         });
-        const data = await r.json();
-        this.showSpawnModal = false;
-        this.spawnForm = { domain: '', skills: '' };
-        this.addMessage('assistant', `✅ Nouvel agent **${data.name}** créé avec succès!\n\nRôle: ${data.role}\nExpertises: ${data.expertise?.join(', ')}`);
-        await this.loadNetworkStatus();
-      } catch {
-        this.addMessage('assistant', '⚠️ Impossible de créer l\'agent. Vérifiez que l\'API est démarrée.');
+        const d=await r.json();
+        this.finalizeStream(d.response||'Désolé, une erreur est survenue.',d.agents_used||[]);
+      }catch{
+        this.finalizeStream('⚠️ **API non disponible.** Assurez-vous que `python main.py api` tourne sur votre PC.');
       }
-    },
+    }
+  },
 
-    async refreshBrvm() {
-      try {
-        const r = await fetch(`${API_BASE}/market/brvm`);
-        const data = await r.json();
-        if (data.indices) this.brvmIndices = data.indices;
-        if (data.top_gainers) this.brvmTopGainers = data.top_gainers;
-        if (data.top_losers) this.brvmTopLosers = data.top_losers;
-      } catch { /* keep existing data */ }
-    },
+  finalizeStream(text,agents=[]){
+    this.allAgents.forEach(a=>this.setAgent(a.name,'idle'));
+    this.isStreaming=false;
+    this.addMsg('assistant',text,agents);
+    this.streamText='';
+    this.logActivity('Raphaël','Réponse envoyée',true);
+    this.scroll();
+    this.loadNetwork();
+  },
 
-    newSession() {
-      this.sessionId = crypto.randomUUID();
-      this.messages = [];
-    },
+  addMsg(role,content,agents=[]){
+    this.messages.push({role,content,agents,
+      time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
+  },
 
-    logActivity(agent, action, success) {
-      this.activityLog.push({
-        agent,
-        action,
-        success,
-        time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-      });
-      if (this.activityLog.length > 50) this.activityLog.shift();
-    },
+  setAgent(name,state){
+    this.agentStates={...this.agentStates,[name]:state};
+  },
 
-    scrollToBottom() {
-      this.$nextTick(() => {
-        const el = document.getElementById('chat-messages');
-        if (el) el.scrollTop = el.scrollHeight;
-      });
-    },
+  sendSuggestion(s){this.input=s;this.send()},
 
-    simulateMarketUpdates() {
-      this.cryptoMarket = this.cryptoMarket.map(c => ({
-        ...c,
-        change: +(c.change + (Math.random() - 0.5) * 0.4).toFixed(2),
-      }));
-      this.brvmIndices = this.brvmIndices.map(i => ({
-        ...i,
-        change: +(i.change + (Math.random() - 0.5) * 0.15).toFixed(2),
-      }));
-      this.fearGreed = Math.min(100, Math.max(0, this.fearGreed + Math.round((Math.random() - 0.5) * 4)));
-      this.fearGreedLabel = this.fearGreed > 75 ? 'Avidité extrême' : this.fearGreed > 55 ? 'Avidité' : this.fearGreed > 45 ? 'Neutre' : this.fearGreed > 25 ? 'Peur' : 'Peur extrême';
-    },
+  askAgent(agent){
+    if(agent.name==='Raphaël')return;
+    this.input=agent.name+', ';
+    document.querySelector('.chat-input-box textarea').focus();
+  },
 
-    agentColor(name) {
-      const colors = {
-        'Sophie': '#60a5fa', 'Victor': '#34d399', 'Elena': '#f472b6',
-        'Marcus': '#a78bfa', 'Aurora': '#fb923c', 'Felix': '#facc15',
-        'Diana': '#2dd4bf', 'Noah': '#f87171', 'Luna': '#e879f9',
-        'Axel': '#38bdf8', 'Kofi': '#86efac', 'Aminata': '#fda4af',
-      };
-      return colors[name] || '#a78bfa';
-    },
+  logActivity(agent,action,success){
+    this.activityLog.push({agent,action,success,
+      time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
+    if(this.activityLog.length>20)this.activityLog.shift();
+  },
 
-    formatMessage(text) {
-      if (!text) return '';
-      return text
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`([^`]+)`/g, '<code class="mono bg-white/10 px-1 rounded text-violet-300">$1</code>')
-        .replace(/```[\s\S]*?```/g, m => '<pre class="mono bg-black/40 rounded p-2 mt-2 text-xs overflow-x-auto">' + m.replace(/```\w*\n?/g, '') + '</pre>')
-        .replace(/^#{1,3} (.+)$/gm, '<strong class="text-white block mt-2">$1</strong>')
-        .replace(/^[•\-] (.+)$/gm, '<span class="block pl-2 text-gray-300">• $1</span>');
-    },
-  };
-}
+  scroll(){
+    this.$nextTick(()=>{
+      const el=document.getElementById('chat-box');
+      if(el)el.scrollTop=el.scrollHeight;
+    });
+  },
+
+  tickMarket(){
+    this.cryptoData=this.cryptoData.map(c=>({...c,change:+(c.change+(Math.random()-.5)*.5).toFixed(2)}));
+    this.brvmIndices=this.brvmIndices.map(i=>({...i,change:+(i.change+(Math.random()-.5)*.12).toFixed(2)}));
+  },
+
+  updateTime(){this.currentTime=new Date().toLocaleTimeString('fr-FR')},
+
+  agentColor(name){return this.agentColors[name]||'#a78bfa'},
+
+  agentShortRole(role){
+    if(!role)return'';
+    const parts=role.split(/[&,]/);
+    return parts[0].trim().slice(0,18);
+  },
+
+  md(text){
+    if(!text)return'';
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.*?)\*\*/g,'<strong style="color:#e2e8f0">$1</strong>')
+      .replace(/\*(.*?)\*/g,'<em>$1</em>')
+      .replace(/`([^`\n]+)`/g,'<code style="font-family:monospace;background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px;color:#a78bfa">$1</code>')
+      .replace(/^#{1,3} (.+)$/gm,'<div style="font-weight:700;color:#e2e8f0;margin:8px 0 4px">$1</div>')
+      .replace(/^[•\-\*] (.+)$/gm,'<div style="padding-left:12px;position:relative;color:#cbd5e1">• $1</div>')
+      .replace(/\n\n/g,'<br/><br/>').replace(/\n/g,'<br/>');
+  },
+}}
 </script>
 </body>
 </html>
