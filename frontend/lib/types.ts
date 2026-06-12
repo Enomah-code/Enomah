@@ -16,6 +16,20 @@ export interface Agent {
   limits: string;
 }
 
+export interface AvatarConfig {
+  skin: string;
+  hair: string;
+  outfit: string;
+  female?: boolean;
+  hasGlasses?: boolean;
+  hasCrown?: boolean;
+  hasTie?: boolean;
+  hasBeard?: boolean;
+  braids?: boolean;
+  hasBeret?: boolean;
+  hasBob?: boolean;
+}
+
 export interface Message {
   id: string;
   role: 'user' | 'assistant' | 'system';

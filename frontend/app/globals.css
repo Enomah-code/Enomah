@@ -3,22 +3,54 @@
 @tailwind utilities;
 
 /* ============================================================
-   CUSTOM PROPERTIES
+   THEME TOKENS — channels are space-separated RGB for Tailwind
+   "blanc sale" light is the default; dark via [data-theme="dark"]
    ============================================================ */
-:root {
-  --bg-0: #060610;
-  --bg-1: #09091A;
-  --bg-2: #0D0D20;
-  --bg-3: #131328;
-  --accent: #7C3AED;
-  --accent-glow: rgba(124,58,237,0.25);
+:root,
+:root[data-theme="light"] {
+  --bg-0: 248 247 243;   /* #F8F7F3  page */
+  --bg-1: 241 240 235;   /* #F1F0EB */
+  --bg-2: 255 255 255;   /* cards */
+  --bg-3: 244 242 237;   /* hover / subtle */
+  --bg-4: 233 232 226;   /* #E9E8E2 */
+  --text-1: 26 26 26;    /* #1A1A1A */
+  --text-2: 74 74 74;    /* #4A4A4A */
+  --text-3: 136 136 136; /* #888888 */
+  --line: 18 18 18;      /* used at low alpha for borders */
+  --line-alpha: 0.08;
+  --card: rgba(255,255,255,0.75);
+  --card-border: rgba(0,0,0,0.06);
+  --shadow: 0 2px 24px rgba(0,0,0,0.05);
+  --shadow-md: 0 8px 40px rgba(0,0,0,0.08);
+  --shadow-lg: 0 24px 80px rgba(0,0,0,0.12);
+  --accent: #6B46C1;
+  --accent2: #2563EB;
   --gold: #C9A84C;
-  --gold-glow: rgba(201,168,76,0.2);
-  --text-1: #F0EFE9;
-  --text-2: #94A3B8;
-  --text-3: #4A5568;
-  --border: rgba(255,255,255,0.06);
-  --border-accent: rgba(124,58,237,0.3);
+  --grid-line: rgba(107,70,193,0.05);
+  --nav-bg: rgba(248,247,243,0.85);
+}
+
+:root[data-theme="dark"] {
+  --bg-0: 12 12 12;      /* #0C0C0C page */
+  --bg-1: 18 18 18;      /* #121212 */
+  --bg-2: 23 23 26;      /* cards */
+  --bg-3: 30 30 34;      /* hover */
+  --bg-4: 38 38 44;
+  --text-1: 240 239 233; /* #F0EFE9 */
+  --text-2: 168 168 168; /* #A8A8A8 */
+  --text-3: 110 110 110; /* #6E6E6E */
+  --line: 255 255 255;
+  --line-alpha: 0.08;
+  --card: rgba(255,255,255,0.03);
+  --card-border: rgba(255,255,255,0.07);
+  --shadow: 0 2px 24px rgba(0,0,0,0.5);
+  --shadow-md: 0 8px 40px rgba(0,0,0,0.6);
+  --shadow-lg: 0 24px 80px rgba(0,0,0,0.8);
+  --accent: #8B5CF6;
+  --accent2: #3B82F6;
+  --gold: #C9A84C;
+  --grid-line: rgba(139,92,246,0.06);
+  --nav-bg: rgba(12,12,12,0.85);
 }
 
 /* ============================================================
@@ -33,81 +65,84 @@ html {
 }
 
 body {
-  background: var(--bg-0);
-  color: var(--text-1);
+  background: rgb(var(--bg-0));
+  color: rgb(var(--text-1));
   font-family: var(--font-inter), 'Inter', sans-serif;
   overflow-x: hidden;
+  transition: background .4s ease, color .4s ease;
 }
 
 ::selection {
-  background: rgba(124,58,237,0.35);
-  color: #fff;
+  background: rgba(107,70,193,0.22);
+  color: inherit;
 }
 
 /* ============================================================
    TYPOGRAPHY
    ============================================================ */
 .font-display { font-family: var(--font-playfair), 'Playfair Display', serif; }
+.font-mono { font-family: var(--font-mono), 'DM Mono', monospace; }
 
-/* Gradient text */
+.serif { font-family: var(--font-playfair), 'Playfair Display', serif; }
+
 .text-gradient {
-  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 40%, #C9A84C 100%);
+  background: linear-gradient(135deg, #6B46C1 0%, #2563EB 50%, #C9A84C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .text-gradient-gold {
-  background: linear-gradient(135deg, #F59E0B, #C9A84C);
+  background: linear-gradient(135deg, #E2C068, #C9A84C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* eyebrow / label */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono), 'DM Mono', monospace;
+  font-size: .68rem; letter-spacing: .18em;
+  text-transform: uppercase; color: rgb(var(--text-3));
+}
+.eyebrow::before { content: ''; width: 20px; height: 1px; background: rgb(var(--text-3)); }
+
 /* ============================================================
    SCROLLBAR
    ============================================================ */
-::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.4); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #7C3AED; }
+::-webkit-scrollbar-thumb { background: rgba(107,70,193,0.4); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #6B46C1; }
 
 /* ============================================================
    GLASS CARD
    ============================================================ */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
+  border: 1px solid var(--card-border);
 }
 .glass-md {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--card-border);
 }
-
-/* ============================================================
-   GLOW EFFECTS
-   ============================================================ */
-.glow-purple { box-shadow: 0 0 30px var(--accent-glow); }
-.glow-purple-sm { box-shadow: 0 0 15px var(--accent-glow); }
-.glow-gold { box-shadow: 0 0 30px var(--gold-glow); }
 
 /* ============================================================
    ANIMATED GRADIENT BORDER
    ============================================================ */
-.border-glow {
-  position: relative;
-}
+.border-glow { position: relative; }
 .border-glow::before {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, #7C3AED, #2563EB, #C9A84C, #7C3AED);
+  background: linear-gradient(135deg, #6B46C1, #2563EB, #C9A84C, #6B46C1);
   background-size: 300% 300%;
   animation: borderGlow 4s ease infinite;
   z-index: -1;
-  opacity: 0.6;
+  opacity: 0.55;
 }
 @keyframes borderGlow {
   0%, 100% { background-position: 0% 50%; }
@@ -119,10 +154,16 @@ body {
    ============================================================ */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 48px 48px;
 }
+
+/* ============================================================
+   SCROLL REVEAL (landing)
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+.reveal.in { opacity: 1; transform: none; }
 
 /* ============================================================
    CHAT MARKDOWN
@@ -131,26 +172,23 @@ body {
 .chat-content h2,
 .chat-content h3 {
   font-weight: 700;
-  color: var(--text-1);
+  color: rgb(var(--text-1));
   margin: 12px 0 6px;
 }
-.chat-content strong { color: var(--text-1); font-weight: 600; }
-.chat-content em { color: #C9A84C; }
+.chat-content strong { color: rgb(var(--text-1)); font-weight: 600; }
+.chat-content em { color: var(--gold); font-style: normal; font-weight: 600; }
 .chat-content code {
-  font-family: monospace;
-  background: rgba(255,255,255,0.08);
+  font-family: var(--font-mono), monospace;
+  background: rgba(107,70,193,0.10);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.875em;
-  color: #93C5FD;
+  color: var(--accent);
 }
-.chat-content ul, .chat-content ol {
-  padding-left: 16px;
-  margin: 8px 0;
-}
-.chat-content li { margin: 4px 0; color: var(--text-2); }
-.chat-content li strong { color: var(--text-1); }
-.chat-content hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+.chat-content ul, .chat-content ol { padding-left: 16px; margin: 8px 0; }
+.chat-content li { margin: 4px 0; color: rgb(var(--text-2)); list-style: none; }
+.chat-content li strong { color: rgb(var(--text-1)); }
+.chat-content hr { border: none; border-top: 1px solid var(--card-border); margin: 12px 0; }
 .chat-content p { margin: 6px 0; }
 
 /* ============================================================
@@ -158,9 +196,8 @@ body {
    ============================================================ */
 .cursor-blink {
   display: inline-block;
-  width: 2px;
-  height: 14px;
-  background: #7C3AED;
+  width: 2px; height: 14px;
+  background: var(--accent);
   margin-left: 2px;
   animation: cursorBlink 0.8s step-end infinite;
   vertical-align: text-bottom;
@@ -180,16 +217,16 @@ body {
    SIDEBAR ACTIVE LINK
    ============================================================ */
 .nav-link-active {
-  background: rgba(124,58,237,0.15);
-  border: 1px solid rgba(124,58,237,0.25);
-  color: #A78BFA;
+  background: rgba(107,70,193,0.12);
+  border: 1px solid rgba(107,70,193,0.28);
+  color: var(--accent);
 }
 
 /* ============================================================
    SHIMMER LOADING
    ============================================================ */
 .shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(107,70,193,0.08) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -198,12 +235,12 @@ body {
   100% { background-position: 200% 0; }
 }
 
-/* ============================================================
-   AGENT NETWORK CANVAS
-   ============================================================ */
-#agentNetworkCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-
-/* ============================================================
-   LANDING PAGE SPECIFIC
-   ============================================================ */
-.hero-title-word { display: inline-block; overflow: hidden; }
+/* avatar float variants */
+@keyframes avFloat0 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+@keyframes avFloat1 { 0%,100%{transform:translateY(-5px)} 50%{transform:translateY(6px)} }
+@keyframes avFloat2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-11px)} }
+@keyframes avFloat3 { 0%,100%{transform:translateY(-4px)} 50%{transform:translateY(8px)} }
+.av-float-0 { animation: avFloat0 3.8s ease-in-out infinite; }
+.av-float-1 { animation: avFloat1 4.2s ease-in-out infinite; }
+.av-float-2 { animation: avFloat2 3.5s ease-in-out .5s infinite; }
+.av-float-3 { animation: avFloat3 4.8s ease-in-out 1s infinite; }

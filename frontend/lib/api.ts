@@ -118,3 +118,68 @@ function chars(text: string): string[] {
   }
   return chunks;
 }
+
+export interface ChatTurn {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/**
+ * Streams a Raphaël response. Calls the Next.js /api/chat route (real Claude API
+ * when ANTHROPIC_API_KEY is set), and transparently falls back to the offline
+ * demo simulation if the key is missing or the request fails.
+ */
+export async function chatStream(
+  message: string,
+  history: ChatTurn[],
+  onChunk: (text: string) => void,
+  onAgents: (agents: string[]) => void,
+): Promise<{ mode: 'live' | 'demo' }> {
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history }),
+    });
+
+    // 503 → no API key configured. Anything non-OK → demo fallback.
+    if (!res.ok || !res.body) {
+      await mockStream(message, onChunk, onAgents);
+      return { mode: 'demo' };
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let sawError = false;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') return { mode: 'live' };
+        try {
+          const evt = JSON.parse(data);
+          if (evt.type === 'agents' && Array.isArray(evt.agents)) onAgents(evt.agents);
+          else if (typeof evt.chunk === 'string') onChunk(evt.chunk);
+          else if (evt.error) sawError = true;
+        } catch { /* skip malformed */ }
+      }
+    }
+
+    if (sawError) {
+      await mockStream(message, onChunk, onAgents);
+      return { mode: 'demo' };
+    }
+    return { mode: 'live' };
+  } catch {
+    await mockStream(message, onChunk, onAgents);
+    return { mode: 'demo' };
+  }
+}

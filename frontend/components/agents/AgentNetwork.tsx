@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { AGENTS } from '@/lib/data';
 import type { Agent } from '@/lib/types';
+import AgentAvatarSVG from './AgentAvatarSVG';
 
 interface Props {
   activeAgents?: string[];
@@ -96,14 +97,11 @@ export default function AgentNetwork({ activeAgents = [], onSelect, selected }: 
           onClick={() => onSelect?.(raphael)}
           className={`cursor-pointer flex flex-col items-center gap-2 ${selected?.id === 'raphael' ? 'opacity-100' : 'opacity-95'}`}
         >
-          <div className="relative">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center text-3xl"
-              style={{ background: `linear-gradient(135deg, ${raphael.gradient[0]}, ${raphael.gradient[1]})`, boxShadow: `0 0 40px ${raphael.color}60` }}>
-              {raphael.emoji}
-            </div>
+          <div className="relative w-20 h-20">
+            <AgentAvatarSVG agent={raphael} size={80} showBadge={false} />
             <div className="absolute inset-0 rounded-full border-2 border-accent-purple/40 animate-pulse" />
           </div>
-          <div className="text-center bg-bg-2/80 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
+          <div className="text-center bg-bg-2/85 backdrop-blur-sm px-3 py-1 rounded-full border border-line/12 shadow-soft">
             <div className="text-sm font-bold text-text-1">{raphael.name}</div>
             <div className="text-xs text-text-3">Orchestrateur</div>
           </div>
@@ -133,16 +131,16 @@ export default function AgentNetwork({ activeAgents = [], onSelect, selected }: 
               className="cursor-pointer flex flex-col items-center gap-1.5"
             >
               <div
-                className="relative w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all"
+                className="relative w-12 h-12 rounded-full transition-all"
                 style={{
-                  background: `linear-gradient(135deg, ${agent.gradient[0]}, ${agent.gradient[1]})`,
+                  borderRadius: '50%',
                   boxShadow: isActive
                     ? `0 0 20px ${agent.color}80, 0 0 40px ${agent.color}40`
                     : `0 0 8px ${agent.color}30`,
-                  opacity: isSelected ? 1 : 0.85,
+                  opacity: isSelected ? 1 : 0.9,
                 }}
               >
-                {agent.emoji}
+                <AgentAvatarSVG agent={agent} size={48} showBadge={false} />
                 {isActive && (
                   <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-status-active border border-bg-1 status-active" />
                 )}

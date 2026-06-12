@@ -6,8 +6,10 @@ import {
   MessageSquare, FolderKanban, Users, Brain, Zap, Settings,
   ChevronLeft, ChevronRight, Activity
 } from 'lucide-react';
-import { NETWORK_STATS } from '@/lib/data';
+import { NETWORK_STATS, AGENTS } from '@/lib/data';
 import { useState } from 'react';
+import AgentAvatarSVG from '../agents/AgentAvatarSVG';
+import ThemeToggle from '../theme/ThemeToggle';
 
 const NAV = [
   { href: '/dashboard', icon: MessageSquare, label: 'Conversation', desc: 'Chat avec Raphaël' },
@@ -27,10 +29,10 @@ export default function Sidebar() {
       initial={false}
       animate={{ width: collapsed ? 68 : 240 }}
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="flex flex-col h-full bg-bg-2 border-r border-white/5 relative z-10 overflow-hidden flex-shrink-0"
+      className="flex flex-col h-full bg-bg-2 border-r border-line/8 relative z-10 overflow-hidden flex-shrink-0"
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-white/5">
+      <div className="flex items-center gap-3 px-4 py-5 border-b border-line/8">
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-purple to-accent-purple-dark flex items-center justify-center flex-shrink-0 shadow-purple">
           <span className="font-display font-black text-white text-base">A</span>
         </div>
@@ -44,8 +46,8 @@ export default function Sidebar() {
 
       {/* Network status */}
       {!collapsed && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-3 py-3 border-b border-white/5">
-          <div className="rounded-xl bg-bg-3 border border-white/5 p-3">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-3 py-3 border-b border-line/8">
+          <div className="rounded-xl bg-bg-3 border border-line/8 p-3">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-status-active status-active" />
               <span className="text-xs text-text-2 font-medium">Réseau actif</span>
@@ -81,7 +83,7 @@ export default function Sidebar() {
                   className={`flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all cursor-pointer group ${
                     active
                       ? 'nav-link-active'
-                      : 'text-text-2 hover:bg-white/5 hover:text-text-1'
+                      : 'text-text-2 hover:bg-bg-3 hover:text-text-1'
                   }`}
                 >
                   <Icon size={16} className={`flex-shrink-0 ${active ? 'text-accent-purple-light' : 'text-text-3 group-hover:text-text-2'}`} />
@@ -98,12 +100,16 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      {/* Bottom: Raphaël avatar */}
-      {!collapsed && (
-        <div className="p-3 border-t border-white/5">
+      {/* Bottom: theme toggle + Raphaël avatar */}
+      {!collapsed ? (
+        <div className="p-3 border-t border-line/8 space-y-2">
+          <div className="flex items-center justify-between px-2">
+            <span className="text-xs text-text-3 font-mono">Thème</span>
+            <ThemeToggle />
+          </div>
           <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-bg-3">
             <div className="relative flex-shrink-0">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-900 flex items-center justify-center text-sm">🧠</div>
+              <AgentAvatarSVG agent={AGENTS[0]} size={32} showBadge={false} />
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-status-active border-2 border-bg-3" />
             </div>
             <div className="min-w-0">
@@ -113,12 +119,16 @@ export default function Sidebar() {
             <Activity size={12} className="text-status-active flex-shrink-0 ml-auto" />
           </div>
         </div>
+      ) : (
+        <div className="p-2 border-t border-line/8 flex justify-center">
+          <ThemeToggle />
+        </div>
       )}
 
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute top-4 -right-3 w-6 h-6 rounded-full bg-bg-3 border border-white/10 flex items-center justify-center text-text-3 hover:text-text-1 hover:bg-bg-4 transition-colors z-10"
+        className="absolute top-4 -right-3 w-6 h-6 rounded-full bg-bg-2 border border-line/12 shadow-soft flex items-center justify-center text-text-3 hover:text-text-1 hover:bg-bg-3 transition-colors z-10"
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </button>

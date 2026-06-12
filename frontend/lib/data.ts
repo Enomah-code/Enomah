@@ -1,4 +1,19 @@
-import type { Agent, Project, MemoryEntry, Mission } from './types';
+import type { Agent, Project, MemoryEntry, Mission, AvatarConfig } from './types';
+
+// Morphology for the hand-drawn SVG avatars (rendered by AgentAvatarSVG).
+export const AVATAR_CONFIG: Record<string, AvatarConfig> = {
+  raphael: { skin: '#D4A76A', hair: '#2C1810', outfit: '#4C1D95', hasCrown: true, hasTie: true },
+  sofia:   { skin: '#F0C49A', hair: '#3B1A08', outfit: '#1E3A8A', female: true },
+  gabriel: { skin: '#7D4E2D', hair: '#1A0A00', outfit: '#0F766E', hasGlasses: true },
+  elena:   { skin: '#F5D0B5', hair: '#8B2500', outfit: '#9D174D', female: true },
+  nathan:  { skin: '#C49A6C', hair: '#1F1008', outfit: '#9A3412', hasBeard: true },
+  maya:    { skin: '#553322', hair: '#1A0900', outfit: '#991B1B', female: true, braids: true },
+  lucas:   { skin: '#E8C49A', hair: '#C4943E', outfit: '#166534' },
+  emma:    { skin: '#C8956C', hair: '#0D0D0D', outfit: '#1D4ED8', female: true, hasGlasses: true },
+  adam:    { skin: '#3D2B1F', hair: '#1A0900', outfit: '#92400E', hasTie: true },
+  noah:    { skin: '#B87D5B', hair: '#2C1810', outfit: '#881337', hasBeard: true, hasBeret: true },
+  lea:     { skin: '#F0C49A', hair: '#2C1810', outfit: '#312E81', female: true, hasBob: true },
+};
 
 export const AGENTS: Agent[] = [
   {

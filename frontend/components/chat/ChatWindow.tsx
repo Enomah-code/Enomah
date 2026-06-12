@@ -3,9 +3,9 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Sparkles, Mic, Paperclip } from 'lucide-react';
 import { AGENTS, MOCK_MESSAGES } from '@/lib/data';
-import { mockStream } from '@/lib/api';
+import { chatStream, type ChatTurn } from '@/lib/api';
 import type { Message } from '@/lib/types';
-import AgentAvatar from '../agents/AgentAvatar';
+import AgentAvatarSVG from '../agents/AgentAvatarSVG';
 
 const SUGGESTIONS = [
   'Crée une stratégie marketing pour mon produit',
@@ -54,20 +54,29 @@ export default function ChatWindow({ onAgentsChange }: Props) {
     setInput('');
 
     const userMsg: Message = { id: Date.now().toString(), role: 'user', content: msg, timestamp: new Date() };
+
+    // Build the conversation history (exclude the seed welcome message).
+    const history: ChatTurn[] = messages
+      .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+
     setMessages(prev => [...prev, userMsg]);
     setStreaming(true);
     setStreamText('');
     setActiveAgents([]);
 
     let fullText = '';
+    let usedAgents: string[] = [];
 
-    await mockStream(
+    await chatStream(
       msg,
+      history,
       (chunk) => {
         fullText += chunk;
         setStreamText(fullText);
       },
       (agents) => {
+        usedAgents = agents;
         setActiveAgents(agents);
         onAgentsChange?.(agents);
       }
@@ -78,7 +87,7 @@ export default function ChatWindow({ onAgentsChange }: Props) {
       role: 'assistant',
       content: fullText,
       timestamp: new Date(),
-      agentsUsed: activeAgents,
+      agentsUsed: usedAgents,
     };
 
     setMessages(prev => [...prev, aiMsg]);
@@ -86,7 +95,7 @@ export default function ChatWindow({ onAgentsChange }: Props) {
     setStreamText('');
     setActiveAgents([]);
     onAgentsChange?.([]);
-  }, [input, streaming, activeAgents, onAgentsChange]);
+  }, [input, streaming, messages, onAgentsChange]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
@@ -117,7 +126,7 @@ export default function ChatWindow({ onAgentsChange }: Props) {
               {SUGGESTIONS.map(s => (
                 <motion.button key={s} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={() => { setInput(s); textareaRef.current?.focus(); }}
-                  className="text-left p-3 rounded-xl border border-white/6 bg-bg-2 hover:bg-bg-3 hover:border-accent-purple/20 text-xs text-text-2 transition-all">
+                  className="text-left p-3 rounded-xl border border-line/8 bg-bg-2 hover:bg-bg-3 hover:border-accent-purple/20 text-xs text-text-2 transition-all shadow-soft">
                   {s}
                 </motion.button>
               ))}
@@ -132,16 +141,16 @@ export default function ChatWindow({ onAgentsChange }: Props) {
               className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               {/* Avatar */}
               {msg.role === 'assistant' ? (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-900 flex items-center justify-center text-sm flex-shrink-0">🧠</div>
+                <div className="flex-shrink-0"><AgentAvatarSVG agent={AGENTS[0]} size={32} showBadge={false} /></div>
               ) : (
-                <div className="w-8 h-8 rounded-full bg-bg-3 border border-white/10 flex items-center justify-center text-xs font-bold text-text-2 flex-shrink-0">V</div>
+                <div className="w-8 h-8 rounded-full bg-bg-3 border border-line/12 flex items-center justify-center text-xs font-bold text-text-2 flex-shrink-0">V</div>
               )}
               {/* Bubble */}
               <div className={`max-w-[78%] ${msg.role === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                 <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   msg.role === 'user'
                     ? 'bg-accent-purple/25 border border-accent-purple/30 text-text-1 rounded-tr-sm'
-                    : 'bg-bg-2 border border-white/5 text-text-2 rounded-tl-sm'
+                    : 'bg-bg-2 border border-line/8 text-text-2 rounded-tl-sm'
                 }`}>
                   {msg.role === 'assistant' ? (
                     <div className="chat-content" dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }} />
@@ -173,7 +182,7 @@ export default function ChatWindow({ onAgentsChange }: Props) {
           {streaming && (
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
               className="flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-900 flex items-center justify-center text-sm flex-shrink-0">🧠</div>
+              <div className="flex-shrink-0"><AgentAvatarSVG agent={AGENTS[0]} size={32} showBadge={false} /></div>
               <div className="max-w-[78%]">
                 {/* Active agents */}
                 {activeAgents.length > 0 && (
@@ -191,7 +200,7 @@ export default function ChatWindow({ onAgentsChange }: Props) {
                     })}
                   </div>
                 )}
-                <div className="rounded-2xl rounded-tl-sm px-4 py-3 bg-bg-2 border border-white/5 text-sm text-text-2 leading-relaxed">
+                <div className="rounded-2xl rounded-tl-sm px-4 py-3 bg-bg-2 border border-line/8 text-sm text-text-2 leading-relaxed">
                   {streamText ? (
                     <>
                       <div className="chat-content" dangerouslySetInnerHTML={{ __html: renderMarkdown(streamText) }} />
@@ -219,8 +228,8 @@ export default function ChatWindow({ onAgentsChange }: Props) {
       </div>
 
       {/* Input */}
-      <div className="px-4 pb-4 pt-2 border-t border-white/5">
-        <div className="flex gap-2 items-end bg-bg-2 border border-white/8 rounded-2xl px-4 py-3 focus-within:border-accent-purple/30 transition-colors">
+      <div className="px-4 pb-4 pt-2 border-t border-line/8">
+        <div className="flex gap-2 items-end bg-bg-2 border border-line/10 rounded-2xl px-4 py-3 shadow-soft focus-within:border-accent-purple/30 transition-colors">
           <textarea
             ref={textareaRef}
             value={input}
@@ -232,7 +241,7 @@ export default function ChatWindow({ onAgentsChange }: Props) {
             style={{ scrollbarWidth: 'none' }}
           />
           <div className="flex items-center gap-1.5 pb-0.5">
-            <button className="p-1.5 rounded-lg text-text-3 hover:text-text-2 hover:bg-white/5 transition-colors"><Paperclip size={14} /></button>
+            <button className="p-1.5 rounded-lg text-text-3 hover:text-text-2 hover:bg-bg-3 transition-colors"><Paperclip size={14} /></button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

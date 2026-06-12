@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ['selector', '[data-theme="dark"]'],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -7,37 +8,41 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Theme-aware tokens (driven by CSS variables in globals.css).
+        // Channels are space-separated RGB so Tailwind opacity modifiers work.
         bg: {
-          0: '#060610',
-          1: '#09091A',
-          2: '#0D0D20',
-          3: '#131328',
-          4: '#1A1A35',
+          0: 'rgb(var(--bg-0) / <alpha-value>)',
+          1: 'rgb(var(--bg-1) / <alpha-value>)',
+          2: 'rgb(var(--bg-2) / <alpha-value>)',
+          3: 'rgb(var(--bg-3) / <alpha-value>)',
+          4: 'rgb(var(--bg-4) / <alpha-value>)',
         },
+        text: {
+          1: 'rgb(var(--text-1) / <alpha-value>)',
+          2: 'rgb(var(--text-2) / <alpha-value>)',
+          3: 'rgb(var(--text-3) / <alpha-value>)',
+        },
+        line: 'rgb(var(--line) / <alpha-value>)',
         accent: {
-          purple: '#7C3AED',
-          'purple-light': '#9D5CF6',
-          'purple-dark': '#5B21B6',
+          purple: '#6B46C1',
+          'purple-light': '#8B5CF6',
+          'purple-dark': '#4C1D95',
+          blue: '#2563EB',
           gold: '#C9A84C',
           'gold-light': '#E2C068',
           'gold-dark': '#A07830',
         },
-        text: {
-          1: '#F0EFE9',
-          2: '#94A3B8',
-          3: '#4A5568',
-        },
         status: {
           active: '#10B981',
           thinking: '#F59E0B',
-          idle: '#4A5568',
+          idle: '#94A3B8',
           error: '#EF4444',
         },
       },
       fontFamily: {
-        display: ['var(--font-playfair)', 'serif'],
-        sans: ['var(--font-inter)', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        display: ['var(--font-playfair)', 'Playfair Display', 'serif'],
+        sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        mono: ['var(--font-mono)', 'DM Mono', 'monospace'],
       },
       animation: {
         'float': 'float 4s ease-in-out infinite',
@@ -47,6 +52,7 @@ module.exports = {
         'slide-in': 'slideIn 0.4s cubic-bezier(0.22,1,0.36,1)',
         'orbit': 'orbit 20s linear infinite',
         'shimmer': 'shimmer 2.5s linear infinite',
+        'ring-rot': 'ringRot 22s linear infinite',
       },
       keyframes: {
         float: {
@@ -54,8 +60,8 @@ module.exports = {
           '50%': { transform: 'translateY(-8px)' },
         },
         glow: {
-          from: { boxShadow: '0 0 20px rgba(124,58,237,0.3)' },
-          to: { boxShadow: '0 0 40px rgba(124,58,237,0.6), 0 0 80px rgba(124,58,237,0.2)' },
+          from: { boxShadow: '0 0 20px rgba(107,70,193,0.25)' },
+          to: { boxShadow: '0 0 40px rgba(107,70,193,0.5), 0 0 80px rgba(107,70,193,0.18)' },
         },
         slideUp: {
           from: { opacity: 0, transform: 'translateY(20px)' },
@@ -73,18 +79,21 @@ module.exports = {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'grid-pattern': `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237C3AED' fill-opacity='0.04'%3E%3Cpath d='M0 0h40v1H0zM0 0v40h1V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        ringRot: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
       },
       boxShadow: {
-        'purple': '0 0 30px rgba(124,58,237,0.3)',
-        'purple-lg': '0 0 60px rgba(124,58,237,0.4)',
-        'gold': '0 0 30px rgba(201,168,76,0.3)',
-        'card': '0 4px 24px rgba(0,0,0,0.4)',
-        'card-hover': '0 12px 48px rgba(0,0,0,0.6)',
+        'soft': 'var(--shadow)',
+        'card': 'var(--shadow-md)',
+        'card-hover': 'var(--shadow-lg)',
+        'purple': '0 8px 28px rgba(107,70,193,0.30)',
+        'purple-lg': '0 14px 44px rgba(107,70,193,0.40)',
+        'gold': '0 8px 28px rgba(201,168,76,0.25)',
+      },
+      borderRadius: {
+        'xl2': '20px',
       },
     },
   },
