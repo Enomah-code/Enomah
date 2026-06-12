@@ -19,6 +19,7 @@ import {
 import AppLayout from '@/components/layout/AppLayout';
 import ChatWindow from '@/components/chat/ChatWindow';
 import AgentCard from '@/components/agents/AgentCard';
+import AgentAvatarSVG from '@/components/agents/AgentAvatarSVG';
 import { AGENTS, MOCK_PROJECTS, NETWORK_STATS } from '@/lib/data';
 
 /* ─────────────────────────── helpers ─────────────────────────── */
@@ -28,8 +29,8 @@ function statusBadge(status: string) {
     active: { label: 'Actif', cls: 'text-status-active bg-status-active/10 border-status-active/20' },
     planning: { label: 'Planification', cls: 'text-status-thinking bg-status-thinking/10 border-status-thinking/20' },
     review: { label: 'Révision', cls: 'text-accent-purple-light bg-accent-purple/10 border-accent-purple/20' },
-    completed: { label: 'Terminé', cls: 'text-text-3 bg-white/5 border-white/8' },
-    pending: { label: 'En attente', cls: 'text-text-3 bg-white/5 border-white/8' },
+    completed: { label: 'Terminé', cls: 'text-text-3 bg-bg-3 border-line/8' },
+    pending: { label: 'En attente', cls: 'text-text-3 bg-bg-3 border-line/8' },
   };
   const item = map[status] ?? map.pending;
   return (
@@ -56,7 +57,7 @@ function ActiveMissionCard() {
   const missionAgents = AGENTS.filter((a) => project.agents.includes(a.id)).slice(0, 4);
 
   return (
-    <div className="rounded-2xl bg-bg-3 border border-white/5 p-4 mb-4">
+    <div className="rounded-2xl bg-bg-3 border border-line/8 shadow-card p-4 mb-4">
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
@@ -120,9 +121,9 @@ function ActiveMissionCard() {
 
 function LeftPanel() {
   return (
-    <aside className="w-80 flex-shrink-0 flex flex-col border-r border-white/5 bg-bg-1 overflow-y-auto">
+    <aside className="w-80 flex-shrink-0 flex flex-col border-r border-line/8 bg-bg-1 overflow-y-auto">
       {/* Header */}
-      <div className="p-5 border-b border-white/5">
+      <div className="p-5 border-b border-line/8">
         <h1 className="font-display font-bold text-lg text-text-1 mb-0.5">Tableau de bord</h1>
         <p className="text-xs text-text-3 font-mono">Angeleck · 11 agents actifs</p>
       </div>
@@ -147,7 +148,7 @@ function LeftPanel() {
                 key={label}
                 whileHover={{ scale: 1.03, y: -1 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex flex-col items-start gap-1.5 p-3 rounded-xl bg-bg-3 border border-white/5 hover:border-white/10 hover:bg-bg-4 transition-all text-left group"
+                className="flex flex-col items-start gap-1.5 p-3 rounded-xl bg-bg-3 border border-line/8 hover:border-line/12 hover:bg-bg-4 transition-all text-left group"
               >
                 <div
                   className="w-7 h-7 rounded-lg flex items-center justify-center"
@@ -176,7 +177,7 @@ function LeftPanel() {
               <motion.div
                 key={project.id}
                 whileHover={{ x: 2 }}
-                className="p-3 rounded-xl bg-bg-3 border border-white/5 hover:border-white/10 transition-all cursor-pointer"
+                className="p-3 rounded-xl bg-bg-3 border border-line/8 hover:border-line/12 transition-all cursor-pointer"
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <span className="text-xs font-semibold text-text-1 leading-snug line-clamp-2 flex-1">
@@ -215,7 +216,7 @@ const HEALTH_METRICS = [
 
 function NetworkHealth() {
   return (
-    <div className="rounded-2xl bg-bg-3 border border-white/5 p-4">
+    <div className="rounded-2xl bg-bg-3 border border-line/8 shadow-card p-4">
       <div className="flex items-center gap-2 mb-4">
         <Wifi size={13} className="text-status-active" />
         <span className="text-xs font-semibold text-text-2 uppercase tracking-wider">Santé réseau</span>
@@ -244,7 +245,7 @@ function NetworkHealth() {
       </div>
 
       {/* Network stats */}
-      <div className="mt-4 pt-4 border-t border-white/5 grid grid-cols-2 gap-3">
+      <div className="mt-4 pt-4 border-t border-line/8 grid grid-cols-2 gap-3">
         <div className="text-center">
           <div className="text-lg font-bold text-text-1 font-mono">{NETWORK_STATS.totalMissions.toLocaleString()}</div>
           <div className="text-xs text-text-3">missions</div>
@@ -266,9 +267,9 @@ function RightPanel({ activeAgentIds }: RightPanelProps) {
   const activeCount = activeAgentIds.length + AGENTS.filter((a) => a.status === 'active').length;
 
   return (
-    <aside className="w-72 flex-shrink-0 flex flex-col border-l border-white/5 bg-bg-1 overflow-y-auto">
+    <aside className="w-72 flex-shrink-0 flex flex-col border-l border-line/8 bg-bg-1 overflow-y-auto">
       {/* Header */}
-      <div className="p-5 border-b border-white/5">
+      <div className="p-5 border-b border-line/8">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-semibold text-text-1 mb-0.5">Agents mobilisés</h2>
@@ -317,13 +318,8 @@ function RightPanel({ activeAgentIds }: RightPanelProps) {
 
 function ChatHeader() {
   return (
-    <div className="flex items-center gap-3 px-6 py-4 border-b border-white/5 flex-shrink-0">
-      <div
-        className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow-purple-sm"
-        style={{ background: 'linear-gradient(135deg, #8B5CF6, #4C1D95)' }}
-      >
-        🧠
-      </div>
+    <div className="flex items-center gap-3 px-6 py-4 border-b border-line/8 flex-shrink-0">
+      <AgentAvatarSVG agent={AGENTS[0]} size={36} showBadge={false} />
       <div>
         <div className="font-semibold text-text-1 text-sm">Raphaël</div>
         <div className="flex items-center gap-1.5 text-xs text-text-3">
@@ -333,11 +329,11 @@ function ChatHeader() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-bg-3 border border-white/5">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-bg-3 border border-line/8">
           <Layers size={11} className="text-accent-purple-light" />
           <span className="text-xs font-mono text-text-2">{NETWORK_STATS.totalAgents} agents</span>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-bg-3 border border-white/5">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-bg-3 border border-line/8">
           <CheckCircle2 size={11} className="text-status-active" />
           <span className="text-xs font-mono text-text-2">{NETWORK_STATS.successRate}%</span>
         </div>

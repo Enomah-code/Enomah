@@ -43,7 +43,7 @@ function StatCard({ icon, label, value, color = '#7C3AED' }: { icon: React.React
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-bg-2 border border-white/5 rounded-2xl p-5 flex items-center gap-4"
+      className="bg-bg-2 border border-line/8 shadow-card rounded-2xl p-5 flex items-center gap-4"
     >
       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-none" style={{ background: color + '20' }}>
         <span style={{ color }}>{icon}</span>
@@ -105,7 +105,7 @@ function ProjectCard({ project }: { project: Project }) {
       layout
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-bg-2 border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-all group"
+      className="bg-bg-2 border border-line/8 shadow-card rounded-2xl overflow-hidden hover:border-line/12 transition-all group"
     >
       {/* Priority stripe */}
       <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${pc.color}80, transparent)` }} />
@@ -118,14 +118,14 @@ function ProjectCard({ project }: { project: Project }) {
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: sc.dot }} />
               {sc.label}
             </span>
-            <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-bg-3 border border-white/5" style={{ color: pc.color }}>
+            <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-bg-3 border border-line/8" style={{ color: pc.color }}>
               <Flame size={10} />
               {pc.label}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             {project.tags.map((tag) => (
-              <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-bg-3 text-text-3 border border-white/5">
+              <span key={tag} className="text-xs px-2 py-0.5 rounded-md bg-bg-3 text-text-3 border border-line/8">
                 {tag}
               </span>
             ))}
@@ -133,7 +133,7 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
 
         {/* Name + description */}
-        <h3 className="font-display text-lg font-bold text-text-1 leading-tight mb-1.5 group-hover:text-white transition-colors">
+        <h3 className="font-display text-lg font-bold text-text-1 leading-tight mb-1.5 group-hover:text-text-1 transition-colors">
           {project.name}
         </h3>
         <p className="text-sm text-text-3 leading-relaxed mb-5">{project.description}</p>
@@ -196,7 +196,7 @@ function ProjectCard({ project }: { project: Project }) {
         {/* Expand button */}
         <button
           onClick={() => setExpanded((v) => !v)}
-          className="mt-5 w-full flex items-center justify-between px-3 py-2 rounded-xl bg-bg-3/60 hover:bg-bg-3 border border-white/5 text-xs text-text-3 hover:text-text-2 transition-all"
+          className="mt-5 w-full flex items-center justify-between px-3 py-2 rounded-xl bg-bg-3/60 hover:bg-bg-3 border border-line/8 text-xs text-text-3 hover:text-text-2 transition-all"
         >
           <span className="font-mono uppercase tracking-wider">
             {project.missions.length} mission{project.missions.length > 1 ? 's' : ''}
@@ -215,7 +215,7 @@ function ProjectCard({ project }: { project: Project }) {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-6 pb-5 border-t border-white/5 pt-4">
+            <div className="px-6 pb-5 border-t border-line/8 pt-4">
               <div className="text-xs font-mono uppercase tracking-widest text-text-3 mb-3">
                 Missions
               </div>
@@ -245,7 +245,7 @@ export default function ProjectsPage() {
     <AppLayout>
       <div className="flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="flex-none px-8 py-6 border-b border-white/5">
+        <div className="flex-none px-8 py-6 border-b border-line/8">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-display text-3xl font-bold text-text-1 tracking-tight">Mes Projets</h1>

@@ -44,7 +44,7 @@ export default function AgentsPage() {
     <AppLayout>
       <div className="flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="flex-none px-8 py-6 border-b border-white/5">
+        <div className="flex-none px-8 py-6 border-b border-line/8">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
               <h1 className="font-display text-3xl font-bold text-text-1 tracking-tight">
@@ -64,7 +64,7 @@ export default function AgentsPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Rechercher un agent…"
-                  className="pl-9 pr-4 py-2 bg-bg-2 border border-white/8 rounded-xl text-sm text-text-1 placeholder:text-text-3 focus:outline-none focus:border-accent-purple/40 w-56 transition-all"
+                  className="pl-9 pr-4 py-2 bg-bg-2 border border-line/8 rounded-xl text-sm text-text-1 placeholder:text-text-3 focus:outline-none focus:border-accent-purple/40 w-56 transition-all"
                 />
               </div>
               <div className="flex gap-1.5">
@@ -75,7 +75,7 @@ export default function AgentsPage() {
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                       filter === f
                         ? 'bg-accent-purple text-white shadow-purple'
-                        : 'bg-bg-2 text-text-3 border border-white/5 hover:border-white/12 hover:text-text-2'
+                        : 'bg-bg-2 text-text-3 border border-line/8 hover:border-line/12 hover:text-text-2'
                     }`}
                   >
                     {f}
@@ -89,7 +89,7 @@ export default function AgentsPage() {
         {/* Main split: Network + Detail */}
         <div className="flex-1 flex overflow-hidden min-h-0">
           {/* Left: Network visualization */}
-          <div className="flex-[3] relative border-r border-white/5 overflow-hidden">
+          <div className="flex-[3] relative border-r border-line/8 overflow-hidden">
             <AgentNetwork
               activeAgents={AGENTS.filter((a) => a.status === 'active').map((a) => a.name)}
               onSelect={setSelectedAgent}
@@ -130,13 +130,13 @@ export default function AgentsPage() {
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-text-2 leading-relaxed mb-6 bg-bg-2/60 rounded-xl p-4 border border-white/5">
+                  <p className="text-sm text-text-2 leading-relaxed mb-6 bg-bg-2/60 rounded-xl p-4 border border-line/8">
                     {selectedAgent.description}
                   </p>
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-3 mb-6">
-                    <div className="bg-bg-2 rounded-xl p-4 border border-white/5">
+                    <div className="bg-bg-2 rounded-xl p-4 border border-line/8 shadow-soft">
                       <div className="flex items-center gap-2 mb-1">
                         <CheckCircle size={13} className="text-status-active" />
                         <span className="text-xs text-text-3">Tâches complétées</span>
@@ -145,7 +145,7 @@ export default function AgentsPage() {
                         {selectedAgent.tasksCompleted.toLocaleString()}
                       </div>
                     </div>
-                    <div className="bg-bg-2 rounded-xl p-4 border border-white/5">
+                    <div className="bg-bg-2 rounded-xl p-4 border border-line/8 shadow-soft">
                       <div className="flex items-center gap-2 mb-1">
                         <Star size={13} className="text-accent-gold" />
                         <span className="text-xs text-text-3">Taux de succès</span>
@@ -198,7 +198,7 @@ export default function AgentsPage() {
                       {selectedAgent.tools.map((tool) => (
                         <span
                           key={tool}
-                          className="px-2.5 py-1 rounded-lg text-xs bg-bg-3 text-text-2 border border-white/5"
+                          className="px-2.5 py-1 rounded-lg text-xs bg-bg-3 text-text-2 border border-line/8"
                         >
                           {tool}
                         </span>
@@ -233,7 +233,7 @@ export default function AgentsPage() {
                   exit={{ opacity: 0 }}
                   className="flex flex-col items-center justify-center h-full p-8 text-center"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-bg-2 border border-white/8 flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 rounded-2xl bg-bg-2 border border-line/8 flex items-center justify-center mb-4">
                     <Users size={24} className="text-text-3" />
                   </div>
                   <h3 className="text-text-2 font-medium mb-2">Détails de l'agent</h3>
@@ -246,7 +246,7 @@ export default function AgentsPage() {
                       <button
                         key={a.id}
                         onClick={() => setSelectedAgent(a)}
-                        className="flex items-center gap-3 px-3 py-2 bg-bg-2 rounded-xl border border-white/5 hover:border-white/12 transition-all text-left"
+                        className="flex items-center gap-3 px-3 py-2 bg-bg-2 rounded-xl border border-line/8 hover:border-line/12 transition-all text-left"
                       >
                         <span className="text-lg">{a.emoji}</span>
                         <div>
@@ -264,7 +264,7 @@ export default function AgentsPage() {
         </div>
 
         {/* Bottom: Agent grid */}
-        <div className="flex-none border-t border-white/5">
+        <div className="flex-none border-t border-line/8">
           <div className="px-8 pt-6 pb-2">
             <h2 className="text-sm font-mono uppercase tracking-widest text-text-3 mb-4">
               Tous les agents{filter !== 'Tous' ? ` — ${filter}` : ''}{' '}

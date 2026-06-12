@@ -110,7 +110,7 @@ function MemoryLayerCard({
       className={`relative flex flex-col items-start p-5 rounded-2xl border transition-all text-left w-full overflow-hidden ${
         active
           ? `bg-gradient-to-br ${layer.colorClass} ${layer.borderClass} shadow-lg`
-          : `bg-bg-2 border-white/5 hover:border-white/10`
+          : `bg-bg-2 border-line/8 shadow-card hover:border-line/12`
       }`}
     >
       {/* Animated pulse dot */}
@@ -153,7 +153,7 @@ function MemoryCard({ entry }: { entry: MemoryEntry }) {
       exit={{ opacity: 0, y: -10 }}
       whileHover={{ x: 2 }}
       onClick={() => setExpanded((v) => !v)}
-      className="bg-bg-2 border border-white/5 rounded-xl p-4 cursor-pointer hover:border-white/10 transition-all group"
+      className="bg-bg-2 border border-line/8 shadow-card rounded-xl p-4 cursor-pointer hover:border-line/12 transition-all group"
     >
       {/* Top row */}
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -201,7 +201,7 @@ function MemoryCard({ entry }: { entry: MemoryEntry }) {
           {entry.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-bg-3 text-text-3 border border-white/5"
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs bg-bg-3 text-text-3 border border-line/8"
             >
               <Tag size={9} />
               {tag}
@@ -214,7 +214,7 @@ function MemoryCard({ entry }: { entry: MemoryEntry }) {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="mt-3 pt-3 border-t border-white/5 text-xs text-text-3 font-mono"
+          className="mt-3 pt-3 border-t border-line/8 text-xs text-text-3 font-mono"
         >
           ID: {entry.id} · Type: {entry.type} · Source: {entry.source}
         </motion.div>
@@ -236,7 +236,7 @@ const FLOW_STEPS = [
 
 function LearningCycle() {
   return (
-    <div className="bg-bg-2 border border-white/5 rounded-2xl p-6">
+    <div className="bg-bg-2 border border-line/8 shadow-card rounded-2xl p-6">
       <div className="flex items-center gap-2 mb-6">
         <Database size={16} className="text-accent-purple" />
         <h3 className="text-sm font-mono uppercase tracking-widest text-text-3">
@@ -271,7 +271,7 @@ function LearningCycle() {
           </div>
         ))}
       </div>
-      <p className="text-xs text-text-3 leading-relaxed mt-5 bg-bg-3/60 rounded-xl p-3 border border-white/5">
+      <p className="text-xs text-text-3 leading-relaxed mt-5 bg-bg-3/60 rounded-xl p-3 border border-line/8">
         Chaque interaction enrichit la mémoire Akasha. Les agents apprennent continuellement de
         chaque mission, adaptant leurs réponses futures grâce aux expériences accumulées.
       </p>
@@ -312,7 +312,7 @@ export default function MemoryPage() {
     <AppLayout>
       <div className="flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="flex-none px-8 py-6 border-b border-white/5">
+        <div className="flex-none px-8 py-6 border-b border-line/8">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
               <h1 className="font-display text-3xl font-bold text-text-1 tracking-tight">
@@ -328,7 +328,7 @@ export default function MemoryPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher dans la mémoire…"
-                className="pl-9 pr-4 py-2 bg-bg-2 border border-white/8 rounded-xl text-sm text-text-1 placeholder:text-text-3 focus:outline-none focus:border-accent-purple/40 w-64 transition-all"
+                className="pl-9 pr-4 py-2 bg-bg-2 border border-line/8 rounded-xl text-sm text-text-1 placeholder:text-text-3 focus:outline-none focus:border-accent-purple/40 w-64 transition-all"
               />
             </div>
           </div>
@@ -352,7 +352,7 @@ export default function MemoryPage() {
           <div className="flex gap-6">
             {/* Left: filter sidebar */}
             <div className="w-56 flex-none">
-              <div className="bg-bg-2 border border-white/5 rounded-2xl p-4 sticky top-0">
+              <div className="bg-bg-2 border border-line/8 shadow-card rounded-2xl p-4 sticky top-0">
                 <div className="flex items-center gap-2 mb-4">
                   <Filter size={13} className="text-text-3" />
                   <span className="text-xs font-mono uppercase tracking-widest text-text-3">Filtres</span>
@@ -410,7 +410,7 @@ export default function MemoryPage() {
                         className={`px-2 py-0.5 rounded-md text-xs border transition-all ${
                           selectedTag === tag
                             ? 'bg-accent-purple/20 text-accent-purple-light border-accent-purple/30'
-                            : 'bg-bg-3 text-text-3 border-white/5 hover:border-white/12 hover:text-text-2'
+                            : 'bg-bg-3 text-text-3 border-line/8 hover:border-line/12 hover:text-text-2'
                         }`}
                       >
                         {tag}
@@ -423,7 +423,7 @@ export default function MemoryPage() {
                 {(typeFilter !== 'all' || minRelevance > 0 || selectedTag || search) && (
                   <button
                     onClick={() => { setTypeFilter('all'); setMinRelevance(0); setSelectedTag(null); setSearch(''); }}
-                    className="mt-4 w-full text-xs text-text-3 hover:text-text-2 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-bg-3 transition-all border border-white/5"
+                    className="mt-4 w-full text-xs text-text-3 hover:text-text-2 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-bg-3 transition-all border border-line/8"
                   >
                     <RefreshCw size={11} />
                     Réinitialiser
