@@ -1,52 +1,34 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Link from 'next/link';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import {
-  ArrowRight,
-  Brain,
-  Layers,
-  Users,
-  Zap,
-  CheckCircle2,
-  BarChart3,
-  Target,
-  Github,
-  Twitter,
-  Linkedin,
-  ChevronRight,
-} from 'lucide-react';
-import AgentCard from '@/components/agents/AgentCard';
+import { motion, useInView } from 'framer-motion';
+import AgentAvatarSVG from '@/components/agents/AgentAvatarSVG';
+import ThemeToggle from '@/components/theme/ThemeToggle';
 import { AGENTS } from '@/lib/data';
+import type { Agent } from '@/lib/types';
 
 /* ─────────────────────────── helpers ─────────────────────────── */
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono uppercase tracking-widest border border-accent-purple/30 bg-accent-purple/8 text-accent-purple-light mb-6">
-      {children}
-    </span>
-  );
-}
-
-function FadeInSection({
+function Reveal({
   children,
   delay = 0,
+  x = 0,
   className = '',
 }: {
   children: React.ReactNode;
   delay?: number;
+  x?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
+  const inView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: x === 0 ? 44 : 0, x }}
+      animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
+      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -54,367 +36,394 @@ function FadeInSection({
   );
 }
 
+const RAPHAEL: Agent = AGENTS[0];
+const ORBIT_AGENTS = AGENTS.filter((a) =>
+  ['sofia', 'gabriel', 'elena', 'nathan', 'maya', 'lucas'].includes(a.id),
+);
+const FLOAT_CLASSES = ['av-float-0', 'av-float-1', 'av-float-2', 'av-float-3'];
+
 /* ─────────────────────────── Nav ─────────────────────────── */
 
-function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, []);
-
-  return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-bg-1/90 backdrop-blur-xl border-b border-white/6 shadow-[0_4px_32px_rgba(0,0,0,0.5)]'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-purple to-accent-purple-dark flex items-center justify-center text-sm font-bold text-white shadow-purple-sm">
-            A
-          </div>
-          <div className="flex items-baseline gap-0.5">
-            <span className="text-text-3 font-mono text-xs">/</span>
-            <span className="font-display font-bold text-text-1 text-lg tracking-tight">Angeleck</span>
-          </div>
-        </Link>
-
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
-          {[
-            { label: 'Fonctionnement', href: '#fonctionnement' },
-            { label: 'Agents', href: '#agents' },
-            { label: 'Tarifs', href: '#tarifs' },
-          ].map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              className="text-sm text-text-2 hover:text-text-1 transition-colors font-medium"
-            >
-              {label}
-            </a>
-          ))}
-          <Link
-            href="/dashboard"
-            className="text-sm text-text-2 hover:text-text-1 transition-colors font-medium"
-          >
-            Connexion
-          </Link>
-        </div>
-
-        {/* CTA */}
-        <Link
-          href="/dashboard"
-          className="hidden md:flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-[1.03] active:scale-[0.98]"
-          style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)' }}
-        >
-          Parler à Raphaël
-          <ArrowRight size={14} />
-        </Link>
-
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg text-text-2 hover:text-text-1"
-        >
-          <div className="flex flex-col gap-1.5">
-            <span
-              className={`block h-0.5 w-5 bg-current transition-transform origin-center ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}
-            />
-            <span
-              className={`block h-0.5 w-5 bg-current transition-opacity ${menuOpen ? 'opacity-0' : ''}`}
-            />
-            <span
-              className={`block h-0.5 w-5 bg-current transition-transform origin-center ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}
-            />
-          </div>
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-bg-2/95 backdrop-blur-xl border-b border-white/6 px-6 py-4 flex flex-col gap-4"
-        >
-          {['Fonctionnement', 'Agents', 'Tarifs', 'Connexion'].map((l) => (
-            <a key={l} href="#" className="text-sm text-text-2 hover:text-text-1 transition-colors">
-              {l}
-            </a>
-          ))}
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white mt-1"
-            style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)' }}
-          >
-            Parler à Raphaël <ArrowRight size={14} />
-          </Link>
-        </motion.div>
-      )}
-    </nav>
-  );
-}
-
-/* ─────────────────────────── Orbiting avatars ─────────────────────────── */
-
-const ORBIT_AGENTS = [
-  { emoji: '👩‍💼', name: 'Sofia', color: '#60A5FA', angle: 0 },
-  { emoji: '📢', name: 'Maya', color: '#F87171', angle: 60 },
-  { emoji: '✍️', name: 'Nathan', color: '#FB923C', angle: 120 },
-  { emoji: '👩‍🎨', name: 'Elena', color: '#F472B6', angle: 180 },
-  { emoji: '👨‍💻', name: 'Gabriel', color: '#2DD4BF', angle: 240 },
-  { emoji: '💰', name: 'Adam', color: '#FCD34D', angle: 300 },
+const NAV_LINKS = [
+  { label: 'Vision', href: '#vision' },
+  { label: 'Raphaël', href: '#raphael' },
+  { label: 'Agents', href: '#agents' },
+  { label: 'Architecture', href: '#architecture' },
+  { label: 'Genesis', href: '#genesis' },
+  { label: 'Tarifs', href: '#pricing' },
 ];
 
-function OrbitingAgents() {
+function Nav() {
   return (
-    <div className="relative w-[360px] h-[360px] flex-shrink-0">
-      {/* Orbit ring */}
-      <div className="absolute inset-0 rounded-full border border-white/6" />
-      <div className="absolute inset-8 rounded-full border border-accent-purple/12" />
+    <nav className="fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-5 sm:px-10 py-[18px] bg-bg-0/[0.88] backdrop-blur-2xl border-b border-line/[0.07]">
+      <Link href="/" className="flex items-center gap-2.5">
+        <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center font-display text-[17px] font-black text-white shadow-purple"
+          style={{ background: 'linear-gradient(135deg, #6B46C1, #2563EB)' }}>
+          A
+        </div>
+        <span className="font-display text-xl font-black tracking-tight text-text-1">Angeleck</span>
+      </Link>
 
-      {/* Center — Raphaël */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <motion.div
-          animate={{ scale: [1, 1.06, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-purple"
-          style={{
-            background: 'linear-gradient(135deg, #8B5CF6, #4C1D95)',
-            boxShadow: '0 0 40px rgba(124,58,237,0.5)',
-          }}
-        >
-          🧠
-        </motion.div>
+      <div className="hidden lg:flex items-center gap-8">
+        {NAV_LINKS.map(({ label, href }) => (
+          <a key={label} href={href} className="text-sm font-medium text-text-2 hover:text-text-1 transition-colors">
+            {label}
+          </a>
+        ))}
       </div>
 
-      {/* Orbit track + agents */}
-      <motion.div
-        className="absolute inset-0"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-      >
-        {ORBIT_AGENTS.map((agent, i) => {
-          const rad = (agent.angle * Math.PI) / 180;
-          const r = 150; // orbit radius (half of 300px ring)
-          const cx = 180 + r * Math.cos(rad) - 24; // 24 = half of agent circle size
-          const cy = 180 + r * Math.sin(rad) - 24;
-          return (
-            <motion.div
-              key={agent.name}
-              className="absolute w-12 h-12 rounded-full flex items-center justify-center text-xl border border-white/10"
-              style={{
-                left: cx,
-                top: cy,
-                background: `linear-gradient(135deg, ${agent.color}44, ${agent.color}22)`,
-                boxShadow: `0 0 14px ${agent.color}55`,
-              }}
-              // Counter-rotate so emoji stays upright
-              animate={{ rotate: -360 }}
-              transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-            >
-              {agent.emoji}
-            </motion.div>
-          );
-        })}
-      </motion.div>
-
-      {/* Decorative glow blobs */}
-      <div
-        className="absolute top-4 right-4 w-16 h-16 rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(201,168,76,0.15), transparent)',
-          filter: 'blur(12px)',
-        }}
-      />
-      <div
-        className="absolute bottom-4 left-4 w-20 h-20 rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(124,58,237,0.2), transparent)',
-          filter: 'blur(16px)',
-        }}
-      />
-    </div>
+      <div className="flex items-center gap-4 sm:gap-5">
+        <ThemeToggle />
+        <Link
+          href="/dashboard"
+          className="px-5 py-[9px] rounded-full text-white text-[0.82rem] font-semibold shadow-purple transition-all hover:-translate-y-px"
+          style={{ background: '#6B46C1' }}
+        >
+          Commencer →
+        </Link>
+      </div>
+    </nav>
   );
 }
 
 /* ─────────────────────────── Hero ─────────────────────────── */
 
-const STATS = [
-  { value: '11', label: 'agents experts' },
-  { value: '95.8%', label: 'taux de succès' },
-  { value: '1 247', label: 'missions réalisées' },
-  { value: '99.7%', label: 'uptime' },
+const ORBIT_POSITIONS = [
+  { top: '20px', left: '60px', float: 'av-float-1' },
+  { top: '60px', right: '40px', float: 'av-float-2' },
+  { bottom: '80px', right: '50px', float: 'av-float-3' },
+  { bottom: '60px', left: '50px', float: 'av-float-0' },
+  { top: '200px', right: '20px', float: 'av-float-1' },
+  { top: '200px', left: '20px', float: 'av-float-2' },
 ];
 
 function Hero() {
-  const { scrollYProgress } = useScroll();
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
-
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-bg-1">
-      {/* Background orbs */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
+    <section id="home" className="relative min-h-screen flex items-center pt-[140px] pb-20 overflow-hidden">
+      {/* Orbs */}
+      <div className="absolute inset-0 pointer-events-none z-0">
         <motion.div
-          animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(124,58,237,0.18), transparent 70%)',
-            filter: 'blur(60px)',
-            opacity: 0.55,
-          }}
+          animate={{ x: [0, 30, 0], y: [0, -40, 0], scale: [1, 1.06, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute rounded-full opacity-10 dark:opacity-[0.18]"
+          style={{ width: 700, height: 700, top: -200, right: -150, background: '#6B46C1', filter: 'blur(100px)' }}
         />
         <motion.div
-          animate={{ x: [0, -50, 0], y: [0, 40, 0] }}
-          transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(201,168,76,0.14), transparent 70%)',
-            filter: 'blur(80px)',
-            opacity: 0.45,
-          }}
+          animate={{ x: [0, -30, 0], y: [0, 40, 0], scale: [1, 1.06, 1] }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute rounded-full opacity-10 dark:opacity-[0.18]"
+          style={{ width: 500, height: 500, bottom: -200, left: -100, background: '#2563EB', filter: 'blur(100px)' }}
         />
-      </motion.div>
-
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-grid opacity-60 pointer-events-none" />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-16 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-        {/* Left */}
-        <div className="flex-1 flex flex-col items-start max-w-2xl">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-status-active/30 bg-status-active/8 text-status-active text-xs font-mono uppercase tracking-widest mb-8"
-          >
-            <span className="w-2 h-2 rounded-full bg-status-active status-active" />
-            Organisation IA Autonome · v1.0
-          </motion.div>
-
-          {/* Headline */}
-          <div className="mb-6">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-2xl md:text-3xl text-text-2 font-sans font-light mb-1"
-            >
-              Bienvenue dans
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="font-display font-black text-7xl md:text-8xl text-gradient leading-none tracking-tight mb-3"
-            >
-              Angeleck
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="font-display italic text-2xl md:text-3xl"
-              style={{ color: '#C9A84C' }}
-            >
-              L'entreprise IA qui grandit avec vous.
-            </motion.p>
-          </div>
-
-          {/* Subtext */}
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
-            className="text-text-2 text-base md:text-lg leading-relaxed max-w-xl mb-8"
-          >
-            Une équipe d'agents intelligents capable de créer, analyser, automatiser et
-            développer vos projets — coordonnée par Raphaël, votre directeur IA.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.55 }}
-            className="flex flex-wrap gap-3 mb-10"
-          >
-            <Link
-              href="/dashboard"
-              className="group flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-white text-sm transition-all hover:scale-[1.03] active:scale-[0.97] shadow-purple"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)' }}
-            >
-              Parler à Raphaël
-              <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-            </Link>
-            <a
-              href="#agents"
-              className="flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-text-1 text-sm border border-white/12 bg-white/4 hover:bg-white/7 hover:border-white/20 transition-all"
-            >
-              Découvrir les agents
-              <ChevronRight size={15} />
-            </a>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.68 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-          >
-            {STATS.map(({ value, label }) => (
-              <div key={label} className="flex flex-col">
-                <span className="font-display font-bold text-2xl text-gradient-gold leading-none mb-0.5">
-                  {value}
-                </span>
-                <span className="text-xs text-text-3 leading-tight">{label}</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Right — orbiting agents */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="hidden lg:flex flex-col items-center justify-center"
-        >
-          <OrbitingAgents />
-          <p className="text-xs text-text-3 font-mono mt-4 tracking-wider">
-            11 agents · réseau neural IA
-          </p>
-        </motion.div>
+          animate={{ x: [0, 30, 0], y: [0, -40, 0], scale: [1, 1.06, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+          className="absolute rounded-full opacity-10 dark:opacity-[0.18]"
+          style={{ width: 350, height: 350, top: '40%', left: '35%', background: '#C9A84C', filter: 'blur(100px)' }}
+        />
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="text-xs text-text-3 font-mono tracking-widest uppercase">Découvrir</span>
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.4, repeat: Infinity }}
-          className="w-5 h-8 rounded-full border border-white/12 flex items-start justify-center p-1"
-        >
-          <div className="w-1 h-2 rounded-full bg-accent-purple" />
-        </motion.div>
-      </motion.div>
+      <div className="relative z-10 w-full max-w-[1240px] mx-auto px-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+          {/* Left */}
+          <motion.div
+            initial={{ opacity: 0, y: 44 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="inline-flex items-center gap-2 glass-md rounded-full px-4 py-[7px] mb-7">
+              <span className="w-[7px] h-[7px] rounded-full bg-status-active status-active" />
+              <span className="font-mono text-[0.7rem] tracking-[0.12em] uppercase text-text-3">
+                Organisation IA Autonome · v1.0
+              </span>
+            </div>
+
+            <h1 className="font-display font-black leading-[0.97] tracking-[-0.03em] text-[clamp(3rem,7vw,7.5rem)] mb-6 text-text-1">
+              Angel<span className="text-gradient">eck</span>
+              <br />
+              L&apos;Intelligence
+              <br />
+              <em className="italic">Collective</em>
+            </h1>
+
+            <p className="text-[1.15rem] leading-[1.75] max-w-[520px] mb-12 text-text-2">
+              Un réseau d&apos;agents IA spécialisés, coordonné par Raphaël, capable de gérer, créer,
+              analyser et développer vos business digitaux en totale autonomie.
+            </p>
+
+            <div className="flex flex-wrap gap-3.5">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 px-8 py-[15px] rounded-full text-white font-semibold text-[0.92rem] shadow-purple transition-all hover:-translate-y-0.5"
+                style={{ background: '#6B46C1' }}
+              >
+                Rencontrer l&apos;équipe →
+              </Link>
+              <a
+                href="#architecture"
+                className="inline-flex items-center gap-2 px-8 py-[15px] rounded-full font-semibold text-[0.92rem] text-text-1 border-2 border-line/[0.12] hover:border-line/30 transition-all hover:-translate-y-0.5"
+              >
+                Architecture
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right — Raphaël + orbiting agents */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="relative h-[520px] hidden lg:flex items-center justify-center"
+          >
+            {/* Central Raphaël */}
+            <div className="relative z-[2] flex flex-col items-center gap-2">
+              <div className="av-float-0" style={{ filter: 'drop-shadow(0 20px 40px rgba(107,70,193,.4))' }}>
+                <AgentAvatarSVG agent={RAPHAEL} size={130} showBadge={false} />
+              </div>
+              <div className="font-display font-bold text-[1.1rem] text-text-1">Raphaël</div>
+              <div className="font-mono text-[0.68rem] tracking-[0.18em] uppercase text-text-3">
+                Orchestrateur Central
+              </div>
+            </div>
+
+            {/* Orbiting agents */}
+            {ORBIT_AGENTS.map((agent, i) => {
+              const pos = ORBIT_POSITIONS[i];
+              return (
+                <div
+                  key={agent.id}
+                  className={`absolute z-[2] flex flex-col items-center gap-1 ${pos.float}`}
+                  style={{ top: pos.top, bottom: pos.bottom, left: pos.left, right: pos.right }}
+                >
+                  <div
+                    className="w-14 h-14 rounded-full glass-md flex items-center justify-center overflow-hidden shadow-card"
+                    style={{ borderColor: `${agent.color}4d` }}
+                  >
+                    <AgentAvatarSVG agent={agent} size={56} showBadge={false} />
+                  </div>
+                  <div className="text-[0.62rem] font-semibold tracking-wide opacity-70 text-text-1">
+                    {agent.name}
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── Manifeste / Vision ─────────────────────────── */
+
+const LOIS = [
+  {
+    num: '01',
+    title: 'Collaboration obligatoire',
+    text: 'Aucun agent ne travaille isolément. Chaque mission active la synergie de l\'équipe entière selon les compétences requises.',
+  },
+  {
+    num: '02',
+    title: 'Raphaël coordonne',
+    text: 'Raphaël reste le chef d\'orchestre incontesté. Il analyse, planifie, délègue, supervise et synthétise chaque résultat.',
+  },
+  {
+    num: '03',
+    title: 'Validation humaine',
+    text: 'Les décisions importantes — financières, légales, critiques — nécessitent toujours une validation humaine avant exécution.',
+  },
+  {
+    num: '04',
+    title: 'Amélioration continue',
+    text: 'Chaque mission enrichit Akasha Memory. Angeleck devient plus intelligent et précis avec chaque interaction.',
+  },
+];
+
+function Manifeste() {
+  return (
+    <section id="vision" className="py-20 md:py-[130px] bg-bg-1">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <Reveal>
+          <div className="eyebrow mb-[18px]">Manifeste</div>
+          <blockquote className="font-display italic leading-[1.55] text-[clamp(1.4rem,2.8vw,2.4rem)] border-l-[3px] pl-9 max-w-[820px] mx-auto mb-20 text-text-1"
+            style={{ borderColor: '#6B46C1' }}>
+            « Angeleck n&apos;est pas un assistant.
+            <br />C&apos;est une organisation digitale autonome
+            <br />composée d&apos;experts IA spécialisés. »
+          </blockquote>
+        </Reveal>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {LOIS.map((loi, i) => (
+            <Reveal key={loi.num} delay={i * 0.1}>
+              <div className="glass-md rounded-[20px] p-[30px] h-full transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover">
+                <div className="font-mono text-[2.5rem] font-medium leading-none mb-2.5" style={{ color: '#6B46C1', opacity: 0.25 }}>
+                  {loi.num}
+                </div>
+                <div className="font-bold text-[0.95rem] mb-1.5 text-text-1">{loi.title}</div>
+                <div className="text-[0.83rem] leading-[1.65] text-text-3">{loi.text}</div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── Raphaël ─────────────────────────── */
+
+const POWERS = [
+  {
+    icon: '🧠',
+    bg: 'rgba(107,70,193,.1)',
+    title: 'Diagnostic profond',
+    desc: 'Comprend le besoin réel, le contexte, les contraintes et l\'objectif final derrière chaque demande.',
+  },
+  {
+    icon: '🎯',
+    bg: 'rgba(37,99,235,.1)',
+    title: 'Décomposition en missions',
+    desc: 'Transforme une demande vague en missions précises assignées aux bons experts.',
+  },
+  {
+    icon: '⚡',
+    bg: 'rgba(201,168,76,.1)',
+    title: 'Orchestration temps réel',
+    desc: 'Coordonne jusqu\'à 10 agents en parallèle avec suivi et contrôle qualité en continu.',
+  },
+  {
+    icon: '🔄',
+    bg: 'rgba(16,185,129,.1)',
+    title: 'Synthèse & amélioration',
+    desc: 'Vérifie, améliore et assemble les résultats avant livraison. Stocke les apprentissages dans Akasha.',
+  },
+];
+
+function RaphaelSection() {
+  return (
+    <section id="raphael" className="py-20 md:py-[130px]">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[100px] items-center">
+          {/* Avatar + rings */}
+          <Reveal x={-44} className="flex justify-center">
+            <div className="relative w-[320px] h-[320px] flex items-center justify-center">
+              {/* Rings */}
+              <div className="absolute rounded-full animate-ring-rot" style={{ inset: -60, border: '1px solid rgba(107,70,193,.18)' }}>
+                <span className="absolute top-0 left-1/2 w-2.5 h-2.5 rounded-full -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: '#6B46C1', boxShadow: '0 0 12px rgba(107,70,193,.6)' }} />
+              </div>
+              <div className="absolute rounded-full animate-ring-rot" style={{ inset: -100, border: '1px dashed rgba(107,70,193,.1)', animationDuration: '35s', animationDirection: 'reverse' }}>
+                <span className="absolute top-0 left-1/2 w-2.5 h-2.5 rounded-full -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: '#C9A84C', boxShadow: '0 0 12px rgba(201,168,76,.6)' }} />
+              </div>
+              <div className="absolute rounded-full animate-ring-rot" style={{ inset: -140, border: '1px solid rgba(201,168,76,.15)', animationDuration: '45s' }}>
+                <span className="absolute bottom-0 left-1/2 w-2.5 h-2.5 rounded-full -translate-x-1/2 translate-y-1/2"
+                  style={{ background: '#2563EB', boxShadow: '0 0 12px rgba(37,99,235,.6)' }} />
+              </div>
+              {/* Avatar */}
+              <div className="relative z-[2] av-float-0">
+                <AgentAvatarSVG agent={RAPHAEL} size={190} showBadge={false} />
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Text + powers */}
+          <Reveal x={44}>
+            <div className="eyebrow mb-[18px]">Agent Central</div>
+            <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] mb-4 text-text-1">
+              Raphaël
+              <br />
+              <span className="italic text-text-3" style={{ fontSize: '70%' }}>Directeur Intelligence</span>
+            </h2>
+            <p className="mb-9 text-text-2 leading-[1.78]">
+              Consultant IA stratégique, chef d&apos;orchestre numérique et coordinateur de l&apos;organisation.
+              Sa mission : transformer vos intentions en résultats concrets en mobilisant les bonnes ressources au bon moment.
+            </p>
+
+            <div className="flex flex-col gap-3.5">
+              {POWERS.map((p) => (
+                <div key={p.title} className="flex items-start gap-3.5 px-5 py-4 rounded-2xl glass-md transition-transform duration-200 hover:translate-x-1.5">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[18px] flex-shrink-0" style={{ background: p.bg }}>
+                    {p.icon}
+                  </div>
+                  <div>
+                    <div className="text-[0.88rem] font-bold mb-[3px] text-text-1">{p.title}</div>
+                    <div className="text-[0.78rem] leading-[1.55] text-text-3">{p.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── Agents ─────────────────────────── */
+
+function AgentsSection() {
+  return (
+    <section id="agents" className="py-20 md:py-[130px] bg-bg-1">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <Reveal className="max-w-[640px] mb-[70px]">
+          <div className="eyebrow mb-[18px]">Conseil des Experts</div>
+          <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] text-text-1">
+            11 spécialistes
+            <br />à votre service
+          </h2>
+          <p className="mt-4 text-text-2 leading-[1.78]">
+            Chaque agent possède une identité propre, une expertise profonde et des outils spécifiques.
+            Ensemble, ils forment une organisation digitale sans précédent.
+          </p>
+        </Reveal>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-[22px]">
+          {AGENTS.map((agent, i) => (
+            <Reveal key={agent.id} delay={(i % 6) * 0.07}>
+              <div
+                className="group relative glass-md rounded-3xl px-[18px] pt-7 pb-[22px] text-center cursor-pointer overflow-hidden transition-all duration-300 hover:-translate-y-2.5"
+                style={{ ['--agent-color' as string]: agent.color }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = `${agent.color}40`;
+                  e.currentTarget.style.boxShadow = `0 24px 60px ${agent.color}18`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '';
+                  e.currentTarget.style.boxShadow = '';
+                }}
+              >
+                <span className="absolute top-3.5 right-3.5 w-2 h-2 rounded-full bg-status-active status-active" />
+
+                <div className="relative w-[90px] h-[90px] mx-auto mb-4">
+                  <div className={FLOAT_CLASSES[i % 4]}>
+                    <AgentAvatarSVG agent={agent} size={88} />
+                  </div>
+                  <div
+                    className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[50px] h-2.5 rounded-full blur-[8px] opacity-50"
+                    style={{ background: agent.color }}
+                  />
+                </div>
+
+                <div className="font-display text-[1.15rem] font-bold mb-[3px] text-text-1">{agent.name}</div>
+                <div className="font-mono text-[0.62rem] tracking-[0.12em] uppercase opacity-45 mb-3 text-text-1">
+                  {agent.role}
+                </div>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {agent.skills.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[0.62rem] px-2 py-[3px] rounded-full bg-bg-3 text-text-3 border border-line/[0.07]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -423,242 +432,567 @@ function Hero() {
 
 const STEPS = [
   {
-    number: '01',
-    icon: Brain,
-    title: 'Analyse profonde',
-    description:
-      'Raphaël écoute votre besoin, pose les bonnes questions et analyse en profondeur votre contexte, vos objectifs et vos contraintes pour construire une vision claire de la mission.',
-    color: '#8B5CF6',
+    num: '01',
+    icon: '🔍',
+    title: 'Étape 1 — Compréhension',
+    desc: 'Raphaël analyse la demande en profondeur : ce qui est dit, ce qui est voulu, les contraintes cachées et l\'objectif final réel.',
   },
   {
-    number: '02',
-    icon: Layers,
-    title: 'Décomposition',
-    description:
-      'La mission est découpée en tâches précises et attribuées à chaque agent spécialisé selon ses compétences. Chaque micro-mission a un objectif clair et des critères de succès définis.',
-    color: '#60A5FA',
+    num: '02',
+    icon: '🗺️',
+    title: 'Étape 2 — Mission structurée',
+    desc: 'La demande est transformée en plan d\'action précis : objectifs clairs, compétences identifiées, agents sélectionnés.',
   },
   {
-    number: '03',
-    icon: Zap,
-    title: 'Activation agents',
-    description:
-      'Les agents experts sont mobilisés simultanément. Sofia analyse le marché, Maya prépare les campagnes, Nathan rédige les textes — tout en parallèle, sans perte de temps.',
-    color: '#F59E0B',
+    num: '03',
+    icon: '⚡',
+    title: 'Étape 3 — Activation des experts',
+    desc: 'Les agents spécialisés sont mobilisés simultanément. Chacun reçoit une fiche de mission précise avec contexte, tâche et contraintes.',
   },
   {
-    number: '04',
-    icon: Users,
-    title: 'Collaboration',
-    description:
-      'Les agents communiquent, partagent leurs données et s\'alignent en temps réel. Gabriel intègre les systèmes, Emma valide les métriques, Léa sécurise chaque décision sensible.',
-    color: '#10B981',
+    num: '04',
+    icon: '🤝',
+    title: 'Étape 4 — Collaboration',
+    desc: 'Les agents travaillent en réseau, s\'alimentent mutuellement. Sofia informe Maya, Emma éclaire Adam, Elena guide Nathan.',
   },
   {
-    number: '05',
-    icon: CheckCircle2,
-    title: 'Synthèse & livraison',
-    description:
-      'Raphaël agrège tous les résultats, rédige le rapport final et vous livre un travail complet, cohérent et directement actionnable — avec mémoire de tout ce qui a été appris.',
-    color: '#C9A84C',
+    num: '05',
+    icon: '✨',
+    title: 'Étape 5 — Livraison premium',
+    desc: 'Raphaël contrôle, améliore et assemble. Le résultat final est vérifié, optimisé et présenté de façon claire et exploitable.',
   },
 ];
 
 function HowItWorks() {
   return (
-    <section id="fonctionnement" className="py-28 bg-bg-0 relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-40 pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <FadeInSection className="text-center mb-20">
-          <SectionLabel>Fonctionnement</SectionLabel>
-          <h2 className="font-display font-bold text-4xl md:text-5xl text-text-1 mb-4">
-            Comment fonctionne{' '}
-            <span className="text-gradient">Angeleck</span>
+    <section id="how" className="py-20 md:py-[130px]">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <Reveal className="max-w-[580px] mb-20">
+          <div className="eyebrow mb-[18px]">Processus</div>
+          <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] text-text-1">
+            5 étapes vers le résultat
           </h2>
-          <p className="text-text-2 text-lg max-w-2xl mx-auto">
-            Un processus en 5 étapes, orchestré par Raphaël, pour transformer vos idées en
-            résultats concrets.
+          <p className="mt-4 text-text-2 leading-[1.78]">
+            Chaque demande déclenche un protocole structuré. De l&apos;analyse à la livraison, Angeleck
+            opère comme une équipe professionnelle rodée.
           </p>
-        </FadeInSection>
+        </Reveal>
 
-        <div className="flex flex-col gap-12">
-          {STEPS.map((step, i) => {
-            const Icon = step.icon;
-            const isLeft = i % 2 === 0;
-            return (
-              <FadeInSection key={step.number} delay={i * 0.08}>
-                <div
-                  className={`flex flex-col md:flex-row items-center gap-8 ${
-                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
-                  }`}
-                >
-                  {/* Number */}
-                  <div className="flex-shrink-0 w-20 h-20 rounded-2xl glass flex items-center justify-center">
-                    <span
-                      className="font-display font-black text-3xl"
-                      style={{ color: step.color }}
-                    >
-                      {step.number}
-                    </span>
-                  </div>
+        <div className="relative">
+          {/* Central vertical line */}
+          <div
+            className="absolute top-10 bottom-10 w-px left-[28px] md:left-1/2 md:-translate-x-1/2"
+            style={{ background: 'linear-gradient(to bottom, transparent, #6B46C1 20%, #6B46C1 80%, transparent)' }}
+          />
 
-                  {/* Connector line */}
-                  <div className="hidden md:block flex-shrink-0 w-8 h-0.5 bg-gradient-to-r from-white/5 to-white/10" />
-
-                  {/* Card */}
-                  <div
-                    className={`flex-1 glass rounded-2xl p-6 border transition-all hover:border-white/12 group relative overflow-hidden`}
-                    style={{ borderColor: `${step.color}18` }}
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{
-                        background: `radial-gradient(circle at ${isLeft ? '0% 50%' : '100% 50%'}, ${step.color}08, transparent 60%)`,
-                      }}
-                    />
-                    <div className="relative z-10 flex items-start gap-4">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${step.color}18`, color: step.color }}
-                      >
-                        <Icon size={18} />
-                      </div>
-                      <div>
-                        <h3 className="font-display font-bold text-xl text-text-1 mb-2">
-                          {step.title}
-                        </h3>
-                        <p className="text-text-2 text-sm leading-relaxed">{step.description}</p>
+          <div className="flex flex-col gap-10">
+            {STEPS.map((step, i) => {
+              const isLeft = i % 2 === 0;
+              return (
+                <Reveal key={step.num} delay={i * 0.1}>
+                  <div className="grid items-center gap-0 grid-cols-[56px_1fr] md:grid-cols-[1fr_80px_1fr]">
+                    {/* Content */}
+                    <div className={`${isLeft ? 'md:order-1 col-start-2 md:col-start-auto' : 'md:order-3 col-start-2 md:col-start-auto'}`}>
+                      <div className="glass-md rounded-[18px] p-[26px]">
+                        <span className="text-[1.8rem] mb-2.5 block">{step.icon}</span>
+                        <div className="font-bold text-base mb-1.5 text-text-1">{step.title}</div>
+                        <div className="text-[0.83rem] leading-[1.65] text-text-2">{step.desc}</div>
                       </div>
                     </div>
+                    {/* Node */}
+                    <div className="order-first md:order-2 row-start-1 col-start-1 md:col-start-auto flex justify-center">
+                      <div
+                        className="w-[52px] h-[52px] rounded-full flex items-center justify-center font-mono text-[0.9rem] font-medium relative z-[2] bg-bg-0"
+                        style={{ border: '2px solid #6B46C1', color: '#6B46C1', boxShadow: '0 0 0 6px rgb(var(--bg-0))' }}
+                      >
+                        {step.num}
+                      </div>
+                    </div>
+                    {/* Empty (desktop balance) */}
+                    <div className={`hidden md:block ${isLeft ? 'md:order-3' : 'md:order-1'}`} />
                   </div>
-                </div>
-              </FadeInSection>
-            );
-          })}
+                </Reveal>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* ─────────────────────────── Agents preview ─────────────────────────── */
+/* ─────────────────────────── Architecture ─────────────────────────── */
 
-const PREVIEW_AGENT_IDS = ['sofia', 'maya', 'nathan', 'elena', 'gabriel', 'adam'];
+const TECH_CARDS = [
+  {
+    cat: 'Cerveau IA',
+    items: [
+      { dot: '#6B46C1', label: 'Claude API (Anthropic)' },
+      { dot: '#2563EB', label: 'LangGraph (Orchestration)' },
+      { dot: '#10B981', label: 'LangChain (Agents)' },
+    ],
+  },
+  {
+    cat: 'Backend',
+    items: [
+      { dot: '#F59E0B', label: 'Python 3.12' },
+      { dot: '#EF4444', label: 'FastAPI' },
+      { dot: '#8B5CF6', label: 'WebSocket (Streaming)' },
+    ],
+  },
+  {
+    cat: 'Mémoire',
+    items: [
+      { dot: '#2563EB', label: 'PostgreSQL' },
+      { dot: '#10B981', label: 'Weaviate (Vecteurs)' },
+      { dot: '#F97316', label: 'Redis (Cache)' },
+    ],
+  },
+  {
+    cat: 'Frontend',
+    items: [
+      { dot: '#1F2937', label: 'Next.js 14' },
+      { dot: '#06B6D4', label: 'Tailwind CSS' },
+      { dot: '#7C3AED', label: 'Framer Motion' },
+    ],
+  },
+  {
+    cat: 'Automatisation',
+    items: [
+      { dot: '#EF4444', label: 'n8n (Workflows)' },
+      { dot: '#10B981', label: 'Shopify API' },
+      { dot: '#3B82F6', label: 'Meta Ads API' },
+    ],
+  },
+  {
+    cat: 'Infrastructure',
+    items: [
+      { dot: '#F59E0B', label: 'AWS / GCP' },
+      { dot: '#8B5CF6', label: 'Docker + K8s' },
+      { dot: '#10B981', label: 'Cloudflare CDN' },
+    ],
+  },
+];
 
-function AgentsPreview() {
-  const previewAgents = AGENTS.filter((a) => PREVIEW_AGENT_IDS.includes(a.id));
+const FLOW = [
+  { label: 'Utilisateur', bg: 'rgba(107,70,193,.12)', color: '#6B46C1', border: 'rgba(107,70,193,.2)' },
+  { label: 'Raphaël', bg: 'rgba(107,70,193,.2)', color: '#6B46C1', border: 'rgba(107,70,193,.3)' },
+  { label: 'LangGraph Router', bg: 'rgb(var(--bg-3))', color: 'rgb(var(--text-1))', border: 'rgba(127,127,127,.2)' },
+  { label: 'Agents (×n)', bg: 'rgba(37,99,235,.1)', color: '#2563EB', border: 'rgba(37,99,235,.2)' },
+  { label: 'Akasha Memory', bg: 'rgba(16,185,129,.1)', color: '#10B981', border: 'rgba(16,185,129,.2)' },
+  { label: 'Résultat ✓', bg: 'rgba(201,168,76,.15)', color: '#C9A84C', border: 'rgba(201,168,76,.3)' },
+];
 
+function Architecture() {
   return (
-    <section id="agents" className="py-28 bg-bg-1 relative overflow-hidden">
-      {/* Background glow */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse, rgba(124,58,237,0.08), transparent 70%)',
-          filter: 'blur(40px)',
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <FadeInSection className="text-center mb-16">
-          <SectionLabel>L'équipe</SectionLabel>
-          <h2 className="font-display font-bold text-4xl md:text-5xl text-text-1 mb-4">
-            L'équipe d'experts
+    <section id="architecture" className="py-20 md:py-[130px] bg-bg-1">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <Reveal>
+          <div className="eyebrow mb-[18px]">Architecture Technique</div>
+          <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] mb-4 text-text-1">
+            Stack de niveau
+            <br />production
           </h2>
-          <p className="text-text-2 text-lg max-w-2xl mx-auto">
-            11 agents IA spécialisés, chacun maître dans son domaine, travaillant en symbiose
-            sous la direction de Raphaël.
+          <p className="max-w-[580px] text-text-2 leading-[1.78]">
+            Angeleck repose sur les technologies les plus avancées, conçues pour évoluer de quelques
+            utilisateurs à des millions.
           </p>
-        </FadeInSection>
+        </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-          {previewAgents.map((agent, i) => (
-            <FadeInSection key={agent.id} delay={i * 0.07}>
-              <AgentCard agent={agent} />
-            </FadeInSection>
-          ))}
-        </div>
-
-        <FadeInSection delay={0.4} className="flex justify-center">
-          <Link
-            href="/dashboard"
-            className="group flex items-center gap-2 px-6 py-3 rounded-xl border border-accent-purple/30 bg-accent-purple/8 text-accent-purple-light text-sm font-semibold hover:bg-accent-purple/15 hover:border-accent-purple/50 transition-all"
-          >
-            Voir les 11 agents
-            <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-          </Link>
-        </FadeInSection>
-      </div>
-    </section>
-  );
-}
-
-/* ─────────────────────────── CTA section ─────────────────────────── */
-
-function CtaSection() {
-  return (
-    <section className="py-28 bg-bg-0 relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
-
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        <FadeInSection>
-          <div className="border-glow rounded-3xl p-px">
-            <div className="rounded-3xl bg-bg-2 p-12 md:p-16 text-center relative overflow-hidden">
-              {/* Inner glow */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    'radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.12), transparent 60%)',
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="text-5xl mb-6">🚀</div>
-                <h2 className="font-display font-bold text-4xl md:text-5xl text-text-1 mb-4 leading-tight">
-                  Prêt à créer votre
-                  <br />
-                  <span className="text-gradient">organisation IA ?</span>
-                </h2>
-                <p className="text-text-2 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-                  Rejoignez les entrepreneurs qui font confiance à Angeleck pour automatiser,
-                  analyser et développer leur business — sans se noyer dans les outils.
-                </p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <Link
-                    href="/dashboard"
-                    className="group flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white text-base transition-all hover:scale-[1.03] active:scale-[0.97] shadow-purple-lg"
-                    style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)' }}
-                  >
-                    Commencer gratuitement
-                    <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-                  </Link>
-                  <a
-                    href="#fonctionnement"
-                    className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-text-1 text-base border border-white/12 hover:border-white/20 hover:bg-white/4 transition-all"
-                  >
-                    En savoir plus
-                  </a>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] mt-[60px]">
+          {TECH_CARDS.map((card, i) => (
+            <Reveal key={card.cat} delay={(i % 6) * 0.1}>
+              <div className="glass-md rounded-[18px] p-6 h-full">
+                <div className="font-mono text-[0.62rem] tracking-[0.18em] uppercase text-text-3 mb-3.5">
+                  {card.cat}
                 </div>
-
-                {/* Trust indicators */}
-                <div className="flex flex-wrap gap-6 justify-center mt-10">
-                  {[
-                    { icon: CheckCircle2, text: 'Sans carte bancaire' },
-                    { icon: BarChart3, text: 'Résultats en 24h' },
-                    { icon: Target, text: '99.7% de disponibilité' },
-                  ].map(({ icon: Icon, text }) => (
-                    <div key={text} className="flex items-center gap-2 text-sm text-text-3">
-                      <Icon size={14} className="text-status-active" />
-                      <span>{text}</span>
+                <div className="flex flex-col gap-2">
+                  {card.items.map((it) => (
+                    <div
+                      key={it.label}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-[10px] bg-bg-0 border border-line/[0.07] text-[0.82rem] font-medium text-text-1 transition-colors hover:border-accent-purple/60"
+                    >
+                      <span className="w-[7px] h-[7px] rounded-full flex-shrink-0" style={{ background: it.dot }} />
+                      {it.label}
                     </div>
                   ))}
                 </div>
               </div>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* Data flow */}
+        <Reveal>
+          <div className="mt-12 glass-md rounded-3xl p-10 text-center">
+            <div className="font-mono text-[0.68rem] tracking-[0.18em] uppercase text-text-3 mb-5">
+              Flux de données
+            </div>
+            <div className="flex items-center justify-center flex-wrap gap-y-2">
+              {FLOW.map((node, i) => (
+                <span key={node.label} className="flex items-center">
+                  <span
+                    className="px-5 py-2.5 rounded-full text-[0.85rem] font-semibold whitespace-nowrap"
+                    style={{ background: node.bg, color: node.color, border: `1px solid ${node.border}` }}
+                  >
+                    {node.label}
+                  </span>
+                  {i < FLOW.length - 1 && <span className="text-text-3 text-[1.2rem] px-2">→</span>}
+                </span>
+              ))}
             </div>
           </div>
-        </FadeInSection>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── Genesis ─────────────────────────── */
+
+const GEN_STEPS = [
+  { num: '1', strong: 'Détection du manque', text: ' — Raphaël identifie qu\'aucun agent existant ne couvre la compétence requise.' },
+  { num: '2', strong: 'Définition du rôle', text: ' — Genesis spécifie la fonction, les compétences, la personnalité et les outils du nouvel expert.' },
+  { num: '3', strong: 'Attribution d\'identité', text: ' — Un prénom humain, une personnalité professionnelle et un domaine précis sont assignés.' },
+  { num: '4', strong: 'Validation humaine', text: ' — Le nouvel agent est présenté à l\'utilisateur pour approbation avant intégration.' },
+  { num: '5', strong: 'Intégration réseau', text: ' — L\'agent rejoint l\'organigramme, la mémoire Akasha et le routeur de compétences.' },
+];
+
+function Genesis() {
+  return (
+    <section id="genesis" className="py-20 md:py-[130px]">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-start">
+          {/* Left — steps */}
+          <Reveal x={-44}>
+            <div className="eyebrow mb-[18px]">Genesis Engine</div>
+            <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] mb-4 text-text-1">
+              Le créateur
+              <br />d&apos;experts IA
+            </h2>
+            <p className="mb-9 text-text-2 leading-[1.78]">
+              Quand une compétence manque, Genesis entre en action. Il conçoit, configure et intègre
+              automatiquement un nouvel agent spécialisé dans le réseau Angeleck.
+            </p>
+
+            <div className="flex flex-col gap-3.5">
+              {GEN_STEPS.map((s) => (
+                <div key={s.num} className="flex gap-3.5 items-start px-[18px] py-4 rounded-2xl glass-md transition-transform duration-200 hover:translate-x-1">
+                  <div className="w-[30px] h-[30px] rounded-lg flex-shrink-0 flex items-center justify-center text-white font-mono text-[0.78rem] font-medium" style={{ background: '#6B46C1' }}>
+                    {s.num}
+                  </div>
+                  <div className="text-[0.84rem] leading-[1.65] text-text-2">
+                    <strong className="text-text-1">{s.strong}</strong>{s.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          {/* Right — example */}
+          <Reveal x={44}>
+            <div className="font-mono text-[0.68rem] tracking-[0.18em] uppercase text-text-3 mb-4">
+              Exemple en temps réel
+            </div>
+            <div className="rounded-[20px] p-8 font-mono text-[0.78rem] leading-[1.9] text-text-2 bg-bg-4 border border-line/[0.07]">
+              <span className="text-text-3">{'// Demande utilisateur'}</span><br />
+              <span style={{ color: '#6B46C1', fontWeight: 500 }}>User:</span> &quot;Analyse mon portefeuille crypto avec gestion du risque DeFi&quot;<br /><br />
+              <span className="text-text-3">{'// Raphaël analyse'}</span><br />
+              <span style={{ color: '#6B46C1', fontWeight: 500 }}>Raphaël:</span> Agent Finance insuffisant.<br />
+              → Compétence absente: <strong className="text-text-1">DeFi + Risk</strong><br /><br />
+              <span className="text-text-3">{'// Genesis crée'}</span><br />
+              <span style={{ color: '#6B46C1', fontWeight: 500 }}>Genesis:</span> {'{'}<br />
+              &nbsp;&nbsp;&quot;name&quot;: &quot;<strong className="text-text-1">Victor</strong>&quot;,<br />
+              &nbsp;&nbsp;&quot;role&quot;: &quot;Expert Crypto &amp; DeFi&quot;,<br />
+              &nbsp;&nbsp;&quot;skills&quot;: [&quot;DeFi&quot;, &quot;Risk Mgmt&quot;, &quot;on-chain&quot;],<br />
+              &nbsp;&nbsp;&quot;tools&quot;: [&quot;Dune Analytics&quot;, &quot;DefiLlama&quot;],<br />
+              &nbsp;&nbsp;&quot;personality&quot;: &quot;analytique, prudent&quot;<br />
+              {'}'}<br /><br />
+              <span className="text-text-3">{'// Validation requise'}</span><br />
+              <span style={{ color: '#6B46C1', fontWeight: 500 }}>Raphaël →</span> &quot;Souhaitez-vous intégrer Victor ?&quot;<br />
+              <span style={{ color: '#6B46C1', fontWeight: 500 }}>User →</span> &quot;Oui&quot;<br />
+              <span style={{ color: '#6B46C1', fontWeight: 500 }}>✓</span> Victor rejoint Angeleck.
+            </div>
+
+            <div className="mt-6 px-6 py-5 rounded-2xl" style={{ background: 'rgba(107,70,193,.06)', border: '1px solid rgba(107,70,193,.15)' }}>
+              <div className="font-bold text-[0.9rem] mb-2" style={{ color: '#6B46C1' }}>Potentiel d&apos;évolution</div>
+              <div className="text-[0.83rem] leading-[1.7] text-text-2">
+                10 agents → 50 agents → 500 experts spécialisés.<br />
+                Chaque nouvel agent enrichit l&apos;intelligence collective d&apos;Angeleck.
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── Akasha Memory ─────────────────────────── */
+
+const MEMORIES = [
+  {
+    icon: '👤',
+    color: '#6B46C1',
+    title: 'Mémoire Utilisateur',
+    desc: 'Préférences, habitudes de travail et objectifs personnels mémorisés pour des réponses toujours plus adaptées.',
+    items: ['Préférences de style', 'Secteur d\'activité', 'Objectifs business'],
+  },
+  {
+    icon: '📁',
+    color: '#2563EB',
+    title: 'Mémoire Projet',
+    desc: 'Chaque projet est archivé avec ses objectifs, décisions, stratégies et résultats pour continuité parfaite.',
+    items: ['Décisions prises', 'Fichiers & livrables', 'Résultats mesurés'],
+  },
+  {
+    icon: '💡',
+    color: '#10B981',
+    title: 'Mémoire Métier',
+    desc: 'Méthodes qui fonctionnent, bonnes pratiques sectorielles et stratégies validées sur des centaines de missions.',
+    items: ['Méthodes efficaces', 'Bonnes pratiques', 'Stratégies prouvées'],
+  },
+  {
+    icon: '🧬',
+    color: '#C9A84C',
+    title: 'Mémoire Évolution',
+    desc: 'Nouveaux agents créés, améliorations appliquées et erreurs corrigées — l\'ADN évolutif d\'Angeleck.',
+    items: ['Agents créés', 'Améliorations', 'Erreurs corrigées'],
+  },
+];
+
+function Akasha() {
+  return (
+    <section id="akasha" className="py-20 md:py-[130px] bg-bg-1">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <Reveal className="max-w-[640px]">
+          <div className="eyebrow mb-[18px]">Akasha Memory System</div>
+          <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] text-text-1">
+            La mémoire
+            <br />vivante d&apos;Angeleck
+          </h2>
+          <p className="mt-4 text-text-2 leading-[1.78]">
+            Akasha n&apos;est pas un simple historique. C&apos;est la connaissance accumulée de
+            l&apos;organisation — Angeleck apprend de chaque interaction et devient plus efficace avec
+            l&apos;expérience.
+          </p>
+        </Reveal>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-[60px]">
+          {MEMORIES.map((mem, i) => (
+            <Reveal key={mem.title} delay={i * 0.1}>
+              <div
+                className="relative rounded-[22px] p-[30px] glass-md h-full overflow-hidden transition-transform duration-300 hover:-translate-y-1.5"
+                style={{ borderColor: `${mem.color}26`, color: mem.color }}
+              >
+                <span className="text-[2rem] mb-4 block">{mem.icon}</span>
+                <div className="font-bold text-base mb-2 text-text-1">{mem.title}</div>
+                <div className="text-[0.82rem] leading-[1.65] text-text-2 mb-3.5">{mem.desc}</div>
+                <div className="flex flex-col gap-[5px]">
+                  {mem.items.map((it) => (
+                    <div key={it} className="text-[0.75rem] text-text-3 flex items-center gap-1.5">
+                      <span className="opacity-50">→</span>
+                      {it}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── Pricing ─────────────────────────── */
+
+const TIERS = [
+  {
+    tier: 'Démarrage',
+    name: 'Explorer',
+    amount: '0',
+    sup: '€',
+    sub: '/mois',
+    period: 'Gratuit pour toujours',
+    cta: 'Commencer gratuitement',
+    featured: false,
+    feats: [
+      { label: 'Raphaël + 3 agents', on: true },
+      { label: '50 missions/mois', on: true },
+      { label: 'Mémoire basique', on: true },
+      { label: 'Interface chat', on: true },
+      { label: 'Agents avancés', on: false },
+      { label: 'Genesis Engine', on: false },
+    ],
+  },
+  {
+    tier: 'Croissance',
+    name: 'Pro',
+    amount: '79',
+    sup: '€',
+    sub: '/mois',
+    period: 'Facturation mensuelle',
+    cta: 'Démarrer Pro →',
+    featured: true,
+    badge: 'Le plus populaire',
+    feats: [
+      { label: 'Tous les 11 agents', on: true },
+      { label: 'Missions illimitées', on: true },
+      { label: 'Akasha Memory complète', on: true },
+      { label: 'Outils externes (Shopify, Meta)', on: true },
+      { label: 'Genesis (5 agents custom)', on: true },
+      { label: 'Tableau de bord avancé', on: true },
+    ],
+  },
+  {
+    tier: 'Organisation',
+    name: 'Enterprise',
+    amount: 'Sur mesure',
+    period: 'Tarif personnalisé',
+    cta: 'Contacter l\'équipe',
+    featured: false,
+    feats: [
+      { label: 'Agents illimités', on: true },
+      { label: 'Genesis sans limites', on: true },
+      { label: 'Intégrations API totales', on: true },
+      { label: 'Déploiement privé', on: true },
+      { label: 'Support dédié 24/7', on: true },
+      { label: 'SLA garanti', on: true },
+    ],
+  },
+];
+
+function Pricing() {
+  return (
+    <section id="pricing" className="py-20 md:py-[130px]">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <Reveal className="text-center">
+          <div className="eyebrow justify-center mb-[18px]" style={{ display: 'inline-flex' }}>Business Model</div>
+          <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] text-text-1">
+            Choisissez votre
+            <br />niveau d&apos;intelligence
+          </h2>
+          <p className="max-w-[520px] mx-auto mt-4 text-text-2 leading-[1.78]">
+            De l&apos;entrepreneur solo à l&apos;entreprise internationale, Angeleck s&apos;adapte à votre ambition.
+          </p>
+        </Reveal>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-[22px] mt-[70px]">
+          {TIERS.map((tier, i) => (
+            <Reveal key={tier.name} delay={i * 0.1}>
+              <div
+                className={`relative rounded-[26px] p-[38px] h-full transition-all duration-300 hover:-translate-y-2 hover:shadow-card-hover ${
+                  tier.featured ? '' : 'glass-md'
+                }`}
+                style={
+                  tier.featured
+                    ? {
+                        border: '1px solid #6B46C1',
+                        background: 'linear-gradient(160deg, rgba(107,70,193,.06), rgba(37,99,235,.04))',
+                      }
+                    : undefined
+                }
+              >
+                {tier.featured && tier.badge && (
+                  <div className="absolute -top-[13px] left-1/2 -translate-x-1/2 text-white font-mono text-[0.65rem] font-medium px-[18px] py-[5px] rounded-full tracking-[0.1em] uppercase whitespace-nowrap" style={{ background: '#6B46C1' }}>
+                    {tier.badge}
+                  </div>
+                )}
+
+                <div className="font-mono text-[0.65rem] tracking-[0.18em] uppercase text-text-3 mb-3">
+                  {tier.tier}
+                </div>
+                <div className="font-display text-[1.7rem] font-bold mb-5 text-text-1">{tier.name}</div>
+
+                <div className="text-[2.8rem] font-extrabold leading-none mb-1.5 text-text-1">
+                  {tier.sup && <sup className="text-[1.3rem] align-top mt-2 inline-block font-normal opacity-60">{tier.sup}</sup>}
+                  {tier.amount}
+                  {tier.sub && <sub className="text-[0.9rem] font-normal opacity-50">{tier.sub}</sub>}
+                </div>
+                <div className="text-[0.82rem] text-text-3 mb-7">{tier.period}</div>
+
+                <div className="flex flex-col gap-3 mb-8">
+                  {tier.feats.map((f) => (
+                    <div key={f.label} className={`flex items-center gap-2.5 text-[0.85rem] text-text-1 ${f.on ? '' : 'opacity-40'}`}>
+                      <span
+                        className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[0.65rem]"
+                        style={
+                          f.on
+                            ? { background: 'rgba(16,185,129,.1)', border: '1px solid rgba(16,185,129,.3)', color: '#10B981' }
+                            : { border: '1px solid rgba(127,127,127,.2)', color: 'rgb(var(--text-3))' }
+                        }
+                      >
+                        {f.on ? '✓' : '—'}
+                      </span>
+                      {f.label}
+                    </div>
+                  ))}
+                </div>
+
+                <Link
+                  href="/dashboard"
+                  className={`block w-full text-center py-3.5 rounded-full text-[0.88rem] font-semibold transition-all ${
+                    tier.featured
+                      ? 'text-white shadow-purple'
+                      : 'text-text-1 border-2 border-line/[0.12] hover:border-line/30'
+                  }`}
+                  style={tier.featured ? { background: '#6B46C1', border: '2px solid #6B46C1' } : undefined}
+                >
+                  {tier.cta}
+                </Link>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────── CTA ─────────────────────────── */
+
+function CtaSection() {
+  return (
+    <section id="cta" className="relative py-40 text-center overflow-hidden">
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at center, rgba(107,70,193,.08) 0%, transparent 70%)' }}
+      />
+      <div className="relative z-10 max-w-[1240px] mx-auto px-7">
+        <Reveal>
+          <div className="border-glow rounded-3xl inline-block w-full">
+            <div className="rounded-3xl bg-bg-2 px-7 py-16 md:px-16">
+              <div className="eyebrow justify-center mb-[18px]" style={{ display: 'inline-flex' }}>
+                Commencer maintenant
+              </div>
+              <h2 className="font-display font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(2.2rem,4vw,4.2rem)] mb-5 text-text-1">
+                Prêt à créer votre
+                <br />
+                <span className="text-gradient">organisation IA ?</span>
+              </h2>
+              <p className="text-[1.1rem] mb-12 max-w-[520px] mx-auto text-text-2 leading-[1.78]">
+                Rejoignez les entrepreneurs qui ont déjà confié leur business digital à Angeleck.
+                Votre équipe d&apos;experts IA vous attend.
+              </p>
+              <div className="flex flex-wrap gap-3.5 justify-center">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 px-10 py-[18px] rounded-full text-white font-semibold text-base shadow-purple-lg transition-all hover:-translate-y-0.5"
+                  style={{ background: '#6B46C1' }}
+                >
+                  Démarrer avec Raphaël →
+                </Link>
+                <a
+                  href="#architecture"
+                  className="inline-flex items-center gap-2 px-10 py-[18px] rounded-full font-semibold text-base text-text-1 border-2 border-line/[0.12] hover:border-line/30 transition-all hover:-translate-y-0.5"
+                >
+                  Voir l&apos;architecture
+                </a>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -666,76 +1000,77 @@ function CtaSection() {
 
 /* ─────────────────────────── Footer ─────────────────────────── */
 
+const FOOTER_COLS = [
+  {
+    title: 'Système',
+    links: [
+      { label: 'Raphaël', href: '#raphael' },
+      { label: 'Les Agents', href: '#agents' },
+      { label: 'Genesis Engine', href: '#genesis' },
+      { label: 'Akasha Memory', href: '#akasha' },
+    ],
+  },
+  {
+    title: 'Architecture',
+    links: [
+      { label: 'Stack technique', href: '#architecture' },
+      { label: 'Processus', href: '#how' },
+      { label: 'Tarifs', href: '#pricing' },
+      { label: 'Documentation', href: '#' },
+    ],
+  },
+  {
+    title: 'Contact',
+    links: [
+      { label: 'hello@angeleck.ai', href: '#' },
+      { label: 'Twitter / X', href: '#' },
+      { label: 'LinkedIn', href: '#' },
+      { label: 'GitHub', href: '#' },
+    ],
+  },
+];
+
 function Footer() {
   return (
-    <footer className="bg-bg-0 border-t border-white/5 py-14">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
-          {/* Brand */}
+    <footer className="bg-bg-1 border-t border-line/[0.07] pt-[70px] pb-9">
+      <div className="max-w-[1240px] mx-auto px-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-9 lg:gap-12 mb-[60px]">
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-purple to-accent-purple-dark flex items-center justify-center text-sm font-bold text-white">
+            <div className="flex items-center gap-2.5">
+              <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center font-display text-[17px] font-black text-white"
+                style={{ background: 'linear-gradient(135deg, #6B46C1, #2563EB)' }}>
                 A
               </div>
-              <span className="font-display font-bold text-text-1 text-lg">Angeleck</span>
+              <span className="font-display text-xl font-black text-text-1">Angeleck</span>
             </div>
-            <p className="text-text-3 text-sm leading-relaxed max-w-xs">
-              Votre organisation IA autonome. 11 agents experts, une mission : faire croître votre
-              business.
+            <p className="text-[0.85rem] text-text-3 leading-[1.7] max-w-[260px] mt-3.5">
+              Organisation IA autonome pour la création, la gestion et l&apos;automatisation de business
+              digitaux. Coordonnée par Raphaël.
             </p>
           </div>
 
-          {/* Links */}
-          <div>
-            <h4 className="text-text-2 font-semibold text-sm mb-4 uppercase tracking-wider">
-              Plateforme
-            </h4>
-            <ul className="flex flex-col gap-2.5">
-              {['Vision', 'Agents', 'Architecture', 'Mémoire'].map((l) => (
-                <li key={l}>
-                  <a
-                    href="#"
-                    className="text-text-3 text-sm hover:text-text-1 transition-colors"
-                  >
-                    {l}
+          {FOOTER_COLS.map((col) => (
+            <div key={col.title}>
+              <div className="text-[0.8rem] font-bold tracking-[0.1em] uppercase mb-[18px] text-text-1">
+                {col.title}
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {col.links.map((l) => (
+                  <a key={l.label} href={l.href} className="text-[0.84rem] text-text-3 hover:text-text-1 transition-colors">
+                    {l.label}
                   </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Social */}
-          <div>
-            <h4 className="text-text-2 font-semibold text-sm mb-4 uppercase tracking-wider">
-              Communauté
-            </h4>
-            <div className="flex gap-3">
-              {[
-                { icon: Twitter, label: 'Twitter' },
-                { icon: Github, label: 'Github' },
-                { icon: Linkedin, label: 'LinkedIn' },
-              ].map(({ icon: Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="w-9 h-9 rounded-xl glass border border-white/6 flex items-center justify-center text-text-3 hover:text-text-1 hover:border-accent-purple/30 transition-all"
-                >
-                  <Icon size={15} />
-                </a>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
 
-        <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-text-3 font-mono">
-            © 2026 Angeleck. Tous droits réservés.
-          </p>
-          <p className="text-xs text-text-3">
-            Propulsé par{' '}
-            <span className="text-accent-purple-light">Claude · Anthropic</span>
-          </p>
+        <div className="border-t border-line/[0.07] pt-6 flex justify-between items-center flex-wrap gap-3">
+          <p className="text-[0.78rem] text-text-3">© 2026 Angeleck. Tous droits réservés.</p>
+          <div className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] tracking-[0.1em] text-text-3 px-3 py-[5px] rounded-full border border-line/[0.07]">
+            <span>⚡</span>
+            <span>Propulsé par Genesis Engine v1.0</span>
+          </div>
         </div>
       </div>
     </footer>
@@ -746,11 +1081,17 @@ function Footer() {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-bg-1 overflow-x-hidden">
+    <div className="min-h-screen bg-bg-0 overflow-x-hidden">
       <Nav />
       <Hero />
+      <Manifeste />
+      <RaphaelSection />
+      <AgentsSection />
       <HowItWorks />
-      <AgentsPreview />
+      <Architecture />
+      <Genesis />
+      <Akasha />
+      <Pricing />
       <CtaSection />
       <Footer />
     </div>
