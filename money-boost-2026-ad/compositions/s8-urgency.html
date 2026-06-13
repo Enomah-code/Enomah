@@ -131,7 +131,7 @@
         const tl = gsap.timeline({ paused: true });
 
         /* Background pulsing for urgency */
-        tl.fromTo('#bg-pulse', { opacity: 0.5 }, { opacity: 1, duration: 0.5, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 0);
+        tl.fromTo('#bg-pulse', { opacity: 0.5 }, { opacity: 1, duration: 0.5, yoyo: true, repeat: 13, ease: 'sine.inOut' }, 0);
 
         /* Banner slams in */
         tl.fromTo('#banner', { opacity: 0, scale: 0.6, y: -30 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: 'back.out(1.8)' }, 0.1);
@@ -142,7 +142,7 @@
 
         /* New price punch */
         tl.fromTo('#price-new', { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.6)' }, 0.8);
-        tl.to('#price-new', { scale: 1.03, yoyo: true, repeat: 5, duration: 0.5, ease: 'sine.inOut' }, 1.4);
+        tl.to('#price-new', { scale: 1.03, yoyo: true, repeat: 11, duration: 0.5, ease: 'sine.inOut' }, 1.4);
 
         /* Discount badge spins in */
         tl.fromTo('#disc-badge', { opacity: 0, scale: 0, rotation: -90 }, { opacity: 1, scale: 1, rotation: -12, duration: 0.55, ease: 'back.out(2)' }, 1.0);

@@ -122,6 +122,12 @@
         opacity: 0;
       }
       [data-composition-id="s9-cta"] .features-mini .ok { color: #00D97E; font-weight: 800; }
+      [data-composition-id="s9-cta"] .logo {
+        width: 200px; height: auto;
+        margin-bottom: 26px;
+        opacity: 0;
+        filter: drop-shadow(0 6px 22px rgba(0,0,0,0.6));
+      }
       [data-composition-id="s9-cta"] .brand {
         position: absolute;
         bottom: 90px;
@@ -147,6 +153,7 @@
     <div class="coin" id="c5" style="top:8%;left:52%;"></div>
 
     <div class="content">
+      <img class="logo" id="logo" src="assets/img/emk-logo.png" alt="EMK Blue Diamond" />
       <div class="gift-label">🎁 Disponible maintenant</div>
       <div class="headline" id="headline">Télécharge le<br>livre <span>aujourd'hui</span></div>
       <div class="subline" id="subline">Money Boost 2026 — accès<br>immédiat après paiement</div>
@@ -192,7 +199,8 @@
         });
 
         /* Content */
-        tl.fromTo('.gift-label', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.3);
+        tl.fromTo('#logo', { opacity: 0, y: -30, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(1.6)' }, 0.25);
+        tl.fromTo('.gift-label', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.45);
         tl.fromTo('#headline', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, ease: 'expo.out' }, 0.45);
         tl.fromTo('#subline', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }, 0.8);
 
