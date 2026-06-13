@@ -63,6 +63,28 @@ bash build.sh
 
 Dépendances : Node + Playwright (Chromium), Python (`pymupdf`, `numpy`, `scipy`, `piper-tts`, `imageio-ffmpeg`), accès réseau aux Google Fonts.
 
+### Clonage *exact* du timbre de la vidéo de référence (XTTS-v2)
+
+La voix par défaut (Piper « pierre ») reproduit le **registre** de la référence
+(~130 Hz vs ~129 Hz) mais pas l'identité vocale exacte. Pour cloner le **timbre
+précis** du speaker de la vidéo de référence, on utilise XTTS-v2 (zéro-shot).
+
+> ⚠️ Les poids XTTS-v2 sont hébergés sur **HuggingFace**, bloqué par la politique
+> réseau par défaut de cet environnement. Lancer ces commandes depuis une session
+> dont l'environnement **autorise `huggingface.co`**.
+
+```bash
+pip install coqui-tts                      # moteur XTTS (PyPI, OK partout)
+# `--ref` = la vidéo (ou l'audio) de référence ; l'audio est extrait/nettoyé auto.
+COQUI_TOS_AGREED=1 python3 voice_clone.py --ref /chemin/vers/reference.mov
+VO_USE_EXISTING=1  python3 soundtrack.py   # même script/cadence, voix clonée
+for s in 0 1 2 3; do node render.js 30 0 build/frames $s 4 & done; wait
+bash build.sh
+```
+
+`script_vo.py` contient le script et la cadence partagés par les deux backends
+(Piper et XTTS), pour que seul le timbre change.
+
 ### Variante format paysage 16:9 / carré 1:1
 
 Le moteur est paramétré en 1080×1920. Adapter `html,body,#stage` dans `promo.html` et le `viewport` de `render.js`, puis repositionner les scènes.
