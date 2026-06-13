@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --gold:#F3C969; --gold2:#E0A93B; --gold-soft:#F7D897;
+    --blue:#3F7DFB; --cyan:#6FB4FF; --ink:#04060d; --white:#F4F7FF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:#000;}
+  #stage{
+    position:relative;width:1080px;height:1920px;overflow:hidden;
+    font-family:'Montserrat',sans-serif;color:var(--white);
+    background:
+      radial-gradient(120% 80% at 50% 18%, #0d1830 0%, #070b16 42%, #04060d 78%, #02040a 100%);
+  }
+  /* ===== ambient background ===== */
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;mix-blend-mode:screen;will-change:transform;}
+  #orbBlue{width:760px;height:760px;background:radial-gradient(circle,#1f4fd1 0%,rgba(20,50,140,0) 70%);left:-180px;top:120px;}
+  #orbGold{width:680px;height:680px;background:radial-gradient(circle,#ca992f 0%,rgba(180,140,40,0) 70%);right:-200px;bottom:120px;opacity:.4;}
+  #orbCyan{width:520px;height:520px;background:radial-gradient(circle,#2e8efc 0%,rgba(30,120,220,0) 70%);left:560px;top:760px;opacity:.32;}
+  .streak{position:absolute;top:-40%;left:-30%;width:60%;height:200%;
+    background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(150,190,255,.10) 50%,rgba(255,255,255,0) 100%);
+    transform:rotate(18deg);filter:blur(8px);will-change:transform;}
+  .grid{position:absolute;inset:0;opacity:.10;mix-blend-mode:screen;
+    background-image:linear-gradient(rgba(120,160,255,.25) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,255,.25) 1px,transparent 1px);
+    background-size:90px 90px;mask-image:radial-gradient(80% 60% at 50% 40%,#000 0%,transparent 75%);
+    -webkit-mask-image:radial-gradient(80% 60% at 50% 40%,#000 0%,transparent 75%);}
+  #dust{position:absolute;inset:0;pointer-events:none;}
+  .dot{position:absolute;border-radius:50%;background:var(--gold-soft);will-change:transform,opacity;}
+  .vignette{position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(75% 65% at 50% 45%,transparent 55%,rgba(0,0,0,.55) 100%);}
+  .grain{position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  /* ===== scenes ===== */
+  .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0 90px;text-align:center;opacity:0;will-change:opacity,transform;}
+  .word{display:inline-block;will-change:transform,opacity,filter;}
+  .line{display:block;line-height:1.04;}
+
+  .kicker{font-weight:800;letter-spacing:.42em;font-size:30px;color:var(--cyan);text-transform:uppercase;}
+  h1,.huge{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.01em;text-transform:uppercase;}
+  .gold{background:linear-gradient(180deg,#FBE6A6 0%,#F3C969 45%,#D89A2B 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 6px 30px rgba(225,170,60,.35));}
+  .glowwhite{text-shadow:0 0 38px rgba(120,170,255,.45);}
+
+  /* S1/S2 hook */
+  .hook .line{font-family:'Anton',sans-serif;font-size:118px;line-height:1.0;text-transform:uppercase;}
+  .phoneGlow{position:absolute;width:520px;height:520px;border-radius:50%;
+    background:radial-gradient(circle,rgba(90,140,255,.30) 0%,rgba(60,100,220,0) 68%);filter:blur(10px);}
+
+  /* counter */
+  .counter{font-family:'Anton',sans-serif;font-size:248px;line-height:.9;}
+  .cstart{font-size:50px;font-weight:800;letter-spacing:.2em;color:#9fb4dd;text-transform:uppercase;}
+  .cunit{font-size:64px;font-weight:900;letter-spacing:.16em;color:var(--gold-soft);text-transform:uppercase;margin-top:6px;}
+  .csub{margin-top:34px;font-size:34px;font-weight:600;color:#b9c7e6;}
+
+  /* objections */
+  .obj{font-family:'Anton',sans-serif;font-size:100px;line-height:1.18;position:relative;display:inline-block;color:#aeb9d4;}
+  .obj .strike{position:absolute;left:-4%;top:52%;height:9px;width:108%;background:linear-gradient(90deg,#ff5b6e,#ff8a3d);border-radius:6px;transform-origin:left center;box-shadow:0 0 22px rgba(255,90,110,.7);}
+  .punch{font-family:'Anton',sans-serif;font-size:120px;line-height:1.02;}
+
+  /* product reveal */
+  .badge{display:inline-block;border:2px solid rgba(243,201,105,.55);border-radius:999px;padding:14px 34px;
+    font-weight:800;letter-spacing:.30em;font-size:26px;color:var(--gold-soft);text-transform:uppercase;
+    background:rgba(243,201,105,.06);box-shadow:0 0 34px rgba(243,201,105,.18) inset;}
+  .title-main{font-family:'Anton',sans-serif;font-size:140px;line-height:.92;text-transform:uppercase;margin-top:26px;}
+  .title-sub{font-weight:800;letter-spacing:.16em;font-size:42px;color:#cdd9f5;text-transform:uppercase;margin-top:18px;}
+  #bookHero{position:absolute;width:660px;left:50%;bottom:-40px;transform:translateX(-50%);
+    filter:drop-shadow(0 40px 80px rgba(0,0,0,.7));will-change:transform,opacity;}
+
+  /* list */
+  .lhead{font-family:'Anton',sans-serif;font-size:62px;text-transform:uppercase;margin-bottom:54px;}
+  .item{display:flex;align-items:center;gap:30px;width:880px;margin:0 auto 30px;
+    background:linear-gradient(100deg,rgba(30,52,104,.55),rgba(16,26,56,.35));
+    border:1px solid rgba(120,160,255,.18);border-radius:26px;padding:30px 36px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);will-change:transform,opacity;text-align:left;}
+  .inum{flex:0 0 auto;width:84px;height:84px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+    font-family:'Anton',sans-serif;font-size:40px;color:#1a1206;
+    background:linear-gradient(160deg,#FBE6A6,#E0A93B);box-shadow:0 8px 24px rgba(224,169,59,.4);}
+  .itxt b{display:block;font-weight:800;font-size:40px;letter-spacing:.01em;color:#fff;}
+  .itxt span{display:block;font-weight:500;font-size:27px;color:#a9b8da;margin-top:4px;}
+
+  /* tools / proof */
+  .tools{font-family:'Anton',sans-serif;font-size:96px;text-transform:uppercase;}
+  .toolnote{font-weight:600;font-size:40px;color:#bcccec;margin-top:30px;}
+  .stars{font-size:64px;letter-spacing:.12em;color:#FFC83D;margin-top:60px;text-shadow:0 0 28px rgba(255,190,60,.5);}
+  .quote{font-style:italic;font-weight:600;font-size:38px;color:#dde6fb;margin-top:26px;max-width:840px;line-height:1.4;}
+  .qauth{font-weight:800;font-size:30px;color:var(--gold-soft);margin-top:18px;letter-spacing:.04em;}
+
+  /* CTA */
+  #bookCta{position:absolute;width:330px;top:150px;left:50%;transform:translateX(-50%);
+    filter:drop-shadow(0 30px 60px rgba(0,0,0,.7));will-change:transform,opacity;}
+  .priceRow{display:flex;align-items:flex-end;justify-content:center;gap:34px;}
+  .old{font-family:'Anton',sans-serif;font-size:92px;color:#7c89a8;position:relative;}
+  .old .strike{position:absolute;left:-6%;top:50%;height:8px;width:112%;background:#ff5b6e;border-radius:5px;box-shadow:0 0 18px rgba(255,90,110,.7);}
+  .new{font-family:'Anton',sans-serif;font-size:170px;line-height:.9;}
+  .offChip{display:inline-block;margin-top:22px;font-weight:900;letter-spacing:.2em;font-size:32px;color:#1a1206;text-transform:uppercase;
+    background:linear-gradient(160deg,#FBE6A6,#E0A93B);border-radius:999px;padding:14px 36px;box-shadow:0 0 36px rgba(243,201,105,.4);}
+  .cta-main{font-family:'Anton',sans-serif;font-size:96px;line-height:.98;text-transform:uppercase;}
+  .urlpill{display:inline-flex;align-items:center;gap:18px;margin-top:30px;font-weight:800;font-size:40px;color:#eaf1ff;
+    border:2px solid rgba(120,160,255,.35);border-radius:999px;padding:20px 44px;background:rgba(20,34,72,.5);
+    box-shadow:0 0 40px rgba(60,120,255,.18) inset;}
+  .urlpill .dl{font-size:34px;}
+  .chips{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:34px;}
+  .chip{font-weight:700;font-size:26px;color:#c6d3f0;border:1px solid rgba(120,160,255,.22);border-radius:999px;padding:12px 26px;background:rgba(16,26,56,.5);}
+  .brand{display:flex;align-items:center;gap:22px;justify-content:center;margin-top:54px;}
+  .diamond{width:64px;height:64px;transform:rotate(45deg);border-radius:14px;
+    background:linear-gradient(150deg,#9ad0ff,#2f6cf0 55%,#16357f);box-shadow:0 0 36px rgba(70,140,255,.6),inset 0 0 22px rgba(255,255,255,.35);}
+  .bname{font-family:'Anton',sans-serif;font-size:54px;letter-spacing:.04em;text-transform:uppercase;}
+  .bname small{display:block;font-family:'Montserrat';font-weight:700;font-size:22px;letter-spacing:.34em;color:#8fa6cf;}
+
+  /* progress bar */
+  #pbar{position:absolute;left:0;bottom:0;height:7px;background:linear-gradient(90deg,#F3C969,#6FB4FF);box-shadow:0 0 18px rgba(243,201,105,.6);width:0;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="orb" id="orbBlue"></div>
+  <div class="orb" id="orbGold"></div>
+  <div class="orb" id="orbCyan"></div>
+  <div class="grid"></div>
+  <div class="streak" id="streak"></div>
+  <div id="dust"></div>
+
+  <!-- S1 -->
+  <div class="scene hook" data-in="0" data-out="3.6">
+    <div class="phoneGlow" id="pg1"></div>
+    <div class="words" style="position:relative">
+      <span class="line">Et si ton</span>
+      <span class="line gold">téléphone</span>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="scene hook" data-in="3.6" data-out="7.2">
+    <div class="words">
+      <span class="line">valait plus</span>
+      <span class="line">que ton</span>
+      <span class="line gold">salaire&nbsp;?</span>
+    </div>
+  </div>
+
+  <!-- S3 counter -->
+  <div class="scene" data-in="7.2" data-out="11.8">
+    <div class="cstart words"><span class="word">jusqu'à</span></div>
+    <div class="counter gold" id="counter">50&nbsp;000</div>
+    <div class="cunit words"><span class="word">FCFA / mois</span></div>
+    <div class="csub words"><span class="word">avec un simple téléphone.</span></div>
+  </div>
+
+  <!-- S4 objections -->
+  <div class="scene" data-in="11.8" data-out="16.2">
+    <div style="display:flex;flex-direction:column;gap:24px;align-items:center">
+      <div class="obj" id="o1">Pas de capital<span class="strike" id="s1"></span></div>
+      <div class="obj" id="o2">Pas de diplôme<span class="strike" id="s2"></span></div>
+      <div class="obj" id="o3">Pas d'expérience<span class="strike" id="s3"></span></div>
+    </div>
+    <div class="punch words" id="punch" style="margin-top:60px"><span class="line gold">Juste la</span><span class="line gold">bonne méthode.</span></div>
+  </div>
+
+  <!-- S5 product reveal -->
+  <div class="scene" data-in="16.2" data-out="21.6" style="justify-content:flex-start;padding-top:300px">
+    <div class="badge words" id="badge"><span class="word">Édition Bestseller 2026</span></div>
+    <div class="title-main glowwhite words" id="ptitle"><span class="line">Pack Money</span><span class="line gold">Boost 2026</span></div>
+    <div class="title-sub words" id="psub"><span class="word">L'accélérateur de revenus</span></div>
+    <img id="bookHero" src="assets/book_hero.png" alt="" />
+  </div>
+
+  <!-- S6 list -->
+  <div class="scene" data-in="21.6" data-out="29.4" style="justify-content:flex-start;padding-top:200px">
+    <div class="lhead gold words" id="lhead"><span class="word">Ce que tu reçois</span></div>
+    <div id="list">
+      <div class="item"><div class="inum">15</div><div class="itxt"><b>Services digitaux</b><span>prêts à vendre — tuto, clients, prix</span></div></div>
+      <div class="item"><div class="inum">50</div><div class="itxt"><b>Scripts WhatsApp</b><span>à copier-coller pour vendre</span></div></div>
+      <div class="item"><div class="inum">100</div><div class="itxt"><b>Idées de produits</b><span>pour ne jamais manquer d'inspiration</span></div></div>
+      <div class="item"><div class="inum">∞</div><div class="itxt"><b>Plan 0 → 1 Million FCFA</b><span>la feuille de route en 4 phases</span></div></div>
+      <div class="item"><div class="inum">★</div><div class="itxt"><b>Bonus : communauté privée</b><span>accompagnement WhatsApp inclus</span></div></div>
+    </div>
+  </div>
+
+  <!-- S7 tools + proof -->
+  <div class="scene" data-in="29.4" data-out="33.6">
+    <div class="tools words" id="tools"><span class="line gold">WhatsApp · Canva</span><span class="line gold">· ChatGPT</span></div>
+    <div class="toolnote words" id="tnote"><span class="word">100% gratuits. Déjà dans ton téléphone.</span></div>
+    <div class="stars" id="stars">★★★★★</div>
+    <div class="quote words" id="quote"><span class="word">« J'ai décroché mon premier client en 2 jours grâce aux scripts. »</span></div>
+    <div class="qauth words" id="qauth"><span class="word">— Fatou, 28 ans</span></div>
+  </div>
+
+  <!-- S8 CTA -->
+  <div class="scene" data-in="33.6" data-out="43" style="justify-content:flex-start;padding-top:540px">
+    <img id="bookCta" src="assets/book_hero.png" alt="" />
+    <div class="priceRow words" id="prow">
+      <div class="word old">9&nbsp;500<span class="strike"></span></div>
+      <div class="word new gold">4&nbsp;450</div>
+    </div>
+    <div class="cunit" style="margin-top:6px">FCFA</div>
+    <div class="offChip words" id="offchip"><span class="word">-53% · Offre limitée</span></div>
+    <div class="cta-main glowwhite words" id="ctamain" style="margin-top:40px"><span class="line">Télécharge ton</span><span class="line gold">pack maintenant</span></div>
+    <div class="urlpill words" id="urlpill"><span class="word"><span class="dl">⬇</span>&nbsp; yevmtzhs.mychariow.shop</span></div>
+    <div class="chips words" id="chips">
+      <span class="word chip">Accès immédiat</span>
+      <span class="word chip">Format PDF</span>
+      <span class="word chip">Orange Money · Wave · MoMo</span>
+    </div>
+    <div class="brand words" id="brand">
+      <span class="word diamond"></span>
+      <span class="word bname">Emk Blue Diamond<small>Boutique digitale</small></span>
+    </div>
+  </div>
+
+  <div class="grain"></div>
+  <div class="vignette"></div>
+  <div id="pbar"></div>
+</div>
+
+<script>
+/* ============ deterministic animation engine ============ */
+const STAGE = document.getElementById('stage');
+const DURATION = 43; // seconds
+
+const clamp01 = x => x < 0 ? 0 : x > 1 ? 1 : x;
+const lerp = (a,b,t) => a + (b-a)*t;
+const easeOutExpo = x => x>=1?1:1-Math.pow(2,-10*x);
+const easeOutCubic = x => 1-Math.pow(1-x,3);
+const easeInOutCubic = x => x<0.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const easeOutBack = x => {const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
+
+/* build dust particles */
+const dust = document.getElementById('dust');
+const PARTS = [];
+(function(){
+  let seed = 12345;
+  const rnd = () => { seed = (seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+  for(let i=0;i<46;i++){
+    const d = document.createElement('div');
+    d.className='dot';
+    const sz = 2+rnd()*5;
+    d.style.width=sz+'px'; d.style.height=sz+'px';
+    const x=rnd()*1080, y=rnd()*1920;
+    d.style.left=x+'px'; d.style.top=y+'px';
+    d.style.opacity=(0.15+rnd()*0.5).toFixed(2);
+    if(rnd()>0.6){d.style.background='#9fc2ff';}
+    dust.appendChild(d);
+    PARTS.push({el:d,x,y,sp:8+rnd()*22,amp:14+rnd()*40,ph:rnd()*6.28,fl:0.4+rnd()*1.6});
+  }
+})();
+
+/* split .words children that are plain lines into stagger units already (line/word spans) */
+const scenes = [...document.querySelectorAll('.scene')].map(el=>({
+  el, in:parseFloat(el.dataset.in), out:parseFloat(el.dataset.out),
+  units:[...el.querySelectorAll('.words')].map(w=>[...w.children])
+}));
+
+/* per-scene custom animators keyed by index */
+function reveal(units, lt, start, stagger, dur, dist=46, blur=10){
+  let i=0;
+  units.forEach(group=>group.forEach(node=>{
+    const p = easeOutExpo(clamp01((lt-start-i*stagger)/dur));
+    node.style.opacity = p;
+    node.style.transform = `translateY(${(1-p)*dist}px)`;
+    node.style.filter = `blur(${(1-p)*blur}px)`;
+    i++;
+  }));
+}
+
+function sceneEnvelope(s, t){
+  const introD=0.62, outroD=0.55;
+  const visible = t >= s.in-0.05 && t <= s.out+outroD;
+  if(!visible){ s.el.style.opacity=0; s.el.style.visibility='hidden'; return null; }
+  s.el.style.visibility='visible';
+  const lt = t - s.in;
+  const dur = s.out - s.in;
+  let op=1, ty=0, sc=1;
+  if(lt < introD){ const p=easeOutCubic(clamp01(lt/introD)); op=p; ty=(1-p)*60; sc=lerp(0.96,1,p); }
+  const outT = t-(s.out);
+  if(outT>0){ const p=easeInOutCubic(clamp01(outT/outroD)); op=1-p; ty=-p*50; sc=lerp(1,1.04,p); }
+  s.el.style.opacity=op;
+  s.el.style.transform=`translateY(${ty}px) scale(${sc})`;
+  return {lt,dur};
+}
+
+const $ = id => document.getElementById(id);
+
+function animateScene(idx, s, lt){
+  switch(idx){
+    case 0: // hook 1
+      reveal(s.units, lt, 0.15, 0.18, 0.7, 54, 12);
+      $('pg1').style.opacity = lerp(0.2,0.9,easeOutCubic(clamp01(lt/1.2)));
+      break;
+    case 1: // hook 2
+      reveal(s.units, lt, 0.1, 0.16, 0.7, 54, 12);
+      break;
+    case 2: { // counter
+      reveal(s.units, lt, 0.1, 0.0, 0.6, 30, 8);
+      const p = easeOutExpo(clamp01((lt-0.45)/2.6));
+      const val = Math.round(lerp(50000,500000,p)/1000)*1000;
+      $('counter').textContent = val.toLocaleString('fr-FR').replace(/ /g,' ').replace(/ /g,' ');
+      const pop = 1 + Math.sin(clamp01((lt-0.4)/0.5)*Math.PI)*0.06;
+      $('counter').style.transform = `scale(${lt<3?pop:1})`;
+      $('counter').style.opacity = easeOutCubic(clamp01(lt/0.5));
+      break; }
+    case 3: { // objections
+      const objs=['o1','o2','o3'], strk=['s1','s2','s3'];
+      objs.forEach((id,i)=>{
+        const st=0.2+i*0.55;
+        const p=easeOutExpo(clamp01((lt-st)/0.5));
+        const e=$(id); e.style.opacity=p; e.style.transform=`translateX(${(1-p)*-40}px)`;
+        const sp=easeOutCubic(clamp01((lt-st-0.25)/0.4));
+        $(strk[i]).style.transform=`scaleX(${sp})`;
+        e.style.color = sp>0.4 ? '#6b7796' : '#aeb9d4';
+      });
+      reveal([s.units[0]], lt, 2.15, 0.14, 0.7, 50, 12);
+      break; }
+    case 4: { // product reveal
+      reveal(s.units, lt, 0.2, 0.22, 0.7, 50, 12);
+      const bp = clamp01((lt-0.35)/1.5);
+      const e = easeOutBack(bp);
+      const bh=$('bookHero');
+      bh.style.opacity = easeOutCubic(clamp01((lt-0.35)/0.8));
+      bh.style.transform = `translateX(-50%) translateY(${lerp(120,0,easeOutExpo(bp))}px) scale(${lerp(0.82,1,e)})`;
+      break; }
+    case 5: { // list
+      reveal([s.units[0]], lt, 0.15, 0, 0.6, 30, 8);
+      const items=[...$('list').children];
+      items.forEach((it,i)=>{
+        const st=0.55+i*0.45;
+        const p=easeOutExpo(clamp01((lt-st)/0.6));
+        it.style.opacity=p;
+        it.style.transform=`translateX(${(1-p)*70}px) scale(${lerp(0.96,1,p)})`;
+      });
+      break; }
+    case 6: { // tools + proof
+      reveal([s.units[0]], lt, 0.15, 0.16, 0.7, 46, 10);
+      reveal([s.units[1]], lt, 0.7, 0, 0.6, 30, 8);
+      const st=$('stars'); const sp=clamp01((lt-1.2)/0.6);
+      st.style.opacity=easeOutCubic(sp);
+      st.style.transform=`scale(${lerp(0.6,1,easeOutBack(sp))})`;
+      reveal([s.units[2]], lt, 1.7, 0, 0.7, 30, 8);
+      reveal([s.units[3]], lt, 2.1, 0, 0.6, 24, 6);
+      break; }
+    case 7: { // CTA
+      const bc=$('bookCta');
+      const bp=clamp01((lt-0.1)/1.0);
+      bc.style.opacity=easeOutCubic(bp);
+      bc.style.transform=`translateX(-50%) translateY(${lerp(-40,0,easeOutExpo(bp))}px) scale(${lerp(0.9,1,easeOutBack(clamp01((lt-0.1)/1.2)))})`;
+      reveal([s.units[0]], lt, 0.7, 0.18, 0.6, 40, 8);   // price row
+      reveal([s.units[1]], lt, 1.4, 0, 0.5, 24, 6);      // offchip
+      const oc=$('offchip'); const ocp=clamp01((lt-1.4)/0.5);
+      oc.firstElementChild.style.transform=`scale(${lerp(0.7,1,easeOutBack(ocp))})`;
+      reveal([s.units[2]], lt, 1.9, 0.16, 0.7, 46, 10);  // cta main
+      reveal([s.units[3]], lt, 2.7, 0, 0.6, 30, 8);      // urlpill
+      // pulse url
+      const up=$('urlpill'); const pulse=1+Math.sin(Math.max(0,lt-3)*3.2)*0.025;
+      up.style.boxShadow=`0 0 ${40+Math.sin(Math.max(0,lt-3)*3.2)*24}px rgba(60,120,255,.35) inset`;
+      if(lt>3) up.firstElementChild.style.transform=`scale(${pulse})`;
+      reveal([s.units[4]], lt, 3.1, 0.12, 0.6, 26, 6);   // chips
+      reveal([s.units[5]], lt, 3.6, 0.14, 0.6, 30, 8);   // brand
+      break; }
+  }
+}
+
+window.seek = function(t){
+  // ambient
+  STAGE.style.setProperty('--t', t);
+  $('orbBlue').style.transform = `translate(${Math.sin(t*0.18)*60}px,${Math.cos(t*0.15)*50}px)`;
+  $('orbGold').style.transform = `translate(${Math.cos(t*0.13)*70}px,${Math.sin(t*0.16)*60}px)`;
+  $('orbCyan').style.transform = `translate(${Math.sin(t*0.2+1)*50}px,${Math.cos(t*0.12+2)*70}px)`;
+  const streakT = (t % 9)/9;
+  $('streak').style.transform = `rotate(18deg) translateX(${lerp(-200,2000,streakT)}px)`;
+  $('streak').style.opacity = Math.sin(streakT*Math.PI);
+  PARTS.forEach(p=>{
+    let y = (p.y - t*p.sp) % 1980; if(y<-40) y+=1980;
+    const x = p.x + Math.sin(t*p.fl + p.ph)*p.amp;
+    p.el.style.transform = `translate(${x-p.x}px,${y-p.y}px)`;
+  });
+  // progress bar
+  $('pbar').style.width = clamp01(t/DURATION)*1080 + 'px';
+  // scenes
+  scenes.forEach((s,idx)=>{
+    const env = sceneEnvelope(s,t);
+    if(env){ animateScene(idx,s,env.lt); }
+  });
+};
+
+window.__ready = false;
+document.fonts.ready.then(()=>{
+  // ensure book image decoded
+  const imgs=[...document.images];
+  Promise.all(imgs.map(im=>im.decode().catch(()=>{}))).then(()=>{
+    window.seek(0);
+    window.__ready = true;
+  });
+});
+</script>
+</body>
+</html>
