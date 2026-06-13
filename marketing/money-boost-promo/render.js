@@ -19,7 +19,8 @@ const W = 1080, H = 1920;
   await page.goto(HTML, { waitUntil: 'networkidle' });
   await page.waitForFunction('window.__ready === true', { timeout: 30000 });
 
-  const total = Math.round(FPS * DURATION);
+  const dur = await page.evaluate(() => window.DURATION || null) || DURATION;
+  const total = Math.round(FPS * dur);
   const t0 = Date.now();
   let done = 0;
   for (let i = SHARD; i < total; i += SHARDS) {

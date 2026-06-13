@@ -18,7 +18,7 @@ echo "Encoding $OUT ..."
   "$OUT"
 
 # poster frame (product reveal moment)
-"$FF" -y -i "$OUT" -ss 00:00:19.5 -frames:v 1 -q:v 2 money-boost-2026-poster.jpg
+"$FF" -y -i "$OUT" -ss 00:00:22.8 -frames:v 1 -q:v 2 money-boost-2026-poster.jpg
 
 echo "Done:"
 ls -lh "$OUT" money-boost-2026-poster.jpg
