@@ -14,33 +14,74 @@ from scipy.io import wavfile
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SR = 44100
-MODEL = os.path.join(ROOT, 'build', 'tts', 'fr_FR-siwis-medium.onnx')
+# Male, grave & posed French voice (Piper "upmc" — speaker "pierre").
+# Chosen to match the reference video voice-over: median pitch ~130 Hz vs the
+# reference's ~129 Hz, i.e. the same low/posed register and timbre.
+MODEL = os.path.join(ROOT, 'build', 'tts', 'fr_FR-upmc-medium.onnx')
+PIERRE = 1    # speaker_id for "pierre" (the male voice) in the upmc model
 VO_DIR = os.path.join(ROOT, 'build', 'vo')
 os.makedirs(VO_DIR, exist_ok=True)
 rng = np.random.default_rng(7)
 
-# ---------------- scenes : (min_dur, vo_text) ----------------
+# ---------------- scenes : (min_dur, [phrases]) ----------------
+# Diction copied from the reference promo: short, punchy, declarative lines
+# delivered slowly with a dramatic pause between each (the reference sits at
+# ~54% speech with ~0.8s pauses). Each phrase below is synthesised separately
+# and re-assembled with a real silence gap, reproducing that posed cadence.
 SCENES = [
-    (3.2, "Et si ton téléphone…"),
-    (3.6, "pouvait te rapporter bien plus que ton salaire ?"),
-    (5.4, "En Afrique, des milliers de personnes gagnent de cinquante mille à cinq cent mille francs par mois, avec un simple téléphone."),
-    (5.2, "Sans capital. Sans diplôme. Sans expérience. Juste la bonne méthode."),
-    (5.2, "Voici le Pack Money Boost, l'accélérateur de revenus."),
-    (8.8, "Quinze services digitaux prêts à vendre. Cinquante scripts WhatsApp. Cent idées de produits. Et le plan complet, de zéro à un million de francs."),
-    (6.6, "Et ça marche déjà. Voici les premiers revenus de ceux qui sont passés à l'action."),
-    (10.5, "Aujourd'hui, c'est moins cinquante pour cent. Quatre mille quatre cent cinquante francs au lieu de neuf mille cinq cents. Offre limitée. Télécharge ton pack maintenant, le lien est juste en dessous."),
+    (3.2, ["Ton téléphone.", "Tu l'as en main toute la journée."]),
+    (3.6, ["Et s'il pouvait te rapporter…", "bien plus que ton salaire ?"]),
+    (5.4, ["En Afrique, des milliers l'ont déjà compris.",
+           "Cinquante mille. Cent mille. Cinq cent mille francs par mois.",
+           "Avec un simple téléphone."]),
+    (5.2, ["Sans capital.", "Sans diplôme.", "Sans expérience.", "Juste la bonne méthode."]),
+    (5.2, ["Voici le Pack Money Boost.", "Ton accélérateur de revenus."]),
+    (8.8, ["Quinze services digitaux, prêts à vendre.",
+           "Cinquante scripts WhatsApp.", "Cent idées de produits.",
+           "Et le plan complet.", "De zéro… à un million de francs."]),
+    (6.6, ["Et ça marche déjà.",
+           "Voici les premiers revenus de ceux qui sont passés à l'action."]),
+    (10.5, ["Aujourd'hui, c'est moins cinquante-trois pour cent.",
+            "Quatre mille quatre cent cinquante francs.", "Au lieu de neuf mille cinq cents.",
+            "L'offre est limitée.", "Télécharge ton pack maintenant.",
+            "Le lien est juste en dessous."]),
 ]
-LEAD = 0.40   # voice starts this long after the scene begins
-TAIL = 0.65   # silence kept after the voice before the next scene
+LEAD = 0.45   # voice starts this long after the scene begins
+TAIL = 0.75   # silence kept after the voice before the next scene
+GAP  = 0.42   # dramatic silence inserted between phrases within a scene
 
 # ---------------- 1. synthesise voice-over ----------------
 from piper import PiperVoice, SynthesisConfig
 voice = PiperVoice.load(MODEL)
-cfg = SynthesisConfig(length_scale=1.02, noise_scale=0.667, noise_w_scale=0.8, volume=1.0, normalize_audio=True)
+# length_scale 1.14 -> slower, posed delivery (matches the reference's calm pace)
+cfg = SynthesisConfig(length_scale=1.14, noise_scale=0.7, noise_w_scale=0.85,
+                      volume=1.0, normalize_audio=True, speaker_id=PIERRE)
 
-def synth(text, path):
+def _synth_phrase(text, path):
     with wave.open(path, 'wb') as wf:
         voice.synthesize_wav(text, wf, syn_config=cfg)
+
+def _trim(clip):
+    thr = 0.012 * np.max(np.abs(clip) + 1e-9)
+    idx = np.where(np.abs(clip) > thr)[0]
+    if len(idx):
+        clip = clip[max(0, idx[0]-int(0.03*SR)): idx[-1]+int(0.06*SR)]
+    return clip
+
+def synth(phrases, path):
+    """Synthesize a scene as separate phrases joined by dramatic GAP silences."""
+    if isinstance(phrases, str):
+        phrases = [phrases]
+    gap = np.zeros(int(GAP*SR), dtype=np.float32)
+    parts = []
+    for j, ph in enumerate(phrases):
+        tmp = path.replace('.wav', f'_p{j}.wav')
+        _synth_phrase(ph, tmp)
+        parts.append(_trim(load_wav_mono(tmp)))
+    out = parts[0]
+    for p in parts[1:]:
+        out = np.concatenate([out, gap, p])
+    wavfile.write(path, SR, (np.clip(out, -1, 1) * 32767).astype(np.int16))
 
 def load_wav_mono(path):
     sr, data = wavfile.read(path)

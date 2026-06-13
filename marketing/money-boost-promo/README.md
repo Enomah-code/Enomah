@@ -2,7 +2,7 @@
 
 Vidéo publicitaire cinématique pour le lancement du produit **« Money Boost 2026 : L'accélérateur de revenus »**, disponible sur la boutique Chariow **Emk Blue Diamond** (`yevmtzhs.mychariow.shop`).
 
-Format : **1080×1920 (9:16 vertical)**, 30 fps, ~52 s, **voix off + musique** — optimisé pour WhatsApp Statut, TikTok, Reels et Facebook.
+Format : **1080×1920 (9:16 vertical)**, 30 fps, ~63 s, **voix off masculine + musique** — optimisé pour WhatsApp Statut, TikTok, Reels et Facebook.
 
 ## Direction artistique
 
@@ -15,7 +15,7 @@ Inspirée du prototype fourni (film publicitaire sombre, premium, typographie an
 
 ## Son
 
-- **Voix off française neuronale** (Piper, `fr_FR-siwis-medium`, hors-ligne) — une réplique par scène, calée sur les visuels.
+- **Voix off française neuronale masculine** (Piper, `fr_FR-upmc-medium`, voix « pierre », hors-ligne) — voix **grave et posée** (~130 Hz) calquée sur la vidéo de référence (~129 Hz). Diction copiée de la référence : **phrases courtes et percutantes**, synthétisées une par une et réassemblées avec de **vraies pauses dramatiques** (~0,42 s) pour un débit lent et premium.
 - **Musique** synthétisée (numpy/scipy) : pad évolutif, pluck/arp, sub, **accents synchronisés sur chaque transition de scène**, montées + impacts sur la révélation produit et le CTA.
 - **Ducking** : la musique baisse automatiquement (~‑12 dB) sous la voix off pour rester intelligible et non envahissante.
 
@@ -23,13 +23,14 @@ Inspirée du prototype fourni (film publicitaire sombre, premium, typographie an
 
 | Scène | À l'écran | Voix off |
 |------|-----------|----------|
-| Accroche | « Et si ton **téléphone**… …valait plus que ton **salaire ?** » | idem |
-| Compteur | **50 000 → 500 000 FCFA / mois** | « En Afrique, des milliers de personnes gagnent de 50 000 à 500 000 F par mois, avec un simple téléphone. » |
+| Accroche | « Et si ton **téléphone**… …valait plus que ton **salaire ?** » | « Ton téléphone. Tu l'as en main toute la journée. » |
+| Accroche 2 | suite | « Et s'il pouvait te rapporter… bien plus que ton salaire ? » |
+| Compteur | **50 000 → 500 000 FCFA / mois** | « En Afrique, des milliers l'ont déjà compris. 50 000. 100 000. 500 000 F par mois. Avec un simple téléphone. » |
 | Objections | ~~capital~~ ~~diplôme~~ ~~expérience~~ → **Juste la bonne méthode** | « Sans capital. Sans diplôme. Sans expérience. Juste la bonne méthode. » |
-| Révélation | **PACK MONEY BOOST 2026** + livre | « Voici le Pack Money Boost, l'accélérateur de revenus. » |
-| Contenu | 15 services · 50 scripts · 100 idées · Plan 0→1 M | « 15 services… 50 scripts WhatsApp… 100 idées… le plan complet de 0 à 1 million. » |
+| Révélation | **PACK MONEY BOOST 2026** + livre | « Voici le Pack Money Boost. Ton accélérateur de revenus. » |
+| Contenu | 15 services · 50 scripts · 100 idées · Plan 0→1 M | « 15 services digitaux, prêts à vendre. 50 scripts WhatsApp. 100 idées de produits. Et le plan complet. De zéro… à un million de francs. » |
 | **Témoignages** | **captures de revenus réels** + ★★★★★ | « Et ça marche déjà. Voici les premiers revenus de ceux qui sont passés à l'action. » |
-| **CTA** | ~~9 500~~ **4 450 FCFA · ‑53 %** · lien · logo EMK | « Aujourd'hui ‑50 % : 4 450 F au lieu de 9 500. Offre limitée. Télécharge ton pack maintenant. » |
+| **CTA** | ~~9 500~~ **4 450 FCFA · ‑53 %** · lien · logo EMK | « Aujourd'hui, c'est moins 53 %. 4 450 F. Au lieu de 9 500. L'offre est limitée. Télécharge ton pack maintenant. Le lien est juste en dessous. » |
 
 Toutes les données proviennent de la fiche produit Chariow et du livre PDF.
 
@@ -46,11 +47,11 @@ Toutes les données proviennent de la fiche produit Chariow et du livre PDF.
 ## Régénérer
 
 ```bash
-# 0. Voix neuronale FR (Piper) — une fois
+# 0. Voix neuronale FR masculine (Piper, voix « pierre ») — une fois
 curl -L -o /tmp/v.tar.bz2 \
-  https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-fr_FR-siwis-medium.tar.bz2
-tar xjf /tmp/v.tar.bz2 -C /tmp
-mkdir -p build/tts && cp /tmp/vits-piper-fr_FR-siwis-medium/fr_FR-siwis-medium.onnx* build/tts/
+  https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-fr_FR-upmc-medium.tar.bz2
+mkdir -p /tmp/upmc && tar xjf /tmp/v.tar.bz2 -C /tmp/upmc --strip-components=1
+mkdir -p build/tts && cp /tmp/upmc/fr_FR-upmc-medium.onnx* build/tts/
 
 # 1. Voix off + musique + timeline.js
 python3 soundtrack.py
