@@ -1,0 +1,219 @@
+<template id="s3-reveal-template">
+  <div data-composition-id="s3-reveal" data-width="1080" data-height="1920" data-duration="5">
+
+    <style>
+      [data-composition-id="s3-reveal"] {
+        background: #060A12;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      [data-composition-id="s3-reveal"] .flash-overlay {
+        position: absolute;
+        inset: 0;
+        background: #FFC300;
+        opacity: 0;
+        z-index: 10;
+        pointer-events: none;
+      }
+      [data-composition-id="s3-reveal"] .bg-radial {
+        position: absolute;
+        width: 1200px; height: 1200px;
+        background: radial-gradient(circle, rgba(255,195,0,0.22) 0%, transparent 65%);
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .ring-1 {
+        position: absolute;
+        width: 900px; height: 900px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,195,0,0.15);
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .ring-2 {
+        position: absolute;
+        width: 700px; height: 700px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,195,0,0.1);
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .burst-line {
+        position: absolute;
+        width: 2px;
+        height: 80px;
+        background: rgba(255,195,0,0.5);
+        top: 50%; left: 50%;
+        transform-origin: top center;
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .bestseller-badge {
+        position: absolute;
+        top: 220px;
+        right: 80px;
+        background: #FFC300;
+        color: #060A12;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        padding: 14px 30px;
+        border-radius: 8px;
+        text-transform: uppercase;
+        opacity: 0;
+        transform: rotate(6deg);
+        box-shadow: 0 8px 24px rgba(255,195,0,0.4);
+      }
+      [data-composition-id="s3-reveal"] .content {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 80px;
+      }
+      [data-composition-id="s3-reveal"] .year-tag {
+        font-size: 24px;
+        font-weight: 700;
+        color: rgba(255,195,0,0.7);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 32px;
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .product-name {
+        font-size: 120px;
+        font-weight: 900;
+        color: #FFC300;
+        line-height: 0.95;
+        letter-spacing: -4px;
+        opacity: 0;
+        text-shadow: 0 0 60px rgba(255,195,0,0.3);
+      }
+      [data-composition-id="s3-reveal"] .product-year {
+        font-size: 120px;
+        font-weight: 900;
+        color: #FFFFFF;
+        line-height: 1.0;
+        letter-spacing: -4px;
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .product-sub {
+        font-size: 46px;
+        font-weight: 700;
+        color: rgba(255,255,255,0.8);
+        line-height: 1.3;
+        margin-top: 24px;
+        opacity: 0;
+        max-width: 800px;
+      }
+      [data-composition-id="s3-reveal"] .divider-gold {
+        width: 0;
+        height: 5px;
+        background: #FFC300;
+        margin: 36px 0;
+        border-radius: 3px;
+        box-shadow: 0 0 16px rgba(255,195,0,0.5);
+      }
+      [data-composition-id="s3-reveal"] .store-name {
+        font-size: 32px;
+        font-weight: 800;
+        color: rgba(255,255,255,0.5);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0;
+      }
+      [data-composition-id="s3-reveal"] .store-name span {
+        color: #FFC300;
+      }
+      [data-composition-id="s3-reveal"] .grain {
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    </style>
+
+    <div class="flash-overlay" id="flash"></div>
+    <div class="grain"></div>
+    <div class="bg-radial" id="bg-radial"></div>
+    <div class="ring-1" id="ring1"></div>
+    <div class="ring-2" id="ring2"></div>
+
+    <!-- Burst lines (8 directions) -->
+    <div class="burst-line" id="bl0" style="margin-top:-80px; margin-left:-1px; transform:rotate(0deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl1" style="margin-top:-80px; margin-left:-1px; transform:rotate(45deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl2" style="margin-top:-80px; margin-left:-1px; transform:rotate(90deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl3" style="margin-top:-80px; margin-left:-1px; transform:rotate(135deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl4" style="margin-top:-80px; margin-left:-1px; transform:rotate(180deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl5" style="margin-top:-80px; margin-left:-1px; transform:rotate(225deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl6" style="margin-top:-80px; margin-left:-1px; transform:rotate(270deg) translateX(-50%);"></div>
+    <div class="burst-line" id="bl7" style="margin-top:-80px; margin-left:-1px; transform:rotate(315deg) translateX(-50%);"></div>
+
+    <div class="bestseller-badge">⭐ BESTSELLER</div>
+
+    <div class="content">
+      <div class="year-tag">Lancement 2026</div>
+      <div class="product-name" id="pname">MONEY</div>
+      <div class="product-name" id="pname2">BOOST</div>
+      <div class="product-year" id="pyear">2026</div>
+      <div class="divider-gold" id="div-gold"></div>
+      <div class="product-sub" id="psub">L'accélérateur de<br>Revenus</div>
+      <div class="store-name" id="pstore">par <span>Emk Blue Diamond</span></div>
+    </div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+
+        /* Flash hit */
+        tl.fromTo('#flash', { opacity: 0 }, { opacity: 0.7, duration: 0.08, ease: 'none' }, 0.05);
+        tl.fromTo('#flash', { opacity: 0.7 }, { opacity: 0, duration: 0.3, ease: 'power2.out' }, 0.13);
+
+        /* BG reveal */
+        tl.fromTo('#bg-radial', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out' }, 0.05);
+        tl.fromTo('#ring1', { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'expo.out' }, 0.08);
+        tl.fromTo('#ring2', { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out' }, 0.12);
+
+        /* Rings breathing */
+        tl.to('#ring1', { scale: 1.04, yoyo: true, repeat: 6, duration: 0.7, ease: 'sine.inOut' }, 0.9);
+        tl.to('#ring2', { scale: 0.97, yoyo: true, repeat: 6, duration: 0.9, ease: 'sine.inOut' }, 0.9);
+        tl.to('#bg-radial', { scale: 1.06, yoyo: true, repeat: 5, duration: 1.0, ease: 'sine.inOut', overwrite: 'auto' }, 0.85);
+
+        /* Burst */
+        tl.fromTo('.burst-line', { opacity: 0, scaleY: 0 }, { opacity: 0.6, scaleY: 1, duration: 0.25, stagger: 0.02, ease: 'expo.out' }, 0.1);
+        tl.to('.burst-line', { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0.5);
+
+        /* Badge */
+        tl.fromTo('.bestseller-badge', { opacity: 0, scale: 0.5, rotation: 12 }, { opacity: 1, scale: 1, rotation: 6, duration: 0.5, ease: 'back.out(1.8)' }, 0.4);
+
+        /* Year tag */
+        tl.fromTo('.year-tag', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' }, 0.3);
+
+        /* Product name */
+        tl.fromTo('#pname',  { opacity: 0, y: 80, skewY: -3 }, { opacity: 1, y: 0, skewY: 0, duration: 0.55, ease: 'expo.out' }, 0.35);
+        tl.fromTo('#pname2', { opacity: 0, y: 80, skewY: -3 }, { opacity: 1, y: 0, skewY: 0, duration: 0.55, ease: 'expo.out' }, 0.42);
+        tl.fromTo('#pyear',  { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' }, 0.6);
+
+        /* Divider */
+        tl.fromTo('#div-gold', { width: 0 }, { width: 180, duration: 0.5, ease: 'expo.out' }, 0.8);
+
+        /* Subtitle + store */
+        tl.fromTo('#psub',   { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 1.0);
+        tl.fromTo('#pstore', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4,  ease: 'power2.out' }, 1.3);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['s3-reveal'] = tl;
+      })();
+    </script>
+  </div>
+</template>

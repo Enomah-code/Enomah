@@ -1,0 +1,257 @@
+<template id="s5-features-template">
+  <div data-composition-id="s5-features" data-width="1080" data-height="1920" data-duration="10">
+
+    <style>
+      [data-composition-id="s5-features"] {
+        background: #060A12;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      [data-composition-id="s5-features"] .bg-glow-top {
+        position: absolute;
+        width: 600px; height: 400px;
+        background: radial-gradient(ellipse, rgba(255,195,0,0.14) 0%, transparent 70%);
+        top: 5%; left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      [data-composition-id="s5-features"] .bg-glow-bot {
+        position: absolute;
+        width: 500px; height: 400px;
+        background: radial-gradient(ellipse, rgba(0,100,200,0.08) 0%, transparent 70%);
+        bottom: 5%; right: 0;
+        pointer-events: none;
+      }
+      [data-composition-id="s5-features"] .ticker-bar {
+        position: absolute;
+        top: 180px;
+        left: 0; right: 0;
+        height: 56px;
+        background: #FFC300;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        opacity: 0;
+      }
+      [data-composition-id="s5-features"] .ticker-inner {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+        white-space: nowrap;
+        font-size: 22px;
+        font-weight: 800;
+        color: #060A12;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        x: 0;
+      }
+      [data-composition-id="s5-features"] .content {
+        position: absolute;
+        top: 260px;
+        left: 0; right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0 80px 80px 80px;
+      }
+      [data-composition-id="s5-features"] .section-title {
+        font-size: 60px;
+        font-weight: 900;
+        color: #FFFFFF;
+        line-height: 1.1;
+        letter-spacing: -2px;
+        margin-bottom: 48px;
+        margin-top: 24px;
+        opacity: 0;
+      }
+      [data-composition-id="s5-features"] .section-title span {
+        color: #FFC300;
+      }
+      [data-composition-id="s5-features"] .feat-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+        padding: 22px 28px;
+        border: 1px solid rgba(255,195,0,0.2);
+        border-radius: 16px;
+        margin-bottom: 20px;
+        background: rgba(255,195,0,0.04);
+        opacity: 0;
+      }
+      [data-composition-id="s5-features"] .feat-icon {
+        font-size: 44px;
+        min-width: 56px;
+        text-align: center;
+        line-height: 1;
+      }
+      [data-composition-id="s5-features"] .feat-info {
+        display: flex;
+        flex-direction: column;
+      }
+      [data-composition-id="s5-features"] .feat-num {
+        font-size: 34px;
+        font-weight: 900;
+        color: #FFC300;
+        line-height: 1.1;
+      }
+      [data-composition-id="s5-features"] .feat-label {
+        font-size: 32px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.85);
+        line-height: 1.2;
+      }
+      [data-composition-id="s5-features"] .counter-row {
+        position: absolute;
+        bottom: 80px;
+        left: 80px; right: 80px;
+        display: flex;
+        gap: 24px;
+        opacity: 0;
+      }
+      [data-composition-id="s5-features"] .counter-box {
+        flex: 1;
+        background: rgba(255,195,0,0.1);
+        border: 1px solid rgba(255,195,0,0.3);
+        border-radius: 16px;
+        padding: 20px 16px;
+        text-align: center;
+      }
+      [data-composition-id="s5-features"] .counter-val {
+        font-size: 52px;
+        font-weight: 900;
+        color: #FFC300;
+        line-height: 1;
+      }
+      [data-composition-id="s5-features"] .counter-lbl {
+        font-size: 22px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.6);
+        margin-top: 6px;
+      }
+    </style>
+
+    <div class="bg-glow-top"></div>
+    <div class="bg-glow-bot"></div>
+
+    <div class="ticker-bar" id="ticker">
+      <div class="ticker-inner" id="ticker-inner">
+        <span>📦 15 Services</span>
+        <span>•</span>
+        <span>💬 50 Scripts WhatsApp</span>
+        <span>•</span>
+        <span>💡 100 Idées</span>
+        <span>•</span>
+        <span>🗺️ Plan 1 Million</span>
+        <span>•</span>
+        <span>🤖 10 Prompts IA</span>
+        <span>•</span>
+        <span>📦 15 Services</span>
+        <span>•</span>
+        <span>💬 50 Scripts WhatsApp</span>
+        <span>•</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section-title" id="feat-title">Ce que tu <span>reçois</span> :</div>
+
+      <div class="feat-card" id="fc1">
+        <div class="feat-icon">📦</div>
+        <div class="feat-info">
+          <div class="feat-num">15</div>
+          <div class="feat-label">services digitaux prêts à vendre<br>— tutoriel pas-à-pas inclus</div>
+        </div>
+      </div>
+
+      <div class="feat-card" id="fc2">
+        <div class="feat-icon">💬</div>
+        <div class="feat-info">
+          <div class="feat-num">50</div>
+          <div class="feat-label">scripts WhatsApp<br>prêts à copier-coller</div>
+        </div>
+      </div>
+
+      <div class="feat-card" id="fc3">
+        <div class="feat-icon">💡</div>
+        <div class="feat-info">
+          <div class="feat-num">100</div>
+          <div class="feat-label">idées de produits &amp;<br>services digitaux</div>
+        </div>
+      </div>
+
+      <div class="feat-card" id="fc4">
+        <div class="feat-icon">🗺️</div>
+        <div class="feat-info">
+          <div class="feat-num" style="font-size:28px;">Plan complet</div>
+          <div class="feat-label">0 → 1 Million FCFA<br>en 4 phases</div>
+        </div>
+      </div>
+
+      <div class="feat-card" id="fc5">
+        <div class="feat-icon">🎨</div>
+        <div class="feat-info">
+          <div class="feat-num">10</div>
+          <div class="feat-label">templates Canva pro<br>+ 10 prompts IA pour ChatGPT</div>
+        </div>
+      </div>
+
+      <div class="feat-card" id="fc6">
+        <div class="feat-icon">✅</div>
+        <div class="feat-info">
+          <div class="feat-num" style="font-size:26px;">Checklist 24h</div>
+          <div class="feat-label">Ta 1ère vente<br>dès demain</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="counter-row" id="counter-row">
+      <div class="counter-box">
+        <div class="counter-val">9</div>
+        <div class="counter-lbl">Guides inclus</div>
+      </div>
+      <div class="counter-box">
+        <div class="counter-val">200+</div>
+        <div class="counter-lbl">Outils & idées</div>
+      </div>
+      <div class="counter-box">
+        <div class="counter-val">1</div>
+        <div class="counter-lbl">Pack complet</div>
+      </div>
+    </div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo('.bg-glow-top', { scale: 0.9 }, { scale: 1.1, duration: 5, ease: 'sine.inOut', yoyo: true, repeat: 2 }, 0);
+
+        /* Ticker */
+        tl.fromTo('#ticker', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out' }, 0.1);
+        tl.fromTo('#ticker-inner', { x: 0 }, { x: -1200, duration: 9, ease: 'none' }, 0.3);
+
+        /* Title */
+        tl.fromTo('#feat-title', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power3.out' }, 0.3);
+
+        /* Feature cards cascade */
+        var cards = ['#fc1','#fc2','#fc3','#fc4','#fc5','#fc6'];
+        cards.forEach(function(id, i) {
+          tl.fromTo(id,
+            { opacity: 0, x: -60 },
+            { opacity: 1, x: 0, duration: 0.45, ease: 'expo.out' },
+            0.7 + i * 0.28
+          );
+        });
+
+        /* Counter row */
+        tl.fromTo('#counter-row', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 7.5);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['s5-features'] = tl;
+      })();
+    </script>
+  </div>
+</template>

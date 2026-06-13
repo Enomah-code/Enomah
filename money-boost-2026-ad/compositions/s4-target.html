@@ -1,0 +1,180 @@
+<template id="s4-target-template">
+  <div data-composition-id="s4-target" data-width="1080" data-height="1920" data-duration="5">
+
+    <style>
+      [data-composition-id="s4-target"] {
+        background: #060A12;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      [data-composition-id="s4-target"] .bg-panel {
+        position: absolute;
+        left: 0; top: 0;
+        width: 8px;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent, #FFC300 20%, #FFC300 80%, transparent);
+        opacity: 0.6;
+      }
+      [data-composition-id="s4-target"] .bg-glow {
+        position: absolute;
+        width: 900px; height: 600px;
+        background: radial-gradient(ellipse, rgba(255,195,0,0.1) 0%, transparent 70%);
+        top: 40%; left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+      [data-composition-id="s4-target"] .ghost-q {
+        position: absolute;
+        font-size: 600px;
+        font-weight: 900;
+        color: rgba(255,195,0,0.04);
+        top: 10%;
+        left: -80px;
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+      }
+      [data-composition-id="s4-target"] .content {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 90px;
+      }
+      [data-composition-id="s4-target"] .section-label {
+        font-size: 24px;
+        font-weight: 700;
+        color: #FFC300;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 32px;
+        opacity: 0;
+      }
+      [data-composition-id="s4-target"] .title {
+        font-size: 76px;
+        font-weight: 900;
+        color: #FFFFFF;
+        line-height: 1.1;
+        letter-spacing: -2px;
+        margin-bottom: 64px;
+        opacity: 0;
+      }
+      [data-composition-id="s4-target"] .title span {
+        color: #FFC300;
+      }
+      [data-composition-id="s4-target"] .check-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 28px;
+        margin-bottom: 40px;
+        opacity: 0;
+      }
+      [data-composition-id="s4-target"] .check-icon {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        background: rgba(0,217,126,0.15);
+        border: 2px solid #00D97E;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        color: #00D97E;
+        font-weight: 900;
+        margin-top: 4px;
+      }
+      [data-composition-id="s4-target"] .check-text {
+        font-size: 46px;
+        font-weight: 700;
+        color: #FFFFFF;
+        line-height: 1.25;
+      }
+      [data-composition-id="s4-target"] .meta-row {
+        position: absolute;
+        bottom: 160px;
+        left: 90px;
+        right: 90px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 0;
+      }
+      [data-composition-id="s4-target"] .meta-tag {
+        font-size: 22px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.3);
+        letter-spacing: 0.1em;
+      }
+      [data-composition-id="s4-target"] .meta-badge {
+        background: rgba(255,195,0,0.12);
+        border: 1px solid rgba(255,195,0,0.3);
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #FFC300;
+      }
+    </style>
+
+    <div class="bg-panel"></div>
+    <div class="bg-glow"></div>
+    <div class="ghost-q" data-layout-allow-overflow>?</div>
+
+    <div class="content">
+      <div class="section-label">Pour qui c'est fait ?</div>
+      <div class="title" id="t-title">C'est fait pour toi<br><span>si...</span></div>
+
+      <div class="check-row" id="cr1">
+        <div class="check-icon">✓</div>
+        <div class="check-text">Tu es étudiant, salarié<br>ou sans emploi</div>
+      </div>
+      <div class="check-row" id="cr2">
+        <div class="check-icon">✓</div>
+        <div class="check-text">Tu n'as pas de<br>compétences techniques</div>
+      </div>
+      <div class="check-row" id="cr3">
+        <div class="check-icon">✓</div>
+        <div class="check-text">Tu veux un revenu réel<br>avant fin 2026</div>
+      </div>
+      <div class="check-row" id="cr4">
+        <div class="check-icon">✓</div>
+        <div class="check-text">Tu es prêt à <strong style="color:#FFC300">AGIR</strong> —<br>pas juste lire</div>
+      </div>
+    </div>
+
+    <div class="meta-row" id="meta-row">
+      <div class="meta-tag">Afrique Francophone</div>
+      <div class="meta-badge">Débutants bienvenus</div>
+    </div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo('.bg-glow', { scale: 0.9 }, { scale: 1.1, duration: 4.5, ease: 'sine.inOut' }, 0);
+        tl.fromTo('.ghost-q', { x: -20 }, { x: 20, duration: 4.5, ease: 'sine.inOut' }, 0);
+        tl.fromTo('.bg-panel', { scaleY: 0, transformOrigin: 'top' }, { scaleY: 1, duration: 0.8, ease: 'power3.out' }, 0);
+
+        tl.fromTo('.section-label', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+        tl.fromTo('#t-title', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out' }, 0.3);
+
+        tl.fromTo('#cr1', { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.45, ease: 'expo.out' }, 0.8);
+        tl.fromTo('#cr2', { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.45, ease: 'expo.out' }, 1.15);
+        tl.fromTo('#cr3', { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.45, ease: 'expo.out' }, 1.5);
+        tl.fromTo('#cr4', { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.45, ease: 'expo.out' }, 1.85);
+
+        tl.fromTo('#meta-row', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 2.8);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['s4-target'] = tl;
+      })();
+    </script>
+  </div>
+</template>

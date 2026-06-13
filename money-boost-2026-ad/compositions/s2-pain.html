@@ -1,0 +1,158 @@
+<template id="s2-pain-template">
+  <div data-composition-id="s2-pain" data-width="1080" data-height="1920" data-duration="5">
+
+    <style>
+      [data-composition-id="s2-pain"] {
+        background: #060A12;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      [data-composition-id="s2-pain"] .bg-glow {
+        position: absolute;
+        width: 700px; height: 700px;
+        background: radial-gradient(circle, rgba(255,195,0,0.12) 0%, transparent 70%);
+        top: 45%; left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+      [data-composition-id="s2-pain"] .ghost-num {
+        position: absolute;
+        font-size: 500px;
+        font-weight: 900;
+        color: rgba(255,195,0,0.04);
+        top: 20%;
+        right: -60px;
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+      }
+      [data-composition-id="s2-pain"] .side-bar {
+        position: absolute;
+        left: 60px;
+        top: 280px;
+        bottom: 280px;
+        width: 4px;
+        background: linear-gradient(to bottom, transparent, #FFC300 30%, #FFC300 70%, transparent);
+        border-radius: 2px;
+      }
+      [data-composition-id="s2-pain"] .stat-pill {
+        position: absolute;
+        right: 80px;
+        top: 300px;
+        background: rgba(255,195,0,0.12);
+        border: 1px solid rgba(255,195,0,0.3);
+        border-radius: 12px;
+        padding: 14px 28px;
+        font-size: 24px;
+        font-weight: 700;
+        color: #FFC300;
+        letter-spacing: 0.05em;
+        opacity: 0;
+      }
+      [data-composition-id="s2-pain"] .content {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 110px 0 130px;
+        gap: 0;
+      }
+      [data-composition-id="s2-pain"] .intro-label {
+        font-size: 26px;
+        font-weight: 700;
+        color: #FFC300;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 56px;
+        opacity: 0;
+      }
+      [data-composition-id="s2-pain"] .pain-line {
+        font-size: 58px;
+        font-weight: 800;
+        color: #FFFFFF;
+        line-height: 1.25;
+        margin-bottom: 36px;
+        opacity: 0;
+      }
+      [data-composition-id="s2-pain"] .pain-line.accent {
+        font-size: 68px;
+        color: #FFC300;
+      }
+      [data-composition-id="s2-pain"] .pain-line .num {
+        color: #FFD60A;
+        font-size: 72px;
+        font-weight: 900;
+      }
+      [data-composition-id="s2-pain"] .punch-line {
+        margin-top: 24px;
+        font-size: 52px;
+        font-weight: 900;
+        color: #FFFFFF;
+        line-height: 1.2;
+        opacity: 0;
+        background: rgba(255,195,0,0.12);
+        border-left: 6px solid #FFC300;
+        padding: 24px 36px;
+        border-radius: 0 12px 12px 0;
+      }
+      [data-composition-id="s2-pain"] .punch-line span {
+        color: #FFC300;
+      }
+      [data-composition-id="s2-pain"] .tag-bottom {
+        position: absolute;
+        bottom: 160px;
+        left: 110px;
+        font-size: 22px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.35);
+        letter-spacing: 0.12em;
+        opacity: 0;
+      }
+    </style>
+
+    <div class="bg-glow"></div>
+    <div class="ghost-num" data-layout-allow-overflow>₣</div>
+    <div class="side-bar" id="side-bar"></div>
+    <div class="stat-pill">📱 Téléphone uniquement</div>
+
+    <div class="content">
+      <div class="intro-label">La réalité africaine</div>
+      <div class="pain-line" id="p1">Des milliers de personnes<br>en Afrique...</div>
+      <div class="pain-line accent" id="p2"><span class="num">50 000 – 500 000</span><br>FCFA / mois</div>
+      <div class="pain-line" id="p3">Sans diplôme.<br>Sans capital.</div>
+      <div class="punch-line" id="p4">Juste avec les<br><span>bonnes méthodes.</span></div>
+    </div>
+
+    <div class="tag-bottom" id="tag-bottom">@EmkBlueDiamond</div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo('.bg-glow', { scale: 0.85 }, { scale: 1.1, duration: 4.5, ease: 'sine.inOut' }, 0);
+        tl.fromTo('.ghost-num', { x: 40 }, { x: -20, duration: 4.5, ease: 'sine.inOut' }, 0);
+
+        tl.fromTo('#side-bar', { scaleY: 0, transformOrigin: 'top' }, { scaleY: 1, duration: 0.7, ease: 'power3.out' }, 0.1);
+
+        tl.fromTo('.intro-label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.2);
+        tl.fromTo('.stat-pill', { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.5, ease: 'back.out(1.5)' }, 0.4);
+
+        tl.fromTo('#p1', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: 'expo.out' }, 0.5);
+        tl.fromTo('#p2', { opacity: 0, scale: 0.88 }, { opacity: 1, scale: 1, duration: 0.55, ease: 'back.out(1.3)' }, 1.1);
+        tl.fromTo('#p3', { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.45, ease: 'expo.out' }, 1.8);
+        tl.fromTo('#p4', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 2.7);
+
+        tl.fromTo('#tag-bottom', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 3.5);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['s2-pain'] = tl;
+      })();
+    </script>
+  </div>
+</template>

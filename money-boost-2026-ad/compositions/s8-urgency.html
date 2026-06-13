@@ -1,0 +1,160 @@
+<template id="s8-urgency-template">
+  <div data-composition-id="s8-urgency" data-width="1080" data-height="1920" data-duration="4">
+
+    <style>
+      [data-composition-id="s8-urgency"] {
+        background: #060A12;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      [data-composition-id="s8-urgency"] .bg-pulse {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 45%, rgba(255,195,0,0.18) 0%, transparent 60%);
+        pointer-events: none;
+      }
+      [data-composition-id="s8-urgency"] .ghost-pct {
+        position: absolute;
+        font-size: 620px;
+        font-weight: 900;
+        color: rgba(255,195,0,0.05);
+        top: 8%;
+        left: 50%;
+        transform: translateX(-50%);
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+      }
+      [data-composition-id="s8-urgency"] .content {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 80px;
+      }
+      [data-composition-id="s8-urgency"] .urgency-banner {
+        font-size: 40px;
+        font-weight: 900;
+        color: #060A12;
+        background: #FFC300;
+        padding: 18px 48px;
+        border-radius: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 64px;
+        opacity: 0;
+        box-shadow: 0 0 40px rgba(255,195,0,0.4);
+      }
+      [data-composition-id="s8-urgency"] .price-old {
+        font-size: 52px;
+        font-weight: 700;
+        color: rgba(255,255,255,0.4);
+        text-decoration: line-through;
+        text-decoration-color: #FF4444;
+        text-decoration-thickness: 4px;
+        margin-bottom: 12px;
+        opacity: 0;
+      }
+      [data-composition-id="s8-urgency"] .price-new {
+        font-size: 180px;
+        font-weight: 900;
+        color: #FFC300;
+        line-height: 0.95;
+        letter-spacing: -6px;
+        opacity: 0;
+        text-shadow: 0 0 60px rgba(255,195,0,0.4);
+      }
+      [data-composition-id="s8-urgency"] .price-new .cur {
+        font-size: 64px;
+        font-weight: 800;
+        color: rgba(255,255,255,0.7);
+        letter-spacing: 0;
+      }
+      [data-composition-id="s8-urgency"] .discount-badge {
+        position: absolute;
+        top: 38%;
+        right: 110px;
+        background: #FF4444;
+        color: #FFFFFF;
+        font-size: 56px;
+        font-weight: 900;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: rotate(-12deg);
+        opacity: 0;
+        box-shadow: 0 8px 30px rgba(255,68,68,0.5);
+      }
+      [data-composition-id="s8-urgency"] .warn {
+        margin-top: 56px;
+        font-size: 38px;
+        font-weight: 700;
+        color: #FFFFFF;
+        line-height: 1.3;
+        opacity: 0;
+      }
+      [data-composition-id="s8-urgency"] .warn span { color: #FFC300; }
+      [data-composition-id="s8-urgency"] .stock {
+        margin-top: 28px;
+        font-size: 28px;
+        font-weight: 600;
+        color: rgba(255,255,255,0.5);
+        opacity: 0;
+      }
+    </style>
+
+    <div class="bg-pulse" id="bg-pulse"></div>
+    <div class="ghost-pct" data-layout-allow-overflow>%</div>
+    <div class="discount-badge" id="disc-badge">-53%</div>
+
+    <div class="content">
+      <div class="urgency-banner" id="banner">⚡ Offre limitée</div>
+      <div class="price-old" id="price-old">9 500 FCFA</div>
+      <div class="price-new" id="price-new">4 450 <span class="cur">FCFA</span></div>
+      <div class="warn" id="warn">Réservé aux <span>premiers acheteurs</span></div>
+      <div class="stock" id="stock">⏳ Places limitées — le prix augmente bientôt</div>
+    </div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+
+        /* Background pulsing for urgency */
+        tl.fromTo('#bg-pulse', { opacity: 0.5 }, { opacity: 1, duration: 0.5, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 0);
+
+        /* Banner slams in */
+        tl.fromTo('#banner', { opacity: 0, scale: 0.6, y: -30 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: 'back.out(1.8)' }, 0.1);
+        tl.to('#banner', { scale: 1.04, yoyo: true, repeat: 6, duration: 0.45, ease: 'sine.inOut' }, 0.6);
+
+        /* Old price */
+        tl.fromTo('#price-old', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.5);
+
+        /* New price punch */
+        tl.fromTo('#price-new', { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.6)' }, 0.8);
+        tl.to('#price-new', { scale: 1.03, yoyo: true, repeat: 5, duration: 0.5, ease: 'sine.inOut' }, 1.4);
+
+        /* Discount badge spins in */
+        tl.fromTo('#disc-badge', { opacity: 0, scale: 0, rotation: -90 }, { opacity: 1, scale: 1, rotation: -12, duration: 0.55, ease: 'back.out(2)' }, 1.0);
+        tl.to('#disc-badge', { rotation: -6, yoyo: true, repeat: 5, duration: 0.5, ease: 'sine.inOut' }, 1.6);
+
+        /* Warning + stock */
+        tl.fromTo('#warn', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 1.6);
+        tl.fromTo('#stock', { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 2.0);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['s8-urgency'] = tl;
+      })();
+    </script>
+  </div>
+</template>

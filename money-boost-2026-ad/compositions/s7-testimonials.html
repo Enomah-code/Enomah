@@ -1,0 +1,169 @@
+<template id="s7-testimonials-template">
+  <div data-composition-id="s7-testimonials" data-width="1080" data-height="1920" data-duration="6">
+
+    <style>
+      [data-composition-id="s7-testimonials"] {
+        background: #060A12;
+        font-family: "Inter", sans-serif;
+        overflow: hidden;
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+      }
+      [data-composition-id="s7-testimonials"] .bg-glow {
+        position: absolute;
+        width: 900px; height: 700px;
+        background: radial-gradient(ellipse, rgba(255,195,0,0.1) 0%, transparent 70%);
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+      [data-composition-id="s7-testimonials"] .ghost-quote {
+        position: absolute;
+        font-size: 800px;
+        font-weight: 900;
+        color: rgba(255,195,0,0.05);
+        top: -12%;
+        right: 0;
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+      }
+      [data-composition-id="s7-testimonials"] .content {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 80px;
+      }
+      [data-composition-id="s7-testimonials"] .section-label {
+        font-size: 24px;
+        font-weight: 700;
+        color: #FFC300;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        opacity: 0;
+      }
+      [data-composition-id="s7-testimonials"] .title {
+        font-size: 64px;
+        font-weight: 900;
+        color: #FFFFFF;
+        line-height: 1.1;
+        letter-spacing: -2px;
+        margin-bottom: 64px;
+        opacity: 0;
+      }
+      [data-composition-id="s7-testimonials"] .title span { color: #FFC300; }
+
+      [data-composition-id="s7-testimonials"] .card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,195,0,0.2);
+        border-radius: 20px;
+        padding: 36px 40px;
+        margin-bottom: 30px;
+        opacity: 0;
+      }
+      [data-composition-id="s7-testimonials"] .stars {
+        font-size: 28px;
+        letter-spacing: 4px;
+        color: #FFC300;
+        margin-bottom: 18px;
+      }
+      [data-composition-id="s7-testimonials"] .quote {
+        font-size: 38px;
+        font-weight: 600;
+        color: #FFFFFF;
+        line-height: 1.3;
+        margin-bottom: 22px;
+      }
+      [data-composition-id="s7-testimonials"] .author {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      [data-composition-id="s7-testimonials"] .avatar {
+        width: 56px; height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FFC300, #FF8C00);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 900;
+        color: #060A12;
+      }
+      [data-composition-id="s7-testimonials"] .author-info {
+        font-size: 28px;
+        font-weight: 700;
+        color: rgba(255,255,255,0.7);
+      }
+      [data-composition-id="s7-testimonials"] .author-info .role {
+        font-size: 22px;
+        font-weight: 400;
+        color: rgba(255,255,255,0.4);
+      }
+    </style>
+
+    <div class="bg-glow"></div>
+    <div class="ghost-quote" data-layout-allow-overflow>"</div>
+
+    <div class="content">
+      <div class="section-label">Ils l'ont fait</div>
+      <div class="title">Ce que disent<br>nos <span>membres :</span></div>
+
+      <div class="card" id="card1">
+        <div class="stars">★★★★★</div>
+        <div class="quote">"Première semaine : 3 clients, 7 500 FCFA. Simple et concret."</div>
+        <div class="author">
+          <div class="avatar">M</div>
+          <div class="author-info">Moussa <span class="role">· 23 ans, étudiant</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="card2">
+        <div class="stars">★★★★★</div>
+        <div class="quote">"J'ai décroché mon premier client en 2 jours avec les scripts."</div>
+        <div class="author">
+          <div class="avatar">F</div>
+          <div class="author-info">Fatou <span class="role">· 28 ans, sans emploi</span></div>
+        </div>
+      </div>
+
+      <div class="card" id="card3">
+        <div class="stars">★★★★★</div>
+        <div class="quote">"180 000 FCFA au bout de 6 semaines. Une vraie vision."</div>
+        <div class="author">
+          <div class="avatar">K</div>
+          <div class="author-info">Kofi <span class="role">· 31 ans, salarié</span></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/gsap.min.js"></script>
+    <script>
+      (function () {
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo('.bg-glow', { scale: 0.9 }, { scale: 1.1, duration: 5.5, ease: 'sine.inOut' }, 0);
+        tl.fromTo('.ghost-quote', { y: -20 }, { y: 20, duration: 5.5, ease: 'sine.inOut' }, 0);
+
+        tl.fromTo('.section-label', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+        tl.fromTo('.title', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out' }, 0.3);
+
+        tl.fromTo('#card1', { opacity: 0, x: -50, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: 'back.out(1.3)' }, 0.8);
+        tl.fromTo('#card2', { opacity: 0, x:  50, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: 'back.out(1.3)' }, 1.5);
+        tl.fromTo('#card3', { opacity: 0, x: -50, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: 'back.out(1.3)' }, 2.2);
+
+        /* subtle float on cards */
+        tl.to('#card1', { y: -8, yoyo: true, repeat: 4, duration: 0.9, ease: 'sine.inOut' }, 2.8);
+        tl.to('#card3', { y: -8, yoyo: true, repeat: 4, duration: 1.1, ease: 'sine.inOut' }, 3.0);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines['s7-testimonials'] = tl;
+      })();
+    </script>
+  </div>
+</template>
