@@ -71,10 +71,25 @@ def load_tts():
     return TTS(MODEL, progress_bar=False).to("cpu")
 
 
-def say(tts, text, ref, dynamics=DYNAMICS):
-    wav = np.asarray(tts.tts(text=text, speaker_wav=ref, language="fr", **dynamics),
-                     dtype=np.float32)
-    return trim(wav, SR)
+def say(tts, text, ref, dynamics=DYNAMICS, max_tries=4):
+    """Synthesise one line, retrying if XTTS rambles (a known failure where the
+    output runs far longer than the text warrants, with repeated/garbled audio).
+    Retries re-roll the sampling and calm the temperature for stability."""
+    expected = max(1.0, len(text) / 13.0)   # ~13 chars/sec of French speech
+    limit = expected * 2.0 + 1.0
+    best = None
+    for k in range(max_tries):
+        kw = dict(dynamics)
+        if k:  # progressively calmer on retries
+            kw["temperature"] = max(0.30, kw.get("temperature", 0.70) - 0.15 * k)
+        wav = np.asarray(tts.tts(text=text, speaker_wav=ref, language="fr", **kw),
+                         dtype=np.float32)
+        clip = trim(wav, SR)
+        if len(clip) / SR <= limit:
+            return clip
+        if best is None or len(clip) < len(best):
+            best = clip
+    return best  # shortest attempt if all overshoot
 
 
 def main():
