@@ -3,3 +3,13 @@
 Archetype: Pain-Agitate-Solve with Feature-Benefit Cascade
 Orientation: portrait
 Scenes: 7, total ~65s
+
+## audio [done 2026-06-14T16:56:42Z]
+Provider: kokoro ff_siwis fr-fr | scenes voiced 7/7 | total ~34.1s | bgm disabled (--no-bgm)
+
+## Phase 3: visual-design [done 2026-06-14T17:01:50Z]
+Scenes: 7 (blueprints: 5+0, composed: 2)
+Notes: neo-brutalism portrait; non-mesh preset, preset-native solid/dot-grid backgrounds; 2 transition types (push-slide + zoom-through); stillness-before-climax on scenes 2/4/7. Fixed scene 6/7 anchor ordering + Hierarchy tags from pre-existing draft.
+
+## prep [done 2026-06-14T17:02:12Z]
+7 groups, 1080x1920, captions disabled, total ~34.1s (VO-driven)

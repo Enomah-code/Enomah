@@ -1,0 +1,52 @@
+{
+  "tts_provider": "kokoro",
+  "voice_id": "ff_siwis",
+  "bgm_provider": null,
+  "bgm_enabled": false,
+  "bgm_path": null,
+  "bgm_pending": false,
+  "bgm_log": null,
+  "bgm_pid": null,
+  "bgm_mode": null,
+  "bgm_target_duration_s": null,
+  "bgm_seed_duration_s": null,
+  "bgm_loop_count": null,
+  "total_duration_s": 34.112,
+  "scenes": {
+    "scene_1": {
+      "voicePath": "assets/voice/scene_1.wav",
+      "voiceDuration": 3.925,
+      "wordsPath": ""
+    },
+    "scene_2": {
+      "voicePath": "assets/voice/scene_2.wav",
+      "voiceDuration": 2.432,
+      "wordsPath": ""
+    },
+    "scene_3": {
+      "voicePath": "assets/voice/scene_3.wav",
+      "voiceDuration": 3.285,
+      "wordsPath": ""
+    },
+    "scene_4": {
+      "voicePath": "assets/voice/scene_4.wav",
+      "voiceDuration": 7.893,
+      "wordsPath": ""
+    },
+    "scene_5": {
+      "voicePath": "assets/voice/scene_5.wav",
+      "voiceDuration": 6.699,
+      "wordsPath": ""
+    },
+    "scene_6": {
+      "voicePath": "assets/voice/scene_6.wav",
+      "voiceDuration": 3.072,
+      "wordsPath": ""
+    },
+    "scene_7": {
+      "voicePath": "assets/voice/scene_7.wav",
+      "voiceDuration": 6.805,
+      "wordsPath": ""
+    }
+  }
+}

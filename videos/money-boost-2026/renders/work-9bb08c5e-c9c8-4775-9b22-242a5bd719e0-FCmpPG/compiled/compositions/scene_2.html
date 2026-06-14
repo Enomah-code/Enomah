@@ -1,0 +1,309 @@
+<template id="scene_2-template">
+  <div id="root" class="scene_2-root" data-composition-id="scene_2" data-width="1080" data-height="1920" data-duration="2.432" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--canvas);
+        font-family: var(--font-body);
+        overflow: hidden;
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* dot-grid background, full bleed */
+      .s2-grid-bg {
+        position: absolute;
+        inset: 0;
+        background-color: var(--canvas);
+        background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+        background-size: 48px 48px;
+        z-index: 0;
+      }
+
+      /* camera wraps everything that zooms */
+      .s2-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+        z-index: 1;
+      }
+
+      /* flat deco sticker block sitting behind the number */
+      .s2-deco-block {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 760px;
+        height: 760px;
+        margin: -380px 0 0 -380px;
+        background: var(--deco-1);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        z-index: 1;
+      }
+
+      /* icon cluster stage — icons radiate from center */
+      .s2-icons-stage {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+      .s2-icon-pos {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        will-change: transform;
+      }
+      .s2-icon-entry {
+        width: 100%;
+        height: 100%;
+        will-change: transform;
+      }
+      .s2-icon-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* number stack — centered hero */
+      .s2-counter-stage {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+      }
+      .s2-number {
+        font-family: var(--font-display);
+        font-weight: 400;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+        font-size: 300px;
+        line-height: 0.9;
+        letter-spacing: -0.02em;
+        text-align: center;
+        will-change: transform;
+      }
+      .s2-label {
+        margin-top: 8px;
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 76px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--brand-primary);
+        text-align: center;
+        will-change: transform;
+      }
+
+      /* corner-pins (outside camera so the push doesn't crop them) */
+      .s2-frame {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        pointer-events: none;
+      }
+      .s2-corner {
+        position: absolute;
+        width: 56px;
+        height: 56px;
+        background: var(--ink);
+      }
+      .s2-tl { top: 44px; left: 44px; }
+      .s2-tr { top: 44px; right: 44px; }
+      .s2-bl { bottom: 44px; left: 44px; }
+      .s2-br { bottom: 44px; right: 44px; }
+    </style>
+
+    <div class="s2-grid-bg" data-start="0" data-duration="2.432" data-track-index="0"></div>
+
+    <div class="s2-camera" id="s2-camera">
+      <div class="s2-deco-block" data-start="0" data-duration="2.432" data-track-index="1"></div>
+
+      <div class="s2-icons-stage">
+        <!-- Icon 1: calendar -->
+        <div class="s2-icon-pos" id="s2-pos-1" data-target-x="0" data-target-y="-540" data-start="0" data-duration="2.432" data-track-index="2">
+          <div class="s2-icon-entry" id="s2-entry-1">
+            <svg class="s2-icon-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <rect x="18" y="26" width="84" height="80" rx="6" fill="var(--canvas)" stroke="var(--ink)" stroke-width="7" />
+              <line x1="18" y1="46" x2="102" y2="46" stroke="var(--ink)" stroke-width="7" />
+              <line x1="40" y1="18" x2="40" y2="34" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
+              <line x1="80" y1="18" x2="80" y2="34" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
+              <rect id="s2-cal-mark" x="48" y="64" width="24" height="24" fill="var(--brand-primary)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Icon 2: clock with ticking hand -->
+        <div class="s2-icon-pos" id="s2-pos-2" data-target-x="-410" data-target-y="470" data-start="0" data-duration="2.432" data-track-index="3">
+          <div class="s2-icon-entry" id="s2-entry-2">
+            <svg class="s2-icon-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="60" cy="60" r="46" fill="var(--canvas)" stroke="var(--ink)" stroke-width="7" />
+              <line id="s2-clock-hand" x1="60" y1="60" x2="60" y2="26" stroke="var(--brand-secondary)" stroke-width="7" stroke-linecap="round" />
+              <circle cx="60" cy="60" r="7" fill="var(--ink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Icon 3: hourglass / sand pulse -->
+        <div class="s2-icon-pos" id="s2-pos-3" data-target-x="410" data-target-y="470" data-start="0" data-duration="2.432" data-track-index="4">
+          <div class="s2-icon-entry" id="s2-entry-3">
+            <svg class="s2-icon-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <line x1="30" y1="22" x2="90" y2="22" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
+              <line x1="30" y1="98" x2="90" y2="98" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
+              <path d="M34 26 L86 26 L62 60 L86 94 L34 94 L58 60 Z" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linejoin="round" />
+              <circle id="s2-sand-dot" cx="60" cy="60" r="9" fill="var(--brand-primary)" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="s2-counter-stage">
+        <div class="s2-number" id="s2-number" data-start="0" data-duration="2.432" data-track-index="5">0</div>
+        <div class="s2-label" id="s2-label" data-start="0" data-duration="2.432" data-track-index="6">JOURS</div>
+      </div>
+    </div>
+
+    <div class="s2-frame">
+      <span class="s2-corner s2-tl" data-start="0" data-duration="2.432" data-track-index="7"></span>
+      <span class="s2-corner s2-tr" data-start="0" data-duration="2.432" data-track-index="8"></span>
+      <span class="s2-corner s2-bl" data-start="0" data-duration="2.432" data-track-index="9"></span>
+      <span class="s2-corner s2-br" data-start="0" data-duration="2.432" data-track-index="10"></span>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(2.4)",
+        emphasis: "expo.out",
+        exit: "power4.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 2.432;
+
+      // ---- Timing plan (compressed hook-counter-burst, 2.432s) ----
+      const ICON_ENTRY_AT_1 = 0.1;
+      const ICON_STAGGER = 0.1;
+      const ENTRY_DUR = 0.45;
+      const COUNT_AT = 0.42;
+      const COUNT_DUR = 0.95; // count lands ~1.37s
+      const STILL_END = COUNT_AT + COUNT_DUR + 0.5; // ~1.87s — stillness-before-climax
+      const LABEL_AT = STILL_END; // "JOURS" snaps in after the freeze
+      const CAMERA_FOCUS_AT = 0.25;
+      const CAMERA_FOCUS_DUR = 0.7;
+      const CAMERA_PUSH_AT = COUNT_AT + COUNT_DUR + 0.2; // push only after count lands
+
+      // ---- Phase 4: multi-phase camera (0.92 -> 1.0 -> 1.08) ----
+      const camera = document.getElementById("s2-camera");
+      const phase = { scale: 0.92 };
+      gsap.set(camera, { transformOrigin: "50% 50%" });
+
+      function applyCam() {
+        camera.style.transform = "scale(" + phase.scale + ")";
+      }
+      applyCam();
+
+      tl.to(phase, { scale: 1.0, duration: CAMERA_FOCUS_DUR, ease: EASE.emphasis, onUpdate: applyCam }, CAMERA_FOCUS_AT);
+      tl.to(phase, { scale: 1.08, duration: 0.55, ease: EASE.emphasis, onUpdate: applyCam }, CAMERA_PUSH_AT);
+
+      // ---- Phase 1 (cold open): SVG enrichment runs from t=0 while invisible ----
+      // Clock hand rotation (linear)
+      const handState = { deg: 0 };
+      const clockHand = document.getElementById("s2-clock-hand");
+      tl.to(handState, {
+        deg: 720,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          clockHand.setAttribute("transform", "rotate(" + handState.deg + " 60 60)");
+        },
+      }, 0);
+
+      // Sand dot pulse
+      const sandState = { p: 0 };
+      const sandDot = document.getElementById("s2-sand-dot");
+      tl.to(sandState, {
+        p: Math.PI * 2 * 3,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          const s = 1 + Math.sin(sandState.p) * 0.18;
+          sandDot.setAttribute("transform", "translate(60 60) scale(" + s + ") translate(-60 -60)");
+        },
+      }, 0);
+
+      // Calendar mark pulse
+      const calState = { p: 0 };
+      const calMark = document.getElementById("s2-cal-mark");
+      tl.to(calState, {
+        p: Math.PI * 2 * 2.5,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          const s = 1 + Math.sin(calState.p) * 0.14;
+          calMark.setAttribute("transform", "translate(60 76) scale(" + s + ") translate(-60 -76)");
+        },
+      }, 0);
+
+      // ---- Phase 2: per-icon staggered entries (scale/opacity/rotation on .icon-entry) ----
+      const entries = ["#s2-entry-1", "#s2-entry-2", "#s2-entry-3"];
+      entries.forEach((sel, i) => {
+        tl.fromTo(sel,
+          { scale: 0, opacity: 0, rotation: -12 },
+          { scale: 1, opacity: 1, rotation: 0, duration: ENTRY_DUR, ease: EASE.entry },
+          ICON_ENTRY_AT_1 + i * ICON_STAGGER);
+      });
+
+      // ---- Phase 3: count + center-outward expansion (one chord) ----
+      // Icons pre-clustered toward center, then expand to target (x:0,y:0 == CSS target).
+      const START_OFFSET = 0.4;
+      const positions = ["#s2-pos-1", "#s2-pos-2", "#s2-pos-3"];
+      positions.forEach((sel) => {
+        const el = document.querySelector(sel);
+        const tx = Number(el.dataset.targetX);
+        const ty = Number(el.dataset.targetY);
+        // start (1 - START_OFFSET) of the way back toward center (center is at x=0 since pos centered)
+        gsap.set(sel, { x: -tx * (1 - START_OFFSET), y: -ty * (1 - START_OFFSET) });
+        tl.to(sel, { x: 0, y: 0, duration: COUNT_DUR, ease: "power3.out" }, COUNT_AT);
+      });
+
+      // Counter proxy: value + font-size grow together (dynamic scale)
+      const numEl = document.getElementById("s2-number");
+      const countState = { value: 0, size: 150 };
+      tl.to(countState, {
+        value: 365,
+        size: 340,
+        duration: COUNT_DUR,
+        ease: "power3.out",
+        onUpdate: () => {
+          numEl.textContent = Math.round(countState.value).toLocaleString();
+          numEl.style.fontSize = countState.size + "px";
+        },
+      }, COUNT_AT);
+
+      // ---- Phase 4b climax: "JOURS" label snaps in after stillness ----
+      tl.fromTo("#s2-label",
+        { opacity: 0, scale: 0.7, y: 24 },
+        { opacity: 1, scale: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+        LABEL_AT);
+
+      window.__timelines["scene_2"] = tl;
+    </script>
+  </div>
+</template>

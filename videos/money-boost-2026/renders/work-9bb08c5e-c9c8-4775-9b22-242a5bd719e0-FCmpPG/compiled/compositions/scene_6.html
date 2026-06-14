@@ -1,0 +1,375 @@
+<template id="scene_6-template">
+  <div id="root" class="scene_6-root" data-composition-id="scene_6" data-width="1080" data-height="1920" data-duration="3.072" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      /* Root styles use #root. Brand tokens declared once in index.html <head>; reference via var(--*). */
+      #root {
+        background-color: var(--canvas);
+        background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+        background-size: 40px 40px;
+        font-family: var(--font-body);
+        color: var(--ink);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Hard-bordered frame + corner pins (decorative background frame, full-bleed exempt) */
+      .s6-frame {
+        position: absolute;
+        top: 40px;
+        left: 40px;
+        right: 40px;
+        bottom: 40px;
+        border: var(--border-loud);
+        background: transparent;
+        z-index: 0;
+      }
+      .s6-corner {
+        position: absolute;
+        width: 36px;
+        height: 36px;
+        background: var(--ink);
+        z-index: 0;
+      }
+      .s6-corner-tl { top: 24px; left: 24px; }
+      .s6-corner-tr { top: 24px; right: 24px; }
+      .s6-corner-bl { bottom: 24px; left: 24px; }
+      .s6-corner-br { bottom: 24px; right: 24px; }
+
+      /* Zoom wrappers — outer scales, inner translates (coordinate-target-zoom) */
+      .s6-zoom-outer {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+        z-index: 1;
+      }
+      .s6-zoom-inner {
+        position: absolute;
+        inset: 0;
+        will-change: transform;
+      }
+
+      /* Avatar cloud network — supporting background rail layer */
+      .s6-lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .s6-hub-wrap {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+      .s6-avatar {
+        position: absolute;
+        z-index: 2;
+        width: 116px;
+        height: 116px;
+        border-radius: 50%;
+        border: var(--border-bold);
+        box-shadow: var(--shadow-hard);
+        display: grid;
+        place-items: center;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 46px;
+        color: var(--ink);
+        will-change: transform, opacity;
+        transform: translate(-50%, -50%);
+      }
+      .s6-hub {
+        position: absolute;
+        left: 540px;
+        top: 806px;
+        transform: translate(-50%, -50%);
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 26px 34px;
+        background: var(--ink);
+        color: var(--canvas);
+        border: var(--border-bold);
+        box-shadow: var(--shadow-hard);
+        will-change: transform, opacity;
+      }
+      .s6-hub-num {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 96px;
+        line-height: 0.9;
+        letter-spacing: -0.03em;
+        color: var(--canvas);
+        font-variant-numeric: tabular-nums;
+      }
+      .s6-hub-label {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--deco-1);
+      }
+
+      /* Vertical spring ticker — supporting result fragments */
+      .s6-ticker-wrap {
+        position: absolute;
+        left: 50%;
+        top: 1320px;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .s6-ticker-eyebrow {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink);
+      }
+      .s6-ticker {
+        width: 760px;
+        height: 104px;
+        overflow: hidden;
+        border-top: var(--border-bold);
+        border-bottom: var(--border-bold);
+        position: relative;
+        background: var(--deco-3);
+      }
+      .s6-ticker-inner {
+        display: flex;
+        flex-direction: column;
+        will-change: transform;
+      }
+      .s6-item {
+        height: 104px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 56px;
+        letter-spacing: -0.01em;
+        text-transform: uppercase;
+        color: var(--ink);
+      }
+
+      /* Primary headline — coordinate-target-zoom target, centered */
+      .s6-headline-wrap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 806px;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: center;
+        z-index: 4;
+        pointer-events: none;
+      }
+      .s6-headline {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 150px;
+        line-height: 0.86;
+        letter-spacing: -0.04em;
+        text-transform: uppercase;
+        color: var(--ink);
+        text-align: center;
+        max-width: 16ch;
+        background: var(--brand-primary);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        padding: 34px 40px;
+      }
+    </style>
+
+    <!-- Background frame + corner pins (decorative, z:0) -->
+    <div class="s6-frame"></div>
+    <span class="s6-corner s6-corner-tl"></span>
+    <span class="s6-corner s6-corner-tr"></span>
+    <span class="s6-corner s6-corner-bl"></span>
+    <span class="s6-corner s6-corner-br"></span>
+
+    <!-- Camera zoom layers (slow push-in onto headline) -->
+    <div class="s6-zoom-outer" id="s6-zoom-outer">
+      <div class="s6-zoom-inner" id="s6-zoom-inner">
+
+        <!-- Avatar cloud network (supporting background rail) -->
+        <svg class="s6-lines" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="s6-hub-wrap" id="s6-hub-wrap">
+          <div class="s6-hub" id="s6-hub">
+            <div class="s6-hub-num">+2 400</div>
+            <div class="s6-hub-label">Membres</div>
+          </div>
+        </div>
+
+        <!-- Vertical spring ticker (supporting result fragments) -->
+        <div class="s6-ticker-wrap">
+          <div class="s6-ticker-eyebrow">Resultats reels</div>
+          <div class="s6-ticker">
+            <div class="s6-ticker-inner" id="s6-ticker-inner">
+              <div class="s6-item">+340% en 90 jours</div>
+              <div class="s6-item">1er salaire double</div>
+              <div class="s6-item">Liberte financiere</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary headline -->
+        <div class="s6-headline-wrap">
+          <div class="s6-headline" id="s6-headline">ILS L'ONT DEJA FAIT</div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(2.4)",
+        emphasis: "expo.out",
+        exit: "power4.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+
+      window.__timelines = window.__timelines || {};
+
+      (async function () {
+        if (document.fonts && document.fonts.ready) {
+          try { await document.fonts.ready; } catch (e) {}
+        }
+
+        const W = 1080, H = 1920;
+        const tl = gsap.timeline({ paused: true });
+
+        // ---- Build avatar cloud (deterministic, no random) ----
+        const CENTER_X = 540;
+        const CENTER_Y = 806; // hub center (matches .s6-hub left/top)
+        const RADIUS_X = 300;
+        const RADIUS_Y = 360;
+        const AVATAR_COUNT = 8;
+        const AVATAR_FILLS = [
+          "var(--deco-1)", "var(--deco-2)", "var(--deco-3)", "var(--deco-4)",
+          "var(--brand-primary)", "var(--brand-secondary)", "var(--deco-2)", "var(--deco-4)",
+        ];
+        const AVATAR_GLYPHS = ["A", "K", "M", "S", "L", "T", "N", "R"];
+
+        const hubWrap = document.getElementById("s6-hub-wrap");
+        const linesSvg = document.querySelector(".s6-lines");
+
+        for (let i = 0; i < AVATAR_COUNT; i++) {
+          const angle = (i / AVATAR_COUNT) * Math.PI * 2 - Math.PI / 2;
+          const x = CENTER_X + Math.cos(angle) * RADIUS_X;
+          const y = CENTER_Y + Math.sin(angle) * RADIUS_Y;
+
+          const av = document.createElement("div");
+          av.className = "s6-avatar";
+          av.style.left = x + "px";
+          av.style.top = y + "px";
+          av.style.background = AVATAR_FILLS[i % AVATAR_FILLS.length];
+          av.textContent = AVATAR_GLYPHS[i % AVATAR_GLYPHS.length];
+          hubWrap.appendChild(av);
+
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", CENTER_X);
+          line.setAttribute("y1", CENTER_Y);
+          line.setAttribute("x2", x);
+          line.setAttribute("y2", y);
+          line.setAttribute("stroke", "var(--ink)");
+          line.setAttribute("stroke-width", "3");
+          line.setAttribute("stroke-dasharray", "8 10");
+          const len = Math.hypot(x - CENTER_X, y - CENTER_Y);
+          line.style.strokeDashoffset = String(len);
+          linesSvg.appendChild(line);
+        }
+
+        const avatars = hubWrap.querySelectorAll(".s6-avatar");
+        const lines = linesSvg.querySelectorAll("line");
+
+        // ---- Vertical spring ticker (additive springs) ----
+        const ITEM_HEIGHT = 104;
+        const tickerInner = document.getElementById("s6-ticker-inner");
+        const springs = [{ p: 0 }, { p: 0 }]; // 2 steps -> rolls through 3 items
+        function applyTicker() {
+          const sum = springs[0].p + springs[1].p;
+          tickerInner.style.transform = "translateY(" + (-sum * ITEM_HEIGHT) + "px)";
+        }
+        applyTicker();
+
+        // ============ PHASE 1 (0 - ~1.6s): cloud assembles + ticker rolls ============
+        // Hub fade-in
+        tl.from(".s6-hub", { opacity: 0, scale: 0.8, duration: DUR.med, ease: "back.out(1.8)" }, 0);
+
+        // Avatars cascade-in (staggered spring)
+        avatars.forEach((av, i) => {
+          tl.fromTo(av,
+            { opacity: 0, scale: 0 },
+            { opacity: 1, scale: 1, duration: 0.42, ease: "back.out(1.8)" },
+            0.18 + i * 0.07,
+          );
+        });
+
+        // Connection lines draw outward
+        lines.forEach((line, i) => {
+          tl.to(line,
+            { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" },
+            0.55 + i * 0.03,
+          );
+        });
+
+        // Ticker rolls (2 additive spring steps)
+        springs.forEach((spring, i) => {
+          tl.to(spring,
+            { p: 1, duration: 0.42, ease: "back.out(1.8)", onUpdate: applyTicker },
+            0.35 + i * 0.35,
+          );
+        });
+
+        // ============ HANDOFF: demote cloud + ticker to supporting background rail ============
+        // Lower contrast + compact, push out of the headline safe zone.
+        tl.to(".s6-hub-wrap", { opacity: 0.32, scale: 0.82, duration: DUR.med, ease: EASE.emphasis }, 1.5);
+        tl.to(".s6-lines", { opacity: 0.18, duration: DUR.med, ease: EASE.emphasis }, 1.5);
+        tl.to(".s6-ticker-wrap", { opacity: 0.34, scale: 0.86, duration: DUR.med, ease: EASE.emphasis }, 1.5);
+
+        // ============ PHASE 2 (~1.6 - 3.072s): headline becomes primary ============
+        // Headline slam-pop entry as the call-to-identify.
+        tl.fromTo("#s6-headline",
+          { opacity: 0, scale: 0.7, y: 30 },
+          { opacity: 1, scale: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+          1.62,
+        );
+
+        // ---- coordinate-target-zoom: measured offset, slow push-in onto headline ----
+        const r = document.getElementById("s6-headline").getBoundingClientRect();
+        const TARGET_OFFSET_X = r.left + r.width / 2 - W / 2;
+        const TARGET_OFFSET_Y = r.top + r.height / 2 - H / 2;
+        const counterX = -TARGET_OFFSET_X;
+        const counterY = -TARGET_OFFSET_Y;
+        const maxScale = Math.min((0.88 * W) / r.width, (0.88 * H) / r.height);
+        const ZOOM_SCALE = Math.min(1.16, isFinite(maxScale) && maxScale > 1 ? maxScale : 1.16);
+
+        // Stillness-before-climax: short hold, then slow macro push-in lands the eye.
+        tl.to("#s6-zoom-outer", { scale: ZOOM_SCALE, duration: 0.95, ease: "power3.inOut" }, 2.0);
+        tl.to("#s6-zoom-inner", { x: counterX, y: counterY, duration: 0.95, ease: "power3.inOut" }, 2.0);
+
+        // Hold on stable final frame (no exit — Step 7 owns the seam).
+        window.__timelines["scene_6"] = tl;
+      })();
+    </script>
+  </div>
+</template>

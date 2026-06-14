@@ -1,0 +1,416 @@
+<template id="scene_7-template">
+  <div id="root" class="scene_7-root" data-composition-id="scene_7" data-width="1080" data-height="1920" data-duration="6.805" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--canvas);
+        font-family: var(--font-body);
+        perspective: 1500px;
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Macro camera target — everything that pushes in lives in here */
+      .s7-stage {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+      }
+
+      /* ---- Phase 1: CTA button + cursor ---- */
+      .s7-cta-wrap {
+        position: absolute;
+        left: 50%;
+        top: 806px;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 64px;
+        z-index: 5;
+      }
+      .s7-eyebrow {
+        font-family: var(--font-mono);
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--brand-secondary);
+        opacity: 0;
+      }
+      .s7-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 44px 72px;
+        background: var(--brand-primary);
+        color: var(--canvas);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        font-family: var(--font-display);
+        font-size: 108px;
+        line-height: 0.95;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        text-align: center;
+        max-width: 880px;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      /* Animated cursor */
+      .s7-cursor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 84px;
+        height: 84px;
+        pointer-events: none;
+        z-index: 100;
+        transform-origin: 0 0;
+        filter: drop-shadow(4px 5px 0 rgba(14, 26, 58, 0.45));
+        opacity: 0;
+      }
+
+      /* Click ripple rings centered on button */
+      .s7-ripple {
+        position: absolute;
+        left: 50%;
+        top: 806px;
+        width: 200px;
+        height: 200px;
+        margin-left: -100px;
+        margin-top: -100px;
+        border-radius: 50%;
+        border: 6px solid var(--brand-secondary);
+        transform: scale(0);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 4;
+      }
+
+      /* ---- Phase 2: bicolor end card ---- */
+      .s7-endcard {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 80px;
+        opacity: 0;
+        z-index: 20;
+        /* flat brutalist split fill: blue top half, orange bottom half */
+        background: linear-gradient(
+          to bottom,
+          var(--brand-secondary) 0%,
+          var(--brand-secondary) 50%,
+          var(--brand-primary) 50%,
+          var(--brand-primary) 100%
+        );
+      }
+      /* hard divider on the split seam */
+      .s7-seam {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 8px;
+        background: var(--ink);
+        transform: translateY(-50%);
+        z-index: 1;
+      }
+      .s7-flip-wrap {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        z-index: 3;
+        padding: 0 40px;
+      }
+      .s7-flip {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 132px;
+        line-height: 0.95;
+        letter-spacing: 0.02em;
+        color: var(--canvas);
+        text-transform: uppercase;
+        text-align: center;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        position: relative;
+      }
+      .s7-ghost {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .s7-char {
+        display: inline-block;
+        transform-origin: bottom;
+        transform-style: preserve-3d;
+        will-change: transform, opacity;
+      }
+      .s7-sig {
+        font-family: var(--font-mono);
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-align: center;
+        color: var(--canvas);
+        max-width: 900px;
+        z-index: 3;
+        opacity: 0;
+      }
+      .s7-sig b {
+        color: var(--deco-1);
+        font-weight: 700;
+      }
+    </style>
+
+    <div class="s7-stage">
+      <!-- Phase 1: CTA button (the action) -->
+      <div class="s7-cta-wrap" id="s7-cta">
+        <span class="s7-eyebrow">2026. C'EST MAINTENANT.</span>
+        <button class="s7-btn" id="s7-btn">REJOINDRE MAINTENANT</button>
+      </div>
+
+      <!-- Click ripple rings -->
+      <div class="s7-ripple" id="s7-ripple-1"></div>
+      <div class="s7-ripple" id="s7-ripple-2"></div>
+      <div class="s7-ripple" id="s7-ripple-3"></div>
+
+      <!-- Cursor -->
+      <svg class="s7-cursor" id="s7-cursor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 2 L21 12 L12 13 L7 22 Z" fill="var(--canvas)" stroke="var(--ink)" stroke-width="1.5" />
+      </svg>
+
+      <!-- Phase 2: bicolor end card (the payoff) -->
+      <div class="s7-endcard" id="s7-endcard">
+        <div class="s7-seam"></div>
+        <div class="s7-flip-wrap">
+          <div class="s7-flip" id="s7-flip" data-target="INSCRIPTIONS OUVERTES"></div>
+        </div>
+        <div class="s7-sig" id="s7-sig">TRANSFORME 2026 EN <b>ANNEE DE REVENUS</b></div>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(2.4)",
+        emphasis: "expo.out",
+        exit: "power4.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const W = 1080;
+      const H = 1920;
+      // Button visual center (matches .s7-cta-wrap top:806 with the button below the eyebrow).
+      // The cta-wrap is centered at y=806; button sits below eyebrow+gap, ~+70px.
+      const BTN_X = W / 2 + 36; // offset landing: a hair right of dead-center (human, not scripted)
+      const BTN_Y = 876;
+
+      // ---- Macro: slow push-in on the whole stage ----
+      tl.fromTo(
+        ".s7-stage",
+        { scale: 1.0 },
+        { scale: 1.06, duration: 6.805, ease: "none" },
+        0,
+      );
+
+      // ---- Phase 1: CTA presence ----
+      // Eyebrow + button enter (hit-and-stick slam-pop)
+      tl.fromTo(
+        ".s7-eyebrow",
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.emphasis },
+        0.15,
+      );
+      tl.fromTo(
+        "#s7-btn",
+        { opacity: 0, scale: 0.7 },
+        { opacity: 1, scale: 1, duration: DUR.slow, ease: EASE.entry },
+        0.28,
+      );
+
+      // Pre-click glow pulse — CTA holds the one live slot (hard-shadow breathing)
+      tl.to(
+        "#s7-btn",
+        { boxShadow: "11px 11px 0 var(--ink)", duration: 0.5, ease: EASE.drift, yoyo: true, repeat: 1 },
+        1.3,
+      );
+
+      // Cursor hard-cut in (real cursors don't fade)
+      tl.fromTo(
+        "#s7-cursor",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.008, ease: "none" },
+        1.0,
+      );
+      // Cursor starts off the button (lower-left), springs to landing point
+      gsap.set("#s7-cursor", { x: W * 0.18, y: H * 0.9 });
+      const APPROACH_START = 1.0;
+      const APPROACH_DUR = 1.3;
+      const PRESS_DOWN_AT = APPROACH_START + APPROACH_DUR; // 2.3 — strict: cursor lands exactly when press starts
+      tl.to(
+        "#s7-cursor",
+        { x: BTN_X, y: BTN_Y, duration: APPROACH_DUR, ease: "power2.out" },
+        APPROACH_START,
+      );
+
+      // Press down — button + cursor compress in lockstep (single target array)
+      const PRESS_DOWN_DUR = 0.16;
+      tl.to(
+        ["#s7-btn", "#s7-cursor"],
+        { scale: (i) => (i === 0 ? 0.9 : 0.85), duration: PRESS_DOWN_DUR, ease: "power3.out" },
+        PRESS_DOWN_AT,
+      );
+      // Inner-glow confirm during press
+      tl.to(
+        "#s7-btn",
+        { boxShadow: "inset 0 0 0 6px var(--ink), 3px 3px 0 var(--ink)", duration: PRESS_DOWN_DUR, ease: "power1.in" },
+        PRESS_DOWN_AT,
+      );
+
+      // stillness-before-climax 0.5s: hold the pressed beat
+      const RELEASE_AT = PRESS_DOWN_AT + PRESS_DOWN_DUR + 0.5; // 2.96
+      tl.to(
+        ["#s7-btn", "#s7-cursor"],
+        { scale: 1, duration: 0.5, ease: "back.out(2.0)" },
+        RELEASE_AT,
+      );
+      tl.to(
+        "#s7-btn",
+        { boxShadow: "8px 8px 0 var(--ink)", duration: 0.4, ease: "power2.out" },
+        RELEASE_AT,
+      );
+
+      // Click ripple burst from the button center (fires at press down)
+      tl.set(["#s7-ripple-1", "#s7-ripple-2", "#s7-ripple-3"], { opacity: 1 }, PRESS_DOWN_AT + 0.02);
+      tl.to(
+        ["#s7-ripple-1", "#s7-ripple-2", "#s7-ripple-3"],
+        { scale: 4.2, opacity: 0, duration: 0.7, ease: "power2.out", stagger: 0.08, immediateRender: false },
+        PRESS_DOWN_AT + 0.02,
+      );
+
+      // ---- Phase 2: scale-swap — CTA demotes, end card pops in (the payoff) ----
+      const SWAP_AT = RELEASE_AT + 0.5; // 3.46 — after release settles + brief dwell on confirm
+      // Outgoing: CTA compacts + fades (button demotes)
+      tl.to(
+        "#s7-cta",
+        { scale: 0.7, opacity: 0, duration: 0.4, ease: "power2.in" },
+        SWAP_AT,
+      );
+      tl.to(
+        "#s7-cursor",
+        { opacity: 0, duration: 0.3, ease: "power2.in" },
+        SWAP_AT,
+      );
+      // Incoming: bicolor end card scales in with overshoot (morph illusion)
+      tl.fromTo(
+        "#s7-endcard",
+        { scale: 0.72, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.8)" },
+        SWAP_AT + 0.4 - 0.15, // OVERLAP 0.15
+      );
+
+      // ---- hacker-flip-3d: "PLACES LIMITEES" decodes into "INSCRIPTIONS OUVERTES" ----
+      const wrap = document.getElementById("s7-flip");
+      const targetWord = wrap.dataset.target;
+      const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
+
+      wrap.innerHTML = "";
+      const ghostRow = document.createElement("div");
+      ghostRow.className = "s7-ghost";
+      ghostRow.style.display = "inline-flex";
+      ghostRow.style.flexWrap = "wrap";
+      ghostRow.style.justifyContent = "center";
+      ghostRow.style.position = "absolute";
+      ghostRow.style.left = "0";
+      ghostRow.style.top = "0";
+      ghostRow.style.width = "100%";
+      ghostRow.textContent = targetWord;
+      wrap.appendChild(ghostRow);
+
+      const charEls = [];
+      const liveRow = document.createElement("div");
+      liveRow.style.display = "inline-flex";
+      liveRow.style.flexWrap = "wrap";
+      liveRow.style.justifyContent = "center";
+      liveRow.style.position = "relative";
+      for (const ch of targetWord) {
+        const span = document.createElement("span");
+        span.className = "s7-char";
+        span.textContent = ch === " " ? " " : ch;
+        span.dataset.target = ch;
+        span.style.opacity = "0";
+        span.style.transform = "rotateX(90deg)";
+        liveRow.appendChild(span);
+        charEls.push(span);
+      }
+      wrap.appendChild(liveRow);
+
+      function pseudoGlyph(seed) {
+        const h = ((seed * 9301 + 49297) % 233280) / 233280;
+        return GLYPHS[Math.floor(h * GLYPHS.length)];
+      }
+
+      const FLIP_DURATION = 0.6;
+      const CHAR_STAGGER = 0.045;
+      const REVEAL_THRESHOLD = 0.6;
+      const FLIP_START = SWAP_AT + 0.55; // after the end card has scaled past micro-frames
+
+      charEls.forEach((el, i) => {
+        const state = { p: 0 };
+        const targetCh = el.dataset.target;
+        tl.to(
+          state,
+          {
+            p: 1,
+            duration: FLIP_DURATION,
+            ease: "power3.out",
+            onUpdate: () => {
+              const progress = state.p;
+              if (targetCh === " ") {
+                el.textContent = " ";
+              } else if (progress < REVEAL_THRESHOLD) {
+                const flickerSeed = i * 1000 + Math.floor(progress * 100);
+                el.textContent = pseudoGlyph(flickerSeed);
+              } else {
+                el.textContent = targetCh;
+              }
+              const rotateX = 90 - progress * 90;
+              const opacity = Math.min(1, progress * 2);
+              el.style.transform = "rotateX(" + rotateX + "deg)";
+              el.style.opacity = opacity;
+            },
+          },
+          FLIP_START + i * CHAR_STAGGER,
+        );
+      });
+
+      // Signature line reveals after the decode resolves (payoff holds, everything else rests)
+      const DECODE_END = FLIP_START + CHAR_STAGGER * (charEls.length - 1) + FLIP_DURATION;
+      tl.fromTo(
+        "#s7-sig",
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.emphasis },
+        Math.min(DECODE_END - 0.2, 6.3),
+      );
+
+      window.__timelines["scene_7"] = tl;
+    </script>
+  </div>
+</template>

@@ -1,0 +1,314 @@
+<template id="scene_1-template">
+  <div id="root" class="scene_1-root" data-composition-id="scene_1" data-width="1080" data-height="1920" data-duration="3.925" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--ink);
+        font-family: var(--font-body);
+        overflow: hidden;
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Faint dot-grid overlay on the dark open (the single dark scene) */
+      .s1-grid-bg {
+        position: absolute;
+        inset: 0;
+        background-color: var(--ink);
+        background-image: radial-gradient(rgba(255, 255, 255, 0.10) 1.5px, transparent 1.5px);
+        background-size: 40px 40px;
+        z-index: 0;
+      }
+
+      /* Camera wraps everything — multi-phase push-in */
+      .s1-camera {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+        z-index: 1;
+      }
+
+      /* Hard-bordered dark card framed by corner-pins */
+      .s1-frame {
+        position: relative;
+        width: 880px;
+        padding: 120px 48px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+      }
+      .s1-corner {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: var(--brand-primary);
+      }
+      .s1-tl { top: 0; left: 0; }
+      .s1-tr { top: 0; right: 0; }
+      .s1-bl { bottom: 0; left: 0; }
+      .s1-br { bottom: 0; right: 0; }
+
+      /* Hero breathing slot — multiplicative ±2% lives here */
+      .s1-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        will-change: transform;
+        perspective: 1600px;
+      }
+
+      /* "2026" hacker-flip decode — mega display tier */
+      .s1-flip {
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 360px;
+        line-height: 0.92;
+        letter-spacing: 6px;
+        color: var(--brand-costume);
+        display: flex;
+        position: relative;
+      }
+      .s1-flip-ghost {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .s1-flip-char {
+        display: inline-block;
+        transform-origin: bottom;
+        transform-style: preserve-3d;
+        will-change: transform, opacity;
+      }
+
+      /* "ARRIVE" 3d depth-stack slam */
+      .s1-depth {
+        position: relative;
+        margin-top: 8px;
+      }
+      .s1-depth-text {
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 168px;
+        letter-spacing: -2px;
+        line-height: 1;
+        color: var(--brand-primary);
+        text-transform: uppercase;
+      }
+      .s1-depth-text.s1-is-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+      .s1-depth-text.s1-is-front {
+        position: relative;
+        z-index: 10;
+      }
+
+      /* Mono UPPERCASE eyebrow — the rhetorical fear-question fragment */
+      .s1-eyebrow {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 34px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--deco-3);
+        text-align: center;
+      }
+    </style>
+
+    <div class="s1-grid-bg clip" data-start="0" data-duration="3.925" data-track-index="0"></div>
+
+    <div class="s1-camera clip" data-start="0" data-duration="3.925" data-track-index="1">
+      <div class="s1-frame">
+        <span class="s1-corner s1-tl"></span>
+        <span class="s1-corner s1-tr"></span>
+        <span class="s1-corner s1-bl"></span>
+        <span class="s1-corner s1-br"></span>
+
+        <div class="s1-hero">
+          <div class="s1-flip" id="s1-flip" data-target="2026"></div>
+          <div class="s1-depth" id="s1-depth"></div>
+        </div>
+
+        <div class="s1-eyebrow">ES-TU PRET POUR 2026 ?</div>
+      </div>
+    </div>
+
+    <script>
+      // Easings / durations (from dispatch inline section)
+      const EASE = {
+        entry: "back.out(2.4)", // bouncy slam-pop
+        emphasis: "expo.out", // hard arrival
+        exit: "power4.in", // dive off
+        drift: "sine.inOut", // ambient breathing
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // ---- hacker-flip-3d: "2026" decodes (digit-only glyph pool) ----
+      const flipWrap = document.getElementById("s1-flip");
+      const flipTarget = flipWrap.dataset.target;
+      const GLYPHS = "0123456789";
+
+      const ghostRow = document.createElement("div");
+      ghostRow.className = "s1-flip-ghost";
+      ghostRow.style.display = "inline-flex";
+      ghostRow.style.position = "absolute";
+      ghostRow.style.left = "0";
+      ghostRow.style.top = "0";
+      ghostRow.textContent = flipTarget;
+      flipWrap.appendChild(ghostRow);
+
+      const flipChars = [];
+      const liveRow = document.createElement("div");
+      liveRow.style.display = "inline-flex";
+      liveRow.style.position = "relative";
+      for (const ch of flipTarget) {
+        const span = document.createElement("span");
+        span.className = "s1-flip-char";
+        span.textContent = ch;
+        span.dataset.target = ch;
+        liveRow.appendChild(span);
+        flipChars.push(span);
+      }
+      flipWrap.appendChild(liveRow);
+
+      // Deterministic pseudo-glyph (seeded PRNG)
+      function pseudoGlyph(seed) {
+        const h = ((seed * 9301 + 49297) % 233280) / 233280;
+        return GLYPHS[Math.floor(h * GLYPHS.length)];
+      }
+
+      const FLIP_DURATION = 0.7;
+      const CHAR_STAGGER = 0.06;
+      const REVEAL_THRESHOLD = 0.6;
+
+      flipChars.forEach((el, i) => {
+        const state = { p: 0 };
+        tl.to(
+          state,
+          {
+            p: 1,
+            duration: FLIP_DURATION,
+            ease: EASE.emphasis,
+            onUpdate: () => {
+              const progress = state.p;
+              if (progress < REVEAL_THRESHOLD) {
+                const flickerSeed = i * 1000 + Math.floor(progress * 100);
+                el.textContent = pseudoGlyph(flickerSeed);
+              } else {
+                el.textContent = el.dataset.target;
+              }
+              const rotateX = 90 - progress * 90;
+              el.style.transform = "rotateX(" + rotateX + "deg)";
+              el.style.opacity = Math.min(1, progress * 2);
+            },
+          },
+          0.2 + i * CHAR_STAGGER,
+        );
+      });
+
+      // ---- 3d-text-depth-layers: "ARRIVE" slams under, cold extrusion ----
+      const DEPTH_TEXT = "ARRIVE";
+      const LAYER_COUNT = 5;
+      const OFFSET_X = -3; // light from upper-right (cold phone-light feel)
+      const OFFSET_Y = 3;
+      const BACK_ALPHA_MAX = 0.8;
+      const BACK_ALPHA_STEP = 0.13;
+      const BACK_ALPHA_MIN = 0.12;
+      const depthStack = document.getElementById("s1-depth");
+
+      for (let i = LAYER_COUNT - 1; i >= 0; i--) {
+        const el = document.createElement("div");
+        el.className = "s1-depth-text " + (i === 0 ? "s1-is-front" : "s1-is-back");
+        el.textContent = DEPTH_TEXT;
+        if (i > 0) {
+          const alpha = Math.max(BACK_ALPHA_MAX - i * BACK_ALPHA_STEP, BACK_ALPHA_MIN);
+          el.style.color = "rgba(27, 58, 140, " + alpha + ")"; // blue extrusion (stability accent) behind orange front
+          el.style.transform = "translate(" + i * OFFSET_X + "px, " + i * OFFSET_Y + "px)";
+        }
+        el.dataset.layer = String(i);
+        depthStack.appendChild(el);
+      }
+
+      const SLAM_AT = 0.95; // after "2026" decode settles — stillness-before-payoff handled by camera/hero hold
+      const LAYER_FADE_DUR = 0.42;
+      const LAYER_CASCADE_STEP = 0.07;
+      const depthLayers = depthStack.querySelectorAll(".s1-depth-text");
+      depthLayers.forEach((el) => {
+        const i = Number(el.dataset.layer);
+        const finalAlpha = el.classList.contains("s1-is-front")
+          ? 1
+          : Math.max(BACK_ALPHA_MAX - i * BACK_ALPHA_STEP, BACK_ALPHA_MIN);
+        tl.fromTo(
+          el,
+          { opacity: 0, y: 40 },
+          { opacity: finalAlpha, y: (i * OFFSET_Y), duration: LAYER_FADE_DUR, ease: EASE.entry },
+          SLAM_AT + (LAYER_COUNT - 1 - i) * LAYER_CASCADE_STEP,
+        );
+      });
+
+      // Eyebrow fades up under the stack
+      tl.fromTo(
+        ".s1-eyebrow",
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.emphasis },
+        1.55,
+      );
+
+      // ---- multi-phase-camera: slow push-in (pull-back -> settle -> push) ----
+      const camera = document.querySelector(".s1-camera");
+      const phase = { scale: 0.92 };
+      tl.to(phase, { scale: 1.0, duration: 1.2, ease: "power3.out" }, 0.3);
+      tl.to(phase, { scale: 1.07, duration: 1.6, ease: "power2.inOut" }, 2.0);
+
+      const drift = { p: 0 };
+      tl.to(
+        drift,
+        {
+          p: Math.PI * 2 * 1.5,
+          duration: 3.925,
+          ease: "none",
+          onUpdate: () => {
+            const dx = Math.sin(drift.p) * 5;
+            const dy = Math.sin(drift.p * 1.3) * 3;
+            camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+          },
+        },
+        0,
+      );
+
+      // ---- hero breathing ±2% (live slot) ----
+      const breathe = { p: 0 };
+      tl.to(
+        breathe,
+        {
+          p: Math.PI * 2,
+          duration: 3.925,
+          ease: "none",
+          onUpdate: () => {
+            const s = 1 + Math.sin(breathe.p) * 0.02;
+            const hero = document.querySelector(".s1-hero");
+            if (hero) hero.style.transform = "scale(" + s + ")";
+          },
+        },
+        0,
+      );
+
+      window.__timelines["scene_1"] = tl;
+    </script>
+  </div>
+</template>

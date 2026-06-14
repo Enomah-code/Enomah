@@ -1,0 +1,339 @@
+<template id="scene_5-template">
+  <div id="root" class="scene_5-root" data-composition-id="scene_5" data-width="1080" data-height="1920" data-duration="6.699" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background-color: var(--canvas);
+        background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+        background-size: 40px 40px;
+        font-family: var(--font-body);
+        color: var(--ink);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Flat sticker deco blocks behind the stack (depth layer 1) */
+      .s5-deco-yellow {
+        position: absolute;
+        top: 150px;
+        left: 64px;
+        width: 220px;
+        height: 220px;
+        background: var(--deco-1);
+        border: var(--border-bold);
+        transform: rotate(-4deg);
+        z-index: 0;
+      }
+      .s5-deco-cyan {
+        position: absolute;
+        bottom: 120px;
+        right: 56px;
+        width: 260px;
+        height: 180px;
+        background: var(--deco-3);
+        border: var(--border-bold);
+        transform: rotate(3deg);
+        z-index: 0;
+      }
+
+      /* The dolly stage carries every foreground element (macro upward move) */
+      .s5-stage {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+        padding: 120px 70px;
+        gap: 28px;
+      }
+
+      .s5-eyebrow {
+        align-self: flex-start;
+        margin-bottom: 8px;
+        padding: 10px 20px;
+        background: var(--brand-secondary);
+        color: var(--canvas);
+        border: var(--border-bold);
+        box-shadow: 6px 6px 0 var(--ink);
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 30px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      /* One benefit band — hard-bordered, hard offset shadow */
+      .s5-band {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 30px 34px;
+        background: var(--canvas);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        opacity: 0;
+      }
+      .s5-band-num {
+        flex: 0 0 auto;
+        width: 78px;
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--brand-secondary);
+        color: var(--canvas);
+        border: var(--border-bold);
+        font-family: var(--font-display);
+        font-size: 52px;
+        line-height: 1;
+      }
+      .s5-band.s5-pay .s5-band-num {
+        background: var(--brand-primary);
+      }
+      .s5-band-text {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        font-family: var(--font-display);
+        font-size: 72px;
+        line-height: 0.96;
+        letter-spacing: -0.5px;
+        text-transform: uppercase;
+        white-space: pre;
+        color: var(--ink);
+      }
+      .s5-label {
+        color: var(--brand-secondary);
+      }
+      .s5-accent {
+        color: var(--brand-primary);
+      }
+      /* per-word glow cells used by the asr keyword glow on the payoff line */
+      .s5-word {
+        display: inline-block;
+        transform-origin: 50% 50%;
+        will-change: transform, text-shadow;
+      }
+      /* the typing cursor for the active band */
+      .s5-cursor {
+        display: inline-block;
+        width: 14px;
+        height: 62px;
+        margin-left: 10px;
+        vertical-align: -8px;
+        background: var(--brand-secondary);
+      }
+    </style>
+
+    <div class="s5-deco-yellow"></div>
+    <div class="s5-deco-cyan"></div>
+
+    <div class="s5-stage" id="s5-stage">
+      <div class="s5-eyebrow">CE QUE TU REÇOIS</div>
+
+      <!-- Band 1 -->
+      <div class="s5-band" id="s5-band-0">
+        <span class="s5-band-num">01</span>
+        <span class="s5-band-text"><span class="s5-label" id="s5-main-0"></span><span class="s5-accent" id="s5-acc-0"></span><span class="s5-cursor" id="s5-cur-0"></span></span>
+      </div>
+
+      <!-- Band 2 -->
+      <div class="s5-band" id="s5-band-1">
+        <span class="s5-band-num">02</span>
+        <span class="s5-band-text"><span class="s5-label" id="s5-main-1"></span><span class="s5-accent" id="s5-acc-1"></span><span class="s5-cursor" id="s5-cur-1"></span></span>
+      </div>
+
+      <!-- Band 3 -->
+      <div class="s5-band" id="s5-band-2">
+        <span class="s5-band-num">03</span>
+        <span class="s5-band-text"><span class="s5-label" id="s5-main-2"></span><span class="s5-accent" id="s5-acc-2"></span><span class="s5-cursor" id="s5-cur-2"></span></span>
+      </div>
+
+      <!-- Band 4 — money payoff, gets asr-keyword-glow -->
+      <div class="s5-band s5-pay" id="s5-band-3">
+        <span class="s5-band-num">04</span>
+        <span class="s5-band-text"><span class="s5-label s5-word" id="s5-main-3" data-word="comp">COMPÉTENCES</span><span class="s5-accent s5-word" id="s5-acc-3" data-word="argent"> → ARGENT</span></span>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(2.4)",
+        emphasis: "expo.out",
+        exit: "power4.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 6.699;
+
+      // ---- dynamic-content-sequencing: per-line start from content length ----
+      // Four benefit lines. main = blue label, accent = orange payoff word.
+      const LINES = [
+        { main: "STRATÉGIES", accent: " CONCRÈTES" },
+        { main: "OUTILS", accent: " PRÊTS" },
+        { main: "ACCOMPAGNEMENT", accent: " PAS À PAS" },
+        { main: "COMPÉTENCES", accent: " → ARGENT" },
+      ];
+      const CHAR_SPEED = 0.022; // s per typed char (uniform — one engine)
+      const HOLD_MID = 0.28;
+      const ENTRY_LEAD = 0.34; // band slam-in before typing begins
+      // start[i] = sum of previous (lead + type + hold); longer line => more time
+      let cumulative = 0.18;
+      const SEQ = LINES.map((ln, i) => {
+        const chars = ln.main.length + ln.accent.length;
+        const typeDur = chars * CHAR_SPEED;
+        const start = cumulative;
+        const isLast = i === LINES.length - 1;
+        cumulative += ENTRY_LEAD + typeDur + (isLast ? 0.0 : HOLD_MID);
+        return { ...ln, start, typeStart: start + ENTRY_LEAD, typeDur, isLast };
+      });
+
+      // ---- band slam-in entries (back.out hit-and-stick) + demote prior ----
+      SEQ.forEach((s, i) => {
+        const band = "#s5-band-" + i;
+        tl.fromTo(
+          band,
+          { opacity: 0, y: 46, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: DUR.med, ease: EASE.entry },
+          s.start,
+        );
+        // demote the previous band to the supporting rail when this one slams in
+        if (i > 0) {
+          tl.to(
+            "#s5-band-" + (i - 1),
+            { opacity: 0.42, scale: 0.96, duration: DUR.snap, ease: EASE.emphasis },
+            s.start,
+          );
+        }
+      });
+
+      // ---- per-line typewriter + context-sensitive-cursor (blue->orange) ----
+      // Bands 0..2 type their text; band 3 (payoff) is pre-rendered for the glow.
+      const TYPED = [0, 1, 2];
+      const driver = { t: 0 };
+      const lastMain = ["", "", ""];
+      const lastAcc = ["", "", ""];
+      const BLINK_CYCLE = 0.5; // s, decoupled square wave
+
+      tl.to(
+        driver,
+        {
+          t: TOTAL,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            const t = driver.t;
+            TYPED.forEach((i) => {
+              const s = SEQ[i];
+              const mainEl = document.getElementById("s5-main-" + i);
+              const accEl = document.getElementById("s5-acc-" + i);
+              const curEl = document.getElementById("s5-cur-" + i);
+              const mainLen = s.main.length;
+              const accLen = s.accent.length;
+
+              let visMain = "";
+              let visAccent = "";
+              if (t >= s.typeStart) {
+                const charIdx = Math.floor((t - s.typeStart) / CHAR_SPEED);
+                visMain = s.main.slice(0, Math.min(charIdx, mainLen));
+                const accIdx = Math.max(0, charIdx - mainLen);
+                visAccent = s.accent.slice(0, accIdx);
+              }
+              if (visMain !== lastMain[i]) {
+                mainEl.textContent = visMain;
+                lastMain[i] = visMain;
+              }
+              if (visAccent !== lastAcc[i]) {
+                accEl.textContent = visAccent;
+                lastAcc[i] = visAccent;
+              }
+
+              // cursor: only visible while this line is the active (still typing) one
+              const typingDone = t >= s.typeStart + s.typeDur;
+              const started = t >= s.start;
+              if (!started || typingDone) {
+                curEl.style.opacity = "0";
+              } else {
+                const inAccent = visMain.length === mainLen && visAccent.length > 0;
+                curEl.style.background = inAccent
+                  ? "var(--brand-primary)"
+                  : "var(--brand-secondary)";
+                curEl.style.opacity =
+                  (t % BLINK_CYCLE) < BLINK_CYCLE / 2 ? "1" : "0";
+              }
+            });
+          },
+        },
+        0,
+      );
+
+      // ---- asr-keyword-glow on the money payoff line (band 3) ----
+      const ATTACK_DUR = 0.16;
+      const RELEASE = 0.4;
+      const REST_LEVEL = 0.15;
+      const MAX_BLUR = 34;
+      const MAX_SCALE_BOOST = 0.16;
+      const payStart = SEQ[3].start + 0.18;
+      const GLOW = {
+        comp: { start: payStart, end: payStart + 0.42 },
+        argent: { start: payStart + 0.5, end: TOTAL - 0.2 },
+      };
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+        if (time < releaseEnd)
+          return 1 - ((time - end) / RELEASE) * (1 - REST_LEVEL);
+        return REST_LEVEL;
+      }
+      const glowDriver = { t: 0 };
+      const glowWords = document.querySelectorAll("#s5-band-3 .s5-word");
+      tl.to(
+        glowDriver,
+        {
+          t: TOTAL,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            glowWords.forEach((el) => {
+              const g = GLOW[el.dataset.word];
+              if (!g) return;
+              const env = envelope(glowDriver.t, g.start, g.end);
+              const blur = MAX_BLUR * env;
+              const scale = 1 + MAX_SCALE_BOOST * env;
+              el.style.textShadow =
+                "0 0 " + blur + "px rgba(232, 82, 30, " + (0.2 + env * 0.6) + ")";
+              el.style.transform = "scale(" + scale + ")";
+            });
+          },
+        },
+        0,
+      );
+
+      // ---- macro: slow upward dolly following the stack growth ----
+      tl.fromTo(
+        "#s5-stage",
+        { y: 36 },
+        { y: -36, duration: TOTAL, ease: EASE.drift },
+        0,
+      );
+
+      window.__timelines["scene_5"] = tl;
+    </script>
+  </div>
+</template>
