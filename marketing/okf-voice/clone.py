@@ -27,11 +27,24 @@ MODEL = "tts_models/multilingual/multi-dataset/xtts_v2"
 os.environ.setdefault("COQUI_TOS_AGREED", "1")
 
 
-def trim(clip, sr, thr_ratio=0.012):
+def trim(clip, sr, thr_ratio=0.008):
+    """Trim leading/trailing silence, keeping generous padding so soft consonants
+    at phrase edges are never clipped."""
     thr = thr_ratio * (np.max(np.abs(clip)) + 1e-9)
     idx = np.where(np.abs(clip) > thr)[0]
     if len(idx):
-        clip = clip[max(0, idx[0] - int(0.03 * sr)): idx[-1] + int(0.06 * sr)]
+        clip = clip[max(0, idx[0] - int(0.05 * sr)): idx[-1] + int(0.12 * sr)]
+    return edge_fade(clip, sr)
+
+
+def edge_fade(clip, sr, ms=12.0):
+    """Short linear fade in/out to avoid clicks where clips are concatenated."""
+    n = int(ms / 1000 * sr)
+    if len(clip) > 2 * n and n > 0:
+        ramp = np.linspace(0.0, 1.0, n, dtype=np.float32)
+        clip = clip.copy()
+        clip[:n] *= ramp
+        clip[-n:] *= ramp[::-1]
     return clip
 
 
