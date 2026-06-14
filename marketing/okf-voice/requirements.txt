@@ -1,0 +1,17 @@
+# Voice clone of the OKF promo (XTTS-v2). CPU works; install torch first.
+#
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+#
+# Notes for fresh containers:
+#  - Debian's setuptools breaks legacy setup.py builds; `pip install -U
+#    "setuptools<82"` fixes demucs/antlr4 ("AttributeError: install_layout").
+#  - `docopt` has no wheel and fails to build the same way; `docopt-ng`
+#    provides the same import. Register a docopt dist-info shim if a resolver
+#    still demands the `docopt` distribution name.
+coqui-tts>=0.27          # XTTS-v2 (fork of the original Coqui TTS)
+transformers>=4.57,<5    # 5.x removed isin_mps_friendly used by XTTS
+demucs>=4.0              # vocal isolation for a clean speaker reference
+soundfile>=0.12
+scipy>=1.10
+imageio-ffmpeg>=0.4
