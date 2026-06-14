@@ -32,6 +32,10 @@ python3 clone.py
 
 # Make the cloned voice say anything
 python3 clone.py --text "Bonjour, votre colis OKF est arrivé à Lomé."
+
+# Tune delivery: livelier intonation / different speed (defaults 0.85 / 1.06)
+python3 clone.py --temperature 0.9 --speed 1.06   # more dynamic
+python3 clone.py --temperature 0.65 --speed 1.0   # calm / neutral
 ```
 
 To rebuild the reference from a different source clip:
