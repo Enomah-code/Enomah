@@ -21,7 +21,7 @@ import tempfile
 
 import numpy as np
 import soundfile as sf
-from scipy.signal import resample_poly
+from scipy.signal import butter, resample_poly, sosfilt
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -66,12 +66,53 @@ def best_speech_window(x, sr, win):
     return x[i0:i0 + fl]
 
 
+def collect_voiced(x, sr, frame=0.03, thr_ratio=0.06, pad=0.04, gap=0.12):
+    """Concatenate only the voiced frames, dropping silent gaps where isolation
+    artifacts and music bleed live — a cleaner reference than a raw window."""
+    fl = int(frame * sr)
+    rms = np.array([np.sqrt(np.mean(x[i:i + fl] ** 2) + 1e-12)
+                    for i in range(0, len(x) - fl, fl)])
+    if not len(rms):
+        return x
+    thr = thr_ratio * np.max(rms)
+    voiced = rms > thr
+    sil = np.zeros(int(gap * sr), dtype=np.float32)
+    out, run = [], None
+    for k, v in enumerate(voiced):
+        if v and run is None:
+            run = k
+        if (not v or k == len(voiced) - 1) and run is not None:
+            a = max(0, int(run * fl) - int(pad * sr))
+            b = min(len(x), int(k * fl) + int(pad * sr))
+            out.append(x[a:b])
+            out.append(sil)
+            run = None
+    return np.concatenate(out) if out else x
+
+
+def highpass(x, sr, cutoff=75.0):
+    sos = butter(4, cutoff / (sr / 2), btype="highpass", output="sos")
+    return sosfilt(sos, x).astype(np.float32)
+
+
+def denoise(x, sr, prop_decrease=0.8):
+    import noisereduce as nr
+    return nr.reduce_noise(y=x, sr=sr, stationary=False,
+                           prop_decrease=prop_decrease).astype(np.float32)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--src", required=True, help="reference video or audio file")
     ap.add_argument("--out", default=os.path.join(ROOT, "assets", "speaker_ref.wav"))
-    ap.add_argument("--window", type=float, default=16.0, help="reference length (s)")
+    ap.add_argument("--mode", choices=["concat", "window"], default="concat",
+                    help="'concat' keeps every voiced bit (cleaner, longer); "
+                         "'window' takes one loudest --window-second block")
+    ap.add_argument("--window", type=float, default=16.0,
+                    help="reference length (s) when --mode window")
     ap.add_argument("--no-isolate", action="store_true", help="skip music separation")
+    ap.add_argument("--no-clean", action="store_true",
+                    help="skip the high-pass + noise-reduction polish")
     args = ap.parse_args()
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -85,7 +126,17 @@ def main():
             wav = isolate_vocals(wav, sr)
 
     mono = wav.mean(axis=1)
-    seg = best_speech_window(mono, sr, args.window)
+    if args.mode == "concat":
+        seg = collect_voiced(mono, sr)
+        print(f"voiced speech kept: {len(seg) / sr:.1f}s")
+    else:
+        seg = best_speech_window(mono, sr, args.window)
+
+    if not args.no_clean:
+        seg = highpass(seg, sr)
+        seg = denoise(seg, sr)
+        print("polished: high-pass 75Hz + noise reduction")
+
     seg = resample_poly(seg, 24000, sr)
     seg = seg / (np.max(np.abs(seg)) + 1e-9) * 0.97
 

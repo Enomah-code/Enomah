@@ -12,6 +12,7 @@
 coqui-tts>=0.27          # XTTS-v2 (fork of the original Coqui TTS)
 transformers>=4.57,<5    # 5.x removed isin_mps_friendly used by XTTS
 demucs>=4.0              # vocal isolation for a clean speaker reference
+noisereduce>=3.0         # residual-noise polish on the reference
 soundfile>=0.12
 scipy>=1.10
 imageio-ffmpeg>=0.4

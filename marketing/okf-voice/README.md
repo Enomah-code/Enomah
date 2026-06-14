@@ -7,11 +7,11 @@ using zero-shot voice cloning (Coqui **XTTS-v2**).
 
 | File | Role |
 |------|------|
-| `prepare_ref.py` | Build a clean speaker reference from the promo (decode → isolate voice with Demucs → pick the loudest speech window). |
+| `prepare_ref.py` | Build a clean speaker reference (decode → isolate voice with Demucs → keep only voiced speech → high-pass + noise reduction). |
 | `clone.py` | Synthesise the full promo voice-over, or any `--text`, in the cloned voice. |
 | `script.py` | The OKF voice-over script (transcribed from the reference). |
 | `ta_shim.py` | Routes `torchaudio` I/O through `soundfile` (skips the CUDA-only torchcodec backend). |
-| `assets/speaker_ref.wav` | Ready-made 24 kHz speaker reference (18 s of isolated voice). |
+| `assets/speaker_ref.wav` | Ready-made 24 kHz speaker reference (~32 s of isolated, polished voice). |
 | `build/` | Generated audio (git-ignored). |
 
 ## Install
@@ -37,8 +37,10 @@ python3 clone.py --text "Bonjour, votre colis OKF est arrivé à Lomé."
 To rebuild the reference from a different source clip:
 
 ```bash
-python3 prepare_ref.py --src /path/to/promo.mp4         # isolates voice, writes assets/speaker_ref.wav
-python3 prepare_ref.py --src promo.mp4 --no-isolate     # if the source is already clean speech
+python3 prepare_ref.py --src /path/to/promo.mp4         # isolate + clean, writes assets/speaker_ref.wav
+python3 prepare_ref.py --src promo.mp4 --no-isolate     # source is already clean speech
+python3 prepare_ref.py --src promo.mp4 --mode window    # one loudest block instead of all voiced bits
+python3 prepare_ref.py --src promo.mp4 --no-clean       # skip the high-pass + denoise polish
 ```
 
 ## Script (transcribed)
