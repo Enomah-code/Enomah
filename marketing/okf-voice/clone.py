@@ -43,8 +43,12 @@ DYNAMICS = dict(temperature=0.85, speed=1.06, top_p=0.90, top_k=60,
 
 # Calm, faithful preset — best for cloning a real person's own voice (keeps the
 # timbre stable and avoids the "hollow" drift that high temperature can add).
+# Long conditioning (gpt_cond_len) lets XTTS listen to far more of the reference,
+# which carries the speaker's accent through better than the 6 s default.
 NATURAL = dict(temperature=0.70, speed=1.03, top_p=0.85, top_k=50,
-               length_penalty=1.0, repetition_penalty=2.0)
+               length_penalty=1.0, repetition_penalty=2.0,
+               gpt_cond_len=40, gpt_cond_chunk_len=20, max_ref_len=60,
+               sound_norm_refs=True)
 
 
 def load_tts():
