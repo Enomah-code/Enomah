@@ -37,4 +37,5 @@ htmlcov/
 # HyperFrames transient build artifacts & secrets
 videos/**/.dispatch/
 videos/**/.env
+videos/**/renders/work-*/
 **/node_modules/
