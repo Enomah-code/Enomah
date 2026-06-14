@@ -1,0 +1,134 @@
+{
+  "project": "MONEY BOOST 2026",
+  "narrativeArchetype": "Pain-Agitate-Solve with Feature-Benefit Cascade",
+  "orientation": "portrait",
+  "emotionalArc": "Anxiety about repeating the same year shifts through agitation to aspiration as Money Boost reveals its modules, then climbs through proof to urgent, triumphant motivation to act now.",
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "sceneName": "HOOK — 2026 ARRIVE",
+      "transition": {
+        "intent": "cut",
+        "description": "Opening scene: hard cut placeholder. Dark night frame, glowing phone light on a tired face; on-screen '2026 ARRIVE' punches in centered."
+      },
+      "narrativeIntent": {
+        "type": "hook",
+        "narrativeRole": "Stop the scroll by confronting the viewer with the fear of ending another year unchanged.",
+        "keyMessage": "2026 is coming — will you end it in the same place again?",
+        "persuasion": "Pain validation via rhetorical question",
+        "emotionalBeat": "Anxiety and urgency"
+      },
+      "assetCandidates": [],
+      "script": "Deux mille vingt-six arrive. Vas-tu encore finir l'année au même point ?",
+      "estimatedDuration": "8-9s"
+    },
+    {
+      "sceneNumber": 2,
+      "sceneName": "CHIFFRE CHOC — 365 JOURS",
+      "transition": {
+        "intent": "cut",
+        "description": "Hard cut from dark to a bright light background; giant '365 JOURS' number scales up fast and fills the vertical frame."
+      },
+      "narrativeIntent": {
+        "type": "pain_point",
+        "narrativeRole": "Compress the stakes into a single shocking number that frames time as the asset being wasted.",
+        "keyMessage": "You have exactly 365 days to change everything.",
+        "persuasion": "Shocking statistic",
+        "emotionalBeat": "Tension and urgency"
+      },
+      "assetCandidates": [],
+      "script": "Trois cent soixante-cinq jours pour tout changer.",
+      "estimatedDuration": "6-7s"
+    },
+    {
+      "sceneNumber": 3,
+      "sceneName": "PROBLÈME — SUBIR ou BOOSTER ?",
+      "transition": {
+        "intent": "slide",
+        "description": "Vertical split-screen slides in: top half scrolling and spending, bottom half managing and investing; bicolor 'SUBIR ou BOOSTER ?' lands on the seam."
+      },
+      "narrativeIntent": {
+        "type": "pain_point",
+        "narrativeRole": "Agitate by contrasting passive drift against active control, forcing a binary self-identification.",
+        "keyMessage": "Most people wait for the right moment that never comes.",
+        "persuasion": "Pain agitation + Contrast (chaos vs control)",
+        "emotionalBeat": "Frustration and FOMO"
+      },
+      "assetCandidates": [],
+      "script": "Chaque année, des milliers attendent le bon moment. Il ne vient jamais.",
+      "estimatedDuration": "8-9s"
+    },
+    {
+      "sceneNumber": 4,
+      "sceneName": "SOLUTION — MONEY BOOST 2026",
+      "transition": {
+        "intent": "zoom",
+        "description": "Camera pushes through the split toward center as the 'MONEY BOOST 2026' logo assembles; module names appear one by one stacked below."
+      },
+      "narrativeIntent": {
+        "type": "product_intro",
+        "narrativeRole": "Reveal the brand as the answer and cascade its five modules to establish breadth of value.",
+        "keyMessage": "Money Boost turns the year into income across five domains.",
+        "persuasion": "Feature-to-benefit translation + Value stacking",
+        "emotionalBeat": "Relief and aspiration"
+      },
+      "assetCandidates": [],
+      "script": "Avec Money Boost, transforme l'année en revenus : business en ligne, finances, investissement, intelligence artificielle.",
+      "estimatedDuration": "10-11s"
+    },
+    {
+      "sceneNumber": 5,
+      "sceneName": "BÉNÉFICES — CE QUE TU OBTIENS",
+      "transition": {
+        "intent": "slide",
+        "description": "Benefit lines slide up and stack one after another on the same surface; 'STRATÉGIES CONCRÈTES', 'OUTILS', 'ACCOMPAGNEMENT', 'COMPÉTENCES RENTABLES' build the eye downward."
+      },
+      "narrativeIntent": {
+        "type": "benefit_highlight",
+        "narrativeRole": "Translate the modules into tangible, money-making outcomes the viewer can picture owning.",
+        "keyMessage": "Concrete methods and tools that turn skills into money.",
+        "persuasion": "Value stacking + Empowerment & control",
+        "emotionalBeat": "Confidence and desire"
+      },
+      "assetCandidates": [],
+      "script": "Des méthodes concrètes, des outils prêts, un accompagnement pas à pas. Et surtout : transformer tes compétences en argent.",
+      "estimatedDuration": "10-11s"
+    },
+    {
+      "sceneNumber": 6,
+      "sceneName": "PREUVE SOCIALE — ILS L'ONT DÉJÀ FAIT",
+      "transition": {
+        "intent": "slide",
+        "description": "Confident faces and result snapshots slide in as a quick grid; bold 'ILS L'ONT DÉJÀ FAIT' overlays, eye landing on the headline."
+      },
+      "narrativeIntent": {
+        "type": "social_proof",
+        "narrativeRole": "Prove the promise is real by showing others already succeeded, then hand the choice to the viewer.",
+        "keyMessage": "Others already boosted their income — now it's your turn.",
+        "persuasion": "Social proof + Bandwagon effect",
+        "emotionalBeat": "Trust and motivation"
+      },
+      "assetCandidates": [],
+      "script": "Ils ont déjà boosté leurs revenus. À toi de jouer.",
+      "estimatedDuration": "6-7s"
+    },
+    {
+      "sceneNumber": 7,
+      "sceneName": "CTA + URGENCE — PLACES LIMITÉES",
+      "transition": {
+        "intent": "cut",
+        "description": "Hard cut to a hand clicking 'REJOINDRE MAINTENANT', then full-screen end card on solid bicolor blue/orange: 'PLACES LIMITÉES' to 'INSCRIPTIONS OUVERTES', signature line below."
+      },
+      "narrativeIntent": {
+        "type": "cta",
+        "narrativeRole": "Convert with scarcity and a single clear command, sealed by the transformation promise.",
+        "keyMessage": "Limited spots — click the link and join Money Boost now.",
+        "persuasion": "Scarcity & temporal urgency + Direct command",
+        "emotionalBeat": "Urgency to act and triumph"
+      },
+      "assetCandidates": [],
+      "script": "Places limitées. Clique sur le lien et rejoins Money Boost maintenant. Transforme deux mille vingt-six en année de revenus.",
+      "estimatedDuration": "11-12s"
+    }
+  ]
+}
