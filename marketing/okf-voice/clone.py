@@ -41,6 +41,11 @@ def trim(clip, sr, thr_ratio=0.012):
 DYNAMICS = dict(temperature=0.85, speed=1.06, top_p=0.90, top_k=60,
                 length_penalty=1.0, repetition_penalty=2.0)
 
+# Calm, faithful preset — best for cloning a real person's own voice (keeps the
+# timbre stable and avoids the "hollow" drift that high temperature can add).
+NATURAL = dict(temperature=0.70, speed=1.03, top_p=0.85, top_k=50,
+               length_penalty=1.0, repetition_penalty=2.0)
+
 
 def load_tts():
     ta_shim.install()

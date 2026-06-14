@@ -17,8 +17,9 @@ import numpy as np
 import soundfile as sf
 
 import ta_shim  # noqa: F401 — routes torchaudio I/O through soundfile
-from clone import DYNAMICS, SR, load_tts, say
+from clone import DYNAMICS, NATURAL, SR, load_tts, say
 
+PRESETS = {"natural": NATURAL, "dynamic": DYNAMICS}
 ROOT = os.path.dirname(os.path.abspath(__file__))
 NAT_GAP = 0.45  # natural pause between consecutive spoken lines (s)
 PAUSE_RE = re.compile(r"^\(?\s*pause\s+([\d.,]+)\s*seconde", re.IGNORECASE)
@@ -43,12 +44,18 @@ def main():
     ap.add_argument("--script", required=True, help="text script with (pause N seconde) markers")
     ap.add_argument("--ref", default=os.path.join(ROOT, "assets", "my_voice_ref.wav"))
     ap.add_argument("--out", default=os.path.join(ROOT, "build", "narration.wav"))
-    ap.add_argument("--temperature", type=float, default=DYNAMICS["temperature"])
-    ap.add_argument("--speed", type=float, default=DYNAMICS["speed"])
+    ap.add_argument("--preset", choices=list(PRESETS), default="natural",
+                    help="'natural' = calm/faithful (own voice), 'dynamic' = livelier")
+    ap.add_argument("--temperature", type=float, help="override the preset temperature")
+    ap.add_argument("--speed", type=float, help="override the preset speed")
     args = ap.parse_args()
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
 
-    dyn = dict(DYNAMICS, temperature=args.temperature, speed=args.speed)
+    dyn = dict(PRESETS[args.preset])
+    if args.temperature is not None:
+        dyn["temperature"] = args.temperature
+    if args.speed is not None:
+        dyn["speed"] = args.speed
     items = list(parse_script(args.script))
     tts = load_tts()
 
