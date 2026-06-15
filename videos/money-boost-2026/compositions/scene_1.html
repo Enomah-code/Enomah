@@ -1,6 +1,8 @@
 <template id="scene_1-template">
-  <div id="root" class="scene_1-root" data-composition-id="scene_1" data-width="1080" data-height="1920" data-duration="3.925" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+  <div id="root" class="scene_1-root" data-composition-id="scene_1" data-width="1080" data-height="1920" data-duration="4.29" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
     <style>
+      /* Dark night-frame open — the single dark scene; film snaps bright at Scene 2.
+         Brand tokens declared once globally in index.html <head>; reference via var(--*). */
       #root {
         background: var(--ink);
         font-family: var(--font-body);
@@ -12,7 +14,7 @@
         box-sizing: border-box;
       }
 
-      /* Faint dot-grid overlay on the dark open (the single dark scene) */
+      /* Faint dot-grid overlay on the near-black ground (background layer, full-bleed) */
       .s1-grid-bg {
         position: absolute;
         inset: 0;
@@ -22,7 +24,7 @@
         z-index: 0;
       }
 
-      /* Camera wraps everything — multi-phase push-in */
+      /* multi-phase-camera wrapper — wraps everything; slow push-in */
       .s1-camera {
         position: absolute;
         inset: 0;
@@ -33,15 +35,15 @@
         z-index: 1;
       }
 
-      /* Hard-bordered dark card framed by corner-pins */
+      /* Dark card framed by corner-pins */
       .s1-frame {
         position: relative;
-        width: 880px;
+        width: 900px;
         padding: 120px 48px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 40px;
+        gap: 36px;
       }
       .s1-corner {
         position: absolute;
@@ -54,17 +56,17 @@
       .s1-bl { bottom: 0; left: 0; }
       .s1-br { bottom: 0; right: 0; }
 
-      /* Hero breathing slot — multiplicative ±2% lives here */
+      /* Hero breathing slot — multiplicative +/-2% lives here */
       .s1-hero {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
         will-change: transform;
         perspective: 1600px;
       }
 
-      /* "2026" hacker-flip decode — mega display tier */
+      /* "2027" hacker-flip decode — mega display tier hero */
       .s1-flip {
         font-family: var(--font-display);
         font-weight: 900;
@@ -86,19 +88,20 @@
         will-change: transform, opacity;
       }
 
-      /* "ARRIVE" 3d depth-stack slam */
+      /* "ARRIVE BIENTOT" 3d-text-depth-layers slam — cold extruded type */
       .s1-depth {
         position: relative;
-        margin-top: 8px;
+        margin-top: 4px;
       }
       .s1-depth-text {
         font-family: var(--font-display);
         font-weight: 900;
-        font-size: 168px;
-        letter-spacing: -2px;
+        font-size: 112px;
+        letter-spacing: -1px;
         line-height: 1;
         color: var(--brand-primary);
         text-transform: uppercase;
+        white-space: nowrap;
       }
       .s1-depth-text.s1-is-back {
         position: absolute;
@@ -115,17 +118,17 @@
       .s1-eyebrow {
         font-family: var(--font-mono);
         font-weight: 700;
-        font-size: 34px;
-        letter-spacing: 6px;
+        font-size: 38px;
+        letter-spacing: 7px;
         text-transform: uppercase;
         color: var(--deco-3);
         text-align: center;
       }
     </style>
 
-    <div class="s1-grid-bg clip" data-start="0" data-duration="3.925" data-track-index="0"></div>
+    <div class="s1-grid-bg clip" data-start="0" data-duration="4.29" data-track-index="0"></div>
 
-    <div class="s1-camera clip" data-start="0" data-duration="3.925" data-track-index="1">
+    <div class="s1-camera clip" data-start="0" data-duration="4.29" data-track-index="1">
       <div class="s1-frame">
         <span class="s1-corner s1-tl"></span>
         <span class="s1-corner s1-tr"></span>
@@ -133,11 +136,11 @@
         <span class="s1-corner s1-br"></span>
 
         <div class="s1-hero">
-          <div class="s1-flip" id="s1-flip" data-target="2026"></div>
+          <div class="s1-flip" id="s1-flip" data-target="2027"></div>
           <div class="s1-depth" id="s1-depth"></div>
         </div>
 
-        <div class="s1-eyebrow">ES-TU PRET POUR 2026 ?</div>
+        <div class="s1-eyebrow">ES-TU PRÊT POUR 2027 ?</div>
       </div>
     </div>
 
@@ -158,7 +161,9 @@
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      // ---- hacker-flip-3d: "2026" decodes (digit-only glyph pool) ----
+      const TOTAL = 4.29;
+
+      // ---- hacker-flip-3d: "2027" decodes (digit-only glyph pool) ----
       const flipWrap = document.getElementById("s1-flip");
       const flipTarget = flipWrap.dataset.target;
       const GLYPHS = "0123456789";
@@ -186,7 +191,7 @@
       }
       flipWrap.appendChild(liveRow);
 
-      // Deterministic pseudo-glyph (seeded PRNG)
+      // Deterministic pseudo-glyph (seeded PRNG only; seek determinism holds)
       function pseudoGlyph(seed) {
         const h = ((seed * 9301 + 49297) % 233280) / 233280;
         return GLYPHS[Math.floor(h * GLYPHS.length)];
@@ -221,10 +226,10 @@
         );
       });
 
-      // ---- 3d-text-depth-layers: "ARRIVE" slams under, cold extrusion ----
-      const DEPTH_TEXT = "ARRIVE";
+      // ---- 3d-text-depth-layers: "ARRIVE BIENTÔT" slams under as cold extrusion ----
+      const DEPTH_TEXT = "ARRIVE BIENTÔT";
       const LAYER_COUNT = 5;
-      const OFFSET_X = -3; // light from upper-right (cold phone-light feel)
+      const OFFSET_X = -3; // light from upper-right — consistent cold-light direction
       const OFFSET_Y = 3;
       const BACK_ALPHA_MAX = 0.8;
       const BACK_ALPHA_STEP = 0.13;
@@ -237,14 +242,15 @@
         el.textContent = DEPTH_TEXT;
         if (i > 0) {
           const alpha = Math.max(BACK_ALPHA_MAX - i * BACK_ALPHA_STEP, BACK_ALPHA_MIN);
-          el.style.color = "rgba(27, 58, 140, " + alpha + ")"; // blue extrusion (stability accent) behind orange front
+          // Blue (stability accent) extrusion behind the orange front — cold depth
+          el.style.color = "rgba(27, 58, 140, " + alpha + ")";
           el.style.transform = "translate(" + i * OFFSET_X + "px, " + i * OFFSET_Y + "px)";
         }
         el.dataset.layer = String(i);
         depthStack.appendChild(el);
       }
 
-      const SLAM_AT = 0.95; // after "2026" decode settles — stillness-before-payoff handled by camera/hero hold
+      const SLAM_AT = 0.95; // after "2027" decode settles
       const LAYER_FADE_DUR = 0.42;
       const LAYER_CASCADE_STEP = 0.07;
       const depthLayers = depthStack.querySelectorAll(".s1-depth-text");
@@ -256,12 +262,12 @@
         tl.fromTo(
           el,
           { opacity: 0, y: 40 },
-          { opacity: finalAlpha, y: (i * OFFSET_Y), duration: LAYER_FADE_DUR, ease: EASE.entry },
+          { opacity: finalAlpha, y: i * OFFSET_Y, duration: LAYER_FADE_DUR, ease: EASE.entry },
           SLAM_AT + (LAYER_COUNT - 1 - i) * LAYER_CASCADE_STEP,
         );
       });
 
-      // Eyebrow fades up under the stack
+      // Mono eyebrow fades up beneath the stack
       tl.fromTo(
         ".s1-eyebrow",
         { opacity: 0, y: 16 },
@@ -280,7 +286,7 @@
         drift,
         {
           p: Math.PI * 2 * 1.5,
-          duration: 3.925,
+          duration: TOTAL,
           ease: "none",
           onUpdate: () => {
             const dx = Math.sin(drift.p) * 5;
@@ -291,17 +297,17 @@
         0,
       );
 
-      // ---- hero breathing ±2% (live slot) ----
+      // ---- hero breathing +/-2% (the live hero slot) ----
+      const hero = document.querySelector(".s1-hero");
       const breathe = { p: 0 };
       tl.to(
         breathe,
         {
           p: Math.PI * 2,
-          duration: 3.925,
+          duration: TOTAL,
           ease: "none",
           onUpdate: () => {
             const s = 1 + Math.sin(breathe.p) * 0.02;
-            const hero = document.querySelector(".s1-hero");
             if (hero) hero.style.transform = "scale(" + s + ")";
           },
         },

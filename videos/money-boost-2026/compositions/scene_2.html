@@ -1,10 +1,11 @@
 <template id="scene_2-template">
-  <div id="root" class="scene_2-root" data-composition-id="scene_2" data-width="1080" data-height="1920" data-duration="2.432" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+  <div id="root" class="scene_2-root" data-composition-id="scene_2" data-width="1080" data-height="1920" data-duration="1.66" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
     <style>
+      /* Bright light canvas per authoritative content (#F2F2F2) — override the
+         global --canvas (white) only on this scene's root. */
       #root {
-        background: var(--canvas);
+        background: #F2F2F2;
         font-family: var(--font-body);
-        overflow: hidden;
       }
       #root *,
       #root *::before,
@@ -12,17 +13,18 @@
         box-sizing: border-box;
       }
 
-      /* dot-grid background, full bleed */
+      /* Dot-grid bright canvas (background layer) */
       .s2-grid-bg {
         position: absolute;
         inset: 0;
-        background-color: var(--canvas);
-        background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
-        background-size: 48px 48px;
+        background-color: #F2F2F2;
+        background-image: radial-gradient(var(--ink) 2px, transparent 2px);
+        background-size: 44px 44px;
+        opacity: 0.55;
         z-index: 0;
       }
 
-      /* camera wraps everything that zooms */
+      /* Camera wraps the whole stage (multi-phase-camera) */
       .s2-camera {
         position: absolute;
         inset: 0;
@@ -31,91 +33,105 @@
         z-index: 1;
       }
 
-      /* flat deco sticker block sitting behind the number */
-      .s2-deco-block {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 760px;
-        height: 760px;
-        margin: -380px 0 0 -380px;
-        background: var(--deco-1);
-        border: var(--border-loud);
-        box-shadow: var(--shadow-hard);
-        z-index: 1;
-      }
-
-      /* icon cluster stage — icons radiate from center */
-      .s2-icons-stage {
+      /* Icon glyphs burst outward from center (decorative layer) */
+      .s2-burst {
         position: absolute;
         inset: 0;
-        z-index: 2;
+        z-index: 1;
       }
-      .s2-icon-pos {
+      .s2-glyph {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 150px;
-        height: 150px;
-        margin: -75px 0 0 -75px;
+        width: 132px;
+        height: 132px;
+        margin: -66px 0 0 -66px;
         will-change: transform;
-      }
-      .s2-icon-entry {
-        width: 100%;
-        height: 100%;
-        will-change: transform;
-      }
-      .s2-icon-svg {
-        width: 100%;
-        height: 100%;
-        display: block;
+        opacity: 0;
       }
 
-      /* number stack — centered hero */
-      .s2-counter-stage {
+      /* Centered content stack */
+      .s2-content {
         position: absolute;
         inset: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        z-index: 3;
-      }
-      .s2-number {
-        font-family: var(--font-display);
-        font-weight: 400;
-        color: var(--ink);
-        font-variant-numeric: tabular-nums;
-        font-size: 300px;
-        line-height: 0.9;
-        letter-spacing: -0.02em;
+        gap: 24px;
         text-align: center;
-        will-change: transform;
-      }
-      .s2-label {
-        margin-top: 8px;
-        font-family: var(--font-mono);
-        font-weight: 700;
-        font-size: 76px;
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-        color: var(--brand-primary);
-        text-align: center;
-        will-change: transform;
       }
 
-      /* corner-pins (outside camera so the push doesn't crop them) */
-      .s2-frame {
-        position: absolute;
-        inset: 0;
-        z-index: 4;
-        pointer-events: none;
+      /* Mono eyebrow on top */
+      .s2-eyebrow {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 58px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--ink);
+        opacity: 0;
+        z-index: 3;
       }
+
+      /* Number block wrapper holds the deco sticker + the giant 6 */
+      .s2-num-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 620px;
+        height: 620px;
+        z-index: 3;
+      }
+
+      /* Flat deco sticker block behind the number (brutalist contrast) */
+      .s2-sticker {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 580px;
+        height: 580px;
+        background: var(--deco-1);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        transform: translate(-50%, -50%);
+        z-index: 0;
+      }
+
+      /* Giant blue 6 */
+      .s2-six {
+        position: relative;
+        font-family: var(--font-display);
+        font-weight: 900;
+        color: var(--brand-secondary);
+        font-variant-numeric: tabular-nums;
+        font-size: 150px;
+        letter-spacing: -8px;
+        line-height: 0.9;
+        z-index: 2;
+      }
+
+      /* Orange MOIS label locked beneath */
+      .s2-mois {
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 208px;
+        letter-spacing: 4px;
+        line-height: 0.9;
+        text-transform: uppercase;
+        color: var(--brand-primary);
+        opacity: 0;
+        z-index: 3;
+      }
+
+      /* Brutalist corner pins (decorative frame) */
       .s2-corner {
         position: absolute;
-        width: 56px;
-        height: 56px;
+        width: 46px;
+        height: 46px;
         background: var(--ink);
+        z-index: 4;
       }
       .s2-tl { top: 44px; left: 44px; }
       .s2-tr { top: 44px; right: 44px; }
@@ -123,185 +139,180 @@
       .s2-br { bottom: 44px; right: 44px; }
     </style>
 
-    <div class="s2-grid-bg" data-start="0" data-duration="2.432" data-track-index="0"></div>
+    <div class="s2-grid-bg"></div>
 
     <div class="s2-camera" id="s2-camera">
-      <div class="s2-deco-block" data-start="0" data-duration="2.432" data-track-index="1"></div>
-
-      <div class="s2-icons-stage">
-        <!-- Icon 1: calendar -->
-        <div class="s2-icon-pos" id="s2-pos-1" data-target-x="0" data-target-y="-540" data-start="0" data-duration="2.432" data-track-index="2">
-          <div class="s2-icon-entry" id="s2-entry-1">
-            <svg class="s2-icon-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <rect x="18" y="26" width="84" height="80" rx="6" fill="var(--canvas)" stroke="var(--ink)" stroke-width="7" />
-              <line x1="18" y1="46" x2="102" y2="46" stroke="var(--ink)" stroke-width="7" />
-              <line x1="40" y1="18" x2="40" y2="34" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
-              <line x1="80" y1="18" x2="80" y2="34" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
-              <rect id="s2-cal-mark" x="48" y="64" width="24" height="24" fill="var(--brand-primary)" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- Icon 2: clock with ticking hand -->
-        <div class="s2-icon-pos" id="s2-pos-2" data-target-x="-410" data-target-y="470" data-start="0" data-duration="2.432" data-track-index="3">
-          <div class="s2-icon-entry" id="s2-entry-2">
-            <svg class="s2-icon-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="60" cy="60" r="46" fill="var(--canvas)" stroke="var(--ink)" stroke-width="7" />
-              <line id="s2-clock-hand" x1="60" y1="60" x2="60" y2="26" stroke="var(--brand-secondary)" stroke-width="7" stroke-linecap="round" />
-              <circle cx="60" cy="60" r="7" fill="var(--ink)" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- Icon 3: hourglass / sand pulse -->
-        <div class="s2-icon-pos" id="s2-pos-3" data-target-x="410" data-target-y="470" data-start="0" data-duration="2.432" data-track-index="4">
-          <div class="s2-icon-entry" id="s2-entry-3">
-            <svg class="s2-icon-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-              <line x1="30" y1="22" x2="90" y2="22" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
-              <line x1="30" y1="98" x2="90" y2="98" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" />
-              <path d="M34 26 L86 26 L62 60 L86 94 L34 94 L58 60 Z" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linejoin="round" />
-              <circle id="s2-sand-dot" cx="60" cy="60" r="9" fill="var(--brand-primary)" />
-            </svg>
-          </div>
-        </div>
+      <!-- Icon glyphs (decorative, enriched) expand outward from center -->
+      <div class="s2-burst">
+        <svg class="s2-glyph" data-target-x="-360" data-target-y="-470" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="26" width="84" height="76" rx="8" fill="none" stroke="var(--ink)" stroke-width="6" />
+          <line x1="18" y1="46" x2="102" y2="46" stroke="var(--ink)" stroke-width="6" />
+          <line x1="36" y1="14" x2="36" y2="34" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" />
+          <line x1="84" y1="14" x2="84" y2="34" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        <svg class="s2-glyph" data-target-x="380" data-target-y="-440" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="var(--brand-primary)" stroke-width="6" />
+          <line id="s2-hand-min" x1="60" y1="60" x2="60" y2="26" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" />
+          <line id="s2-hand-sec" x1="60" y1="60" x2="88" y2="60" stroke="var(--brand-primary)" stroke-width="4" stroke-linecap="round" />
+          <circle cx="60" cy="60" r="6" fill="var(--ink)" />
+        </svg>
+        <svg class="s2-glyph" data-target-x="-400" data-target-y="440" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <circle id="s2-rec-ring" cx="60" cy="60" r="46" fill="none" stroke="var(--brand-secondary)" stroke-width="5" />
+          <circle id="s2-rec-dot" cx="60" cy="60" r="20" fill="var(--brand-secondary)" />
+        </svg>
+        <svg class="s2-glyph" data-target-x="370" data-target-y="480" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="16" y="48" width="88" height="24" rx="12" fill="none" stroke="var(--ink)" stroke-width="5" />
+          <line id="s2-data-flow" x1="16" y1="60" x2="104" y2="60" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" stroke-dasharray="14 12" />
+        </svg>
       </div>
 
-      <div class="s2-counter-stage">
-        <div class="s2-number" id="s2-number" data-start="0" data-duration="2.432" data-track-index="5">0</div>
-        <div class="s2-label" id="s2-label" data-start="0" data-duration="2.432" data-track-index="6">JOURS</div>
+      <div class="s2-content">
+        <div class="s2-eyebrow" id="s2-eyebrow">MOINS DE</div>
+        <div class="s2-num-wrap">
+          <div class="s2-sticker" id="s2-sticker"></div>
+          <span class="s2-six" id="s2-six">0</span>
+        </div>
+        <div class="s2-mois" id="s2-mois">MOIS</div>
       </div>
     </div>
 
-    <div class="s2-frame">
-      <span class="s2-corner s2-tl" data-start="0" data-duration="2.432" data-track-index="7"></span>
-      <span class="s2-corner s2-tr" data-start="0" data-duration="2.432" data-track-index="8"></span>
-      <span class="s2-corner s2-bl" data-start="0" data-duration="2.432" data-track-index="9"></span>
-      <span class="s2-corner s2-br" data-start="0" data-duration="2.432" data-track-index="10"></span>
-    </div>
+    <span class="s2-corner s2-tl"></span>
+    <span class="s2-corner s2-tr"></span>
+    <span class="s2-corner s2-bl"></span>
+    <span class="s2-corner s2-br"></span>
 
     <script>
       const EASE = {
-        entry: "back.out(2.4)",
-        emphasis: "expo.out",
-        exit: "power4.in",
-        drift: "sine.inOut",
+        entry: "back.out(2.4)", // bouncy slam-pop
+        emphasis: "expo.out", // hard arrival
+        exit: "power4.in", // dive off
+        drift: "sine.inOut", // ambient breathing only
       };
       const DUR = {
         snap: 0.18,
         med: 0.45,
         slow: 0.9,
       };
+      const TOTAL = 1.66;
 
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      const TOTAL = 2.432;
+      const camera = document.querySelector("#s2-camera");
 
-      // ---- Timing plan (compressed hook-counter-burst, 2.432s) ----
-      const ICON_ENTRY_AT_1 = 0.1;
-      const ICON_STAGGER = 0.1;
-      const ENTRY_DUR = 0.45;
-      const COUNT_AT = 0.42;
-      const COUNT_DUR = 0.95; // count lands ~1.37s
-      const STILL_END = COUNT_AT + COUNT_DUR + 0.5; // ~1.87s — stillness-before-climax
-      const LABEL_AT = STILL_END; // "JOURS" snaps in after the freeze
-      const CAMERA_FOCUS_AT = 0.25;
-      const CAMERA_FOCUS_DUR = 0.7;
-      const CAMERA_PUSH_AT = COUNT_AT + COUNT_DUR + 0.2; // push only after count lands
-
-      // ---- Phase 4: multi-phase camera (0.92 -> 1.0 -> 1.08) ----
-      const camera = document.getElementById("s2-camera");
+      // --- multi-phase-camera: 0.92 -> 1.0 -> 1.08 (drift overlaid) ---
       const phase = { scale: 0.92 };
-      gsap.set(camera, { transformOrigin: "50% 50%" });
+      tl.to(phase, { scale: 1.0, duration: 0.42, ease: EASE.emphasis }, 0.04);
+      tl.to(phase, { scale: 1.08, duration: 0.82, ease: "power2.inOut" }, 0.84);
 
-      function applyCam() {
-        camera.style.transform = "scale(" + phase.scale + ")";
-      }
-      applyCam();
-
-      tl.to(phase, { scale: 1.0, duration: CAMERA_FOCUS_DUR, ease: EASE.emphasis, onUpdate: applyCam }, CAMERA_FOCUS_AT);
-      tl.to(phase, { scale: 1.08, duration: 0.55, ease: EASE.emphasis, onUpdate: applyCam }, CAMERA_PUSH_AT);
-
-      // ---- Phase 1 (cold open): SVG enrichment runs from t=0 while invisible ----
-      // Clock hand rotation (linear)
-      const handState = { deg: 0 };
-      const clockHand = document.getElementById("s2-clock-hand");
-      tl.to(handState, {
-        deg: 720,
+      const drift = { p: 0 };
+      tl.to(drift, {
+        p: Math.PI * 2,
         duration: TOTAL,
         ease: "none",
         onUpdate: () => {
-          clockHand.setAttribute("transform", "rotate(" + handState.deg + " 60 60)");
+          const dx = Math.sin(drift.p) * 5;
+          const dy = Math.sin(drift.p * 1.3) * 3;
+          camera.style.transform = `scale(${phase.scale}) translate(${dx}px, ${dy}px)`;
         },
       }, 0);
 
-      // Sand dot pulse
-      const sandState = { p: 0 };
-      const sandDot = document.getElementById("s2-sand-dot");
-      tl.to(sandState, {
+      // --- eyebrow snaps in first ---
+      tl.fromTo("#s2-eyebrow",
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: DUR.snap, ease: EASE.emphasis },
+        0.05);
+
+      // --- deco sticker pops behind the number ---
+      tl.fromTo("#s2-sticker",
+        { opacity: 0, scale: 0.6, rotation: -5 },
+        { opacity: 1, scale: 1, rotation: -3, duration: DUR.med, ease: EASE.entry },
+        0.07);
+
+      // --- giant blue "6": hard scale-in pop + quick count 0->6 with font growth
+      //     (counting-dynamic-scale: font size grows with the value) ---
+      const six = document.querySelector("#s2-six");
+      const numState = { value: 0, fontSize: 150 };
+      tl.fromTo("#s2-six",
+        { opacity: 0, scale: 0.4 },
+        { opacity: 1, scale: 1, duration: DUR.med, ease: EASE.entry },
+        0.1);
+      tl.to(numState, {
+        value: 6,
+        fontSize: 540,
+        duration: DUR.med,
+        ease: "power3.out",
+        onUpdate: () => {
+          six.textContent = Math.round(numState.value);
+          six.style.fontSize = numState.fontSize + "px";
+        },
+      }, 0.1);
+
+      // --- center-outward-expansion: icon glyphs radiate from center, then rest ---
+      const glyphs = document.querySelectorAll(".s2-glyph");
+      glyphs.forEach((el, i) => {
+        const tx = Number(el.dataset.targetX);
+        const ty = Number(el.dataset.targetY);
+        tl.fromTo(el,
+          { x: 0, y: 0, scale: 0.5, opacity: 0 },
+          { x: tx, y: ty, scale: 1, opacity: 1, duration: DUR.med, ease: EASE.emphasis },
+          0.12 + i * 0.05);
+      });
+
+      // --- svg-icon-enrichment: clock hands rotate, rec dot pulses, dashes flow ---
+      const minState = { deg: 0 };
+      tl.to(minState, {
+        deg: 220,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          document.querySelector("#s2-hand-min").setAttribute("transform", `rotate(${minState.deg} 60 60)`);
+        },
+      }, 0);
+
+      const secState = { deg: 0 };
+      tl.to(secState, {
+        deg: 1080,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          document.querySelector("#s2-hand-sec").setAttribute("transform", `rotate(${secState.deg} 60 60)`);
+        },
+      }, 0);
+
+      const pulseState = { p: 0 };
+      tl.to(pulseState, {
         p: Math.PI * 2 * 3,
         duration: TOTAL,
         ease: "none",
         onUpdate: () => {
-          const s = 1 + Math.sin(sandState.p) * 0.18;
-          sandDot.setAttribute("transform", "translate(60 60) scale(" + s + ") translate(-60 -60)");
+          const dotScale = 1 + Math.sin(pulseState.p) * 0.14;
+          const ringScale = 1 + Math.sin(pulseState.p + Math.PI / 2) * 0.08;
+          const ringOpacity = 0.6 + Math.sin(pulseState.p) * 0.35;
+          const dot = document.querySelector("#s2-rec-dot");
+          const ring = document.querySelector("#s2-rec-ring");
+          dot.setAttribute("transform", `translate(60 60) scale(${dotScale}) translate(-60 -60)`);
+          ring.setAttribute("transform", `translate(60 60) scale(${ringScale}) translate(-60 -60)`);
+          ring.style.opacity = String(ringOpacity);
         },
       }, 0);
 
-      // Calendar mark pulse
-      const calState = { p: 0 };
-      const calMark = document.getElementById("s2-cal-mark");
-      tl.to(calState, {
-        p: Math.PI * 2 * 2.5,
+      const flowState = { offset: 0 };
+      tl.to(flowState, {
+        offset: -104,
         duration: TOTAL,
         ease: "none",
         onUpdate: () => {
-          const s = 1 + Math.sin(calState.p) * 0.14;
-          calMark.setAttribute("transform", "translate(60 76) scale(" + s + ") translate(-60 -76)");
+          document.querySelector("#s2-data-flow").style.strokeDashoffset = String(flowState.offset);
         },
       }, 0);
 
-      // ---- Phase 2: per-icon staggered entries (scale/opacity/rotation on .icon-entry) ----
-      const entries = ["#s2-entry-1", "#s2-entry-2", "#s2-entry-3"];
-      entries.forEach((sel, i) => {
-        tl.fromTo(sel,
-          { scale: 0, opacity: 0, rotation: -12 },
-          { scale: 1, opacity: 1, rotation: 0, duration: ENTRY_DUR, ease: EASE.entry },
-          ICON_ENTRY_AT_1 + i * ICON_STAGGER);
-      });
-
-      // ---- Phase 3: count + center-outward expansion (one chord) ----
-      // Icons pre-clustered toward center, then expand to target (x:0,y:0 == CSS target).
-      const START_OFFSET = 0.4;
-      const positions = ["#s2-pos-1", "#s2-pos-2", "#s2-pos-3"];
-      positions.forEach((sel) => {
-        const el = document.querySelector(sel);
-        const tx = Number(el.dataset.targetX);
-        const ty = Number(el.dataset.targetY);
-        // start (1 - START_OFFSET) of the way back toward center (center is at x=0 since pos centered)
-        gsap.set(sel, { x: -tx * (1 - START_OFFSET), y: -ty * (1 - START_OFFSET) });
-        tl.to(sel, { x: 0, y: 0, duration: COUNT_DUR, ease: "power3.out" }, COUNT_AT);
-      });
-
-      // Counter proxy: value + font-size grow together (dynamic scale)
-      const numEl = document.getElementById("s2-number");
-      const countState = { value: 0, size: 150 };
-      tl.to(countState, {
-        value: 365,
-        size: 340,
-        duration: COUNT_DUR,
-        ease: "power3.out",
-        onUpdate: () => {
-          numEl.textContent = Math.round(countState.value).toLocaleString();
-          numEl.style.fontSize = countState.size + "px";
-        },
-      }, COUNT_AT);
-
-      // ---- Phase 4b climax: "JOURS" label snaps in after stillness ----
-      tl.fromTo("#s2-label",
-        { opacity: 0, scale: 0.7, y: 24 },
-        { opacity: 1, scale: 1, y: 0, duration: DUR.med, ease: EASE.entry },
-        LABEL_AT);
+      // --- stillness-before-climax: the number lands (~0.55-0.65), everything freezes
+      //     except the camera drift, then orange "MOIS" snaps in to confirm payoff ---
+      tl.fromTo("#s2-mois",
+        { opacity: 0, y: 40, scale: 0.7 },
+        { opacity: 1, y: 0, scale: 1, duration: DUR.med, ease: EASE.entry },
+        1.18);
 
       window.__timelines["scene_2"] = tl;
     </script>
