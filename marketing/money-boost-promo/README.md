@@ -85,6 +85,24 @@ bash build.sh
 `script_vo.py` contient le script et la cadence partagés par les deux backends
 (Piper et XTTS), pour que seul le timbre change.
 
+### Vidéo finale avec une voix clonée (ta voix ou la voix OKF) — tout-en-un
+
+Les références vocales propres sont déjà committées dans `../okf-voice/assets/`
+(`my_voice_ref.wav` = ta voix, `speaker_ref.wav` = voix OKF isolée). Un seul
+script clone la voix off du promo dans la voix choisie, mixe, rend et encode :
+
+```bash
+# Ta propre voix (défaut)
+bash build_promo_video.sh
+# Voix OKF clonée
+bash build_promo_video.sh ../okf-voice/assets/speaker_ref.wav
+```
+
+> ⚠️ Nécessite l'accès HuggingFace (poids XTTS-v2) : lancer depuis une session
+> dont la politique réseau est **Full** (ou autorise `*.huggingface.co` + `*.hf.co`).
+
+Pour comparer les deux voix avant de choisir, voir `../okf-voice/compare_voices.sh`.
+
 ### Variante format paysage 16:9 / carré 1:1
 
 Le moteur est paramétré en 1080×1920. Adapter `html,body,#stage` dans `promo.html` et le `viewport` de `render.js`, puis repositionner les scènes.
