@@ -11,16 +11,16 @@
   "bgm_target_duration_s": null,
   "bgm_seed_duration_s": null,
   "bgm_loop_count": null,
-  "total_duration_s": 34.112,
+  "total_duration_s": 43.2,
   "scenes": {
     "scene_1": {
       "voicePath": "assets/voice/scene_1.wav",
-      "voiceDuration": 3.925,
+      "voiceDuration": 4.288,
       "wordsPath": ""
     },
     "scene_2": {
       "voicePath": "assets/voice/scene_2.wav",
-      "voiceDuration": 2.432,
+      "voiceDuration": 1.664,
       "wordsPath": ""
     },
     "scene_3": {
@@ -40,12 +40,12 @@
     },
     "scene_6": {
       "voicePath": "assets/voice/scene_6.wav",
-      "voiceDuration": 3.072,
+      "voiceDuration": 4.843,
       "wordsPath": ""
     },
     "scene_7": {
       "voicePath": "assets/voice/scene_7.wav",
-      "voiceDuration": 6.805,
+      "voiceDuration": 14.528,
       "wordsPath": ""
     }
   }
