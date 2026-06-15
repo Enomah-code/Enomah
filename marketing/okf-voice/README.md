@@ -36,6 +36,12 @@ python3 clone.py --text "Bonjour, votre colis OKF est arrivé à Lomé."
 # Tune delivery: livelier intonation / different speed (defaults 0.85 / 1.06)
 python3 clone.py --temperature 0.9 --speed 1.06   # more dynamic
 python3 clone.py --temperature 0.65 --speed 1.0   # calm / neutral
+
+# Narrate a whole script (own voice, calm preset, auto-mastered)
+python3 narrate.py --script scripts/money_boost_2026.txt
+
+# Lay the narration over background music with ducking -> a finished spot
+python3 mix_music.py --voice build/money_boost_myvoice_master.mp3
 ```
 
 To rebuild the reference from a different source clip:
