@@ -7,13 +7,55 @@ Build the full soundtrack for the Money Boost promo:
 Also writes timeline.js consumed by promo.html / render.js so the visuals
 match the voice-over timing exactly.
 """
-import os, wave, subprocess, json
+import os, wave, subprocess, json, tempfile
 import numpy as np
 from scipy.signal import resample_poly
 from scipy.io import wavfile
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SR = 44100
+
+# ---- okf-voice mastering (ffmpeg, offline) ---------------------------------
+# Ported from the merged okf-voice session. Warms and fattens the voice: bass
+# lift + body, cut the hollow/boxy ~460 Hz resonance, add presence/air, then
+# glue with compression + a safety limiter — a fuller, more imposing read.
+# Set NO_MASTER=1 to fall back to the previous raw mix.
+MASTER = os.environ.get('NO_MASTER') != '1'
+VOICE_TONE_FX = (
+    "highpass=f=45,"
+    "equalizer=f=95:t=q:w=1.0:g=5,equalizer=f=180:t=q:w=1.2:g=3,"
+    "equalizer=f=460:t=q:w=1.6:g=-3.5,equalizer=f=2800:t=q:w=1.2:g=2.5,"
+    "equalizer=f=8500:t=q:w=1.0:g=1.5,"
+    "acompressor=threshold=-18dB:ratio=3:attack=15:release=180:makeup=3,"
+    "alimiter=limit=0.95"
+)
+# Broadcast loudness on the finished mix (matches the okf-voice spot target).
+MASTER_LOUDNORM = "loudnorm=I=-14:TP=-1.0:LRA=11"
+
+
+def _ffmpeg_bin():
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return 'ffmpeg'
+
+
+def apply_fx_mono(x, fx):
+    """Run a mono float signal through an ffmpeg filtergraph, length-preserved."""
+    a = tempfile.mktemp(suffix='.wav')
+    b = tempfile.mktemp(suffix='.wav')
+    wavfile.write(a, SR, (np.clip(x, -1, 1) * 32767).astype(np.int16))
+    subprocess.run([_ffmpeg_bin(), '-y', '-loglevel', 'error', '-i', a,
+                    '-af', fx, '-ar', str(SR), b], check=True)
+    sr, d = wavfile.read(b)
+    d = d.astype(np.float32) / 32768.0 if d.dtype == np.int16 else d.astype(np.float32)
+    if d.ndim > 1:
+        d = d.mean(axis=1)
+    os.remove(a); os.remove(b)
+    if len(d) < len(x):
+        d = np.concatenate([d, np.zeros(len(x) - len(d), dtype=np.float32)])
+    return d[:len(x)]
 # Male, grave & posed French voice (Piper "upmc" — speaker "pierre").
 # Chosen to match the reference video voice-over: median pitch ~130 Hz vs the
 # reference's ~129 Hz, i.e. the same low/posed register and timbre.
@@ -101,18 +143,33 @@ for i, (_, text) in enumerate(SCENES):
     print(f'  VO scene {i}: {len(clip)/SR:.2f}s')
 
 # ---------------- 2. compute timeline ----------------
-cuts = [0.0]
-for i, (mind, _) in enumerate(SCENES):
-    vo_d = len(vo_clips[i]) / SR
-    dur = max(mind, LEAD + vo_d + TAIL)
-    cuts.append(round(cuts[-1] + dur, 3))
-DURATION = cuts[-1]
+# FIXED_TIMELINE=1 keeps the existing timeline.js (so already-rendered frames
+# stay in sync) and just places the voice within those scene windows — used to
+# re-master audio without re-rendering the animation.
+FIXED = os.environ.get('FIXED_TIMELINE') == '1'
+if FIXED:
+    import re
+    txt = open(os.path.join(ROOT, 'timeline.js')).read()
+    cuts = json.loads(re.search(r'TIMELINE\s*=\s*(\[[^\]]*\])', txt).group(1))
+    DURATION = cuts[-1]
+    print('Using FIXED timeline from timeline.js:', cuts, 'DURATION', DURATION)
+    for i in range(len(SCENES)):
+        win = cuts[i + 1] - cuts[i]
+        need = LEAD + len(vo_clips[i]) / SR
+        if need > win + 1e-3:
+            raise SystemExit(f"scene {i} VO ({need:.2f}s) exceeds fixed window ({win:.2f}s)")
+else:
+    cuts = [0.0]
+    for i, (mind, _) in enumerate(SCENES):
+        vo_d = len(vo_clips[i]) / SR
+        dur = max(mind, LEAD + vo_d + TAIL)
+        cuts.append(round(cuts[-1] + dur, 3))
+    DURATION = cuts[-1]
+    print('TIMELINE cuts:', cuts, 'DURATION', DURATION)
+    # write timeline.js for the HTML/renderer
+    with open(os.path.join(ROOT, 'timeline.js'), 'w') as f:
+        f.write("window.TIMELINE = %s;\nwindow.DURATION = %s;\n" % (json.dumps(cuts), DURATION))
 N = int(np.ceil(DURATION * SR))
-print('TIMELINE cuts:', cuts, 'DURATION', DURATION)
-
-# write timeline.js for the HTML/renderer
-with open(os.path.join(ROOT, 'timeline.js'), 'w') as f:
-    f.write("window.TIMELINE = %s;\nwindow.DURATION = %s;\n" % (json.dumps(cuts), DURATION))
 
 t = np.arange(N) / SR
 
@@ -130,6 +187,12 @@ def delay_mix(x, ms, g):
     return o
 verb = delay_mix(voice_bus,38,0.14)+delay_mix(voice_bus,67,0.10)+delay_mix(voice_bus,110,0.06)
 voice_bus = voice_bus + verb*0.6
+
+# okf-voice tone master on the voice bus (warmth/presence/glue) before ducking,
+# so the ducking envelope tracks the final, mastered voice.
+if MASTER:
+    voice_bus = apply_fx_mono(voice_bus, VOICE_TONE_FX)
+    print('  voice mastered (okf-voice tone chain)')
 
 # voice presence envelope (for ducking) : smoothed magnitude
 pres = np.abs(voice_bus)
@@ -256,7 +319,14 @@ music = music * duck_gain * 0.5          # duck + overall music level LOW
 # soft high-pass on music to leave room for voice (remove low rumble buildup)
 mix = voice_bus*1.0 + music
 mix = np.tanh(mix*1.05)
-mix = mix/(np.max(np.abs(mix))+1e-9)*0.89
+mix = mix/(np.max(np.abs(mix))+1e-9)*0.95
+# broadcast-loudness master on the finished mix (okf-voice target)
+if MASTER:
+    mix = apply_fx_mono(mix, MASTER_LOUDNORM)
+    peak = np.max(np.abs(mix))      # safety only — clamp peaks, never boost level
+    if peak > 0.97:
+        mix = mix / peak * 0.97
+    print('  mix loudness-normalised (I=-14 LUFS)')
 fin=int(0.3*SR); fout=int(1.4*SR)
 mix[:fin]*=np.linspace(0,1,fin); mix[-fout:]*=np.linspace(1,0,fout)
 stereo=np.stack([mix,mix],axis=1)
