@@ -66,11 +66,16 @@ function appear(i, fade=0.45){ // 0..1 progress of line i since its narration st
 function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function text(str,x,y,size,opts={}){
   ctx.save();
-  ctx.font = `${opts.weight||800} ${size}px ${opts.font||'Arial, Helvetica, sans-serif'}`;
+  const weight=opts.weight||800, font=opts.font||'Arial, Helvetica, sans-serif';
   ctx.textAlign = opts.align||'center';
   ctx.textBaseline = opts.baseline||'middle';
   if(opts.spacing){ctx.letterSpacing = opts.spacing+'px';}
+  ctx.font = `${weight} ${size}px ${font}`;
   const lines = str.split('\n');
+  // auto-shrink so nothing ever overflows the frame width
+  const maxw = opts.maxw || (W-80);
+  let widest=0; for(const ln of lines) widest=Math.max(widest, ctx.measureText(ln).width);
+  if(widest>maxw){ size = size*maxw/widest; ctx.font = `${weight} ${size}px ${font}`; }
   const lh = size*(opts.lh||1.14);
   let yy = y - (lines.length-1)*lh/2;
   for(const ln of lines){
@@ -317,9 +322,9 @@ function frame(t){
     ctx.fillStyle='#e9edf3'; rr(-110,-130,220,200,18);ctx.fill();
     ctx.fillStyle='#cf4b4b'; rr(-110,-130,220,54,18);ctx.fill();ctx.fillStyle='#cf4b4b';ctx.fillRect(-110,-104,220,16);
     const yr = t>seg(0)[0]+0.6? '2027':'2026';
-    text(yr,0,-12,86,{color:'#1d2330',weight:900});
-    text('OBJECTIFS : 0 / 5',0,46,30,{color:'#9aa3b3',weight:800});
+    text(yr,0,-26,86,{color:'#1d2330',weight:900});
     ctx.restore();
+    text('OBJECTIFS : 0 / 5',W/2-300,668,30,{color:'#aeb6c6',weight:800});
     // unmet goals checklist (all empty), faint declining line
     ctx.globalAlpha=0.9; checklist(W/2+150,470,0,0); ctx.globalAlpha=1;
   } else if(t < seg(9)[0]){
@@ -338,12 +343,15 @@ function frame(t){
     deskScene(t, 1);
     chart(W/2-330, 760, 300, 260, clamp((t-growS)/5.5,0,1));
     checklist(W/2+40, 540, clamp((t-growS)/5.0,0,1), 1);
-    // revenue counter during the "0 -> 500 000" line
+    // revenue counter during the "0 -> 500 000" line (top band, clear of chart)
     if(t>=pgrowS){
       const cp=easeOut(clamp((t-pgrowS)/3.5,0,1));
       const val=Math.round(cp*500000/1000)*1000;
-      text(val.toLocaleString('fr-FR')+" FCFA", W/2, 700, 72,
-           {color:'#ffd36b',weight:900,glow:'rgba(255,200,80,0.5)'});
+      ctx.save();
+      ctx.globalAlpha=0.5;ctx.fillStyle='rgba(0,0,0,0.32)';rr(W/2-360,360,720,120,26);ctx.fill();
+      ctx.restore();
+      text(val.toLocaleString('fr-FR')+" FCFA", W/2, 420, 78,
+           {color:'#ffd36b',weight:900,glow:'rgba(255,200,80,0.5)',maxw:660});
     }
     // WhatsApp badge during the channel line
     if(t>=waS){
