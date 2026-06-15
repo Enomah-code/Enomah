@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0;background:#000;overflow:hidden}
+  #c{display:block}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="timeline.js"></script>
+<script>
+// ---------------------------------------------------------------------------
+// Money Boost 2026 — advertising video (deterministic motion graphics).
+// window.seek(t) paints the exact frame at time t; render.js screenshots each.
+// Narrative: a worried man who reached none of his goals discovers the Pack
+// Money Boost, starts earning, and gradually fulfils himself.
+// ---------------------------------------------------------------------------
+const W = 1080, H = 1920;
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+
+// Per-segment narration start times (seconds). Overwritten by timeline.js.
+window.TIMELINE = window.TIMELINE || [];
+window.DURATION = window.DURATION || 74;
+
+// On-screen lines, aligned 1:1 with the narration segments.
+const LINES = [
+  "2027, c'est dans quelques mois.",                 // 0
+  "Qu'as-tu changé\ndans ta vie financière ?",       // 1
+  "Tu te poses la question\nchaque année.",           // 2
+  "Et chaque année…\nle même endroit.",               // 3
+  "À attendre une opportunité\nqui ne vient pas.",     // 4
+  "Tu as le téléphone.",                              // 5
+  "Tu as la connexion.",                              // 6
+  "Il te manque\nla méthode.",                        // 7
+  "PACK MONEY BOOST\n2026",                            // 8  (discovery / brand)
+  "15 services digitaux\nà lancer maintenant",         // 9
+  "50 scripts WhatsApp\nprêts à copier-coller",        // 10
+  "0 → 500 000 FCFA\navant le 31 décembre",            // 11
+  "Un canal WhatsApp\nrien que pour toi",              // 12
+  "Je t'accompagne.\nTu n'es pas seul.",               // 13
+  "Chaque jour d'attente\n= des revenus perdus.",      // 14
+  "Le lien est juste en bas.",                         // 15
+  "Accès instantané.",                                 // 16
+  "Paiement mobile accepté.",                          // 17
+  "LE CHANGEMENT\nCOMMENCE AUJOURD'HUI.",              // 18
+];
+
+// ---- helpers --------------------------------------------------------------
+const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp = (a,b,t)=>a+(b-a)*t;
+const easeOut = t=>1-Math.pow(1-t,3);
+const easeInOut = t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const easeOutBack = t=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2);};
+function seg(i){ // [start,end] of narration segment i
+  const s = window.TIMELINE[i] ?? (i*3);
+  const e = window.TIMELINE[i+1] ?? (s+3);
+  return [s,e];
+}
+function appear(i, fade=0.45){ // 0..1 progress of line i since its narration start
+  const [s] = seg(i);
+  return clamp((curT - s)/fade, 0, 1);
+}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function text(str,x,y,size,opts={}){
+  ctx.save();
+  ctx.font = `${opts.weight||800} ${size}px ${opts.font||'Arial, Helvetica, sans-serif'}`;
+  ctx.textAlign = opts.align||'center';
+  ctx.textBaseline = opts.baseline||'middle';
+  if(opts.spacing){ctx.letterSpacing = opts.spacing+'px';}
+  const lines = str.split('\n');
+  const lh = size*(opts.lh||1.14);
+  let yy = y - (lines.length-1)*lh/2;
+  for(const ln of lines){
+    if(opts.glow){ctx.shadowColor=opts.glow;ctx.shadowBlur=opts.glowBlur||28;}
+    if(opts.stroke){ctx.lineWidth=opts.strokeW||6;ctx.strokeStyle=opts.stroke;ctx.strokeText(ln,x,yy);}
+    ctx.fillStyle = opts.color||'#fff';
+    ctx.fillText(ln,x,yy);
+    yy += lh;
+  }
+  ctx.restore();
+}
+
+// global time
+let curT = 0;
+
+// ---- ambient background ---------------------------------------------------
+function background(t){
+  // mood: 0 (cold, anxious) early -> 1 (warm, hopeful) after the brand reveal
+  const [bs] = seg(8);
+  const warm = clamp((t - bs)/3.2, 0, 1);
+  const top = [ lerp(14,30,warm), lerp(18,22,warm), lerp(34,40,warm) ];
+  const bot = [ lerp(6,60,warm),  lerp(9,38,warm),  lerp(18,12,warm) ];
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,`rgb(${top[0]|0},${top[1]|0},${top[2]|0})`);
+  g.addColorStop(1,`rgb(${bot[0]|0},${bot[1]|0},${bot[2]|0})`);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+  // gold glow that grows after discovery
+  if(warm>0){
+    const gg = ctx.createRadialGradient(W/2,H*0.42,80, W/2,H*0.42,900);
+    gg.addColorStop(0,`rgba(255,196,84,${0.16*warm})`);
+    gg.addColorStop(1,'rgba(255,196,84,0)');
+    ctx.fillStyle=gg; ctx.fillRect(0,0,W,H);
+  }
+  // drifting particles (deterministic)
+  for(let i=0;i<46;i++){
+    const sx=(i*97%W), base=(i*53%H);
+    const y=(base + t*(14+i%7*5))% (H+60) - 30;
+    const x=sx + Math.sin(t*0.6+i)*22;
+    const a=0.05+0.06*((i%5)/5) + 0.05*warm;
+    ctx.fillStyle=`rgba(${warm>0?255:160},${warm>0?210:190},${warm>0?150:255},${a})`;
+    ctx.beginPath();ctx.arc(x,y,1.6+(i%3),0,7);ctx.fill();
+  }
+  // vignette
+  const v=ctx.createRadialGradient(W/2,H/2,500,W/2,H/2,1200);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.55)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+}
+
+// ---- the man (flat illustration; mood 0=slumped/worried .. 1=upright/proud)
+function drawMan(cx, cy, scale, mood){
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.scale(scale,scale);
+  const slump = (1-mood);
+  ctx.translate(0, slump*26);                 // sink when worried
+  ctx.rotate(slump*0.05);                      // slight hunch
+  const skin = '#caa07a', skinSh='#b4895f';
+  const shirt = mood>0.5? '#2f7d5b' : '#3a4a63';
+  const shirtSh = mood>0.5? '#245f46' : '#2c3a4f';
+
+  // chair hint
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  rr(-150,150,300,46,20);ctx.fill();
+
+  // torso
+  ctx.fillStyle=shirt;
+  rr(-120, 40+slump*20, 240, 170, 60); ctx.fill();
+  ctx.fillStyle=shirtSh; rr(-120,150,240,60,40);ctx.fill();
+  // shoulders rounded
+  ctx.fillStyle=shirt;
+  ctx.beginPath();ctx.arc(-120,90+slump*18,58,0,7);ctx.arc(120,90+slump*18,58,0,7);ctx.fill();
+
+  // arms — worried: elbows on desk / head; confident: open
+  ctx.strokeStyle=shirt;ctx.lineCap='round';ctx.lineWidth=46;
+  ctx.beginPath();
+  if(mood<0.5){ ctx.moveTo(-110,95); ctx.lineTo(-60,30); ctx.moveTo(110,95); ctx.lineTo(60,30); }
+  else { ctx.moveTo(-110,100); ctx.lineTo(-160,30); ctx.moveTo(110,100); ctx.lineTo(150,10); }
+  ctx.stroke();
+  // hands
+  ctx.fillStyle=skin;
+  if(mood<0.5){ ctx.beginPath();ctx.arc(-60,20,24,0,7);ctx.arc(60,20,24,0,7);ctx.fill(); }
+  else { ctx.beginPath();ctx.arc(-160,18,24,0,7);ctx.arc(150,-2,24,0,7);ctx.fill(); }
+
+  // neck
+  ctx.fillStyle=skinSh; rr(-26,-30,52,80,20);ctx.fill();
+  // head — tilts down when worried
+  ctx.save();
+  ctx.translate(0,-70 - mood*8);
+  ctx.rotate(slump*0.20);
+  ctx.fillStyle=skin;
+  ctx.beginPath();ctx.arc(0,0,70,0,7);ctx.fill();
+  // hair
+  ctx.fillStyle='#241a14';
+  ctx.beginPath();ctx.arc(0,-12,70,Math.PI*1.05,Math.PI*1.95);ctx.fill();
+  rr(-70,-30,140,30,14);ctx.fill();
+  // face
+  ctx.fillStyle='#2a1f17';
+  const eyeY=4, browY=mood<0.5?-16:-12;
+  ctx.beginPath();ctx.arc(-26,eyeY,6,0,7);ctx.arc(26,eyeY,6,0,7);ctx.fill();
+  // brows (worried = angled in/up; happy = relaxed)
+  ctx.strokeStyle='#2a1f17';ctx.lineWidth=6;ctx.lineCap='round';
+  ctx.beginPath();
+  if(mood<0.5){ctx.moveTo(-40,browY-2);ctx.lineTo(-14,browY+8); ctx.moveTo(40,browY-2);ctx.lineTo(14,browY+8);}
+  else {ctx.moveTo(-40,browY+4);ctx.lineTo(-14,browY); ctx.moveTo(40,browY+4);ctx.lineTo(14,browY);}
+  ctx.stroke();
+  // mouth (frown -> smile)
+  ctx.beginPath();
+  const m=mood; const my=34;
+  ctx.moveTo(-22,my+ (1-m)*0);
+  ctx.quadraticCurveTo(0, my + lerp(-14,16,m), 22, my);
+  ctx.lineWidth=6;ctx.stroke();
+  ctx.restore();
+  ctx.restore();
+}
+
+// ---- desk props -----------------------------------------------------------
+function deskScene(t, mood){
+  // desk
+  ctx.fillStyle='rgba(0,0,0,0.30)';
+  rr(W/2-360, 1180, 720, 40, 14); ctx.fill();
+  ctx.fillStyle = mood>0.5? 'rgba(70,55,35,0.55)':'rgba(40,46,60,0.55)';
+  rr(W/2-380, 1180, 760, 220, 18); ctx.fill();
+
+  // the man behind the desk
+  drawMan(W/2, 1020, 1.0, mood);
+
+  // laptop on the desk
+  ctx.save();
+  ctx.translate(W/2+210, 1196);
+  ctx.fillStyle='#11161f'; rr(-120,-86,240,96,10); ctx.fill();
+  const scr = mood>0.5? '#1f8f5f' : '#26405e';
+  ctx.fillStyle=scr; rr(-108,-76,216,74,6); ctx.fill();
+  ctx.fillStyle='#0b0e14'; rr(-140,8,280,18,8); ctx.fill();
+  ctx.restore();
+}
+
+// ---- rising revenue chart -------------------------------------------------
+function chart(x,y,w,h,prog){
+  ctx.save();ctx.translate(x,y);
+  ctx.strokeStyle='rgba(255,255,255,0.25)';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-h);ctx.moveTo(0,0);ctx.lineTo(w,0);ctx.stroke();
+  // bars grow with prog
+  const n=6;
+  for(let i=0;i<n;i++){
+    const bp=clamp(prog*n-i,0,1);
+    const bh=(0.18+0.82*(i/(n-1)))*h*easeOut(bp);
+    const bx=8+i*(w-8)/n, bw=(w-8)/n-14;
+    const g=ctx.createLinearGradient(0,-bh,0,0);
+    g.addColorStop(0,'#ffd36b');g.addColorStop(1,'#f7a23b');
+    ctx.fillStyle=g; rr(bx,-bh,bw,bh,8);ctx.fill();
+  }
+  // trend line + arrow
+  ctx.strokeStyle='#7CFFB2';ctx.lineWidth=7;ctx.lineCap='round';
+  ctx.beginPath();
+  const pts=8, lp=clamp(prog,0,1);
+  for(let i=0;i<=pts;i++){
+    const px=(i/pts)*w, py=-(i/pts)*h*0.9*Math.pow((i/pts),0.7);
+    if(i/pts<=lp){ if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+// ---- checklist (goals get checked during growth) --------------------------
+function checklist(x,y,prog,warm){
+  const items=4, gap=92;
+  for(let i=0;i<items;i++){
+    const iy=y+i*gap;
+    ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=4;
+    rr(x,iy,58,58,14);ctx.stroke();
+    // line
+    ctx.fillStyle='rgba(255,255,255,0.28)';
+    rr(x+82,iy+18,260-(i*18),22,11);ctx.fill();
+    const cp=clamp(prog*items-i,0,1);
+    if(cp>0){
+      ctx.save();
+      ctx.strokeStyle='#7CFFB2';ctx.lineWidth=9;ctx.lineCap='round';
+      ctx.beginPath();
+      const p=easeOut(cp);
+      ctx.moveTo(x+12,iy+30);
+      ctx.lineTo(x+12+14*Math.min(p*2,1), iy+30+14*Math.min(p*2,1));
+      if(p>0.5)ctx.lineTo(x+12+14+ (46-14)*((p-0.5)*2), iy+30+14-(30)*((p-0.5)*2));
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+}
+
+// ---- phone with brand reveal ---------------------------------------------
+function phone(cx,cy,scale,glow){
+  ctx.save();ctx.translate(cx,cy);ctx.scale(scale,scale);
+  ctx.shadowColor=`rgba(255,190,80,${0.8*glow})`;ctx.shadowBlur=80*glow;
+  ctx.fillStyle='#0c0f16'; rr(-150,-300,300,600,46);ctx.fill();
+  ctx.shadowBlur=0;
+  const g=ctx.createLinearGradient(0,-280,0,280);
+  g.addColorStop(0,'#10141d');g.addColorStop(1,'#0a0d13');
+  ctx.fillStyle=g; rr(-132,-282,264,564,34);ctx.fill();
+  ctx.restore();
+}
+
+// ---- CTA button -----------------------------------------------------------
+function ctaButton(t){
+  const pulse=1+0.03*Math.sin(t*5);
+  ctx.save();ctx.translate(W/2,1500);ctx.scale(pulse,pulse);
+  ctx.shadowColor='rgba(124,255,178,0.6)';ctx.shadowBlur=40;
+  const g=ctx.createLinearGradient(-300,0,300,0);
+  g.addColorStop(0,'#21c275');g.addColorStop(1,'#13a85f');
+  ctx.fillStyle=g; rr(-330,-66,660,132,66);ctx.fill();
+  ctx.shadowBlur=0;
+  text("ACCÉDER AU PACK",0,0,52,{color:'#08210f',weight:900,spacing:1});
+  ctx.restore();
+  // bouncing arrow
+  const by=1600+Math.sin(t*4)*14;
+  text("⬇",W/2,by,72,{color:'#7CFFB2'});
+}
+
+// ---- progress bar ---------------------------------------------------------
+function progressBar(t){
+  const p=clamp(t/window.DURATION,0,1);
+  ctx.fillStyle='rgba(255,255,255,0.15)';ctx.fillRect(0,0,W,8);
+  ctx.fillStyle='#ffce5a';ctx.fillRect(0,0,W*p,8);
+}
+
+// ---------------------------------------------------------------------------
+function frame(t){
+  curT=t;
+  ctx.clearRect(0,0,W,H);
+  background(t);
+
+  const [discS] = seg(8);
+  const inAct1 = t < discS;
+  const [growS] = seg(9), [ctaS] = seg(15), [pgrowS]=seg(11), [waS]=seg(12);
+  const brandWarm = clamp((t-discS)/3.0,0,1);
+  const mood = clamp((t-discS)/6.0, 0, 1);
+
+  // ===== visual stage by act ===============================================
+  if(t < seg(8)[0]){
+    // ACT 1 — worried man at the desk; cold tone
+    deskScene(t, 0);
+    // calendar 2026 -> 2027 flips around segment 0
+    ctx.save();
+    ctx.translate(W/2-300,560);
+    ctx.fillStyle='#e9edf3'; rr(-110,-130,220,200,18);ctx.fill();
+    ctx.fillStyle='#cf4b4b'; rr(-110,-130,220,54,18);ctx.fill();ctx.fillStyle='#cf4b4b';ctx.fillRect(-110,-104,220,16);
+    const yr = t>seg(0)[0]+0.6? '2027':'2026';
+    text(yr,0,-12,86,{color:'#1d2330',weight:900});
+    text('OBJECTIFS : 0 / 5',0,46,30,{color:'#9aa3b3',weight:800});
+    ctx.restore();
+    // unmet goals checklist (all empty), faint declining line
+    ctx.globalAlpha=0.9; checklist(W/2+150,470,0,0); ctx.globalAlpha=1;
+  } else if(t < seg(9)[0]){
+    // ACT 2 — discovery: phone lights up + brand
+    deskScene(t, mood*0.5);
+    phone(W/2, 760, lerp(0.7,1.0,easeOut(brandWarm)), brandWarm);
+    // brand text on phone
+    ctx.save();ctx.globalAlpha=brandWarm;
+    text("PACK", W/2, 660, 70, {color:'#ffce5a',weight:900,spacing:3,glow:'rgba(255,200,80,0.8)'});
+    text("MONEY", W/2, 740, 70, {color:'#ffffff',weight:900,spacing:3});
+    text("BOOST", W/2, 820, 70, {color:'#ffffff',weight:900,spacing:3});
+    text("2026", W/2, 905, 52, {color:'#7CFFB2',weight:900,spacing:6});
+    ctx.restore();
+  } else if(t < seg(15)[0]){
+    // ACT 3 — growth: confident man, rising chart, checklist, revenue counter
+    deskScene(t, 1);
+    chart(W/2-330, 760, 300, 260, clamp((t-growS)/5.5,0,1));
+    checklist(W/2+40, 540, clamp((t-growS)/5.0,0,1), 1);
+    // revenue counter during the "0 -> 500 000" line
+    if(t>=pgrowS){
+      const cp=easeOut(clamp((t-pgrowS)/3.5,0,1));
+      const val=Math.round(cp*500000/1000)*1000;
+      text(val.toLocaleString('fr-FR')+" FCFA", W/2, 700, 72,
+           {color:'#ffd36b',weight:900,glow:'rgba(255,200,80,0.5)'});
+    }
+    // WhatsApp badge during the channel line
+    if(t>=waS){
+      const a=appear(12);
+      ctx.save();ctx.globalAlpha=a;
+      ctx.fillStyle='#25D366';ctx.beginPath();ctx.arc(W/2,520,58,0,7);ctx.fill();
+      text("✓",W/2,520,64,{color:'#fff',weight:900});
+      ctx.restore();
+    }
+  } else {
+    // ACT 4 — urgency + CTA, proud man small at top
+    drawMan(W/2, 540, 0.62, 1);
+    if(t>=seg(18)[0]) ctaButton(t);
+    else if(t>=seg(15)[0]){
+      // payment icons
+      const a=appear(17);
+      ctx.save();ctx.globalAlpha=clamp(a,0,1);
+      const labels=["📱 Mobile Money","⚡ Instantané","🔒 Sécurisé"];
+      labels.forEach((l,i)=>{ if(t>=seg(15+i)[0]) text(l,W/2,1180+i*120,46,{color:'#dfe6f0',weight:800}); });
+      ctx.restore();
+    }
+  }
+
+  // ===== kinetic caption (current narration line) ==========================
+  const idx = activeLine(t);
+  if(idx>=0 && !(idx===8) ){          // brand line is shown big in ACT2 already
+    const a=appear(idx);
+    const yPos = (idx>=15)? 980 : 1640;
+    ctx.save();
+    ctx.globalAlpha=a;
+    const dy=(1-easeOut(a))*40;
+    // caption backdrop
+    const big = idx<=1 || idx===18;
+    const size = big?78:62;
+    ctx.translate(0,dy);
+    if(idx===18){
+      text(LINES[idx], W/2, 1180, 84, {color:'#fff',weight:900,glow:'rgba(255,206,90,0.6)',spacing:1});
+    } else {
+      // soft panel
+      ctx.globalAlpha=a*0.5; ctx.fillStyle='rgba(0,0,0,0.35)';
+      rr(60,yPos-150,W-120,300,28);ctx.fill();
+      ctx.globalAlpha=a;
+      text(LINES[idx], W/2, yPos, size, {color:'#ffffff',weight:850,lh:1.16});
+    }
+    ctx.restore();
+  }
+
+  progressBar(t);
+}
+
+function activeLine(t){
+  let idx=-1;
+  for(let i=0;i<LINES.length;i++){ if(t>=seg(i)[0]) idx=i; }
+  // hold the last line a touch; hide a caption once its segment is well past
+  return idx;
+}
+
+// public API for the renderer
+window.seek = function(t){ frame(Math.max(0,Math.min(t, window.DURATION))); };
+window.__ready = true;
+// initial paint
+frame(0);
+</script>
+</body>
+</html>
