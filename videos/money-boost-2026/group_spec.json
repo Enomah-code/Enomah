@@ -4,7 +4,7 @@
   "height": 1920,
   "captions_enabled": false,
   "film_direction": "Preset: **neo-brutalism**, portrait 1080×1920, captions disabled. This is a non-mesh preset — the project mesh default does NOT apply. Backgrounds are preset-native and consistent across the whole film: solid brand canvas (`--canvas` white or a flat brand-color fill) OR `dot-grid-bg`. Never gradient, never soft halo, never blur background. Bright/light is the baseline; the only dark scene (Scene 1 hook) is a deliberate narrative open, not a per-scene swing, and the film snaps to bright canvas from Scene 2 onward.\n\nPalette / 60-30-10 (roles from `tokens.css`, never hex in prose): 60% canvas (white or flat brand fill per scene), 30% bold-bordered surfaces + hard `--ink` borders/dividers (the brutalist `--border-bold` / `--border-loud` + `--shadow-hard` does the structural work, not a soft surface tier), 10% accent on the one focal element — `--brand-primary` (orange) as the energy/CTA accent, `--brand-secondary` (blue) as the contrast/stability accent, deco tokens (`--deco-1..4`) only as flat sticker blocks behind hero type. Accent purpose is fixed film-wide: orange = action/urgency/money, blue = control/stability/proof. `--ink` is print-like ink on light scenes. Never neon, never purple-blue AI gradient.\n\nType roles (by role, never px/em): display tier (`--font-display`, Anton) for the one huge hero word per scene with tight tracking; mono (`--font-mono`, Space Mono) UPPERCASE wide-tracked for eyebrows/labels/module tags = \"real-tool\" metadata feel; body (`--font-body`, Inter) only for the rare supporting line, 900 weight if ever used at display size. Hierarchy is 3:1+ size jumps plus weight + case + a deco-block color contrast — legible in under one second. Voice recipe (uppercase, strip articles, noun fragments, `.`-joined, brand punchline) applies to all DOM text by default; no scene needs special text handling — narration stays natural French TTS.\n\nComposition: \"one huge thing per scene\", display 200–340px-feel dominating the frame; primary visual ≥40% of the tall canvas; ≥3 depth layers (flat sticker deco block + hard-shadow framed content + corner-pins/foreground accent). Stack vertically — portrait, so any comparison/triptych becomes top/bottom bands. Vertical center anchors at y≈806 (0.42×1920). Captions disabled, so bottom band is usable. Use `corner-pins` on framed scenes. At least 3 different layout templates across the 7 scenes (Centered, Split→stacked, Full-Width-Strip-as-stack, Asymmetric).\n\nMotion budget — ONE macro move per scene (camera-style drift/push on scene root) + at most 1–2 secondary live elements (hero breathing OR CTA glow), everything else rests. Springs by intent from `easings.js`: `EASE.entry` (back.out slam-pop) for primary hero entries, `EASE.emphasis` (expo.out) for hard arrivals, `EASE.exit` (power4.in) for departures, `EASE.drift` only for ambient breathing. Hit-and-stick — never ease-in-out for primary motion. Stagger 100–150ms between elements, total ≤500ms. Forbid yoyo / bounce.out / elastic.out. Multiplicative breathing (±2–5%) is reserved for a hero holding a live slot, not stamped everywhere.\n\nStillness-before-climax (0.3–0.75s pause between action and payoff) is allocated to exactly 3 scenes where narration lands a payoff: **Scene 2** (number lands), **Scene 4** (brand logo lands), **Scene 7** (CTA confirm). No other scene adds it.\n\nTransition vocabulary — 2 types repeated film-wide: **push-slide** (directional, matches the brutalist hard-directional energy and the script's slide beats) and **zoom-through** (the Scene 4 push-through-the-split reveal + high-energy snaps). Direction alternates across seams. Scene 1 is the open (no incoming transition).\n\nAmbient system: sparse — either a static `dot-grid-bg` or 2–3 flat deco sticker blocks per scene; NO floating particle clouds, NO mesh, NO gradient swell. Aliveness comes from the single macro camera move plus the hero's entry, not from many independent oscillators.\n\nFilm negative list: no gradients, no crossfade/blur transitions, no soft drop-shadows (only hard offset `--shadow-hard`), no mesh background, no neon-on-black, no purple-blue AI gradient, no nav bars / scrollbars / browser chrome (Scene 7 cursor+button is the one intentional UI element), no generic decorative blobs replacing content, no per-scene dark/light swings.\n\nAsset coverage: `assetCandidates` is empty for every scene — there are NO real product assets. Build all visuals from brand-native type, flat deco sticker blocks, hard-bordered frames, corner-pins, and brutalist iconography (simple bold-stroke SVG glyphs for modules/benefits). Social proof (Scene 6) uses brutalist avatar placeholders (bold-bordered circles), not fabricated photos. Money/results framing stays typographic, not faked screenshots.",
-  "total_duration_s": 43.2,
+  "total_duration_s": 41.514,
   "bgm_path": "",
   "font_face_css": "",
   "brand_tokens_css": ":root {\n  --brand-primary:   #E8521E;\n  --brand-secondary: #1B3A8C;\n  --brand-tertiary:  #0E1A3A;\n  --brand-accent:    #0E1A3A;\n  --brand-costume:   #FFFFFF;\n  --ink:             #0E1A3A;\n  --canvas:          #FFFFFF;\n  --brand-gradient:  linear-gradient(135deg, #E8521E 0%, #1B3A8C 50%, #0E1A3A 100%);\n  --deco-1:          #F7CB46;\n  --deco-2:          #99E885;\n  --deco-3:          #C0F7FE;\n  --deco-4:          #FE90E8;\n  --font-display:    'Anton', ui-monospace, monospace;\n  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;\n  --font-mono:       'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;\n  --shadow-hard: 8px 8px 0 var(--ink);\n  --shadow-hover: 11px 11px 0 var(--ink);\n  --border-bold: 4px solid var(--ink);\n  --border-loud: 6px solid var(--ink);\n  --tilt-l: -1deg;\n  --tilt-r: 1deg;\n  --gap-loud: 1.7vw; /* ~32px on a 1920 canvas */\n}",
@@ -179,7 +179,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 7.893,
+          "estimatedDuration_s": 6.869,
           "voicePath": "assets/voice/scene_4.wav",
           "wordsPath": "",
           "blueprint": "composed",
@@ -216,7 +216,7 @@
       ],
       "scenes": {
         "scene_5": {
-          "start_s": 17.13,
+          "start_s": 16.106,
           "effects": [
             "dynamic-content-sequencing",
             "context-sensitive-cursor",
@@ -265,7 +265,7 @@
       ],
       "scenes": {
         "scene_6": {
-          "start_s": 23.829,
+          "start_s": 22.805,
           "effects": [
             "avatar-cloud-network",
             "vertical-spring-ticker",
@@ -277,7 +277,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/coordinate-target-zoom.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 4.843,
+          "estimatedDuration_s": 4.672,
           "voicePath": "assets/voice/scene_6.wav",
           "wordsPath": "",
           "blueprint": "based-on proof-logo-chain",
@@ -314,7 +314,7 @@
       ],
       "scenes": {
         "scene_7": {
-          "start_s": 28.672,
+          "start_s": 27.477,
           "effects": [
             "physics-press-reaction",
             "cursor-click-ripple",
@@ -328,7 +328,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/hacker-flip-3d.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 14.528,
+          "estimatedDuration_s": 14.037,
           "voicePath": "assets/voice/scene_7.wav",
           "wordsPath": "",
           "blueprint": "based-on cta-morph-press",
