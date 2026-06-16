@@ -1,0 +1,289 @@
+{
+  "mode": "forced",
+  "selected": {
+    "name": "liquid-glass",
+    "label": "Liquid Glass"
+  },
+  "confidence": "forced",
+  "brand": {
+    "primary": "#D4AF37",
+    "secondary": "#C9A14A",
+    "accent": "#C9A14A",
+    "source": "legacy",
+    "confidence": "legacy",
+    "needs_review": false,
+    "screenshot": null,
+    "candidates": []
+  },
+  "baseline_winner": {
+    "name": "editorial-forest",
+    "combined": 0.225
+  },
+  "top_candidates": [
+    {
+      "name": "editorial-forest",
+      "label": "Editorial Forest",
+      "raw": 0.2,
+      "normalized": 0.235,
+      "combined": 0.225,
+      "combined_pre_capability": 0.225,
+      "matched_signals": [
+        "minimal_decoration"
+      ],
+      "capabilities_missing": [],
+      "fingerprint": {
+        "voice": "literary-quarterly",
+        "type": "serif-500-with-opsz",
+        "chrome": "mono-uppercase-tracked",
+        "depth": "flat-paper-no-shadow",
+        "palette": "tri-tone-forest-pink-cream",
+        "motion": "quiet-committed"
+      },
+      "best_for": [
+        "warm unhurried product stories",
+        "research recaps",
+        "studio updates",
+        "literary brands",
+        "quiet annual reports"
+      ],
+      "avoid_for": [
+        "urgent sales-driven registers",
+        "punchy promo",
+        "high-energy launches",
+        "consumer hype"
+      ],
+      "sectionA_excerpt": "A serif voice committed to one face (Source Serif 4 at weight 500, with the optical-size axis engaged) and a mono chrome that frames every page (JetBrains Mono UPPERCASE with 0.14em–0.18em tracking). Depth is flat: no drop shadows, no glows, no gradients, ever. Elevation is communicated by color-block contrast, 2px hairline rules, and the difference between a filled tile and a bordered one. The palette maps to a tight tri-tone — deep forest green, dusty rose pink, oat cream paper — via `--brand-primary` / `--brand-secondary` / `--canvas`. Every scene carries a topbar (mono label + monogram or counter) as the editorial spine. Motion is quiet and committed: nothing bounces, nothing snaps; entries glide, emphasis settles, ambient layers breathe. **Class prefix: `ef-`.**",
+      "delta_from_winner": 0
+    },
+    {
+      "name": "soft-editorial",
+      "label": "Soft Editorial",
+      "raw": 0.2,
+      "normalized": 0.227,
+      "combined": 0.219,
+      "combined_pre_capability": 0.219,
+      "matched_signals": [
+        "minimal_decoration"
+      ],
+      "capabilities_missing": [],
+      "fingerprint": {
+        "edges": "soft-rounded",
+        "shadow": "none",
+        "rules": "1px-dashed-warm-ink",
+        "surfaces": "translucent-white-and-pastel-cards",
+        "ornament": "drop-cap-and-roman-numerals",
+        "type": "old-style-serif-mixed-roman-italic",
+        "voice": "literary-considered-unhurried",
+        "register": "small-press-quarterly"
+      },
+      "best_for": [
+        "founder essays",
+        "gallery / museum",
+        "advisory",
+        "longform brand stories",
+        "lifestyle media",
+        "research notebooks"
+      ],
+      "avoid_for": [
+        "visual heat",
+        "declarative punch",
+        "sales-urgent brands",
+        "high-energy consumer hype"
+      ],
+      "sectionA_excerpt": "A warm small-press literary quarterly. Cream paper field, Cormorant Garamond carrying every headline and ornamental moment, Work Sans receding into body. Generous rounded cards (24–36px radius) float as translucent white over the cream — depth is implied by translucency and form, never by shadow.\n\n**Typographic signal: mixed weight inside the headline.** A serif headline at weight 500 carries an `<em>` that drops to weight 400 italic — the italic phrase is a _lighter_ weight of the same family. The weight drop is a softening, not bold emphasis. This is opposite the magazine convention of italic-for-bold; here italic is the more intimate tone.\n\n**Color philosophy: cream plus five pastels.** The cream paper field (`--paper-anchor`, a warm aged cream) is the constant under every surface — pas",
+      "delta_from_winner": 0.006
+    },
+    {
+      "name": "emerald-editorial",
+      "label": "Emerald Editorial",
+      "raw": 0.18,
+      "normalized": 0.214,
+      "combined": 0.204,
+      "combined_pre_capability": 0.204,
+      "matched_signals": [
+        "minimal_decoration"
+      ],
+      "capabilities_missing": [],
+      "fingerprint": {
+        "edges": "strict-rectangle",
+        "shadow": "none",
+        "rules": "4px-ink-solid",
+        "ornament": "double-rule-playbill",
+        "type": "bodoni-900-extreme-scale",
+        "voice": "fashion-masthead",
+        "register": "literary-authoritative"
+      },
+      "best_for": [
+        "literary brands",
+        "strategy",
+        "planning",
+        "leadership decks",
+        "longform research",
+        "authoritative editorial"
+      ],
+      "avoid_for": [
+        "quiet institutional brands",
+        "restrained corporate decks",
+        "calm minimalist registers"
+      ],
+      "sectionA_excerpt": "A fashion-masthead / 19th-century theatrical-playbill register: one display serif at extreme scale (heavy Bodoni-style, weight 900, 92-460px), with negative tracking and tight leading, set against a saturated brand canvas with deep ink and a warm alt-tile surface. The signature is the **double-rule ornament** — a centered serif word framed by two stacked 4px horizontal rules on each side (3px between them), bracketing a connector (\"of\", \"and\", \"for\") between two display words like a printed playbill.\n\nDepth is flat printed ink. **Zero shadows, zero gradients, zero border-radius, zero blur.** Elevation is communicated through color-block inversion (an `--ink` tile on the canvas reads as \"elevated\") and 4px solid ink rules that separate every section, list row, and tile divider.\n\nClass prefi",
+      "delta_from_winner": 0.021
+    },
+    {
+      "name": "stencil-tablet",
+      "label": "Stencil & Tablet",
+      "raw": 0.15,
+      "normalized": 0.2,
+      "combined": 0.185,
+      "combined_pre_capability": 0.185,
+      "matched_signals": [
+        "minimal_decoration"
+      ],
+      "capabilities_missing": [],
+      "fingerprint": {
+        "shadow": "none-flat",
+        "border": "rounded-tablet",
+        "motion": "considered-stamp",
+        "density": "filled-tile",
+        "contrast": "earthy-saturated",
+        "type": "stencil-display + condensed-chrome",
+        "palette-mode": "hue-anchored-neutrals + brand-saturated-tiles"
+      },
+      "best_for": [
+        "museum / cultural-institution decks",
+        "art / architecture brands",
+        "longform research",
+        "heritage and craft brands",
+        "manifestos"
+      ],
+      "avoid_for": [
+        "digital-native polished",
+        "playful pop",
+        "soft consumer SaaS",
+        "fintech / enterprise"
+      ],
+      "sectionA_excerpt": "Stardos Stencil carries every headline and numeral with its characteristic ink-break gaps; Barlow Condensed extra-heavy runs all uppercase chrome, metadata, pills, and legends; Inter handles sentence-case body paragraphs.\n\nDepth is **flat by design** — no drop shadows, no gradients. Depth comes from saturated color blocks against a warm bone field and from generous 22-26px tablet radii. Cards tile the canvas geometrically.\n\nThe system's identity hinges on **warm neutrals** (bone / paper) tinted with brand DNA, not on a fixed palette. The bone and paper anchors are declared as hue-anchor hexes in §B (§8.2 exception) so the archival register survives any brand color; brand-primary / -secondary / -accent ignite tablets, action-bars, section numerals, and pills as the saturated tile fills.\n\nTy",
+      "delta_from_winner": 0.04
+    },
+    {
+      "name": "retro-zine",
+      "label": "Retro Zine",
+      "raw": 0.15,
+      "normalized": 0.187,
+      "combined": 0.176,
+      "combined_pre_capability": 0.176,
+      "matched_signals": [
+        "minimal_decoration"
+      ],
+      "capabilities_missing": [],
+      "fingerprint": {
+        "shadow": "paper-on-paper-offset-slab",
+        "border": "3px-solid-ink",
+        "motion": "soft-paper-shuffle",
+        "density": "editorial-medium-high",
+        "contrast": "warm-paper-on-forest",
+        "palette-mode": "anchored-pastel"
+      },
+      "best_for": [
+        "publishers",
+        "music + arts brands",
+        "small-batch / craft launches",
+        "creator portfolios",
+        "community decks"
+      ],
+      "avoid_for": [
+        "polished digital",
+        "hi-tech neon palettes",
+        "consumer SaaS hype",
+        "fintech / enterprise"
+      ],
+      "sectionA_excerpt": "Risograph-printed zine page in motion. Bebas Neue runs tall, condensed, all-caps with positive tracking for every display moment; Space Grotesk sits at editorial small body (13-16px); Caveat hand-script lands attributions and side notes. Three-face contrast IS the rhythm — one-face slides read as monotonous.\n\nDepth is **paper-on-paper offset slabs**, not blurred shadows. Hero cards carry a forest-green `::before` sitting 12px down-and-right behind a cream card. Stamps and collage pieces tilt -8°/+6°/-5°-to-+5° to read as hand-placed. A subtle SVG fractal-noise grain at 0.07 opacity sits over every scene — the texture that anchors the deck to printed-paper register.\n\n**Brand DNA drives accent, anchors carry the paper.** The site brand colors light up headlines, drop caps, ribbon bars, stamp",
+      "delta_from_winner": 0.048
+    }
+  ],
+  "capability_gated_presets": [
+    {
+      "name": "liquid-glass",
+      "label": "Liquid Glass",
+      "raw": 0.15,
+      "normalized": 0.333,
+      "combined": 0,
+      "combined_pre_capability": 0.278,
+      "matched_signals": [
+        "minimal_decoration"
+      ],
+      "capabilities_missing": [
+        {
+          "kind": "block_installed",
+          "block": "liquid-glass-widgets",
+          "missing_files": [
+            "hyperframes/compositions/liquid-glass-widgets.html",
+            "hyperframes/compositions/lib/liquid-glass.iife.js"
+          ],
+          "auto_install": "npx hyperframes add liquid-glass-widgets",
+          "alternates": [
+            "liquid-glass-notification",
+            "liquid-glass-context-menu",
+            "liquid-glass-media-controls",
+            "ios26-liquid-glass",
+            "macos-tahoe-liquid-glass",
+            "vfx-liquid-glass"
+          ]
+        },
+        {
+          "kind": "env_var_set",
+          "var": "PRODUCER_HEADLESS_SHELL_PATH",
+          "reason": "WebGPU-capable browser (Brave / Chrome Canary). Cannot auto-install — varies by OS / user environment.",
+          "auto_install": null
+        }
+      ],
+      "fingerprint": {
+        "shadow": "inset-highlight",
+        "border": "hairline-translucent",
+        "motion": "rise-and-settle",
+        "density": "low",
+        "contrast": "high-on-aurora"
+      },
+      "best_for": [
+        "premium SaaS",
+        "AI products",
+        "hardware launches",
+        "futuristic tech",
+        "consumer apps with depth"
+      ],
+      "avoid_for": [
+        "print-feel brands",
+        "low-power render targets",
+        "warm hand-crafted registers"
+      ],
+      "sectionA_excerpt": "Frosted glass over moving color. Surfaces are weightless — light passes\n**through** them, not off them. Type sits on glass; glass sits on aurora;\naurora carries the brand. No element is the canvas; depth is the canvas.\n\n**One reading layer at a time.** A scene has glass surfaces (panels, pills,\ncards) floating over an animated color field. The eye reads what's on the\nglass, not the glass itself. Decoration is reserved for the aurora — the\nsurfaces stay neutral, just specular highlight + edge-light + chromatic\nfringe at the rim.\n\n**Entry motion**: soft upward translate + scale 0.86→1.0 with `back.out(1.04)` — overshoot tiny on purpose. Hard cuts and bouncy springs break the wetness."
+    }
+  ],
+  "site_features": {
+    "shadow_zero_blur": false,
+    "thick_solid_border": false,
+    "medium_solid_border": false,
+    "hairline_border": false,
+    "condensed_display": false,
+    "serif_display": false,
+    "high_sat_accent": false,
+    "low_saturation": false,
+    "rotated_transform": false,
+    "bouncy_easing": false,
+    "generous_padding": false,
+    "minimal_decoration": true
+  },
+  "site_dna": {
+    "source": null,
+    "brand_name": "capture",
+    "material": "flat",
+    "imagery": "mixed",
+    "background_patterns": [],
+    "page_intent": "landing",
+    "section_role_counts": {},
+    "voice_tone": "neutral",
+    "voice_heading_style": "Sentence case",
+    "voice_heading_length": "tight"
+  },
+  "generated_at": "2026-06-16T07:57:01.333Z"
+}
