@@ -1,0 +1,350 @@
+<template id="scene_3-template">
+  <div id="root" class="scene_3-root" data-composition-id="scene_3" data-width="1080" data-height="1920" data-duration="6.848" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: radial-gradient(120% 90% at 50% 38%, #141210 0%, #0A0A0A 62%, #050505 100%);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper — macro dolly-push drives this transform every frame */
+      .s3-camera {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      /* Warm light wash that intensifies during the push (decorative) */
+      .s3-warmlight {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(60% 42% at 50% 56%, rgba(212,175,55,0.16) 0%, rgba(212,175,55,0.04) 40%, rgba(212,175,55,0) 70%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .s3-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 96px;
+        width: 100%;
+        padding: 0 90px;
+      }
+
+      /* Headline — display, white with gold keyword */
+      .s3-headline {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 78px;
+        line-height: 1.08;
+        letter-spacing: -1px;
+        text-align: center;
+        color: var(--brand-costume);
+        max-width: 880px;
+        text-shadow: 0 6px 28px rgba(0,0,0,0.55);
+      }
+      .s3-kw {
+        color: var(--brand-primary);
+      }
+
+      /* Phone — glass-edged device frame, gold edge-glow, ~45% of canvas width */
+      .s3-phonewrap {
+        position: relative;
+        width: 486px;
+        height: 1000px;
+        display: grid;
+        place-items: center;
+        perspective: 1600px;
+        will-change: transform;
+      }
+      .s3-phone {
+        position: relative;
+        width: 486px;
+        height: 1000px;
+        border-radius: 70px;
+        background: linear-gradient(160deg, #16140f 0%, #0c0b09 60%, #070605 100%);
+        border: 2px solid rgba(212,175,55,0.55);
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.04) inset,
+          0 30px 90px rgba(0,0,0,0.6),
+          0 0 60px rgba(212,175,55,0.22);
+        display: grid;
+        place-items: center;
+        transform-style: preserve-3d;
+      }
+      /* Inner screen recess */
+      .s3-screen {
+        position: absolute;
+        inset: 16px;
+        border-radius: 56px;
+        background: radial-gradient(80% 60% at 50% 40%, #1a1813 0%, #0a0908 70%);
+        border: 1px solid rgba(255,255,255,0.05);
+      }
+      /* Notch / speaker hairline */
+      .s3-notch {
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 9px;
+        border-radius: 6px;
+        background: rgba(212,175,55,0.35);
+        z-index: 6;
+      }
+
+      /* Orbit stage sits over the phone — chips arc inside/around it */
+      .s3-orbit-stage {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-style: preserve-3d;
+        z-index: 5;
+      }
+      .s3-chip {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 28px;
+        border-radius: 22px;
+        background: rgba(20,18,14,0.82);
+        border: 1.5px solid rgba(212,175,55,0.7);
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,0.05) inset,
+          0 14px 38px rgba(0,0,0,0.5),
+          0 0 26px rgba(212,175,55,0.28);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        transform-style: preserve-3d;
+        will-change: transform;
+        white-space: nowrap;
+      }
+      .s3-chip-label {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 30px;
+        letter-spacing: 1px;
+        color: var(--brand-costume);
+      }
+      .s3-chip-glyph {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 auto;
+      }
+    </style>
+
+    <div class="s3-camera" id="s3-camera">
+      <div class="s3-warmlight" id="s3-warmlight"></div>
+
+      <div class="s3-content">
+        <div class="s3-headline" id="s3-headline">
+          TON TÉLÉPHONE PEUT DEVENIR TON <span class="s3-kw">OUTIL</span> DE TRAVAIL.
+        </div>
+
+        <div class="s3-phonewrap" id="s3-phonewrap">
+          <div class="s3-phone" id="s3-phone">
+            <div class="s3-screen"></div>
+            <div class="s3-notch"></div>
+          </div>
+
+          <div class="s3-orbit-stage" id="s3-orbit-stage">
+            <!-- Chip 1 — Canva (pulsing dot glyph) -->
+            <div class="s3-chip" data-angle="210">
+              <svg class="s3-chip-glyph" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="#D4AF37" stroke-width="3" />
+                <circle id="s3-canva-dot" cx="24" cy="24" r="8" fill="#D4AF37" />
+              </svg>
+              <span class="s3-chip-label">Canva</span>
+            </div>
+
+            <!-- Chip 2 — ChatGPT (drawing stroke glyph) -->
+            <div class="s3-chip" data-angle="330">
+              <svg class="s3-chip-glyph" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(212,175,55,0.4)" stroke-width="3" />
+                <path id="s3-gpt-stroke" d="M14 27 L21 33 L34 16" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span class="s3-chip-label">ChatGPT</span>
+            </div>
+
+            <!-- Chip 3 — WhatsApp Business (dash-flow stream glyph) -->
+            <div class="s3-chip" data-angle="90">
+              <svg class="s3-chip-glyph" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <rect x="9" y="14" width="30" height="22" rx="11" fill="none" stroke="#D4AF37" stroke-width="3" />
+                <line id="s3-wa-flow" x1="14" y1="25" x2="34" y2="25" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="6 6" />
+              </svg>
+              <span class="s3-chip-label">WhatsApp Business</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 6.848;
+      const camera = document.getElementById("s3-camera");
+
+      /* ===== multi-phase-camera — slow dolly-push (graphic scene) ===== */
+      // Phase 1: rest ~0.97; Phase 2: settle 1.0; Phase 3: slow push 1.08
+      const phase = { scale: 0.97 };
+      tl.to(phase, { scale: 1.0, duration: 1.2, ease: "power2.out" }, 0.4);
+      tl.to(phase, { scale: 1.08, duration: 2.4, ease: "power3.out" }, 3.0);
+
+      // Continuous micro-drift overlaid on the phase scale
+      const drift = { p: 0 };
+      tl.to(drift, {
+        p: Math.PI * 2 * 1.3,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          const dx = Math.sin(drift.p) * 5;
+          const dy = Math.sin(drift.p * 1.3) * 3;
+          camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+        },
+      }, 0);
+
+      // Warm light shift — grows as the push lands
+      tl.fromTo("#s3-warmlight",
+        { opacity: 0 },
+        { opacity: 1, duration: 2.6, ease: "power2.inOut" },
+        2.4);
+
+      /* ===== Headline + phone entry ===== */
+      tl.fromTo("#s3-headline",
+        { opacity: 0, y: 36, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" },
+        0.35);
+      tl.fromTo("#s3-phone",
+        { opacity: 0, y: 48, scale: 0.94 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.95, ease: "power3.out" },
+        0.5);
+      tl.fromTo(".s3-notch",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        1.0);
+
+      /* ===== orbit-3d-entry — chips flip in, settle into a shallow arc ===== */
+      // Phone half-width ~243; chips arc inside/around the device.
+      const RADIUS_X = 188;
+      const RADIUS_Y = RADIUS_X * 0.52; // shallow, perspective-flattened arc
+      const ENTRY_AT = 1.2;
+      const ENTRY_DUR = 0.42;
+      const STAGGER = 0.13;
+      const chips = document.querySelectorAll(".s3-chip");
+
+      chips.forEach((el, i) => {
+        const ang = (Number(el.dataset.angle) / 360) * Math.PI * 2;
+        const x = Math.cos(ang) * RADIUS_X;
+        const y = Math.sin(ang) * RADIUS_Y;
+
+        // Place at final arc position, hidden + flipped in 3D — before any tween
+        gsap.set(el, {
+          xPercent: -50,
+          yPercent: -50,
+          x: x,
+          y: y,
+          rotateX: 78,
+          rotateY: -38,
+          z: -160,
+          opacity: 0,
+          scale: 0.55,
+        });
+        // z-index by arc Y so lower chips read in front (capped, never over phone screen content)
+        el.style.zIndex = String(1 + Math.round((y + RADIUS_Y) / (2 * RADIUS_Y) * 20));
+
+        // Flip in IN PLACE at arc position (rotation/opacity/scale only)
+        tl.to(el, {
+          rotateX: 0,
+          rotateY: 0,
+          z: 0,
+          opacity: 1,
+          scale: 1,
+          duration: ENTRY_DUR,
+          ease: "back.out(1.5)",
+        }, ENTRY_AT + i * STAGGER);
+      });
+
+      /* ===== svg-icon-enrichment — each chip glyph comes alive ===== */
+      const ENRICH_AT = ENTRY_AT + (chips.length - 1) * STAGGER + ENTRY_DUR; // ~1.88
+      const ENRICH_DUR = TOTAL - ENRICH_AT;
+
+      // Canva — pulsing dot
+      const pulse = { p: 0 };
+      tl.to(pulse, {
+        p: Math.PI * 2 * 3,
+        duration: ENRICH_DUR,
+        ease: "none",
+        onUpdate: () => {
+          const s = 1 + Math.sin(pulse.p) * 0.16;
+          const dot = document.getElementById("s3-canva-dot");
+          dot.setAttribute("transform", "translate(24 24) scale(" + s + ") translate(-24 -24)");
+        },
+      }, ENRICH_AT);
+
+      // ChatGPT — checkmark stroke draws in, then holds
+      tl.fromTo("#s3-gpt-stroke",
+        { strokeDasharray: 60, strokeDashoffset: 60 },
+        { strokeDashoffset: 0, duration: 0.7, ease: "power2.inOut" },
+        ENRICH_AT);
+
+      // WhatsApp Business — dash flow (message stream)
+      const flow = { offset: 0 };
+      tl.to(flow, {
+        offset: -48, // integer multiple of dash period (6+6)
+        duration: ENRICH_DUR,
+        ease: "none",
+        onUpdate: () => {
+          document.getElementById("s3-wa-flow").style.strokeDashoffset = String(flow.offset);
+        },
+      }, ENRICH_AT);
+
+      /* ===== sine-wave-loop — phone + chip cluster breathe as one live cluster ===== */
+      const IDLE_AT = 2.0;
+      const IDLE_DUR = TOTAL - IDLE_AT;
+      const breath = { p: 0 };
+      tl.to(breath, {
+        p: Math.PI * 2 * 2, // ~2.4s per breath across idle
+        duration: IDLE_DUR,
+        ease: "none",
+        onUpdate: () => {
+          const t = breath.p / (Math.PI * 2 * 2);
+          const env = t < 0.8 ? 1 : (1 - t) / 0.2; // settle in the last 20%
+          const y = Math.sin(breath.p) * 5 * env;
+          const s = 1 + Math.sin(breath.p) * 0.01 * env;
+          document.getElementById("s3-phonewrap").style.transform =
+            "translateY(" + y + "px) scale(" + s + ")";
+        },
+      }, IDLE_AT);
+
+      window.__timelines["scene_3"] = tl;
+    </script>
+  </div>
+</template>

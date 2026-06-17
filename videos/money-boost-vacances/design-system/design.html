@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>capture × Liquid Glass — design.html</title>
+<!--
+  AGENT NOTE — design.html (product-launch-video Phase 1b output)
+  Brand DNA from: 
+  Style preset:   liquid-glass (forced)
+  Generated:      2026-06-16T07:58:27.355Z
+
+  Downstream usage (Phase 4b scene workers):
+    - §2: grep <!-- ROOT-START --> .. <!-- ROOT-END --> → paste into scene <style>
+    - §4: grep <!-- MOTION-START --> .. <!-- MOTION-END --> → paste into <script>
+    - §5: grep <!-- VOICE-START --> .. <!-- VOICE-END --> → register for DOM text copy
+    - §H: grep <!-- HINTS-START --> .. <!-- HINTS-END --> → composition rules for plan agent
+    - §6: grep <!-- COMPONENT: <name> --> .. <!-- /COMPONENT --> → paste by name
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- preset chromeFonts: native typography for doc chrome + .preset-native-scope -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: #0A0A0A;
+    background: #FFFFFF;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+  .ds-section { padding: 80px 0; border-top: 1px solid #e5e5e5; }
+  .ds-section:first-of-type { border-top: none; }
+  .eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.6; margin-bottom: 12px; }
+  h1, h2, h3 { font-family: 'Inter', serif; font-weight: 400; letter-spacing: -0.015em; line-height: 1.05; }
+  h2 { font-size: clamp(36px, 4vw, 56px); margin-bottom: 16px; }
+  h3.ds-h3 { font-size: 18px; font-family: 'Inter', sans-serif; font-weight: 600; margin: 20px 0 12px; opacity: 0.85; }
+  .ds-prose { font-size: 16px; max-width: 62ch; margin: 12px 0; opacity: 0.85; }
+  .ds-prose code, code { font-family: 'JetBrains Mono', monospace; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 0.92em; }
+  .ds-code { font-family: 'JetBrains Mono', monospace; background: #0f1419; color: #e6edf3; padding: 20px 24px; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 16px 0; white-space: pre; }
+  .ds-summary { cursor: pointer; padding: 8px 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; }
+  details[open] .ds-summary { opacity: 1; }
+
+  /* Paste-ready source blocks — collapsed by default because the raw markdown / CSS
+     in <pre> doesn't render as a readable doc (it's machine-bound for emit-chunks).
+     The rendered version sits above each <details>. */
+  .ds-paste-ready { margin: 16px 0; padding: 12px 16px; border: 1px dashed #bbb; border-radius: 8px; background: #fafafa; }
+  .ds-paste-ready > .ds-summary { padding: 4px 0; font-size: 11px; opacity: 0.85; }
+  .ds-paste-ready > .ds-summary code { background: #eee; padding: 1px 5px; border-radius: 3px; font-size: 0.95em; }
+  .ds-paste-ready[open] > .ds-summary { margin-bottom: 8px; }
+  .ds-paste-ready > pre.ds-code { margin: 0; }
+
+  /* ── Title card */
+  .title-card { padding: 80px 0 64px; border-bottom: 1px solid #e5e5e5; }
+  .title-card-inner { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+  .brand-row { display: flex; gap: 12px; align-items: baseline; font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 24px; }
+  .brand-name { color: #D4AF37; font-weight: 700; }
+  .brand-x { opacity: 0.4; }
+  .style-name { color: #C9A14A; font-weight: 700; }
+  .title-display { font-size: clamp(48px, 7vw, 96px); margin: 0; }
+  .title-meta { margin-top: 32px; font-family: 'JetBrains Mono', monospace; font-size: 12px; opacity: 0.7; }
+  .title-meta strong { font-weight: 700; opacity: 0.9; }
+
+  /* ── §1 Brand DNA */
+  .dna-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+  .dna-grid-5 { grid-template-columns: repeat(5, 1fr); }
+  .dna-swatch { padding: 24px 20px; border-radius: 8px; min-height: 120px; display: flex; flex-direction: column; justify-content: space-between; }
+  .dna-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.8; }
+  .dna-hex { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
+  .dna-desc { margin-top: 24px; font-size: 18px; line-height: 1.55; max-width: 60ch; opacity: 0.85; }
+  .dna-gradient { margin: 32px 0 0; }
+  .dna-gradient-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.6; margin-bottom: 10px; }
+  .dna-gradient-bar { height: 96px; border-radius: 8px; }
+  .dna-gradient-code { display: block; margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; opacity: 0.7; word-break: break-all; }
+  @media (max-width: 900px) { .dna-grid-5 { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) { .dna-grid { grid-template-columns: repeat(2, 1fr); } .dna-grid-5 { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ── §3 Typography */
+  .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+  .type-card { padding: 24px; border: 1px solid #e5e5e5; border-radius: 8px; }
+  .type-role { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.6; }
+  .type-name { font-size: 18px; font-weight: 600; margin: 4px 0; }
+  .type-note { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.5; margin-bottom: 16px; }
+  .type-specimen { margin-top: 16px; }
+  @media (max-width: 720px) { .type-grid { grid-template-columns: 1fr; } }
+
+  /* ── §5 Voice */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 24px 0; }
+  .voice-dl dt { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.6; margin-top: 16px; }
+  .voice-dl dd { font-size: 15px; margin-top: 4px; }
+  .voice-cta { display: inline-block; padding: 2px 10px; border: 1px solid #ddd; border-radius: 999px; font-size: 13px; margin: 2px 4px 2px 0; }
+  .voice-sample { font-size: 15px; opacity: 0.85; margin: 4px 0; }
+  .voice-pair { padding: 16px; border: 1px solid #e5e5e5; border-radius: 8px; margin: 12px 0; }
+  .voice-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.6; margin-right: 8px; }
+  .voice-in { margin-bottom: 8px; }
+  .voice-out { opacity: 0.7; }
+  @media (max-width: 720px) { .voice-grid { grid-template-columns: 1fr; } }
+
+  /* ── §6 Components */
+  .comp-card { padding: 0; border: 1px solid #e5e5e5; border-radius: 8px; margin: 16px 0; overflow: hidden; }
+  .comp-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #fafafa; border-bottom: 1px solid #e5e5e5; }
+  .comp-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
+  .comp-marker { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.6; }
+  /* Component preview: components are authored for 1920×1080 scenes. The doc
+     container is ~1056px wide, so wide components (mega-stat etc.) overflow.
+     Allow horizontal scroll so reviewers can pan; max-height caps vertical too. */
+  .comp-preview { padding: 32px; background: #FFFFFF; overflow: auto; max-height: 720px; }
+  .comp-preview::-webkit-scrollbar { height: 8px; width: 8px; }
+  .comp-preview::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+  /* ── Markdown blocks (mdBlockToHtml output) */
+  .ds-prose-block { max-width: 80ch; margin: 16px 0; }
+  .ds-prose-block .ds-prose { margin: 0 0 12px; }
+  .ds-prose-block .ds-prose:last-child { margin-bottom: 0; }
+  .ds-prose-block .ds-h2 { font-family: 'Inter', serif; font-size: 24px; margin: 24px 0 12px; }
+  .ds-prose-block .ds-h3 { font-size: 16px; font-weight: 700; margin: 20px 0 8px; opacity: 0.9; }
+  .ds-prose-block .ds-h4 { font-size: 14px; font-weight: 700; margin: 18px 0 6px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.06em; }
+  .ds-prose-block .ds-list { margin: 8px 0 16px; padding-left: 24px; }
+  .ds-prose-block .ds-list li { margin: 4px 0; line-height: 1.55; }
+  .ds-prose-block .ds-list li code { font-size: 0.92em; }
+  .ds-prose-block .ds-code { margin: 12px 0; }
+  .ds-table { border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  .ds-table th, .ds-table td { padding: 8px 12px; border: 1px solid #e5e5e5; vertical-align: top; text-align: left; }
+  .ds-table th { background: #fafafa; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .ds-table td code { font-size: 0.92em; }
+  
+
+/* ── Preset §I page styling (from liquid-glass.md) ── */
+/* ── Preset-native typography vars (chromeFonts). Single-face system: Inter does
+ * display/body/script (refraction smears thin-stroke scripts), JetBrains Mono
+ * for metadata. */
+:root {
+  --f-disp-native:
+    "Inter", "SF Pro Display", "Geist", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --f-body-native:
+    "Inter", "Public Sans", "DM Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --f-script-native:
+    "Inter", "Public Sans", "DM Sans", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --f-mono-native:
+    "JetBrains Mono", "Geist Mono", "IBM Plex Mono", "Menlo", ui-monospace, monospace;
+}
+
+/* .preset-native-scope: rebinds var(--font-*) to preset-native families for
+ * component previews + §T atlas. Component source is untouched. */
+.preset-native-scope {
+  --font-display: var(--f-disp-native);
+  --font-body: var(--f-body-native);
+  --font-script: var(--f-script-native);
+  --font-mono: var(--f-mono-native);
+}
+
+body {
+  background:
+    radial-gradient(
+      ellipse 90% 60% at 22% 28%,
+      color-mix(in oklab, var(--brand-primary) 60%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 82% 78%,
+      color-mix(in oklab, var(--brand-secondary) 50%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%) !important;
+  background-attachment: fixed !important;
+  color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.title-card {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.title-display {
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+}
+
+.ds-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.eyebrow {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Frosted swatches + frosted component cards for preview legibility */
+.dna-swatch {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 12px 32px rgba(0, 0, 0, 0.32) !important;
+}
+
+.comp-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 18px 48px rgba(0, 0, 0, 0.4) !important;
+}
+.comp-head {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.comp-name,
+.comp-marker {
+  color: rgba(255, 255, 255, 0.92);
+}
+.comp-preview {
+  background: linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%) !important;
+}
+
+.type-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.ds-code {
+  background: rgba(7, 10, 18, 0.7) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voice-pair {
+  background: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+h2 {
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ── §T Type-role atlas. var(--font-*) → brand DNA; text-shadow-glass legibility
+ * decoration is preset-declared. */
+.ds-trole-box {
+  display: flex;
+  flex-direction: column;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 18px 48px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  margin-top: 24px;
+}
+.ds-trole-row {
+  padding: 28px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.ds-trole-row:last-child {
+  border-bottom: 0;
+}
+.ds-trole-sample {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 960px) {
+  .ds-trole-row {
+    padding: 24px;
+  }
+}
+
+/* ── Type-role samples. var(--font-*) → brand DNA at render time. */
+.t-trole-display-cover {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(96px, 12vw, 180px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+}
+.t-trole-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(56px, 6vw, 96px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: var(--text-shadow-glass);
+}
+.t-trole-statement {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(40px, 4vw, 64px);
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: var(--text-shadow-glass);
+  max-width: 26ch;
+}
+.t-trole-stat-value {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(64px, 8vw, 120px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: var(--text-shadow-glass);
+}
+.t-trole-h3 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(28px, 2.8vw, 44px);
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: var(--text-shadow-glass);
+}
+.t-trole-lead {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(26px, 2.4vw, 36px);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: var(--text-shadow-glass);
+  max-width: 44ch;
+  margin: 0;
+}
+.t-trole-label-eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 650;
+  font-size: clamp(24px, 1.6vw, 28px);
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: var(--text-shadow-glass);
+}
+.t-trole-label-mono {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 550;
+  font-size: clamp(24px, 1.6vw, 28px);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+}
+.t-trole-pill {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--brand-primary), var(--brand-secondary));
+  color: rgba(255, 255, 255, 0.98);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(24px, 1.6vw, 28px);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 8px 22px rgba(0, 0, 0, 0.3);
+}
+.t-trole-unit-suffix {
+  font-family: var(--font-mono);
+  font-weight: 550;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.72);
+  margin-left: 0.18em;
+}
+
+</style>
+</head>
+<body>
+
+
+<section class="title-card">
+  <div class="title-card-inner">
+    <div class="brand-row">
+      <span class="brand-name">capture</span>
+      <span class="brand-x">×</span>
+      <span class="style-name">Liquid Glass</span>
+    </div>
+    <h1 class="title-display">capture</h1>
+    <p class="title-meta">
+      <strong>Source</strong> —
+      &nbsp;·&nbsp;
+      <strong>Material</strong> flat
+      &nbsp;·&nbsp;
+      <strong>Intent</strong> landing
+      &nbsp;·&nbsp;
+      <strong>Style</strong> Liquid Glass (forced)
+    </p>
+  </div>
+</section>
+
+<main class="wrap">
+
+<section id="brand-dna" class="ds-section">
+  <div class="eyebrow">§1 · Brand DNA (from site)</div>
+  <h2>capture in one glance</h2>
+  <div class="dna-grid dna-grid-5">
+    
+    <div class="dna-swatch" style="background: #D4AF37; color: #000; ">
+      <div class="dna-label">Primary</div>
+      <div class="dna-hex">#D4AF37</div>
+    </div>
+    
+    <div class="dna-swatch" style="background: #C9A14A; color: #000; ">
+      <div class="dna-label">Secondary</div>
+      <div class="dna-hex">#C9A14A</div>
+    </div>
+    
+    <div class="dna-swatch" style="background: #C9A14A; color: #000; ">
+      <div class="dna-label">Accent</div>
+      <div class="dna-hex">#C9A14A</div>
+    </div>
+    
+    <div class="dna-swatch" style="background: #FFFFFF; color: #000; border: 1px solid #eee;">
+      <div class="dna-label">Canvas</div>
+      <div class="dna-hex">#FFFFFF</div>
+    </div>
+    
+    <div class="dna-swatch" style="background: #0A0A0A; color: #fff; ">
+      <div class="dna-label">Ink</div>
+      <div class="dna-hex">#0A0A0A</div>
+    </div>
+  </div>
+
+  <div class="dna-gradient">
+    <div class="dna-gradient-label">Signature gradient</div>
+    <div class="dna-gradient-bar" style="background: linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%);"></div>
+    <code class="dna-gradient-code">linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%)</code>
+  </div>
+
+  <p class="dna-desc">L&#39;accélérateur de revenus — gagne tes premiers revenus en ligne avec ton téléphone pendant les vacances.</p>
+</section>
+
+<section id="color-tokens" class="ds-section">
+  <div class="eyebrow">§2 · Color × Style overlay</div>
+  <h2>Color tokens + Liquid Glass decoration vars</h2>
+  <p class="ds-prose">Brand colors come from the site. Decoration variables come from the <strong>Liquid Glass</strong> preset. The <code>:root</code> block is live on this page (so §6 component previews render properly). The paste-ready source for <code>chunks/tokens.css</code> is collapsed below — open it to copy.</p>
+  <style>:root {
+  --brand-primary:   #D4AF37;
+  --brand-secondary: #C9A14A;
+  --brand-tertiary:  #C9A14A;
+  --brand-accent:    #C9A14A;
+  --brand-costume:   #FFFFFF;
+  --ink:             #0A0A0A;
+  --canvas:          #FFFFFF;
+  --brand-gradient:  linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%);
+  --deco-1:          #F7CB46;
+  --deco-2:          #99E885;
+  --deco-3:          #C0F7FE;
+  --deco-4:          #FE90E8;
+  --font-display:    'Inter', system-ui, sans-serif;
+  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --liquid-bg-deep: #0a0218; /* mandatory dark base — aurora needs blackpoint */
+  --liquid-bg-fallback: linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%);
+  --lg-widget-blur: 0.42;
+  --lg-widget-refraction: 0.82;
+  --lg-widget-specular: 0.34;
+  --lg-widget-fresnel: 1.25;
+  --lg-widget-edge-highlight: 0.26;
+  --lg-widget-chrom-aberration: 0.08;
+  --lg-widget-saturation: 0.38;
+  --lg-widget-corner-radius: 28;
+  --lg-widget-z-radius: 46;
+  --lg-notif-blur: 0.22;
+  --lg-notif-refraction: 0.6;
+  --lg-notif-specular: 0.2;
+  --lg-notif-fresnel: 0.9;
+  --lg-notif-edge-highlight: 0.1;
+  --lg-notif-chrom-aberration: 0.05;
+  --lg-notif-saturation: 0.25;
+  --lg-notif-corner-radius: 36;
+  --lg-notif-z-radius: 38;
+  --lg-notif-shadow-opacity: 0.35;
+  --lg-notif-shadow-spread: 14;
+  --lg-notif-shadow-offset-y: 4;
+  --lg-menu-blur: 0.56;
+  --lg-menu-refraction: 0.52;
+  --lg-menu-specular: 0.26;
+  --lg-menu-fresnel: 1;
+  --lg-menu-edge-highlight: 0.2;
+  --lg-menu-chrom-aberration: 0.035;
+  --lg-menu-saturation: -0.24;
+  --lg-menu-tint: 0.88;
+  --lg-menu-brightness: 0.54;
+  --lg-menu-corner-radius: 30;
+  --lg-menu-z-radius: 48;
+  --ink-on-glass: rgba(255, 255, 255, 0.96);
+  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);
+  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */
+  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);
+  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */
+  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);
+  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */
+  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);
+  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */
+  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */
+  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */
+  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);
+  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */
+  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */
+  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */
+  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */
+  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */
+  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */
+  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */
+  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */
+  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */
+  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */
+  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */
+  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */
+  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */
+  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */
+  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */
+  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */
+  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */
+  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */
+  }</style>
+  <details class="ds-paste-ready">
+    <summary class="ds-summary">▸ Paste-ready source → <code>chunks/tokens.css</code></summary>
+    <pre class="ds-code"><!-- ROOT-START -->:root {
+  --brand-primary:   #D4AF37;
+  --brand-secondary: #C9A14A;
+  --brand-tertiary:  #C9A14A;
+  --brand-accent:    #C9A14A;
+  --brand-costume:   #FFFFFF;
+  --ink:             #0A0A0A;
+  --canvas:          #FFFFFF;
+  --brand-gradient:  linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%);
+  --deco-1:          #F7CB46;
+  --deco-2:          #99E885;
+  --deco-3:          #C0F7FE;
+  --deco-4:          #FE90E8;
+  --font-display:    'Inter', system-ui, sans-serif;
+  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --liquid-bg-deep: #0a0218; /* mandatory dark base — aurora needs blackpoint */
+  --liquid-bg-fallback: linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%);
+  --lg-widget-blur: 0.42;
+  --lg-widget-refraction: 0.82;
+  --lg-widget-specular: 0.34;
+  --lg-widget-fresnel: 1.25;
+  --lg-widget-edge-highlight: 0.26;
+  --lg-widget-chrom-aberration: 0.08;
+  --lg-widget-saturation: 0.38;
+  --lg-widget-corner-radius: 28;
+  --lg-widget-z-radius: 46;
+  --lg-notif-blur: 0.22;
+  --lg-notif-refraction: 0.6;
+  --lg-notif-specular: 0.2;
+  --lg-notif-fresnel: 0.9;
+  --lg-notif-edge-highlight: 0.1;
+  --lg-notif-chrom-aberration: 0.05;
+  --lg-notif-saturation: 0.25;
+  --lg-notif-corner-radius: 36;
+  --lg-notif-z-radius: 38;
+  --lg-notif-shadow-opacity: 0.35;
+  --lg-notif-shadow-spread: 14;
+  --lg-notif-shadow-offset-y: 4;
+  --lg-menu-blur: 0.56;
+  --lg-menu-refraction: 0.52;
+  --lg-menu-specular: 0.26;
+  --lg-menu-fresnel: 1;
+  --lg-menu-edge-highlight: 0.2;
+  --lg-menu-chrom-aberration: 0.035;
+  --lg-menu-saturation: -0.24;
+  --lg-menu-tint: 0.88;
+  --lg-menu-brightness: 0.54;
+  --lg-menu-corner-radius: 30;
+  --lg-menu-z-radius: 48;
+  --ink-on-glass: rgba(255, 255, 255, 0.96);
+  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);
+  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */
+  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);
+  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */
+  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);
+  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */
+  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);
+  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */
+  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */
+  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */
+  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);
+  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */
+  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */
+  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */
+  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */
+  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */
+  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */
+  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */
+  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */
+  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */
+  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */
+  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */
+  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */
+  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */
+  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */
+  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */
+  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */
+  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */
+  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */
+}<!-- ROOT-END --></pre>
+  </details>
+</section>
+
+<section id="typography" class="ds-section">
+  <div class="eyebrow">§3 · Typography</div>
+  <h2>Type roles</h2>
+  <p class="ds-prose">Font families resolved by 4-step lookup: site name on Google Fonts → self-host local woff2 → preset §D fallback → final hard-coded fallback. Each card shows which step landed.</p>
+
+  <div class="type-grid">
+    
+    <div class="type-card">
+      <div class="type-role">Display</div>
+      <div class="type-name">Inter</div>
+      <div class="type-note">site has no display face → preset fallback</div>
+      <div class="type-specimen" style="font-family: 'Inter', serif; font-size: 72px; font-weight: 400; letter-spacing: -0.02em; line-height: 1;">capture</div>
+    </div>
+    <div class="type-card">
+      <div class="type-role">Body</div>
+      <div class="type-name">Inter</div>
+      <div class="type-note">site has no body face → preset fallback</div>
+      <div class="type-specimen" style="font-family: 'Inter', sans-serif; font-size: 22px; line-height: 1.5;">The quick brown fox jumps over the lazy dog.</div>
+    </div>
+    <div class="type-card">
+      <div class="type-role">Mono</div>
+      <div class="type-name">JetBrains Mono</div>
+      <div class="type-note">site has no mono face → preset fallback</div>
+      <div class="type-specimen" style="font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 18px;">font: JetBrains Mono</div>
+    </div>
+  </div>
+
+  <h3 class="ds-h3" style="margin-top: 48px;">Type-role atlas</h3>
+  <div class="ds-trole-box">
+    
+    <div class="ds-trole-row" data-scale="display-cover" data-family="display" data-px-min="96" data-px-max="180" data-weight="800" data-leading="0.95" data-tracking="-0.01em" data-case="sentence" data-purpose="cover hero on aurora — type sits on glass card or floats directly on the aurora">
+      <div class="ds-trole-sample"><div class="t-trole-display-cover">BRAND_NAME</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="headline" data-family="display" data-px-min="56" data-px-max="96" data-weight="700" data-leading="1" data-tracking="-0.01em" data-case="sentence" data-purpose="primary slide headline on glass panel">
+      <div class="ds-trole-sample"><div class="t-trole-headline">Design together</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="statement" data-family="display" data-px-min="40" data-px-max="64" data-weight="650" data-leading="1.1" data-tracking="0" data-case="sentence" data-purpose="long-form quoted statement on glass — wraps across panels">
+      <div class="ds-trole-sample"><div class="t-trole-statement">Light passes through. Surfaces stay weightless.</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="stat-value" data-family="display" data-px-min="64" data-px-max="120" data-weight="800" data-leading="1" data-tracking="-0.02em" data-case="sentence" data-purpose="hero numeral inside widget glass card — numbers-as-nouns voice">
+      <div class="ds-trole-sample"><div class="t-trole-stat-value">48ms</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="h3" data-family="display" data-px-min="28" data-px-max="44" data-weight="650" data-leading="1.15" data-tracking="0" data-case="sentence" data-purpose="sub-headline / panel title">
+      <div class="ds-trole-sample"><div class="t-trole-h3">Panel title</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="lead" data-family="body" data-px-min="26" data-px-max="36" data-weight="600" data-leading="1.45" data-tracking="0" data-case="sentence" data-purpose="lead paragraph on glass — heavier than usual to survive refraction">
+      <div class="ds-trole-sample"><p class="t-trole-lead">The lead carries one idea per panel. Heavier weight than usual — refraction softens edges.</p></div>
+    </div>
+    <div class="ds-trole-row" data-scale="label-eyebrow" data-family="body" data-px-min="24" data-px-max="28" data-weight="650" data-leading="1.2" data-tracking="0.18em" data-case="upper" data-purpose="uppercase tracked label above a headline (panel eyebrow / section label)">
+      <div class="ds-trole-sample"><div class="t-trole-label-eyebrow">Featured panel</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="label-mono" data-family="mono" data-px-min="24" data-px-max="28" data-weight="550" data-leading="1.3" data-tracking="0.06em" data-case="upper" data-purpose="metadata chrome / slide counter — JetBrains Mono, soft white, wide-tracked caps">
+      <div class="ds-trole-sample"><div class="t-trole-label-mono">01 / Surfaces</div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="pill" data-family="body" data-px-min="24" data-px-max="28" data-weight="600" data-leading="1" data-tracking="0.04em" data-case="upper" data-purpose="gradient pill chip on glass — brand-primary→secondary fill, white text">
+      <div class="ds-trole-sample"><div><span class="t-trole-pill">Live now</span></div></div>
+    </div>
+    <div class="ds-trole-row" data-scale="unit-suffix" data-family="mono" data-px-min="28" data-px-max="44" data-weight="550" data-leading="1" data-tracking="0" data-case="sentence" data-purpose="unit appended to a stat-value (ms / GB / %) — sits at ~30-40% of the numeral">
+      <div class="ds-trole-sample"><div><span class="t-trole-stat-value">48</span><span class="t-trole-unit-suffix">ms</span></div></div>
+    </div>
+  </div>
+
+  <details class="ds-paste-ready" style="margin-top: 32px;">
+    <summary class="ds-summary">▸ Paste-ready source → <code>chunks/type-roles.md</code> (scene worker reads on demand)</summary>
+    <pre class="ds-code"><!-- TYPE-ROLES-START -->
+# Type-roles atlas — Liquid Glass
+
+Phase 4b scene worker reads this when text outside §6 components is needed (hero displays, ledes, pill rows, CTA buttons, …). Workflow: pick role by id → paste the CSS rule into scene `&lt;style&gt;` with `s&lt;N&gt;-` prefix on the class names → wrap content using the prefixed class. Family tokens (`var(--font-*)`) resolve to brand DNA at scene-render time.
+
+## type-role: display-cover
+
+- family: display · px: 96–180 · weight: 800
+- leading: 0.95 · tracking: -0.01em · case: sentence
+- purpose: cover hero on aurora — type sits on glass card or floats directly on the aurora
+
+```css
+.t-trole-display-cover {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(96px, 12vw, 180px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-display-cover&quot;&gt;{BRAND_NAME}&lt;/div&gt;
+```
+
+## type-role: headline
+
+- family: display · px: 56–96 · weight: 700
+- leading: 1 · tracking: -0.01em · case: sentence
+- purpose: primary slide headline on glass panel
+
+```css
+.t-trole-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(56px, 6vw, 96px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: var(--text-shadow-glass);
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-headline&quot;&gt;Design together&lt;/div&gt;
+```
+
+## type-role: statement
+
+- family: display · px: 40–64 · weight: 650
+- leading: 1.1 · tracking: 0 · case: sentence
+- purpose: long-form quoted statement on glass — wraps across panels
+
+```css
+.t-trole-statement {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(40px, 4vw, 64px);
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: var(--text-shadow-glass);
+  max-width: 26ch;
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-statement&quot;&gt;Light passes through. Surfaces stay weightless.&lt;/div&gt;
+```
+
+## type-role: stat-value
+
+- family: display · px: 64–120 · weight: 800
+- leading: 1 · tracking: -0.02em · case: sentence
+- purpose: hero numeral inside widget glass card — numbers-as-nouns voice
+
+```css
+.t-trole-stat-value {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(64px, 8vw, 120px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.98);
+  text-shadow: var(--text-shadow-glass);
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-stat-value&quot;&gt;48ms&lt;/div&gt;
+```
+
+## type-role: h3
+
+- family: display · px: 28–44 · weight: 650
+- leading: 1.15 · tracking: 0 · case: sentence
+- purpose: sub-headline / panel title
+
+```css
+.t-trole-h3 {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: clamp(28px, 2.8vw, 44px);
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: var(--text-shadow-glass);
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-h3&quot;&gt;Panel title&lt;/div&gt;
+```
+
+## type-role: lead
+
+- family: body · px: 26–36 · weight: 600
+- leading: 1.45 · tracking: 0 · case: sentence
+- purpose: lead paragraph on glass — heavier than usual to survive refraction
+
+```css
+.t-trole-lead {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(26px, 2.4vw, 36px);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: var(--text-shadow-glass);
+  max-width: 44ch;
+  margin: 0;
+}
+```
+
+Sample:
+
+```html
+&lt;p class=&quot;t-trole-lead&quot;&gt;The lead carries one idea per panel. Heavier weight than usual — refraction softens edges.&lt;/p&gt;
+```
+
+## type-role: label-eyebrow
+
+- family: body · px: 24–28 · weight: 650
+- leading: 1.2 · tracking: 0.18em · case: upper
+- purpose: uppercase tracked label above a headline (panel eyebrow / section label)
+
+```css
+.t-trole-label-eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 650;
+  font-size: clamp(24px, 1.6vw, 28px);
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: var(--text-shadow-glass);
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-label-eyebrow&quot;&gt;Featured panel&lt;/div&gt;
+```
+
+## type-role: label-mono
+
+- family: mono · px: 24–28 · weight: 550
+- leading: 1.3 · tracking: 0.06em · case: upper
+- purpose: metadata chrome / slide counter — JetBrains Mono, soft white, wide-tracked caps
+
+```css
+.t-trole-label-mono {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-weight: 550;
+  font-size: clamp(24px, 1.6vw, 28px);
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+}
+```
+
+Sample:
+
+```html
+&lt;div class=&quot;t-trole-label-mono&quot;&gt;01 / Surfaces&lt;/div&gt;
+```
+
+## type-role: pill
+
+- family: body · px: 24–28 · weight: 600
+- leading: 1 · tracking: 0.04em · case: upper
+- purpose: gradient pill chip on glass — brand-primary→secondary fill, white text
+
+```css
+.t-trole-pill {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--brand-primary), var(--brand-secondary));
+  color: rgba(255, 255, 255, 0.98);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(24px, 1.6vw, 28px);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 8px 22px rgba(0, 0, 0, 0.3);
+}
+```
+
+Sample:
+
+```html
+&lt;div&gt;&lt;span class=&quot;t-trole-pill&quot;&gt;Live now&lt;/span&gt;&lt;/div&gt;
+```
+
+## type-role: unit-suffix
+
+- family: mono · px: 28–44 · weight: 550
+- leading: 1 · tracking: 0 · case: sentence
+- purpose: unit appended to a stat-value (ms / GB / %) — sits at ~30-40% of the numeral
+
+```css
+.t-trole-unit-suffix {
+  font-family: var(--font-mono);
+  font-weight: 550;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.72);
+  margin-left: 0.18em;
+}
+```
+
+Sample:
+
+```html
+&lt;div&gt;&lt;span class=&quot;t-trole-stat-value&quot;&gt;48&lt;/span&gt;&lt;span class=&quot;t-trole-unit-suffix&quot;&gt;ms&lt;/span&gt;&lt;/div&gt;
+```
+<!-- TYPE-ROLES-END --></pre>
+  </details>
+  <details style="margin-top: 32px;">
+    <summary class="ds-summary">Font pairing recipe (preset §D)</summary>
+    <div class="ds-prose-block"><ul class="ds-list"><li><strong>display</strong>: <code>&#39;Inter&#39;</code> wght 800 · <code>&#39;SF Pro Display&#39;</code> (system) · <code>&#39;Geist&#39;</code></li><li><strong>body</strong>: <code>&#39;Inter&#39;</code> wght 500-650 · <code>&#39;Public Sans&#39;</code> · <code>&#39;DM Sans&#39;</code></li><li><strong>mono</strong>: <code>&#39;JetBrains Mono&#39;</code> · <code>&#39;Geist Mono&#39;</code></li></ul>
+<p class="ds-prose">Liquid glass is <strong>type-on-glass, not type-as-hero</strong>. Body weight runs heavier<br>than usual (550-700) because anti-aliasing fights with refraction — thin<br>weights smear. Letterspacing 0 to -0.01em; never tight.</p></div>
+  </details>
+</section>
+
+<section id="motion" class="ds-section">
+  <div class="eyebrow">§4 · Motion (preset)</div>
+  <h2>Liquid Glass motion language</h2>
+  <div class="ds-prose-block"><p class="ds-prose">Frosted glass over moving color. Surfaces are weightless — light passes<br><strong>through</strong> them, not off them. Type sits on glass; glass sits on aurora;<br>aurora carries the brand. No element is the canvas; depth is the canvas.</p>
+<p class="ds-prose"><strong>One reading layer at a time.</strong> A scene has glass surfaces (panels, pills,<br>cards) floating over an animated color field. The eye reads what&#39;s on the<br>glass, not the glass itself. Decoration is reserved for the aurora — the<br>surfaces stay neutral, just specular highlight + edge-light + chromatic<br>fringe at the rim.</p>
+<p class="ds-prose"><strong>Entry motion</strong>: soft upward translate + scale 0.86→1.0 with <code>back.out(1.04)</code> — overshoot tiny on purpose. Hard cuts and bouncy springs break the wetness.</p></div>
+  <details class="ds-paste-ready">
+    <summary class="ds-summary">▸ Paste-ready source → <code>chunks/easings.js</code> (paste at top of every scene's <code>&lt;script&gt;</code>)</summary>
+    <pre class="ds-code"><!-- MOTION-START -->
+const EASE = {
+  entry: &quot;back.out(1.04)&quot;, // soft overshoot — tiny &quot;settle&quot;
+  emphasis: &quot;power3.inOut&quot;, // viscous, liquid acceleration
+  exit: &quot;power2.in&quot;, // sink, don&#39;t fly
+  drift: &quot;sine.inOut&quot;, // ambient float on idle panels
+};
+const DUR = {
+  snap: 0.28,
+  med: 0.5,
+  slow: 1.1, // aurora cycles use longer than this
+};
+// RULE: every glass panel entry is a translate + scale, never opacity-only.
+// RULE: never crossfade two glass panels — the lower one will look murky.
+// RULE: panels are continuous — never &quot;blink in&quot;. Move them onstage from off-canvas.
+<!-- MOTION-END --></pre>
+  </details>
+</section>
+
+<section id="voice" class="ds-section">
+  <div class="eyebrow">§5 · Voice (site × style transform)</div>
+  <h2>How to write on-screen copy in Liquid Glass register</h2>
+
+  <div class="voice-grid">
+    <div>
+      <h3 class="ds-h3">From the site (DNA)</h3>
+      <dl class="voice-dl">
+        <dt>Tone</dt><dd>neutral</dd>
+        <dt>Heading style</dt><dd>Sentence case</dd>
+        
+        
+      </dl>
+    </div>
+    <div>
+      <h3 class="ds-h3">Transform recipe (preset §G)</h3>
+      <div class="ds-prose-block"><p class="ds-prose">Take the brand&#39;s product description / value prop. Transform with:</p>
+<ol class="ds-list"><li><strong>Present tense, declarative, no hedging.</strong> &quot;Ships in seconds&quot; not &quot;can ship in seconds&quot;.</li><li><strong>Surface &gt; capability.</strong> Talk about what the user sees and touches, not what runs underneath. &quot;Tap and hold&quot; beats &quot;leverages the new context API&quot;.</li><li><strong>Numbers as nouns.</strong> &quot;Forty-eight milliseconds.&quot; (Period.) — not &quot;as fast as 48ms&quot;.</li><li><strong>One verb, one object, one beat per panel.</strong> Captions sit on glass; long sentences won&#39;t.</li><li><strong>No exclamation, no all-caps.</strong> The medium is dramatic enough.</li></ol>
+<p class="ds-prose"><strong>Example:</strong></p>
+<ul class="ds-list"><li>IN: <code>Figma helps teams design products collaboratively in real time</code></li><li>OUT: <code>Design together. In real time. On glass.</code></li></ul></div>
+    </div>
+  </div>
+
+  <h3 class="ds-h3" style="margin-top: 32px;">Try it on this site's voice</h3>
+  
+  <div class="voice-pair">
+    <div class="voice-in"><span class="voice-tag">IN (site)</span> L&#39;accélérateur de revenus — gagne tes premiers revenus en ligne avec ton téléphone pendant les vacances.</div>
+    <div class="voice-out"><span class="voice-tag">OUT (Phase 4b applies recipe to DOM copy)</span> <em>worker writes register-shaped HTML text</em></div>
+  </div>
+
+  <details class="ds-paste-ready" style="margin-top: 32px;">
+    <summary class="ds-summary">▸ Paste-ready source → <code>chunks/voice.md</code> (Phase 4b applies recipe to DOM text)</summary>
+    <pre class="ds-code"><!-- VOICE-START -->
+# Voice register: liquid-glass
+
+## From the site (DNA)
+- Tone: neutral
+- Heading style: Sentence case
+
+## Transform recipe
+
+Take the brand&#39;s product description / value prop. Transform with:
+
+1. **Present tense, declarative, no hedging.** &quot;Ships in seconds&quot; not &quot;can ship in seconds&quot;.
+2. **Surface &gt; capability.** Talk about what the user sees and touches, not what runs underneath. &quot;Tap and hold&quot; beats &quot;leverages the new context API&quot;.
+3. **Numbers as nouns.** &quot;Forty-eight milliseconds.&quot; (Period.) — not &quot;as fast as 48ms&quot;.
+4. **One verb, one object, one beat per panel.** Captions sit on glass; long sentences won&#39;t.
+5. **No exclamation, no all-caps.** The medium is dramatic enough.
+
+**Example:**
+
+- IN: `Figma helps teams design products collaboratively in real time`
+- OUT: `Design together. In real time. On glass.`
+
+&gt; Phase 4b scene workers: apply to DOM text only (headline / chip / button copy).
+&gt; Phase 2 narrator scripts are TTS-bound — do NOT uppercase or strip articles.
+<!-- VOICE-END --></pre>
+  </details>
+</section>
+
+<section id="hints" class="ds-section">
+  <div class="eyebrow">§H · Scene composition hints (plan agent reads these)</div>
+  <h2>Liquid Glass composition rules</h2>
+  <p class="ds-prose">Surface contracts, material composition rules, brand-color placement — anything that constrains <strong>which</strong> components a Phase 3 plan can mix in a single scene.</p>
+  <div class="ds-prose-block"><p class="ds-prose"><strong>Runtime prerequisites — read first</strong></p>
+<p class="ds-prose">Liquid glass scenes will NOT render in a default Puppeteer/Chrome stable. Before<br>authoring or rendering a liquid-glass composition you must:</p>
+<p class="ds-prose">1. <strong>Install one of the liquid-glass runtime blocks</strong> to get<br>   <code>lib/liquid-glass.iife.js</code> and the three.js dependencies wired:</p>
+<p class="ds-prose">   ``<code>bash<br>   npx hyperframes add liquid-glass-widgets<br>   # OR pick another:  liquid-glass-notification | liquid-glass-context-menu<br>   #                   liquid-glass-media-controls | ios26-liquid-glass<br>   #                   macos-tahoe-liquid-glass    | vfx-liquid-glass<br>   </code>``</p>
+<p class="ds-prose">   You only need one — they all ship the same <code>lib/liquid-glass.iife.js</code>.</p>
+<p class="ds-prose">2. <strong>Use a WebGPU-capable browser for rendering</strong>: Brave or Chrome Canary<br>   with WebGPU enabled. Set:</p>
+<p class="ds-prose">   ``<code>bash<br>   export PRODUCER_HEADLESS_SHELL_PATH=/path/to/brave-or-canary<br>   </code>``</p>
+<p class="ds-prose">   The engine auto-passes <code>--enable-unsafe-webgpu</code>. See<br>   <code>/hyperframes-animation</code> → <code>adapters/typegpu.md</code> for the full setup.</p>
+<p class="ds-prose">3. <strong>Verify before authoring</strong>: <code>npx hyperframes doctor</code> should report<br>   <code>webgpu: ok</code>. If it says <code>unsupported</code>, fall back to a different preset<br>   — liquid-glass will silently render as blank panels otherwise.</p>
+<p class="ds-prose"><strong>Stage structure</strong></p>
+<p class="ds-prose">- Every scene starts with the <code>liquid-stage</code> component (§F). The two canvases<br>  - text-overlay layer are non-negotiable; the IIFE looks for them by id.<br>- Glass panels go inside <code>#glass-canvas</code> as empty <code>&lt;div class=&quot;glass-panel ... liquid-glass&quot;&gt;</code>.<br>  The <code>liquid-glass</code> class is the IIFE hook — without it the panel won&#39;t be<br>  picked up. <strong>Don&#39;t put text inside the glass div</strong> — text lives in a sibling<br>  <code>.text-overlay</code> div absolutely positioned to overlap the panel.<br>- The text-overlay div itself MUST stay transparent (no background, no border,<br>  no box-shadow). The glass card visuals come from the IIFE pass underneath;<br>  the overlay only carries text + small icons + gradient pills. Adding a<br>  background to the overlay creates a visible rectangle that breaks the<br>  illusion the moment IIFE renders. (The <code>.stat-text</code> / <code>.showcase-text</code><br>  inset highlights in §F are an intentional exception — they fake the <strong>inner<br>  rim</strong> of the glass card itself, not the body.)</p>
+<p class="ds-prose"><strong>Aurora shader — copy verbatim from registry</strong></p>
+<p class="ds-prose">The Three.js aurora shader is byte-identical across all 8 registry liquid-glass<br>blocks. <strong>Do not let an LLM rewrite it.</strong> When authoring a scene:</p>
+<p class="ds-prose">1. Copy the entire <code>&lt;script&gt;</code> block (vs string + fs string + Three.js<br>   renderer/scene/camera/uniforms/quad setup + the <code>requestGlassRender</code> /<br>   <code>lg.waitForInit()</code> block) from:<br>   <code>registry/blocks/liquid-glass-widgets/liquid-glass-widgets.html</code> lines 485-601.<br>2. Keep <code>uTime</code> driven by your GSAP timeline (<code>tl.eventCallback(&quot;onUpdate&quot;,<br>() =&gt; requestGlassRender(tl.time()))</code>) — already wired in the source.<br>3. The <code>vec3 base = mix(vec3(0.10, 0.02, 0.22), vec3(0.04, 0.10, 0.25), …)</code><br>   line is the only place to retint the aurora toward a brand color — replace<br>   those two vec3 stops with desaturated versions of <code>--brand-primary</code> /<br>   <code>--brand-secondary</code> if you want brand-tinted aurora. Don&#39;t touch the snoise<br>   functions or the ridge math.</p>
+<p class="ds-prose"><strong>Density &amp; focus</strong></p>
+<p class="ds-prose">- <strong>2-4 glass surfaces per scene maximum.</strong> More than that and the refraction<br>  passes start to mush each other.<br>- <strong>Surfaces don&#39;t overlap.</strong> A small chip _next to_ a card is fine; a chip<br>  _on_ a card produces a refraction double-bounce that reads as broken.<br>- <strong>Brand color lives in the aurora and the accent strokes</strong>, not the glass<br>  tint. Glass stays neutral (white at low opacity). To bring brand color<br>  forward, push the aurora warm/cool stops toward <code>--brand-primary</code> /<br>  <code>--brand-secondary</code> in the shader — don&#39;t paint the glass.</p>
+<p class="ds-prose"><strong>Typography on glass</strong></p>
+<p class="ds-prose">- <strong>Body weight ≥ 550.</strong> Thinner reads as smudge through the refraction.<br>- <strong>Always include <code>text-shadow: var(--text-shadow-glass)</code></strong> on labels —<br>  the glass refracts and softens edges, the shadow restores legibility.<br>- <strong>Min text size 14px</strong>, ideally 16-22px. Anything smaller disappears.<br>- For light-tinted glass (menu archetype): use <code>--ink-on-light-glass</code><br>  (near-black with a subtle white text-shadow). The IIFE shader inverts<br>  the perceived contrast on menu panels.</p>
+<p class="ds-prose"><strong>Color discipline</strong></p>
+<p class="ds-prose">- Canvas is the <strong>aurora</strong>, not a flat fill. Never set <code>body { background: var(--canvas); }</code><br>  in a liquid-glass scene — the canvas variable is overridden to the deep<br>  base purple that the aurora needs as a blackpoint.<br>- Brand accent appears as: aurora hot zone tint, pill dots, button gradients,<br>  album-art conic gradients. Never as a glass panel fill.</p>
+<p class="ds-prose"><strong>Atmosphere</strong></p>
+<p class="ds-prose">- <strong>Transitions between scenes</strong>: hold the aurora across scenes (single<br>  composition-wide <code>uTime</code> driver). Panels slide off the bottom on scene N,<br>  rise from the bottom on scene N+1. The aurora doesn&#39;t blink.</p></div>
+  <details class="ds-paste-ready">
+    <summary class="ds-summary">▸ Paste-ready source → <code>chunks/composition-hints.md</code> (plan agent reads this)</summary>
+    <pre class="ds-code"><!-- HINTS-START -->
+# Composition hints — Liquid Glass
+
+**Runtime prerequisites — read first**
+
+Liquid glass scenes will NOT render in a default Puppeteer/Chrome stable. Before
+authoring or rendering a liquid-glass composition you must:
+
+1. **Install one of the liquid-glass runtime blocks** to get
+   `lib/liquid-glass.iife.js` and the three.js dependencies wired:
+
+   ```bash
+   npx hyperframes add liquid-glass-widgets
+   # OR pick another:  liquid-glass-notification | liquid-glass-context-menu
+   #                   liquid-glass-media-controls | ios26-liquid-glass
+   #                   macos-tahoe-liquid-glass    | vfx-liquid-glass
+   ```
+
+   You only need one — they all ship the same `lib/liquid-glass.iife.js`.
+
+2. **Use a WebGPU-capable browser for rendering**: Brave or Chrome Canary
+   with WebGPU enabled. Set:
+
+   ```bash
+   export PRODUCER_HEADLESS_SHELL_PATH=/path/to/brave-or-canary
+   ```
+
+   The engine auto-passes `--enable-unsafe-webgpu`. See
+   `/hyperframes-animation` → `adapters/typegpu.md` for the full setup.
+
+3. **Verify before authoring**: `npx hyperframes doctor` should report
+   `webgpu: ok`. If it says `unsupported`, fall back to a different preset
+   — liquid-glass will silently render as blank panels otherwise.
+
+**Stage structure**
+
+- Every scene starts with the `liquid-stage` component (§F). The two canvases
+  - text-overlay layer are non-negotiable; the IIFE looks for them by id.
+- Glass panels go inside `#glass-canvas` as empty `&lt;div class=&quot;glass-panel ... liquid-glass&quot;&gt;`.
+  The `liquid-glass` class is the IIFE hook — without it the panel won&#39;t be
+  picked up. **Don&#39;t put text inside the glass div** — text lives in a sibling
+  `.text-overlay` div absolutely positioned to overlap the panel.
+- The text-overlay div itself MUST stay transparent (no background, no border,
+  no box-shadow). The glass card visuals come from the IIFE pass underneath;
+  the overlay only carries text + small icons + gradient pills. Adding a
+  background to the overlay creates a visible rectangle that breaks the
+  illusion the moment IIFE renders. (The `.stat-text` / `.showcase-text`
+  inset highlights in §F are an intentional exception — they fake the **inner
+  rim** of the glass card itself, not the body.)
+
+**Aurora shader — copy verbatim from registry**
+
+The Three.js aurora shader is byte-identical across all 8 registry liquid-glass
+blocks. **Do not let an LLM rewrite it.** When authoring a scene:
+
+1. Copy the entire `&lt;script&gt;` block (vs string + fs string + Three.js
+   renderer/scene/camera/uniforms/quad setup + the `requestGlassRender` /
+   `lg.waitForInit()` block) from:
+   `registry/blocks/liquid-glass-widgets/liquid-glass-widgets.html` lines 485-601.
+2. Keep `uTime` driven by your GSAP timeline (`tl.eventCallback(&quot;onUpdate&quot;,
+() =&gt; requestGlassRender(tl.time()))`) — already wired in the source.
+3. The `vec3 base = mix(vec3(0.10, 0.02, 0.22), vec3(0.04, 0.10, 0.25), …)`
+   line is the only place to retint the aurora toward a brand color — replace
+   those two vec3 stops with desaturated versions of `--brand-primary` /
+   `--brand-secondary` if you want brand-tinted aurora. Don&#39;t touch the snoise
+   functions or the ridge math.
+
+**Density &amp; focus**
+
+- **2-4 glass surfaces per scene maximum.** More than that and the refraction
+  passes start to mush each other.
+- **Surfaces don&#39;t overlap.** A small chip _next to_ a card is fine; a chip
+  _on_ a card produces a refraction double-bounce that reads as broken.
+- **Brand color lives in the aurora and the accent strokes**, not the glass
+  tint. Glass stays neutral (white at low opacity). To bring brand color
+  forward, push the aurora warm/cool stops toward `--brand-primary` /
+  `--brand-secondary` in the shader — don&#39;t paint the glass.
+
+**Typography on glass**
+
+- **Body weight ≥ 550.** Thinner reads as smudge through the refraction.
+- **Always include `text-shadow: var(--text-shadow-glass)`** on labels —
+  the glass refracts and softens edges, the shadow restores legibility.
+- **Min text size 14px**, ideally 16-22px. Anything smaller disappears.
+- For light-tinted glass (menu archetype): use `--ink-on-light-glass`
+  (near-black with a subtle white text-shadow). The IIFE shader inverts
+  the perceived contrast on menu panels.
+
+**Color discipline**
+
+- Canvas is the **aurora**, not a flat fill. Never set `body { background: var(--canvas); }`
+  in a liquid-glass scene — the canvas variable is overridden to the deep
+  base purple that the aurora needs as a blackpoint.
+- Brand accent appears as: aurora hot zone tint, pill dots, button gradients,
+  album-art conic gradients. Never as a glass panel fill.
+
+**Atmosphere**
+
+- **Transitions between scenes**: hold the aurora across scenes (single
+  composition-wide `uTime` driver). Panels slide off the bottom on scene N,
+  rise from the bottom on scene N+1. The aurora doesn&#39;t blink.
+<!-- HINTS-END --></pre>
+  </details>
+</section>
+
+<section id="components" class="ds-section">
+  <div class="eyebrow">§6 · Components (paste-ready)</div>
+  <h2>Liquid Glass component library</h2>
+
+  
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">aurora-bg-fallback</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: aurora-bg-fallback --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .aurora-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 90% 60% at 22% 28%,
+        color-mix(in oklab, var(--brand-primary) 70%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 80% 60% at 82% 78%,
+        color-mix(in oklab, var(--brand-secondary) 60%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 70% 50% at 58% 18%,
+        color-mix(in oklab, var(--brand-accent) 50%, transparent),
+        transparent 60%
+      ),
+      var(--liquid-bg-fallback);
+    filter: blur(80px) saturate(1.15);
+  }
+</style>
+      <!--
+  CSS-only aurora fallback. Use ONLY when:
+    (a) the runtime does not support WebGPU, or
+    (b) you want a still preview thumbnail of the scene.
+  When the IIFE runtime IS active, this is invisible (z-index: 0 covers it).
+  In the full pipeline, the aurora shader inside <canvas id="three-canvas">
+  takes over — see liquid-stage.md for how the canvases stack.
+-->
+<div class="aurora-bg"></div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: aurora-bg-fallback --&gt;
+```html
+&lt;!--
+  CSS-only aurora fallback. Use ONLY when:
+    (a) the runtime does not support WebGPU, or
+    (b) you want a still preview thumbnail of the scene.
+  When the IIFE runtime IS active, this is invisible (z-index: 0 covers it).
+  In the full pipeline, the aurora shader inside &lt;canvas id=&quot;three-canvas&quot;&gt;
+  takes over — see liquid-stage.md for how the canvases stack.
+--&gt;
+&lt;div class=&quot;aurora-bg&quot;&gt;&lt;/div&gt;
+&lt;style&gt;
+  .aurora-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 90% 60% at 22% 28%,
+        color-mix(in oklab, var(--brand-primary) 70%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 80% 60% at 82% 78%,
+        color-mix(in oklab, var(--brand-secondary) 60%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 70% 50% at 58% 18%,
+        color-mix(in oklab, var(--brand-accent) 50%, transparent),
+        transparent 60%
+      ),
+      var(--liquid-bg-fallback);
+    filter: blur(80px) saturate(1.15);
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-media-bar</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-media-bar --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .media-panel {
+    width: 640px;
+    height: 116px;
+    background: var(--lg-rim-trace);
+    /* Notification archetype base, with "punchy" overrides for the now-playing
+       register: higher blur/refraction/specular and high-saturation for the
+       album-art glow. The other notif-* values still inherit. */
+    --lg-blur: 0.42;
+    --lg-refraction: 0.92;
+    --lg-corner-radius: 44;
+    --lg-z-radius: 58;
+    --lg-specular: 0.46;
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: 0.34;
+    --lg-chrom-aberration: var(--lg-widget-chrom-aberration); /* 0.08 — widget's punchier value */
+    --lg-saturation: 1.1; /* override: punchy hue lift for album-art glow */
+  }
+  .media-text {
+    width: 640px;
+    height: 116px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 0 24px;
+    text-shadow: var(--text-shadow-glass);
+  }
+  .album-art {
+    width: 78px;
+    height: 78px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-lo),
+      0 12px 26px var(--lg-base-shadow);
+  }
+  .media-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+  }
+  .media-artist {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink-on-glass-soft);
+    margin-top: 2px;
+  }
+</style>
+      <!-- 640×116 horizontal media/now-playing bar. High saturation glass; full-bleed feel. -->
+<div id="glass-media" class="glass-panel media-panel liquid-glass"></div>
+<div class="text-overlay media-text" style="top: 476px; left: 640px;">
+  <div class="album-art" style="background: var(--brand-gradient);"></div>
+  <div class="media-info">
+    <div class="media-title">TITLE</div>
+    <div class="media-artist">SUBTITLE</div>
+  </div>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-media-bar --&gt;
+```html
+&lt;!-- 640×116 horizontal media/now-playing bar. High saturation glass; full-bleed feel. --&gt;
+&lt;div id=&quot;glass-media&quot; class=&quot;glass-panel media-panel liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay media-text&quot; style=&quot;top: 476px; left: 640px;&quot;&gt;
+  &lt;div class=&quot;album-art&quot; style=&quot;background: var(--brand-gradient);&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;media-info&quot;&gt;
+    &lt;div class=&quot;media-title&quot;&gt;{TITLE}&lt;/div&gt;
+    &lt;div class=&quot;media-artist&quot;&gt;{SUBTITLE}&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .media-panel {
+    width: 640px;
+    height: 116px;
+    background: var(--lg-rim-trace);
+    /* Notification archetype base, with &quot;punchy&quot; overrides for the now-playing
+       register: higher blur/refraction/specular and high-saturation for the
+       album-art glow. The other notif-* values still inherit. */
+    --lg-blur: 0.42;
+    --lg-refraction: 0.92;
+    --lg-corner-radius: 44;
+    --lg-z-radius: 58;
+    --lg-specular: 0.46;
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: 0.34;
+    --lg-chrom-aberration: var(--lg-widget-chrom-aberration); /* 0.08 — widget&#39;s punchier value */
+    --lg-saturation: 1.1; /* override: punchy hue lift for album-art glow */
+  }
+  .media-text {
+    width: 640px;
+    height: 116px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 0 24px;
+    text-shadow: var(--text-shadow-glass);
+  }
+  .album-art {
+    width: 78px;
+    height: 78px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-lo),
+      0 12px 26px var(--lg-base-shadow);
+  }
+  .media-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+  }
+  .media-artist {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink-on-glass-soft);
+    margin-top: 2px;
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-menu</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-menu --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .menu-panel {
+    width: 390px;
+    height: 506px;
+    background: var(--lg-glass-tint-menu);
+    /* Menu archetype — see preset.md §B for tuning. */
+    --lg-blur: var(--lg-menu-blur);
+    --lg-refraction: var(--lg-menu-refraction);
+    --lg-corner-radius: var(--lg-menu-corner-radius);
+    --lg-z-radius: var(--lg-menu-z-radius);
+    --lg-specular: var(--lg-menu-specular);
+    --lg-fresnel: var(--lg-menu-fresnel);
+    --lg-edge-highlight: var(--lg-menu-edge-highlight);
+    --lg-chrom-aberration: var(--lg-menu-chrom-aberration);
+    --lg-tint: var(--lg-menu-tint);
+    --lg-brightness: var(--lg-menu-brightness);
+    --lg-saturation: var(--lg-menu-saturation);
+  }
+  .menu-text {
+    width: 390px;
+    height: 506px;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0;
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 28px;
+    font-size: 26px;
+    font-weight: 650;
+    color: var(--ink-on-light-glass);
+    text-shadow: 0 1px 0 var(--lg-light-emboss);
+  }
+  .menu-kbd {
+    margin-left: auto;
+    font-size: 24px;
+    font-weight: 650;
+    color: var(--lg-kbd-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .menu-sep {
+    height: 1px;
+    margin: 10px 28px;
+    background: linear-gradient(90deg, transparent, var(--lg-rim-track), transparent);
+  }
+</style>
+      <!--
+  390×506 vertical menu, light-tinted glass (text reads dark). For dense
+  popovers — context menus, settings panes, command palettes.
+-->
+<div id="glass-menu" class="glass-panel menu-panel liquid-glass"></div>
+<div class="text-overlay menu-text" style="top: 270px; left: 800px;">
+  <div class="menu-item"><span>Ship the core flow. Cut three legacy paths.</span><span class="menu-kbd">KBD_1</span></div>
+  <div class="menu-item"><span>Talk to ten teams. Brief findings every Friday.</span><span class="menu-kbd">KBD_2</span></div>
+  <div class="menu-sep"></div>
+  <div class="menu-item"><span>One launch, not five. Shared positioning across drops.</span><span class="menu-kbd">KBD_3</span></div>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-menu --&gt;
+```html
+&lt;!--
+  390×506 vertical menu, light-tinted glass (text reads dark). For dense
+  popovers — context menus, settings panes, command palettes.
+--&gt;
+&lt;div id=&quot;glass-menu&quot; class=&quot;glass-panel menu-panel liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay menu-text&quot; style=&quot;top: 270px; left: 800px;&quot;&gt;
+  &lt;div class=&quot;menu-item&quot;&gt;&lt;span&gt;{ITEM_1}&lt;/span&gt;&lt;span class=&quot;menu-kbd&quot;&gt;{KBD_1}&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;menu-item&quot;&gt;&lt;span&gt;{ITEM_2}&lt;/span&gt;&lt;span class=&quot;menu-kbd&quot;&gt;{KBD_2}&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;menu-sep&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;menu-item&quot;&gt;&lt;span&gt;{ITEM_3}&lt;/span&gt;&lt;span class=&quot;menu-kbd&quot;&gt;{KBD_3}&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .menu-panel {
+    width: 390px;
+    height: 506px;
+    background: var(--lg-glass-tint-menu);
+    /* Menu archetype — see preset.md §B for tuning. */
+    --lg-blur: var(--lg-menu-blur);
+    --lg-refraction: var(--lg-menu-refraction);
+    --lg-corner-radius: var(--lg-menu-corner-radius);
+    --lg-z-radius: var(--lg-menu-z-radius);
+    --lg-specular: var(--lg-menu-specular);
+    --lg-fresnel: var(--lg-menu-fresnel);
+    --lg-edge-highlight: var(--lg-menu-edge-highlight);
+    --lg-chrom-aberration: var(--lg-menu-chrom-aberration);
+    --lg-tint: var(--lg-menu-tint);
+    --lg-brightness: var(--lg-menu-brightness);
+    --lg-saturation: var(--lg-menu-saturation);
+  }
+  .menu-text {
+    width: 390px;
+    height: 506px;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0;
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 28px;
+    font-size: 26px;
+    font-weight: 650;
+    color: var(--ink-on-light-glass);
+    text-shadow: 0 1px 0 var(--lg-light-emboss);
+  }
+  .menu-kbd {
+    margin-left: auto;
+    font-size: 24px;
+    font-weight: 650;
+    color: var(--lg-kbd-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .menu-sep {
+    height: 1px;
+    margin: 10px 28px;
+    background: linear-gradient(90deg, transparent, var(--lg-rim-track), transparent);
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-notification</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-notification --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .notif-panel {
+    width: 520px;
+    height: 118px;
+    /* Notification archetype — see preset.md §B for tuning. */
+    --lg-blur: var(--lg-notif-blur);
+    --lg-refraction: var(--lg-notif-refraction);
+    --lg-corner-radius: var(--lg-notif-corner-radius);
+    --lg-z-radius: var(--lg-notif-z-radius);
+    --lg-specular: var(--lg-notif-specular);
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: var(--lg-notif-edge-highlight);
+    --lg-chrom-aberration: var(--lg-notif-chrom-aberration);
+    --lg-saturation: var(--lg-notif-saturation);
+    --lg-shadow-opacity: var(--lg-notif-shadow-opacity);
+    --lg-shadow-spread: var(--lg-notif-shadow-spread);
+    --lg-shadow-offset-y: var(--lg-notif-shadow-offset-y);
+  }
+  .notif-card {
+    width: 520px;
+    height: 118px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--ink-on-glass);
+    text-shadow: var(--text-shadow-glass);
+  }
+  .notif-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lg-glint-white);
+    font-weight: 800;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .notif-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .notif-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+  }
+  .notif-msg {
+    font-size: 24px;
+    font-weight: 550;
+    color: var(--ink-on-glass-soft);
+    margin-top: 2px;
+  }
+</style>
+      <!-- 520×118 floating toast. Slides in top-right. Pair with .notif-card text overlay. -->
+<div id="glass-notif1" class="glass-panel notif-panel liquid-glass"></div>
+<div class="text-overlay notif-card" style="top: 60px; left: 1340px;">
+  <div class="notif-avatar" style="background: var(--brand-primary);">INITIAL</div>
+  <div class="notif-body">
+    <div class="notif-title">TITLE</div>
+    <div class="notif-msg">MESSAGE</div>
+  </div>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-notification --&gt;
+```html
+&lt;!-- 520×118 floating toast. Slides in top-right. Pair with .notif-card text overlay. --&gt;
+&lt;div id=&quot;glass-notif1&quot; class=&quot;glass-panel notif-panel liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay notif-card&quot; style=&quot;top: 60px; left: 1340px;&quot;&gt;
+  &lt;div class=&quot;notif-avatar&quot; style=&quot;background: var(--brand-primary);&quot;&gt;{INITIAL}&lt;/div&gt;
+  &lt;div class=&quot;notif-body&quot;&gt;
+    &lt;div class=&quot;notif-title&quot;&gt;{TITLE}&lt;/div&gt;
+    &lt;div class=&quot;notif-msg&quot;&gt;{MESSAGE}&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .notif-panel {
+    width: 520px;
+    height: 118px;
+    /* Notification archetype — see preset.md §B for tuning. */
+    --lg-blur: var(--lg-notif-blur);
+    --lg-refraction: var(--lg-notif-refraction);
+    --lg-corner-radius: var(--lg-notif-corner-radius);
+    --lg-z-radius: var(--lg-notif-z-radius);
+    --lg-specular: var(--lg-notif-specular);
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: var(--lg-notif-edge-highlight);
+    --lg-chrom-aberration: var(--lg-notif-chrom-aberration);
+    --lg-saturation: var(--lg-notif-saturation);
+    --lg-shadow-opacity: var(--lg-notif-shadow-opacity);
+    --lg-shadow-spread: var(--lg-notif-shadow-spread);
+    --lg-shadow-offset-y: var(--lg-notif-shadow-offset-y);
+  }
+  .notif-card {
+    width: 520px;
+    height: 118px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--ink-on-glass);
+    text-shadow: var(--text-shadow-glass);
+  }
+  .notif-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lg-glint-white);
+    font-weight: 800;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .notif-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .notif-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+  }
+  .notif-msg {
+    font-size: 24px;
+    font-weight: 550;
+    color: var(--ink-on-glass-soft);
+    margin-top: 2px;
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-pill-chip</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-pill-chip --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .pill-chip {
+    width: 210px;
+    height: 56px;
+    /* Widget archetype, pill-shape override on corner-radius. */
+    --lg-blur: var(--lg-widget-blur);
+    --lg-refraction: var(--lg-widget-refraction);
+    --lg-corner-radius: 40; /* override: pill shape, not the 28px widget default */
+    --lg-z-radius: var(--lg-widget-z-radius);
+    --lg-specular: var(--lg-widget-specular);
+    --lg-fresnel: var(--lg-widget-fresnel);
+    --lg-edge-highlight: var(--lg-widget-edge-highlight);
+    --lg-saturation: var(--lg-widget-saturation);
+  }
+  .pill-text {
+    width: 210px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 40px;
+    background: linear-gradient(130deg, var(--lg-rim-lo), var(--lg-rim-ghost));
+    border: 1px solid var(--lg-rim-mid-soft);
+    box-shadow: inset 0 1px 0 var(--lg-rim-hi-soft);
+  }
+  .pill-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-label {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink-on-glass);
+  }
+</style>
+      <!-- 210×56 status pill. Stack 3-5 in a row for "system state" beats. -->
+<div id="glass-pill1" class="glass-panel pill-chip liquid-glass"></div>
+<div class="text-overlay pill-text" style="top: 720px; left: 300px;">
+  <span class="pill-dot" style="background: var(--brand-accent);"></span>
+  <span class="pill-label">Get started</span>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-pill-chip --&gt;
+```html
+&lt;!-- 210×56 status pill. Stack 3-5 in a row for &quot;system state&quot; beats. --&gt;
+&lt;div id=&quot;glass-pill1&quot; class=&quot;glass-panel pill-chip liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay pill-text&quot; style=&quot;top: 720px; left: 300px;&quot;&gt;
+  &lt;span class=&quot;pill-dot&quot; style=&quot;background: var(--brand-accent);&quot;&gt;&lt;/span&gt;
+  &lt;span class=&quot;pill-label&quot;&gt;{LABEL}&lt;/span&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .pill-chip {
+    width: 210px;
+    height: 56px;
+    /* Widget archetype, pill-shape override on corner-radius. */
+    --lg-blur: var(--lg-widget-blur);
+    --lg-refraction: var(--lg-widget-refraction);
+    --lg-corner-radius: 40; /* override: pill shape, not the 28px widget default */
+    --lg-z-radius: var(--lg-widget-z-radius);
+    --lg-specular: var(--lg-widget-specular);
+    --lg-fresnel: var(--lg-widget-fresnel);
+    --lg-edge-highlight: var(--lg-widget-edge-highlight);
+    --lg-saturation: var(--lg-widget-saturation);
+  }
+  .pill-text {
+    width: 210px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 40px;
+    background: linear-gradient(130deg, var(--lg-rim-lo), var(--lg-rim-ghost));
+    border: 1px solid var(--lg-rim-mid-soft);
+    box-shadow: inset 0 1px 0 var(--lg-rim-hi-soft);
+  }
+  .pill-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-label {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink-on-glass);
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-slider</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-slider --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .slider-panel {
+    width: 640px;
+    height: 76px;
+    /* Notification archetype (640px wide, needs cast shadow), corner override
+       for the tighter slider rail. */
+    --lg-blur: var(--lg-notif-blur);
+    --lg-refraction: var(--lg-notif-refraction);
+    --lg-corner-radius: 28; /* override: tighter than the 36 notif default */
+    --lg-z-radius: var(--lg-notif-z-radius);
+    --lg-specular: var(--lg-notif-specular);
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: var(--lg-notif-edge-highlight);
+    --lg-chrom-aberration: var(--lg-notif-chrom-aberration);
+    --lg-saturation: var(--lg-notif-saturation);
+    --lg-shadow-opacity: var(--lg-notif-shadow-opacity);
+    --lg-shadow-spread: var(--lg-notif-shadow-spread);
+    --lg-shadow-offset-y: var(--lg-notif-shadow-offset-y);
+  }
+  .slider-text {
+    width: 640px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 28px;
+  }
+  .slider-text svg {
+    width: 26px;
+    height: 26px;
+    stroke: var(--lg-glint-glow);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .slider-track {
+    flex: 1;
+    height: 8px;
+    background: var(--lg-rim-track);
+    border-radius: 4px;
+    position: relative;
+  }
+  .slider-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--lg-glint-white);
+    border-radius: 3px;
+    box-shadow: 0 0 14px var(--lg-glint-halo);
+  }
+  .slider-pct {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink-on-glass);
+    font-variant-numeric: tabular-nums;
+    width: 64px;
+    text-align: right;
+    text-shadow: var(--text-shadow-glass);
+  }
+</style>
+      <!--
+  640×76 horizontal slider panel. Use for: progress / volume / scrub / any
+  single-value continuous control. The fill (.slider-fill width) is the
+  scene-worker's animated property — tween it from 0% to N% over the scene
+  with `EASE.emphasis` (power3.inOut) for a viscous fill.
+
+  Pair the panel with a .slider-text overlay carrying an optional leading
+  icon, the track, and the percentage readout. Icon is plain SVG (white at
+  88% opacity) — never a colored brand glyph; the slider sits in chrome.
+-->
+<div id="glass-slider" class="glass-panel slider-panel liquid-glass"></div>
+<div class="text-overlay slider-text" style="top: 616px; left: 640px;">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 12h12M15 8l4 4-4 4" />
+  </svg>
+  <div class="slider-track"><div class="slider-fill" style="width: 34%;"></div></div>
+  <span class="slider-pct">Get started</span>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-slider --&gt;
+```html
+&lt;!--
+  640×76 horizontal slider panel. Use for: progress / volume / scrub / any
+  single-value continuous control. The fill (.slider-fill width) is the
+  scene-worker&#39;s animated property — tween it from 0% to N% over the scene
+  with `EASE.emphasis` (power3.inOut) for a viscous fill.
+
+  Pair the panel with a .slider-text overlay carrying an optional leading
+  icon, the track, and the percentage readout. Icon is plain SVG (white at
+  88% opacity) — never a colored brand glyph; the slider sits in chrome.
+--&gt;
+&lt;div id=&quot;glass-slider&quot; class=&quot;glass-panel slider-panel liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay slider-text&quot; style=&quot;top: 616px; left: 640px;&quot;&gt;
+  &lt;svg viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;
+    &lt;path d=&quot;M3 12h12M15 8l4 4-4 4&quot; /&gt;
+  &lt;/svg&gt;
+  &lt;div class=&quot;slider-track&quot;&gt;&lt;div class=&quot;slider-fill&quot; style=&quot;width: 34%;&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;span class=&quot;slider-pct&quot;&gt;{LABEL}&lt;/span&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .slider-panel {
+    width: 640px;
+    height: 76px;
+    /* Notification archetype (640px wide, needs cast shadow), corner override
+       for the tighter slider rail. */
+    --lg-blur: var(--lg-notif-blur);
+    --lg-refraction: var(--lg-notif-refraction);
+    --lg-corner-radius: 28; /* override: tighter than the 36 notif default */
+    --lg-z-radius: var(--lg-notif-z-radius);
+    --lg-specular: var(--lg-notif-specular);
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: var(--lg-notif-edge-highlight);
+    --lg-chrom-aberration: var(--lg-notif-chrom-aberration);
+    --lg-saturation: var(--lg-notif-saturation);
+    --lg-shadow-opacity: var(--lg-notif-shadow-opacity);
+    --lg-shadow-spread: var(--lg-notif-shadow-spread);
+    --lg-shadow-offset-y: var(--lg-notif-shadow-offset-y);
+  }
+  .slider-text {
+    width: 640px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 28px;
+  }
+  .slider-text svg {
+    width: 26px;
+    height: 26px;
+    stroke: var(--lg-glint-glow);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .slider-track {
+    flex: 1;
+    height: 8px;
+    background: var(--lg-rim-track);
+    border-radius: 4px;
+    position: relative;
+  }
+  .slider-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--lg-glint-white);
+    border-radius: 3px;
+    box-shadow: 0 0 14px var(--lg-glint-halo);
+  }
+  .slider-pct {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink-on-glass);
+    font-variant-numeric: tabular-nums;
+    width: 64px;
+    text-align: right;
+    text-shadow: var(--text-shadow-glass);
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-toggle</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-toggle --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .toggle-panel {
+    width: 640px;
+    height: 64px;
+    /* Notification archetype, pill-radius corner override for the full-pill shape. */
+    --lg-blur: var(--lg-notif-blur);
+    --lg-refraction: var(--lg-notif-refraction);
+    --lg-corner-radius: 44; /* override: pill, not the 36 notif default */
+    --lg-z-radius: var(--lg-notif-z-radius);
+    --lg-specular: var(--lg-notif-specular);
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: var(--lg-notif-edge-highlight);
+    --lg-chrom-aberration: var(--lg-notif-chrom-aberration);
+    --lg-saturation: var(--lg-notif-saturation);
+    --lg-shadow-opacity: var(--lg-notif-shadow-opacity);
+    --lg-shadow-spread: var(--lg-notif-shadow-spread);
+    --lg-shadow-offset-y: var(--lg-notif-shadow-offset-y);
+  }
+  .toggle-text {
+    width: 640px;
+    height: 64px;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    padding: 6px;
+    border-radius: 44px;
+  }
+  .toggle-active-pill {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 0;
+    width: calc((100% - 12px) / 3);
+    height: calc(100% - 12px);
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 28% 18%, var(--lg-rim-glow), transparent 42%), var(--lg-rim-glint);
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-glow),
+      inset 0 -1px 0 var(--lg-rim-haze);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .toggle-item {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+    line-height: 52px;
+    text-shadow: var(--text-shadow-glass);
+  }
+  .toggle-item.active {
+    color: var(--lg-glint-white);
+  }
+</style>
+      <!--
+  640×64 segmented control with a sliding active pill. Three segments by
+  default — tween `.toggle-active-pill { transform: translateX(...) }` to
+  move the highlight between options. Active segment's text stays pure white
+  (--lg-glint-white); inactive segments are 96% opacity white (--ink-on-glass).
+
+  Suggested motion: pill slides between positions with EASE.emphasis
+  (power3.inOut) over DUR.snap. Trigger at the same time as the corresponding
+  scene focus shift.
+-->
+<div id="glass-toggle" class="glass-panel toggle-panel liquid-glass"></div>
+<div class="text-overlay toggle-text" style="top: 390px; left: 640px;">
+  <div class="toggle-active-pill"></div>
+  <div class="toggle-item active">Ship the core flow. Cut three legacy paths.</div>
+  <div class="toggle-item">Talk to ten teams. Brief findings every Friday.</div>
+  <div class="toggle-item">One launch, not five. Shared positioning across drops.</div>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-toggle --&gt;
+```html
+&lt;!--
+  640×64 segmented control with a sliding active pill. Three segments by
+  default — tween `.toggle-active-pill { transform: translateX(...) }` to
+  move the highlight between options. Active segment&#39;s text stays pure white
+  (--lg-glint-white); inactive segments are 96% opacity white (--ink-on-glass).
+
+  Suggested motion: pill slides between positions with EASE.emphasis
+  (power3.inOut) over DUR.snap. Trigger at the same time as the corresponding
+  scene focus shift.
+--&gt;
+&lt;div id=&quot;glass-toggle&quot; class=&quot;glass-panel toggle-panel liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay toggle-text&quot; style=&quot;top: 390px; left: 640px;&quot;&gt;
+  &lt;div class=&quot;toggle-active-pill&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;toggle-item active&quot;&gt;{ITEM_1}&lt;/div&gt;
+  &lt;div class=&quot;toggle-item&quot;&gt;{ITEM_2}&lt;/div&gt;
+  &lt;div class=&quot;toggle-item&quot;&gt;{ITEM_3}&lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .toggle-panel {
+    width: 640px;
+    height: 64px;
+    /* Notification archetype, pill-radius corner override for the full-pill shape. */
+    --lg-blur: var(--lg-notif-blur);
+    --lg-refraction: var(--lg-notif-refraction);
+    --lg-corner-radius: 44; /* override: pill, not the 36 notif default */
+    --lg-z-radius: var(--lg-notif-z-radius);
+    --lg-specular: var(--lg-notif-specular);
+    --lg-fresnel: var(--lg-notif-fresnel);
+    --lg-edge-highlight: var(--lg-notif-edge-highlight);
+    --lg-chrom-aberration: var(--lg-notif-chrom-aberration);
+    --lg-saturation: var(--lg-notif-saturation);
+    --lg-shadow-opacity: var(--lg-notif-shadow-opacity);
+    --lg-shadow-spread: var(--lg-notif-shadow-spread);
+    --lg-shadow-offset-y: var(--lg-notif-shadow-offset-y);
+  }
+  .toggle-text {
+    width: 640px;
+    height: 64px;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    padding: 6px;
+    border-radius: 44px;
+  }
+  .toggle-active-pill {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 0;
+    width: calc((100% - 12px) / 3);
+    height: calc(100% - 12px);
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 28% 18%, var(--lg-rim-glow), transparent 42%), var(--lg-rim-glint);
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-glow),
+      inset 0 -1px 0 var(--lg-rim-haze);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .toggle-item {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+    line-height: 52px;
+    text-shadow: var(--text-shadow-glass);
+  }
+  .toggle-item.active {
+    color: var(--lg-glint-white);
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">glass-widget-card</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: glass-widget-card --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .widget-card {
+    width: 220px;
+    height: 220px;
+    /* Widget archetype — see preset.md §B for tuning. */
+    --lg-blur: var(--lg-widget-blur);
+    --lg-refraction: var(--lg-widget-refraction);
+    --lg-corner-radius: var(--lg-widget-corner-radius);
+    --lg-z-radius: var(--lg-widget-z-radius);
+    --lg-specular: var(--lg-widget-specular);
+    --lg-fresnel: var(--lg-widget-fresnel);
+    --lg-edge-highlight: var(--lg-widget-edge-highlight);
+    --lg-chrom-aberration: var(--lg-widget-chrom-aberration);
+    --lg-saturation: var(--lg-widget-saturation);
+    --lg-shadow-opacity: 0;
+  }
+  .stat-text {
+    width: 220px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 22px;
+    border-radius: 28px;
+    background:
+      linear-gradient(150deg, var(--lg-rim-lo), var(--lg-rim-veil) 46%, var(--lg-rim-faint)),
+      linear-gradient(180deg, var(--lg-base-veil), var(--lg-rim-dust));
+    border: 1px solid var(--lg-rim-mid);
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-hi),
+      inset 0 -18px 38px var(--lg-rim-mist);
+    overflow: hidden;
+    text-shadow: var(--text-shadow-glass);
+  }
+  .stat-label {
+    font-size: 24px;
+    font-weight: 650;
+    color: var(--ink-on-glass);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .stat-value {
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+</style>
+      <!-- 220×220 stat card. Use up to 3 in a row. Pair each with a .stat-text overlay. -->
+<div id="glass-stat1" class="glass-panel widget-card liquid-glass"></div>
+<div class="text-overlay stat-text" style="top: 300px; left: 200px;">
+  <span class="stat-label">Get started</span>
+  <span class="stat-value">4M</span>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: glass-widget-card --&gt;
+```html
+&lt;!-- 220×220 stat card. Use up to 3 in a row. Pair each with a .stat-text overlay. --&gt;
+&lt;div id=&quot;glass-stat1&quot; class=&quot;glass-panel widget-card liquid-glass&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;text-overlay stat-text&quot; style=&quot;top: 300px; left: 200px;&quot;&gt;
+  &lt;span class=&quot;stat-label&quot;&gt;{LABEL}&lt;/span&gt;
+  &lt;span class=&quot;stat-value&quot;&gt;{NUM}&lt;/span&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .widget-card {
+    width: 220px;
+    height: 220px;
+    /* Widget archetype — see preset.md §B for tuning. */
+    --lg-blur: var(--lg-widget-blur);
+    --lg-refraction: var(--lg-widget-refraction);
+    --lg-corner-radius: var(--lg-widget-corner-radius);
+    --lg-z-radius: var(--lg-widget-z-radius);
+    --lg-specular: var(--lg-widget-specular);
+    --lg-fresnel: var(--lg-widget-fresnel);
+    --lg-edge-highlight: var(--lg-widget-edge-highlight);
+    --lg-chrom-aberration: var(--lg-widget-chrom-aberration);
+    --lg-saturation: var(--lg-widget-saturation);
+    --lg-shadow-opacity: 0;
+  }
+  .stat-text {
+    width: 220px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 22px;
+    border-radius: 28px;
+    background:
+      linear-gradient(150deg, var(--lg-rim-lo), var(--lg-rim-veil) 46%, var(--lg-rim-faint)),
+      linear-gradient(180deg, var(--lg-base-veil), var(--lg-rim-dust));
+    border: 1px solid var(--lg-rim-mid);
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-hi),
+      inset 0 -18px 38px var(--lg-rim-mist);
+    overflow: hidden;
+    text-shadow: var(--text-shadow-glass);
+  }
+  .stat-label {
+    font-size: 24px;
+    font-weight: 650;
+    color: var(--ink-on-glass);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .stat-value {
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--ink-on-glass);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+  <div class="comp-card">
+    <div class="comp-head">
+      <span class="comp-name">liquid-stage</span>
+      <span class="comp-marker">&lt;!-- COMPONENT: liquid-stage --&gt;</span>
+    </div>
+    <div class="comp-preview preset-native-scope">
+      <style>
+  .liquid-stage {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--liquid-bg-deep);
+    /* Preview-only: scale down so the 1920x1080 stage fits inside the
+       design.html .comp-preview container. When the stage is used in a real
+       scene the parent isn't .comp-preview, so this rule won't apply. */
+  }
+  .comp-preview .liquid-stage {
+    transform: scale(0.32);
+    transform-origin: top left;
+    margin-bottom: -733px; /* = 1080 * (1 - 0.32) to reclaim space */
+    margin-right: -1305px;
+  }
+  #three-canvas,
+  #glass-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+  }
+  #three-canvas {
+    z-index: 0;
+  }
+  #glass-canvas {
+    z-index: 1;
+  }
+  .text-overlay-root {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  /* Preview-only: a CSS aurora to stand in for the Three.js shader that
+     paints #three-canvas in production. The real shader gets pasted from
+     registry — see §H. */
+  .aurora-bg-preview {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 60% 50% at 22% 28%,
+        color-mix(in oklab, var(--brand-primary) 65%, transparent),
+        transparent 65%
+      ),
+      radial-gradient(
+        ellipse 55% 45% at 78% 72%,
+        color-mix(in oklab, var(--brand-secondary) 55%, transparent),
+        transparent 65%
+      ),
+      radial-gradient(
+        ellipse 45% 40% at 58% 22%,
+        color-mix(in oklab, var(--brand-accent) 45%, transparent),
+        transparent 65%
+      ),
+      var(--liquid-bg-fallback);
+    filter: blur(60px) saturate(1.2);
+  }
+  /*
+   * .glass-panel WITH IIFE runtime: the div is overwritten by the
+   * liquid-glass.iife.js draw pass — these styles are invisible.
+   *
+   * WITHOUT runtime (e.g. this design.html preview, or a fallback render):
+   * the rules below produce a "frosted-card" approximation so the layout
+   * is still legible. Not a true refraction, but readable.
+   */
+  .glass-panel {
+    position: absolute;
+    background: var(--lg-rim-veil);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    border: 1px solid var(--lg-rim-edge);
+    border-radius: 28px;
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-mid-soft),
+      inset 0 -1px 0 var(--lg-rim-veil),
+      0 18px 48px var(--lg-base-shadow-deep);
+  }
+</style>
+      <!--
+  Mandatory wrapper. EVERY liquid-glass scene starts with this. It sets up
+  the two canvases the IIFE needs (#three-canvas for aurora, #glass-canvas
+  for the refraction pass) and the text-overlay layer. Put your glass panels
+  inside #glass-canvas (with class="liquid-glass") and your text inside
+  .text-overlay (positioned absolutely to match the panel underneath).
+
+  The sample widget/notification/pill below are PREVIEW SAMPLES — delete
+  them when authoring a real scene and replace with the panels you actually
+  need. They exist so design.html shows what a populated stage looks like.
+-->
+<div class="liquid-stage">
+  <canvas id="three-canvas" width="1920" height="1080"></canvas>
+  <div class="aurora-bg-preview"></div>
+  <canvas id="glass-canvas" layoutsubtree width="1920" height="1080">
+    <div class="glass-panel widget-card liquid-glass" style="top: 320px; left: 240px;"></div>
+    <div class="glass-panel notif-panel liquid-glass" style="top: 200px; left: 1140px;"></div>
+    <div class="glass-panel pill-chip liquid-glass" style="top: 760px; left: 340px;"></div>
+    <div class="glass-panel pill-chip liquid-glass" style="top: 760px; left: 510px;"></div>
+    <div class="glass-panel pill-chip liquid-glass" style="top: 760px; left: 680px;"></div>
+  </canvas>
+  <div class="text-overlay-root">
+    <div class="text-overlay stat-text" style="top: 320px; left: 240px;">
+      <span class="stat-label">SAMPLE</span>
+      <span class="stat-value">42</span>
+    </div>
+    <div class="text-overlay notif-card" style="top: 200px; left: 1140px;">
+      <div class="notif-avatar" style="background: var(--brand-primary);">H</div>
+      <div class="notif-body">
+        <div class="notif-title">Glass surfaces</div>
+        <div class="notif-msg">Float above the aurora field.</div>
+      </div>
+    </div>
+    <div class="text-overlay pill-text" style="top: 760px; left: 340px;">
+      <span class="pill-dot" style="background: var(--brand-accent);"></span>
+      <span class="pill-label">Live</span>
+    </div>
+    <div class="text-overlay pill-text" style="top: 760px; left: 510px;">
+      <span class="pill-dot" style="background: var(--brand-secondary);"></span>
+      <span class="pill-label">Synced</span>
+    </div>
+    <div class="text-overlay pill-text" style="top: 760px; left: 680px;">
+      <span class="pill-dot" style="background: var(--brand-primary);"></span>
+      <span class="pill-label">Ready</span>
+    </div>
+  </div>
+</div>
+    </div>
+    <details>
+      <summary class="ds-summary">Source</summary>
+      <pre class="ds-code">&lt;!-- COMPONENT: liquid-stage --&gt;
+```html
+&lt;!--
+  Mandatory wrapper. EVERY liquid-glass scene starts with this. It sets up
+  the two canvases the IIFE needs (#three-canvas for aurora, #glass-canvas
+  for the refraction pass) and the text-overlay layer. Put your glass panels
+  inside #glass-canvas (with class=&quot;liquid-glass&quot;) and your text inside
+  .text-overlay (positioned absolutely to match the panel underneath).
+
+  The sample widget/notification/pill below are PREVIEW SAMPLES — delete
+  them when authoring a real scene and replace with the panels you actually
+  need. They exist so design.html shows what a populated stage looks like.
+--&gt;
+&lt;div class=&quot;liquid-stage&quot;&gt;
+  &lt;canvas id=&quot;three-canvas&quot; width=&quot;1920&quot; height=&quot;1080&quot;&gt;&lt;/canvas&gt;
+  &lt;div class=&quot;aurora-bg-preview&quot;&gt;&lt;/div&gt;
+  &lt;canvas id=&quot;glass-canvas&quot; layoutsubtree width=&quot;1920&quot; height=&quot;1080&quot;&gt;
+    &lt;div class=&quot;glass-panel widget-card liquid-glass&quot; style=&quot;top: 320px; left: 240px;&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;glass-panel notif-panel liquid-glass&quot; style=&quot;top: 200px; left: 1140px;&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;glass-panel pill-chip liquid-glass&quot; style=&quot;top: 760px; left: 340px;&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;glass-panel pill-chip liquid-glass&quot; style=&quot;top: 760px; left: 510px;&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;glass-panel pill-chip liquid-glass&quot; style=&quot;top: 760px; left: 680px;&quot;&gt;&lt;/div&gt;
+  &lt;/canvas&gt;
+  &lt;div class=&quot;text-overlay-root&quot;&gt;
+    &lt;div class=&quot;text-overlay stat-text&quot; style=&quot;top: 320px; left: 240px;&quot;&gt;
+      &lt;span class=&quot;stat-label&quot;&gt;SAMPLE&lt;/span&gt;
+      &lt;span class=&quot;stat-value&quot;&gt;42&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;text-overlay notif-card&quot; style=&quot;top: 200px; left: 1140px;&quot;&gt;
+      &lt;div class=&quot;notif-avatar&quot; style=&quot;background: var(--brand-primary);&quot;&gt;H&lt;/div&gt;
+      &lt;div class=&quot;notif-body&quot;&gt;
+        &lt;div class=&quot;notif-title&quot;&gt;Glass surfaces&lt;/div&gt;
+        &lt;div class=&quot;notif-msg&quot;&gt;Float above the aurora field.&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;text-overlay pill-text&quot; style=&quot;top: 760px; left: 340px;&quot;&gt;
+      &lt;span class=&quot;pill-dot&quot; style=&quot;background: var(--brand-accent);&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;pill-label&quot;&gt;Live&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;text-overlay pill-text&quot; style=&quot;top: 760px; left: 510px;&quot;&gt;
+      &lt;span class=&quot;pill-dot&quot; style=&quot;background: var(--brand-secondary);&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;pill-label&quot;&gt;Synced&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;text-overlay pill-text&quot; style=&quot;top: 760px; left: 680px;&quot;&gt;
+      &lt;span class=&quot;pill-dot&quot; style=&quot;background: var(--brand-primary);&quot;&gt;&lt;/span&gt;
+      &lt;span class=&quot;pill-label&quot;&gt;Ready&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .liquid-stage {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--liquid-bg-deep);
+    /* Preview-only: scale down so the 1920x1080 stage fits inside the
+       design.html .comp-preview container. When the stage is used in a real
+       scene the parent isn&#39;t .comp-preview, so this rule won&#39;t apply. */
+  }
+  .comp-preview .liquid-stage {
+    transform: scale(0.32);
+    transform-origin: top left;
+    margin-bottom: -733px; /* = 1080 * (1 - 0.32) to reclaim space */
+    margin-right: -1305px;
+  }
+  #three-canvas,
+  #glass-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+  }
+  #three-canvas {
+    z-index: 0;
+  }
+  #glass-canvas {
+    z-index: 1;
+  }
+  .text-overlay-root {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  /* Preview-only: a CSS aurora to stand in for the Three.js shader that
+     paints #three-canvas in production. The real shader gets pasted from
+     registry — see §H. */
+  .aurora-bg-preview {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 60% 50% at 22% 28%,
+        color-mix(in oklab, var(--brand-primary) 65%, transparent),
+        transparent 65%
+      ),
+      radial-gradient(
+        ellipse 55% 45% at 78% 72%,
+        color-mix(in oklab, var(--brand-secondary) 55%, transparent),
+        transparent 65%
+      ),
+      radial-gradient(
+        ellipse 45% 40% at 58% 22%,
+        color-mix(in oklab, var(--brand-accent) 45%, transparent),
+        transparent 65%
+      ),
+      var(--liquid-bg-fallback);
+    filter: blur(60px) saturate(1.2);
+  }
+  /*
+   * .glass-panel WITH IIFE runtime: the div is overwritten by the
+   * liquid-glass.iife.js draw pass — these styles are invisible.
+   *
+   * WITHOUT runtime (e.g. this design.html preview, or a fallback render):
+   * the rules below produce a &quot;frosted-card&quot; approximation so the layout
+   * is still legible. Not a true refraction, but readable.
+   */
+  .glass-panel {
+    position: absolute;
+    background: var(--lg-rim-veil);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    border: 1px solid var(--lg-rim-edge);
+    border-radius: 28px;
+    box-shadow:
+      inset 0 1px 0 var(--lg-rim-mid-soft),
+      inset 0 -1px 0 var(--lg-rim-veil),
+      0 18px 48px var(--lg-base-shadow-deep);
+  }
+&lt;/style&gt;
+```
+&lt;!-- /COMPONENT --&gt;</pre>
+    </details>
+  </div>
+</section>
+
+<section id="captions" class="ds-section">
+  <div class="eyebrow">§C · Captions (preset-local skin)</div>
+  <h2>Word <em>by word.</em></h2>
+  <p class="ds-prose">Live preview of <code>caption-skin.html</code> — this preset's own caption look. The same file is copied to <code>chunks/caption-skin.html</code> and filled with real word timings by the caption builder (Phase 4a.5); the demo words and loop here are preview-only.</p>
+  <div style="position: relative; width: 100%; max-width: 960px; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #e5e5e5; border-radius: 8px; margin: 24px 0; background: #fff;">
+    <iframe title="caption-skin preview" loading="lazy" style="position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0; transform: scale(0.5); transform-origin: top left;" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=1920, height=1080&quot; /&gt;
+    &lt;title&gt;Liquid Glass — Captions&lt;/title&gt;
+    &lt;!--
+      Liquid Glass caption skin (preset-local source — second caption source).
+
+      A pre-baked, brand-token-strict caption sub-composition. emit-chunks copies this to
+      design-system/chunks/caption-skin.html for the chosen preset; build-captions-html.mjs
+      then fills three reserved holes and writes compositions/captions.html:
+        - the empty GROUPS array       → engine's scene-aware, non-overlapping word groups
+        - the 0 DURATION + data-duration → real total_duration_s
+        - the empty brand-tokens style → the project's tokens.css
+      (the filler asserts each hole appears exactly once, so this note avoids the literals)
+
+      Contract (so ONE generic fill works for every preset's skin — no per-skin transform):
+        · root carries data-composition-id=&quot;captions&quot;; timeline registers window.__timelines[&quot;captions&quot;]
+        · canonical hooks .caption-group / .caption-word (+ states .is-active / .is-spoken)
+        · all colors are var(--*) / color-mix over tokens — brand-strict by construction
+        · no &lt;video&gt;, no Google Fonts, no placeholder transcript, no window.&lt;native&gt;() calls
+        · state changes use gsap.set({className}) (applied on seek) — NOT .call callbacks
+          (callbacks don't fire on the engine's frame-by-frame seek)
+
+      Visual: a frosted glass pill floating on the aurora — hairline-translucent border,
+      inset top-edge highlight, soft cast shadow, no tilt. The current word lifts into a
+      brand-gradient glass highlight (primary→secondary) with a refraction-soft halo;
+      sentence case in var(--font-display) (liquid-glass reads uppercase as shouting and
+      thin strokes smear through refraction, so weight floors high). The weightless-surface
+      counterpart to the registry default caption-pill-karaoke (soft rounded SaaS pill).
+    --&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js&quot;&gt;&lt;/script&gt;
+
+    &lt;!-- build-captions-html.mjs injects the project's tokens.css here --&gt;
+    &lt;style data-brand-tokens&gt;
+
+:root {
+  --brand-primary:   #D4AF37;
+  --brand-secondary: #C9A14A;
+  --brand-tertiary:  #C9A14A;
+  --brand-accent:    #C9A14A;
+  --brand-costume:   #FFFFFF;
+  --ink:             #0A0A0A;
+  --canvas:          #FFFFFF;
+  --brand-gradient:  linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%);
+  --deco-1:          #F7CB46;
+  --deco-2:          #99E885;
+  --deco-3:          #C0F7FE;
+  --deco-4:          #FE90E8;
+  --font-display:    'Inter', system-ui, sans-serif;
+  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --liquid-bg-deep: #0a0218; /* mandatory dark base — aurora needs blackpoint */
+  --liquid-bg-fallback: linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%);
+  --lg-widget-blur: 0.42;
+  --lg-widget-refraction: 0.82;
+  --lg-widget-specular: 0.34;
+  --lg-widget-fresnel: 1.25;
+  --lg-widget-edge-highlight: 0.26;
+  --lg-widget-chrom-aberration: 0.08;
+  --lg-widget-saturation: 0.38;
+  --lg-widget-corner-radius: 28;
+  --lg-widget-z-radius: 46;
+  --lg-notif-blur: 0.22;
+  --lg-notif-refraction: 0.6;
+  --lg-notif-specular: 0.2;
+  --lg-notif-fresnel: 0.9;
+  --lg-notif-edge-highlight: 0.1;
+  --lg-notif-chrom-aberration: 0.05;
+  --lg-notif-saturation: 0.25;
+  --lg-notif-corner-radius: 36;
+  --lg-notif-z-radius: 38;
+  --lg-notif-shadow-opacity: 0.35;
+  --lg-notif-shadow-spread: 14;
+  --lg-notif-shadow-offset-y: 4;
+  --lg-menu-blur: 0.56;
+  --lg-menu-refraction: 0.52;
+  --lg-menu-specular: 0.26;
+  --lg-menu-fresnel: 1;
+  --lg-menu-edge-highlight: 0.2;
+  --lg-menu-chrom-aberration: 0.035;
+  --lg-menu-saturation: -0.24;
+  --lg-menu-tint: 0.88;
+  --lg-menu-brightness: 0.54;
+  --lg-menu-corner-radius: 30;
+  --lg-menu-z-radius: 48;
+  --ink-on-glass: rgba(255, 255, 255, 0.96);
+  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);
+  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */
+  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);
+  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */
+  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);
+  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */
+  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);
+  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */
+  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */
+  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */
+  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);
+  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */
+  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */
+  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */
+  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */
+  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */
+  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */
+  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */
+  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */
+  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */
+  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */
+  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */
+  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */
+  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */
+  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */
+  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */
+  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */
+  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */
+  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */
+}&lt;/style&gt;
+
+    &lt;style&gt;
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        margin: 0;
+        overflow: hidden;
+        background: transparent;
+      }
+      #captions-root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: transparent;
+        pointer-events: none;
+      }
+
+      /* liquid-glass · captions · frosted glass pill on aurora, hairline rim, inset top
+         highlight, soft cast shadow, brand-gradient glass on the current word */
+      .caption-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        pointer-events: none;
+      }
+      .caption-stage {
+        position: absolute;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        width: 1600px;
+        height: 200px;
+      }
+      .caption-group {
+        /* every group is absolutely positioned over the SAME band — exactly one is shown
+           at a time via opacity. Must be absolute: if groups stay in-flow, N groups lay
+           out side-by-side (opacity:0 hides but still occupies space). */
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+      }
+
+      /* THE glass pill — frosted translucent surface, hairline rim, inset top-edge
+         highlight, soft cast shadow, big radius. No tilt: refraction maths is axis-aligned. */
+      .caption-pill {
+        max-width: 1600px;
+        padding: 18px 40px 22px;
+        background: linear-gradient(
+          150deg,
+          var(--lg-rim-lo),
+          var(--lg-rim-ghost) 60%,
+          var(--lg-rim-veil)
+        );
+        backdrop-filter: blur(24px) saturate(1.3);
+        -webkit-backdrop-filter: blur(24px) saturate(1.3);
+        border: 1px solid var(--lg-rim-mid);
+        border-radius: 36px;
+        box-shadow:
+          inset 0 1px 0 var(--lg-rim-hi),
+          inset 0 -16px 36px var(--lg-rim-mist),
+          0 18px 48px var(--lg-base-shadow-deep);
+      }
+      .caption-line {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.12em 0.3em;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(40px, 4.2vw, 56px);
+        line-height: 1.12;
+        letter-spacing: -0.01em;
+        text-shadow: var(--text-shadow-glass);
+      }
+
+      /* upcoming — soft white on glass, no highlight */
+      .caption-word {
+        display: inline-block;
+        padding: 0 0.06em;
+        color: var(--ink-on-glass-soft);
+      }
+      /* current word — lifts into a brand-gradient glass highlight. box-shadow spread =
+         rounded halo (follows border-radius) with NO layout shift when the class toggles. */
+      .caption-word.is-active {
+        color: var(--ink-on-glass);
+        background: linear-gradient(120deg, var(--brand-primary), var(--brand-secondary));
+        border-radius: 14px;
+        box-shadow:
+          0 0 0 0.12em color-mix(in srgb, var(--brand-primary) 60%, transparent),
+          inset 0 1px 0 var(--lg-rim-hi);
+      }
+      /* already spoken — full white on glass, highlight cleared */
+      .caption-word.is-spoken {
+        color: var(--ink-on-glass);
+        background: transparent;
+        box-shadow: none;
+      }
+
+      /* optional per-word accents (dormant until a word-classer tags them) */
+      .caption-word.cap-brand {
+        color: var(--brand-secondary);
+      }
+      .caption-word.cap-brand.is-active {
+        color: var(--ink-on-glass);
+        background: linear-gradient(120deg, var(--brand-secondary), var(--brand-accent));
+        border-radius: 14px;
+        box-shadow:
+          0 0 0 0.12em color-mix(in srgb, var(--brand-secondary) 60%, transparent),
+          inset 0 1px 0 var(--lg-rim-hi);
+      }
+      .caption-word.cap-num {
+        color: color-mix(in srgb, var(--ink-on-glass) 88%, transparent);
+        font-variant-numeric: tabular-nums;
+      }
+      .caption-word.cap-cta {
+        text-decoration: underline;
+        text-decoration-thickness: 4px;
+        text-decoration-color: var(--brand-accent);
+        text-underline-offset: 0.12em;
+      }
+
+      @media (max-aspect-ratio: 9/16) {
+        .caption-stage {
+          bottom: 100px;
+          width: 92%;
+        }
+        .caption-line {
+          font-size: clamp(34px, 5.2vw, 46px);
+        }
+      }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div
+      id=&quot;captions-root&quot;
+      data-composition-id=&quot;captions&quot;
+      data-timeline-locked
+      data-start=&quot;0&quot;
+      data-duration=&quot;6.6&quot;
+      data-fps=&quot;30&quot;
+      data-width=&quot;1920&quot;
+      data-height=&quot;1080&quot;
+    &gt;
+      &lt;div class=&quot;caption-layer&quot; aria-hidden=&quot;true&quot;&gt;
+        &lt;div id=&quot;caption-stage&quot; class=&quot;caption-stage&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+      // build-captions-html.mjs injects the engine's scene-aware groups + real duration.
+      var GROUPS = [{&quot;start&quot;:0.3,&quot;end&quot;:2.1,&quot;words&quot;:[{&quot;text&quot;:&quot;WRITE&quot;,&quot;start&quot;:0.3,&quot;end&quot;:0.9},{&quot;text&quot;:&quot;HTML,&quot;,&quot;start&quot;:0.9,&quot;end&quot;:1.4},{&quot;text&quot;:&quot;RENDER&quot;,&quot;start&quot;:1.4,&quot;end&quot;:2.1}]},{&quot;start&quot;:2.5,&quot;end&quot;:4.3,&quot;words&quot;:[{&quot;text&quot;:&quot;VIDEO.&quot;,&quot;start&quot;:2.5,&quot;end&quot;:3.1},{&quot;text&quot;:&quot;NO&quot;,&quot;start&quot;:3.1,&quot;end&quot;:3.5},{&quot;text&quot;:&quot;TIMELINE.&quot;,&quot;start&quot;:3.5,&quot;end&quot;:4.3}]},{&quot;start&quot;:4.7,&quot;end&quot;:6.2,&quot;words&quot;:[{&quot;text&quot;:&quot;JUST&quot;,&quot;start&quot;:4.7,&quot;end&quot;:5.1},{&quot;text&quot;:&quot;CODE.&quot;,&quot;start&quot;:5.1,&quot;end&quot;:5.9}]}];
+      var DURATION = 6.6;
+
+      (function () {
+        var stage = document.getElementById(&quot;caption-stage&quot;);
+
+        // build DOM: one .caption-group per group, .caption-word per word (sentence case —
+        // liquid-glass reads uppercase as shouting, so words keep their authored casing)
+        GROUPS.forEach(function (group, g) {
+          var groupEl = document.createElement(&quot;div&quot;);
+          groupEl.className = &quot;caption-group&quot;;
+          groupEl.id = &quot;caption-group-&quot; + g;
+          var pill = document.createElement(&quot;div&quot;);
+          pill.className = &quot;caption-pill&quot;;
+          var line = document.createElement(&quot;div&quot;);
+          line.className = &quot;caption-line&quot;;
+          (group.words || []).forEach(function (w, i) {
+            var span = document.createElement(&quot;span&quot;);
+            span.className = &quot;caption-word&quot;;
+            span.id = &quot;caption-word-&quot; + g + &quot;-&quot; + i;
+            span.textContent = String(w.text);
+            line.appendChild(span);
+          });
+          pill.appendChild(line);
+          groupEl.appendChild(pill);
+          stage.appendChild(groupEl);
+        });
+
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+
+        GROUPS.forEach(function (group, g) {
+          var groupEl = document.getElementById(&quot;caption-group-&quot; + g);
+          var words = group.words || [];
+          var next = GROUPS[g + 1];
+          var isLast = g === GROUPS.length - 1;
+          var start = Math.max(0, Number(group.start));
+          var end = isLast ? DURATION : Math.min(Number(next.start), Number(group.end) + 0.3);
+          if (end &lt;= start) end = start + 0.01;
+
+          // group on/off — exactly one group visible at a time
+          tl.set(groupEl, { opacity: 1 }, start);
+          tl.set(groupEl, { opacity: 0 }, end);
+
+          // 3-state karaoke via className SETS — seek-safe (gsap.set applies on the
+          // engine's frame-by-frame seek; .call callbacks would NOT fire).
+          words.forEach(function (w, i) {
+            var el = document.getElementById(&quot;caption-word-&quot; + g + &quot;-&quot; + i);
+            var at = Math.max(start, Number(w.start));
+            tl.set(el, { className: &quot;caption-word&quot; }, start); // upcoming (also resets on reverse-seek)
+            tl.set(el, { className: &quot;caption-word is-active&quot; }, at); // current
+            tl.fromTo(el, { scale: 0.9 }, { scale: 1, duration: 0.14, ease: &quot;back.out(2.6)&quot; }, at);
+            if (i + 1 &lt; words.length) {
+              var nextAt = Math.max(start, Number(words[i + 1].start));
+              tl.set(el, { className: &quot;caption-word is-spoken&quot; }, nextAt); // demote when next stamps
+            }
+          });
+          if (words.length) {
+            var lastEl = document.getElementById(&quot;caption-word-&quot; + g + &quot;-&quot; + (words.length - 1));
+            var lastSpoken = Math.min(end, Number(words[words.length - 1].end) + 0.1);
+            tl.set(lastEl, { className: &quot;caption-word is-spoken&quot; }, lastSpoken);
+          }
+        });
+
+        // full-span anchor so the sub-comp timeline spans the whole video
+        tl.to({}, { duration: DURATION }, 0);
+        window.__timelines[&quot;captions&quot;] = tl;
+      })();
+    &lt;/script&gt;
+    &lt;script&gt;
+    (function () {
+      var t = window.__timelines &amp;&amp; window.__timelines[&quot;captions&quot;];
+      if (t &amp;&amp; t.duration()) t.repeat(-1).repeatDelay(0.5).play();
+    })();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+  </div>
+</section>
+</main>
+
+</body>
+</html>

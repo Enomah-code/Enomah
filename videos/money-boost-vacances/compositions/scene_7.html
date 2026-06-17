@@ -1,0 +1,272 @@
+<template id="scene_7-template">
+  <div id="root" class="scene_7-root" data-composition-id="scene_7" data-width="1080" data-height="1920" data-duration="8.939" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: radial-gradient(120% 90% at 50% 38%, #141414 0%, #0A0A0A 62%, #050505 100%);
+        font-family: var(--font-body);
+      }
+      #root *, #root *::before, #root *::after { box-sizing: border-box; }
+
+      /* Camera wrapper — drives the macro dolly-push (multi-phase-camera) */
+      .s7-camera {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      /* Sparse gold dust drift (ambient, decorative background) */
+      .s7-bg-dust {
+        position: absolute;
+        inset: -8%;
+        background:
+          radial-gradient(2px 2px at 18% 22%, rgba(212,175,55,0.40), transparent 60%),
+          radial-gradient(2px 2px at 76% 30%, rgba(212,175,55,0.30), transparent 60%),
+          radial-gradient(1.5px 1.5px at 40% 70%, rgba(212,175,55,0.26), transparent 60%),
+          radial-gradient(1.5px 1.5px at 64% 82%, rgba(212,175,55,0.22), transparent 60%),
+          radial-gradient(2px 2px at 88% 60%, rgba(212,175,55,0.20), transparent 60%);
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      .s7-stack {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 56px;
+        width: 920px;
+        text-align: center;
+      }
+
+      .s7-closing {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 62px;
+        line-height: 1.18;
+        letter-spacing: 0.5px;
+        color: var(--brand-costume);
+        max-width: 880px;
+        text-shadow: 0 4px 24px rgba(0,0,0,0.6);
+      }
+      .s7-closing .s7-gold { color: var(--brand-primary); }
+
+      .s7-book {
+        width: 360px;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(212,175,55,0.18);
+        will-change: transform;
+      }
+
+      /* CTA cluster holds button + behind-layers, centered in flow */
+      .s7-cta-wrap {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 760px;
+        height: 150px;
+      }
+
+      .s7-bg-glow {
+        position: absolute;
+        inset: -260px;
+        background: radial-gradient(closest-side, rgba(212,175,55,0.32), transparent 72%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* breathing gold glow pulse layer behind the button */
+      .s7-btn-glow {
+        position: absolute;
+        z-index: 1;
+        width: 720px;
+        height: 130px;
+        border-radius: 70px;
+        background: radial-gradient(closest-side, rgba(212,175,55,0.55), transparent 78%);
+        filter: blur(34px);
+        opacity: 0.55;
+        will-change: transform, opacity;
+        pointer-events: none;
+      }
+
+      /* outward gold ripple on the click (burst) */
+      .s7-burst {
+        position: absolute;
+        z-index: 1;
+        width: 700px;
+        height: 130px;
+        border-radius: 70px;
+        background: radial-gradient(closest-side, rgba(212,175,55,0.85), rgba(201,161,74,0.20) 60%, transparent 80%);
+        filter: blur(26px);
+        opacity: 0;
+        transform: scale(1);
+        pointer-events: none;
+      }
+
+      .s7-btn {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        width: 700px;
+        height: 130px;
+        border: none;
+        border-radius: 65px;
+        background: var(--brand-gradient);
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 44px;
+        letter-spacing: 1.5px;
+        color: var(--ink);
+        text-transform: uppercase;
+        transform-origin: 50% 50%;
+        box-shadow: 0 22px 60px rgba(212,175,55,0.35), 0 6px 18px rgba(0,0,0,0.5);
+        will-change: transform;
+      }
+
+      /* ripple rings emitted from click point */
+      .s7-ring {
+        position: absolute;
+        z-index: 3;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        border: 3px solid var(--brand-primary);
+        transform: translate(-50%, -50%) scale(0);
+        left: 50%;
+        top: 50%;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .s7-cursor {
+        position: absolute;
+        z-index: 9;
+        left: 78%;
+        top: 102%;
+        pointer-events: none;
+        will-change: transform;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+      }
+    </style>
+
+    <div class="s7-camera" id="s7-camera">
+      <div class="s7-bg-dust"></div>
+
+      <div class="s7-stack">
+        <div class="s7-closing" id="s7-closing">CHANGE TES VACANCES, <span class="s7-gold">CHANGE TON AVENIR.</span></div>
+
+        <img class="s7-book clip" id="s7-book" src="public/img/pack_book.jpg" data-start="0" data-duration="8.939" data-track-index="1" alt="pack book" />
+
+        <div class="s7-cta-wrap">
+          <div class="s7-bg-glow" id="s7-bg-glow"></div>
+          <div class="s7-btn-glow" id="s7-btn-glow"></div>
+          <div class="s7-burst" id="s7-burst"></div>
+          <div class="s7-ring s7-ring-1"></div>
+          <div class="s7-ring s7-ring-2"></div>
+          <button class="s7-btn" id="s7-btn">TÉLÉCHARGER MAINTENANT</button>
+
+          <div class="s7-cursor" id="s7-cursor">
+            <svg width="44" height="44" viewBox="0 0 24 24">
+              <path d="M5 3L19 12L12 13L9 20L5 3Z" fill="#FFFFFF" stroke="#0A0A0A" stroke-width="1.5" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = { snap: 0.28, med: 0.5, slow: 1.1 };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const camera = document.querySelector("#s7-camera");
+      const btnGlow = document.querySelector("#s7-btn-glow");
+
+      const TOTAL = 8.939;
+
+      // ---- multi-phase-camera: slow dolly-push settling on the button ----
+      const phase = { scale: 1.0 };
+      // Phase 2 — settle to neutral focus
+      tl.to(phase, { scale: 1.03, duration: 1.4, ease: "power2.out" }, 0.4);
+      // Phase 3 — slow push-in for the climax (settle on button)
+      tl.to(phase, { scale: 1.06, duration: 2.0, ease: "power3.out" }, 3.0);
+
+      // continuous micro-drift overlaid on the phase scale
+      const drift = { p: 0 };
+      tl.to(drift, {
+        p: Math.PI * 2 * 1.5,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          const dx = Math.sin(drift.p) * 5;
+          const dy = Math.sin(drift.p * 1.3) * 3;
+          camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+        },
+      }, 0);
+
+      // ---- content entries ----
+      tl.fromTo("#s7-closing", { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.2);
+      tl.fromTo("#s7-book", { opacity: 0, y: 36, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" }, 0.5);
+      // Button enters (translate + scale, never opacity-only on the glow group)
+      tl.fromTo("#s7-btn", { opacity: 0, y: 40, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: EASE.entry }, 1.0);
+
+      // ---- sine-wave-loop: gentle gold glow pulse on the button (live element) ----
+      // idle starts after the button entry settles; sin(0)=0 → no jump
+      const IDLE_START = 1.8;
+      const IDLE_DUR = TOTAL - IDLE_START;
+      const glowPhase = { p: 0 };
+      tl.to(glowPhase, {
+        p: Math.PI * 2 * 3, // ~2.4s per breath across the idle window
+        duration: IDLE_DUR,
+        ease: "none",
+        onUpdate: () => {
+          const s = 1 + Math.sin(glowPhase.p) * 0.06;
+          const o = 0.55 + Math.sin(glowPhase.p) * 0.22;
+          btnGlow.style.transform = "scale(" + s + ")";
+          btnGlow.style.opacity = o;
+        },
+      }, IDLE_START);
+
+      // ---- stillness-before-climax (~0.6s) then cursor-click-ripple ----
+      // cursor glides in from below-right toward the button center
+      const CLICK_AT = 6.4; // button held still/glowing from ~5.3s → cursor moves, lands ~6.3s
+      const MOVE_DUR = 0.9;
+      tl.to("#s7-cursor", { x: -244, y: -262, duration: MOVE_DUR, ease: "back.out(1.3)" }, CLICK_AT - MOVE_DUR - 0.1);
+
+      // cursor depresses on click (yoyo)
+      tl.to("#s7-cursor", { scale: 0.85, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1 }, CLICK_AT);
+
+      // ---- press-release-spring: button depresses then springs back ----
+      const PRESS_DUR = 0.12;
+      tl.to("#s7-btn", { scale: 0.9, boxShadow: "0 8px 22px rgba(212,175,55,0.30), 0 3px 8px rgba(0,0,0,0.5)", duration: PRESS_DUR, ease: "power1.in" }, CLICK_AT);
+      tl.to("#s7-btn", { scale: 1, boxShadow: "0 22px 60px rgba(212,175,55,0.45), 0 6px 18px rgba(0,0,0,0.5)", duration: 0.6, ease: "back.out(2.0)" }, CLICK_AT + PRESS_DUR);
+
+      // outward gold ripple burst behind the button (the payoff)
+      tl.fromTo("#s7-burst", { scale: 1, opacity: 0 }, { scale: 2.6, opacity: 0.9, duration: 0.5, ease: "power2.out", immediateRender: false }, CLICK_AT);
+      tl.to("#s7-burst", { opacity: 0, duration: 0.6, ease: "power2.in" }, CLICK_AT + 0.5);
+
+      // ripple rings radiate from the click point
+      tl.set([".s7-ring-1", ".s7-ring-2"], { opacity: 1 }, CLICK_AT);
+      tl.to([".s7-ring-1", ".s7-ring-2"], { scale: 4.4, opacity: 0, duration: 0.8, ease: "power2.out", stagger: 0.1, immediateRender: false }, CLICK_AT);
+
+      // environmental gold glow swells in after release (final-frame warmth)
+      tl.to("#s7-bg-glow", { opacity: 0.30, duration: 0.9, ease: "power2.out" }, CLICK_AT + PRESS_DUR);
+
+      window.__timelines["scene_7"] = tl;
+    </script>
+  </div>
+</template>

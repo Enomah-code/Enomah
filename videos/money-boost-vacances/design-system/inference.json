@@ -9,8 +9,8 @@
     "primary": "#D4AF37",
     "secondary": "#C9A14A",
     "accent": "#C9A14A",
-    "source": "legacy",
-    "confidence": "legacy",
+    "source": "agent-override",
+    "confidence": "agent-override",
     "needs_review": false,
     "screenshot": null,
     "candidates": []
@@ -285,5 +285,5 @@
     "voice_heading_style": "Sentence case",
     "voice_heading_length": "tight"
   },
-  "generated_at": "2026-06-16T07:57:01.333Z"
+  "generated_at": "2026-06-16T07:58:27.362Z"
 }

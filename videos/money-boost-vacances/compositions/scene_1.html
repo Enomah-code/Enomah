@@ -1,0 +1,234 @@
+<template id="scene_1-template">
+  <div id="root" class="scene_1-root" data-composition-id="scene_1" data-width="1080" data-height="1920" data-duration="4.075" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--ink, #0A0A0A);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper — wraps the full-bleed photo + scrim so the
+         Ken-Burns push moves the whole viewpoint together. */
+      .s1-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s1-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      /* Dark vignette + bottom-up scrim to seat white/gold text. */
+      .s1-scrim {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(120% 90% at 50% 38%, rgba(10,10,10,0.15) 0%, rgba(10,10,10,0.62) 70%, rgba(10,10,10,0.86) 100%),
+          linear-gradient(to bottom, rgba(10,10,10,0.45) 0%, rgba(10,10,10,0.05) 30%, rgba(10,10,10,0.55) 72%, rgba(10,10,10,0.92) 100%);
+      }
+
+      /* Headline — upper-mid safe zone, white with gold keyword. */
+      .s1-headline {
+        position: absolute;
+        top: 360px;
+        left: 90px;
+        right: 90px;
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 92px;
+        line-height: 1.02;
+        letter-spacing: -0.01em;
+        color: var(--brand-costume, #FFFFFF);
+        text-shadow: 0 4px 28px rgba(0,0,0,0.6);
+        text-align: left;
+      }
+      .s1-word {
+        display: inline-block;
+        transform-origin: 50% 50%;
+        will-change: transform, text-shadow;
+      }
+      .s1-word.s1-key {
+        color: var(--brand-primary, #D4AF37);
+      }
+
+      /* Phone inset — lower third, job-search detail. Outer holds the
+         scale (zoom-in reveal), inner is the framed image. */
+      .s1-inset-outer {
+        position: absolute;
+        left: 50%;
+        top: 1180px;
+        width: 430px;
+        transform-origin: 50% 50%;
+        will-change: transform, opacity;
+      }
+      .s1-inset-frame {
+        position: relative;
+        width: 100%;
+        border-radius: 26px;
+        overflow: hidden;
+        border: 1px solid rgba(212,175,55,0.55);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+        will-change: transform;
+      }
+      .s1-phone {
+        display: block;
+        width: 100%;
+        height: 540px;
+        object-fit: cover;
+      }
+
+      /* Sub-line beneath the inset. */
+      .s1-subline {
+        position: absolute;
+        left: 110px;
+        right: 110px;
+        top: 1760px;
+        margin: 0;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 36px;
+        line-height: 1.32;
+        color: rgba(255,255,255,0.92);
+        text-shadow: 0 2px 14px rgba(0,0,0,0.7);
+        text-align: center;
+        will-change: transform, opacity;
+      }
+    </style>
+
+    <!-- Camera: full-frame student photo + scrim (background macro layer) -->
+    <div class="s1-camera">
+      <img class="s1-photo clip" src="public/img/s1_student.jpg" data-start="0" data-duration="4.075" data-track-index="0" alt="" />
+      <div class="s1-scrim clip" data-start="0" data-duration="4.075" data-track-index="1"></div>
+    </div>
+
+    <!-- Headline (track 2) -->
+    <h1 class="s1-headline clip" data-start="0.4" data-duration="3.675" data-track-index="2">
+      <span class="s1-word" data-word="tu">TU</span>
+      <span class="s1-word" data-word="es">ES</span>
+      <span class="s1-word" data-word="en">EN</span>
+      <span class="s1-word" data-word="vacances">VACANCES</span>
+      <span class="s1-word" data-word="et">ET</span>
+      <span class="s1-word" data-word="tu2">TU</span>
+      <span class="s1-word" data-word="cherches">CHERCHES</span>
+      <span class="s1-word" data-word="un">UN</span>
+      <span class="s1-word s1-key" data-word="revenu">REVENU</span>
+      <span class="s1-word" data-word="q">?</span>
+    </h1>
+
+    <!-- Phone inset (track 3) — eases up via coordinate-target-zoom -->
+    <div class="s1-inset-outer clip" data-start="2.4" data-duration="1.675" data-track-index="3">
+      <div class="s1-inset-frame">
+        <img class="s1-phone" src="public/img/s1_phone.jpg" alt="" />
+      </div>
+    </div>
+
+    <!-- Sub-line (track 4) -->
+    <p class="s1-subline clip" data-start="2.7" data-duration="1.375" data-track-index="4">Ne passe pas tes journées dans des jobs qui te fatiguent pour peu.</p>
+
+    <script>
+      // EASE / DUR — canonical role keys from the film easings block.
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 4.075;
+
+      // --- multi-phase-camera: slow Ken-Burns push toward the phone ---
+      const camera = document.querySelector(".s1-camera");
+      const phase = { scale: 1.0 };
+      // Phase 2 — gentle settle/begin of push
+      tl.to(phase, { scale: 1.04, duration: 1.6, ease: "power2.out" }, 0.3);
+      // Phase 3 — slow push-in toward the lower-frame phone for the climax
+      tl.to(phase, { scale: 1.085, duration: 1.9, ease: "power2.inOut" }, 2.1);
+
+      // Continuous micro-drift overlaid on the phase scale, biased downward
+      // toward the phone in the lower-mid frame.
+      const drift = { p: 0 };
+      tl.to(drift, {
+        p: Math.PI * 2 * 1,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          const dx = Math.sin(drift.p) * 5;
+          const dy = Math.sin(drift.p * 1.3) * 3 + 6; // slight downward bias
+          camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+        },
+      }, 0);
+
+      // --- headline rises (~0.4s) ---
+      tl.fromTo(".s1-word",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry, stagger: 0.04 },
+        0.4);
+
+      // --- asr-keyword-glow: single gold pulse on REVENU (~1.6s) ---
+      const REST_LEVEL = 0.12;
+      const ATTACK_DUR = 0.18;
+      const RELEASE = 0.45;
+      const MAX_BLUR = 34;
+      const MAX_SCALE_BOOST = 0.16;
+      const KEY = { start: 1.6, end: 2.05 };
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+        if (time < releaseEnd) {
+          const decay = (time - end) / RELEASE;
+          return 1 - decay * (1 - REST_LEVEL);
+        }
+        return REST_LEVEL;
+      }
+      const keyWord = document.querySelector(".s1-key");
+      const glow = { t: 0 };
+      tl.to(glow, {
+        t: TOTAL,
+        duration: TOTAL,
+        ease: "none",
+        onUpdate: () => {
+          const env = envelope(glow.t, KEY.start, KEY.end);
+          const blur = MAX_BLUR * env;
+          const sc = 1 + MAX_SCALE_BOOST * env;
+          keyWord.style.textShadow = "0 0 " + blur + "px rgba(212,175,55," + (0.35 + env * 0.5) + "), 0 4px 28px rgba(0,0,0,0.6)";
+          keyWord.style.transform = "scale(" + sc + ")";
+        },
+      }, 0);
+
+      // --- coordinate-target-zoom: phone inset eases up into the lower third (~2.4s) ---
+      // Fixed slot, centered horizontally. Reveal = scale-up + lift into place,
+      // then HOLD (the lift completes inside the window; no exit — scene holds).
+      tl.fromTo(".s1-inset-outer",
+        { opacity: 0, y: 70, x: "-50%", scale: 0.82 },
+        { opacity: 1, y: 0, x: "-50%", scale: 1, duration: 0.85, ease: EASE.emphasis },
+        2.4);
+
+      // --- sub-line fades in beneath ---
+      tl.fromTo(".s1-subline",
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+        2.7);
+
+      window.__timelines["scene_1"] = tl;
+    </script>
+  </div>
+</template>

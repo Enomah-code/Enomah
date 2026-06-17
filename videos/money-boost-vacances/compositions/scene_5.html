@@ -1,0 +1,339 @@
+<template id="scene_5-template">
+  <div id="root" class="scene_5-root" data-composition-id="scene_5" data-width="1080" data-height="1920" data-duration="9.088" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      /* Root: HARD CONSTRAINT — near-black off-black ground, override the white --canvas token. */
+      #root {
+        background:
+          radial-gradient(120% 70% at 50% 64%, rgba(212,175,55,0.10) 0%, rgba(212,175,55,0.03) 30%, rgba(10,10,10,0) 58%),
+          radial-gradient(140% 120% at 50% 18%, #131210 0%, #0A0A0A 60%);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after { box-sizing: border-box; }
+
+      /* Camera wrappers — coordinate-target-zoom (outer scales, inner translates). */
+      .s5-zoom-scale {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s5-zoom-translate {
+        display: grid;
+        place-items: center;
+        will-change: transform;
+      }
+
+      /* Vertical hero stack: title / book / subline. */
+      .s5-stack {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 46px;
+        width: 1080px;
+      }
+
+      /* 3D depth-layered title. */
+      .s5-title-stack {
+        position: relative;
+        display: inline-block;
+      }
+      .s5-title {
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 108px;
+        line-height: 0.94;
+        letter-spacing: -2px;
+        text-transform: uppercase;
+        text-align: center;
+        white-space: nowrap;
+        color: var(--brand-costume);
+      }
+      .s5-title .s5-year { color: var(--brand-primary); display: block; }
+      .s5-title.s5-is-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        pointer-events: none;
+      }
+      .s5-title.s5-is-front { position: relative; z-index: 10; }
+
+      /* Book hero — gold floor glow behind, soft drop shadow. */
+      .s5-book-wrap {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 594px;
+        height: 760px;
+        will-change: transform;
+      }
+      .s5-floor-glow {
+        position: absolute;
+        left: 50%;
+        bottom: 18px;
+        width: 760px;
+        height: 320px;
+        transform: translateX(-50%);
+        background: radial-gradient(50% 50% at 50% 50%, rgba(212,175,55,0.55) 0%, rgba(212,175,55,0.18) 38%, rgba(212,175,55,0) 72%);
+        filter: blur(8px);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .s5-book {
+        position: relative;
+        z-index: 1;
+        width: 594px;
+        height: auto;
+        max-height: 760px;
+        object-fit: contain;
+        border-radius: 10px;
+        filter: drop-shadow(0 28px 60px rgba(0,0,0,0.7));
+        will-change: transform;
+      }
+
+      /* Sub-line. */
+      .s5-subline {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 18px;
+        max-width: 920px;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 34px;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        text-align: center;
+        color: var(--brand-costume);
+      }
+      .s5-word {
+        display: inline-block;
+        transform-origin: 50% 50%;
+        text-shadow: 0 0 0 rgba(212,175,55,0);
+        will-change: transform, text-shadow;
+      }
+    </style>
+
+    <!-- coordinate-target-zoom wrappers (outer scale / inner translate) -->
+    <div class="s5-zoom-scale" id="s5-zoom-scale">
+      <div class="s5-zoom-translate" id="s5-zoom-translate">
+        <div class="s5-stack" id="s5-stack">
+
+          <!-- 3d-text-depth-layers title (layers injected by script) -->
+          <div class="s5-title-stack" id="s5-title-stack"></div>
+
+          <!-- PRODUCT REVEAL hero book -->
+          <div class="s5-book-wrap" id="s5-book-wrap">
+            <div class="s5-floor-glow"></div>
+            <img class="s5-book" id="s5-book" src="public/img/pack_book.jpg" alt="PACK MONEY BOOST 2026" />
+          </div>
+
+          <!-- asr-keyword-glow sub-line -->
+          <div class="s5-subline" id="s5-subline">
+            <span class="s5-word" data-word="le">LE</span>
+            <span class="s5-word" data-word="systeme">SYSTÈME</span>
+            <span class="s5-word" data-word="complet">COMPLET</span>
+            <span class="s5-word" data-word="pour">POUR</span>
+            <span class="s5-word" data-word="commencer">COMMENCER.</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = { snap: 0.28, med: 0.5, slow: 1.1 };
+
+      window.__timelines = window.__timelines || {};
+
+      (async () => {
+        if (document.fonts && document.fonts.ready) {
+          try { await document.fonts.ready; } catch (e) {}
+        }
+
+        const W = 1080, H = 1920;
+        const SCENE_DURATION = 9.088;
+
+        // ---- 3d-text-depth-layers: build title stack (gold/white, "2026" heaviest front) ----
+        const TITLE_HTML = 'PACK MONEY BOOST<span class="s5-year">2026</span>';
+        const LAYER_COUNT = 5;     // back layers + 1 front
+        const OFFSET_X = -2;       // light from upper-right
+        const OFFSET_Y = 2;
+        const BACK_ALPHA_MAX = 0.5;
+        const BACK_ALPHA_STEP = 0.1;
+        const BACK_ALPHA_MIN = 0.12;
+        const stack = document.getElementById("s5-title-stack");
+        const backAlphaFor = (i) =>
+          Math.max(BACK_ALPHA_MAX - i * BACK_ALPHA_STEP, BACK_ALPHA_MIN);
+
+        for (let i = LAYER_COUNT - 1; i >= 0; i--) {
+          const el = document.createElement("div");
+          el.className = "s5-title " + (i === 0 ? "s5-is-front" : "s5-is-back");
+          el.innerHTML = TITLE_HTML;
+          if (i > 0) {
+            el.style.color = "rgba(120,96,28," + backAlphaFor(i) + ")";
+            el.style.transform = "translate(" + (i * OFFSET_X) + "px, " + (i * OFFSET_Y) + "px)";
+          }
+          el.dataset.layer = String(i);
+          stack.appendChild(el);
+        }
+        const titleLayers = stack.querySelectorAll(".s5-title");
+
+        // ---- coordinate-target-zoom: measure book center, bake offset + capped scale ----
+        const bookWrap = document.getElementById("s5-book-wrap");
+        const r = bookWrap.getBoundingClientRect();
+        const TARGET_OFFSET_X = r.left + r.width / 2 - W / 2;
+        const TARGET_OFFSET_Y = r.top + r.height / 2 - H / 2;
+        const counterX = -TARGET_OFFSET_X;
+        const counterY = -TARGET_OFFSET_Y;
+        const DESIRED_SCALE = 1.22; // reverent, modest push-in
+        const maxScale = Math.min((0.88 * W) / r.width, (0.88 * H) / r.height);
+        const ZOOM_SCALE = Math.min(DESIRED_SCALE, maxScale);
+
+        const book = document.getElementById("s5-book");
+
+        const tl = gsap.timeline({ paused: true });
+
+        // Phase 1 — title depth layers cascade in (back-to-front)
+        const LAYER_CASCADE_START = 0.25;
+        const LAYER_CASCADE_STEP = 0.07;
+        const LAYER_FADE_DUR = 0.5;
+        titleLayers.forEach((el) => {
+          const i = Number(el.dataset.layer);
+          const finalAlpha = el.classList.contains("s5-is-front") ? 1 : backAlphaFor(i);
+          tl.fromTo(
+            el,
+            { opacity: 0, y: 24 },
+            { opacity: finalAlpha, y: (i * OFFSET_Y), duration: LAYER_FADE_DUR, ease: EASE.entry },
+            LAYER_CASCADE_START + (LAYER_COUNT - 1 - i) * LAYER_CASCADE_STEP
+          );
+        });
+
+        // Phase 2 — book reveals with golden light/glow (scale + fade up)
+        tl.fromTo(
+          bookWrap,
+          { opacity: 0, scale: 0.86, y: 28 },
+          { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: EASE.entry },
+          0.7
+        );
+
+        // Phase 3 — coordinate-target-zoom: camera pushes in to center the book
+        const ZOOM_START = 2.4;
+        const ZOOM_DUR = 1.5;
+        tl.to(
+          "#s5-zoom-scale",
+          { scale: ZOOM_SCALE, duration: ZOOM_DUR, ease: EASE.emphasis },
+          ZOOM_START
+        );
+        tl.to(
+          "#s5-zoom-translate",
+          { x: counterX, y: counterY, duration: ZOOM_DUR, ease: EASE.emphasis },
+          ZOOM_START
+        );
+
+        // Phase 4 — stillness-before-climax (~0.6s held pause), then sub-line fades in white
+        const SUBLINE_START = ZOOM_START + ZOOM_DUR + 0.6; // = 4.5
+        tl.fromTo(
+          "#s5-subline",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+          SUBLINE_START
+        );
+
+        // ---- asr-keyword-glow on the sub-line (COMPLET catches the gold) ----
+        const ATTACK_DUR = 0.18;
+        const RELEASE = 0.4;
+        const REST_LEVEL = 0.22;
+        const MAX_BLUR = 22;
+        const MAX_SCALE_BOOST = 0.08;
+        const GOLD = "212,175,55";
+        const TIMINGS = {
+          le:        { start: SUBLINE_START + 0.05, end: SUBLINE_START + 0.30 },
+          systeme:   { start: SUBLINE_START + 0.35, end: SUBLINE_START + 0.72 },
+          complet:   { start: SUBLINE_START + 0.80, end: SUBLINE_START + 1.55 }, // brand keyword — long sustain
+          pour:      { start: SUBLINE_START + 1.62, end: SUBLINE_START + 1.88 },
+          commencer: { start: SUBLINE_START + 1.95, end: SUBLINE_START + 2.45 },
+        };
+        function envelope(time, start, end) {
+          const releaseEnd = end + RELEASE;
+          if (time < start) return 0;
+          if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+          if (time < releaseEnd) {
+            const decay = (time - end) / RELEASE;
+            return 1 - decay * (1 - REST_LEVEL);
+          }
+          return REST_LEVEL;
+        }
+        const words = document.querySelectorAll(".s5-word");
+        const driver = { t: 0 };
+        tl.to(
+          driver,
+          {
+            t: SCENE_DURATION,
+            duration: SCENE_DURATION,
+            ease: "none",
+            onUpdate: () => {
+              words.forEach((el) => {
+                const key = el.dataset.word;
+                const timing = TIMINGS[key];
+                if (!timing) return;
+                const env = envelope(driver.t, timing.start, timing.end);
+                const isKey = key === "complet";
+                const blur = MAX_BLUR * env * (isKey ? 1.3 : 1);
+                const sc = 1 + MAX_SCALE_BOOST * env * (isKey ? 1.25 : 1);
+                const alpha = (isKey ? 0.55 : 0.4) * env;
+                el.style.textShadow = "0 0 " + blur + "px rgba(" + GOLD + "," + alpha + ")";
+                el.style.transform = "scale(" + sc + ")";
+                if (isKey) {
+                  // COMPLET shifts white -> gold on emphasis
+                  const lo = 255, hiR = 212, hiG = 175, hiB = 55;
+                  const rC = Math.round(lo + (hiR - lo) * env);
+                  const gC = Math.round(lo + (hiG - lo) * env);
+                  const bC = Math.round(lo + (hiB - lo) * env);
+                  el.style.color = "rgb(" + rC + "," + gC + "," + bC + ")";
+                }
+              });
+            },
+          },
+          0
+        );
+
+        // ---- sine-wave-loop: book breathes (multiplicative on final scale = 1) as the single live element ----
+        const BREATH_START = ZOOM_START + ZOOM_DUR + 0.1; // 4.0, after zoom spring settles
+        const IDLE_DUR = SCENE_DURATION - BREATH_START;
+        const CYCLES = Math.max(1, Math.round(IDLE_DUR / 3)); // ~3s per breath
+        const SCALE_AMP = 0.015;
+        const Y_AMP_PX = 3;
+        const breath = { p: 0 };
+        tl.to(
+          breath,
+          {
+            p: Math.PI * 2 * CYCLES,
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: () => {
+              const s = 1 + Math.sin(breath.p) * SCALE_AMP;
+              const y = Math.sin(breath.p) * Y_AMP_PX;
+              book.style.transform = "translateY(" + y + "px) scale(" + s + ")";
+            },
+          },
+          BREATH_START
+        );
+
+        window.__timelines["scene_5"] = tl;
+      })();
+    </script>
+  </div>
+</template>
