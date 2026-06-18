@@ -32,6 +32,7 @@ MAX_DURATION_SEC = 10 * 60 + 30          # ~10 min (petite marge)
 SAMPLE_INTERVAL_SEC = 2.0                # 1 image envoyée à Claude toutes les 2 s
 CLAUDE_CONCURRENCY = 5                   # appels Claude simultanés max
 DETECT_MAX_DIM = 720                     # downscale pour la détection de visages
+FACE_DETECT_INTERVAL_SEC = 0.2           # détection des visages toutes les 0,2 s (réutilisée entre)
 BLUR_MARGIN = 0.06                       # marge (réduite) autour des visages détectés
 
 # ─── ÉTAT DES JOBS (en mémoire — process uvicorn unique) ─────────────────────
@@ -163,63 +164,30 @@ def _extract_samples(input_path: str, fps: float, total: int) -> list[tuple[int,
     return samples
 
 
-def _process_full(
+def _process_and_encode(
     job_id: str,
     input_path: str,
-    silent_path: str,
+    output_path: str,
     fps: float,
     total: int,
     detections: list[tuple[int, int, list[dict]]],
 ) -> dict[str, int]:
-    """Passe complète : floute visages (chaque image) + zones Claude (par intervalle)."""
+    """Passe unique : floute visages + zones Claude et encode directement en H.264.
+
+    Les images traitées sont envoyées en flux brut (bgr24) à ffmpeg via stdin, qui
+    encode en H.264 et réintègre l'audio d'origine — en un seul passage (pas de
+    fichier intermédiaire ni de second décodage). Les visages ne sont détectés que
+    toutes les `FACE_DETECT_INTERVAL_SEC` secondes ; les boîtes sont réutilisées
+    pour les images intermédiaires (gros gain de vitesse).
+    """
     cap = cv2.VideoCapture(input_path)
     w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(silent_path, fourcc, fps, (w, h))
 
-    face_count = 0
-    text_zone_frames = 0
-    idx = 0
-    last_pct = -1
-    while True:
-        ok, frame = cap.read()
-        if not ok:
-            break
-
-        for (x, y, fw_, fh_) in _detect_faces(frame):
-            _blur_region(frame, x, y, fw_, fh_, ellipse=True)
-            face_count += 1
-
-        for (start, end, regions) in detections:
-            if start <= idx < end:
-                for region in regions:
-                    bx, by, bw, bh = _pct_to_box(region, w, h)
-                    _blur_region(frame, bx, by, bw, bh, ellipse=False)
-                    text_zone_frames += 1
-
-        writer.write(frame)
-        idx += 1
-
-        if total:
-            pct = int(idx / total * 100)
-            if pct != last_pct:
-                last_pct = pct
-                # 45 % → 90 % réservés à cette phase.
-                _set(job_id, progress=45 + int(pct * 0.45),
-                     message=f"Floutage image {idx}/{total}…")
-
-    cap.release()
-    writer.release()
-    return {"frames": idx, "faces": face_count, "text_zone_frames": text_zone_frames}
-
-
-def _mux_audio(silent_path: str, input_path: str, output_path: str) -> None:
-    """Ré-encode en H.264 (yuv420p) et réintègre l'audio d'origine si présent."""
     ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
     cmd = [
         ffmpeg, "-y",
-        "-i", silent_path,
+        "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{w}x{h}", "-r", f"{fps}", "-i", "-",
         "-i", input_path,
         "-map", "0:v:0",
         "-map", "1:a:0?",          # audio optionnel (le `?` évite l'échec si muet)
@@ -230,10 +198,74 @@ def _mux_audio(silent_path: str, input_path: str, output_path: str) -> None:
         "-shortest",
         output_path,
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        logger.error("ffmpeg a échoué: {}", result.stderr[-1000:])
+    err_log = output_path + ".ffmpeg.log"
+    err_file = open(err_log, "wb")
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=err_file)
+
+    face_step = max(1, int(round(fps * FACE_DETECT_INTERVAL_SEC)))
+    faces: list[tuple[int, int, int, int]] = []
+    face_count = 0
+    text_zone_frames = 0
+    idx = 0
+    last_pct = -1
+    pipe_broken = False
+    try:
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                break
+            if frame.shape[1] != w or frame.shape[0] != h:
+                frame = cv2.resize(frame, (w, h))
+
+            # Détection des visages sur intervalle, boîtes réutilisées entre-temps.
+            if idx % face_step == 0:
+                faces = _detect_faces(frame)
+            for (x, y, fw_, fh_) in faces:
+                _blur_region(frame, x, y, fw_, fh_, ellipse=True)
+            face_count += len(faces)
+
+            for (start, end, regions) in detections:
+                if start <= idx < end:
+                    for region in regions:
+                        bx, by, bw, bh = _pct_to_box(region, w, h)
+                        _blur_region(frame, bx, by, bw, bh, ellipse=False)
+                        text_zone_frames += 1
+
+            try:
+                proc.stdin.write(frame.tobytes())
+            except (BrokenPipeError, ValueError):
+                pipe_broken = True
+                break
+            idx += 1
+
+            if total:
+                pct = int(idx / total * 100)
+                if pct != last_pct:
+                    last_pct = pct
+                    # 45 % → 95 % réservés à cette phase (floutage + encodage).
+                    _set(job_id, progress=45 + int(pct * 0.5),
+                         message=f"Floutage & encodage image {idx}/{total}…")
+    finally:
+        cap.release()
+        try:
+            if proc.stdin:
+                proc.stdin.close()
+        except (BrokenPipeError, ValueError):
+            pass
+        ret = proc.wait()
+        err_file.close()
+
+    if ret != 0 or pipe_broken:
+        try:
+            tail = Path(err_log).read_text(errors="ignore")[-1000:]
+        except OSError:
+            tail = "(log indisponible)"
+        logger.error("ffmpeg a échoué (code {}): {}", ret, tail)
+        Path(err_log).unlink(missing_ok=True)
         raise RuntimeError("Échec de l'encodage final (ffmpeg).")
+
+    Path(err_log).unlink(missing_ok=True)
+    return {"frames": idx, "faces": face_count, "text_zone_frames": text_zone_frames}
 
 
 # ─── DÉTECTION CLAUDE (asynchrone, concurrente) ──────────────────────────────
@@ -273,7 +305,6 @@ async def _detect_samples(
 async def run_video_job(job_id: str, input_path: str, output_path: str) -> None:
     """Pipeline complet d'anonymisation vidéo (mis à jour dans JOBS[job_id])."""
     settings = get_settings()
-    silent_path = output_path + ".silent.mp4"
     started = time.time()
     try:
         _set(job_id, status="processing", progress=2, message="Analyse de la vidéo…")
@@ -295,13 +326,10 @@ async def run_video_job(job_id: str, input_path: str, output_path: str) -> None:
         text_zones = sum(len(r) for _, _, r in detections)
         _set(job_id, progress=45, message="Floutage des visages et zones détectées…")
         stats = await asyncio.to_thread(
-            _process_full, job_id, input_path, silent_path, meta["fps"], meta["total"], detections
+            _process_and_encode, job_id, input_path, output_path, meta["fps"], meta["total"], detections
         )
 
-        _set(job_id, progress=92, message="Réintégration de l'audio et encodage final…")
-        await asyncio.to_thread(_mux_audio, silent_path, input_path, output_path)
-
-        Path(silent_path).unlink(missing_ok=True)
+        _set(job_id, progress=97, message="Finalisation…")
         _set(
             job_id,
             status="done",
@@ -319,5 +347,4 @@ async def run_video_job(job_id: str, input_path: str, output_path: str) -> None:
         logger.info("Job vidéo {} terminé en {:.1f}s", job_id, time.time() - started)
     except Exception as exc:
         logger.exception("Job vidéo {} échoué", job_id)
-        Path(silent_path).unlink(missing_ok=True)
         _set(job_id, status="error", message=str(exc))
