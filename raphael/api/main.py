@@ -40,6 +40,7 @@ async def lifespan(app: FastAPI):
 
     logger.info(f"Raphaël opérationnel sur http://{settings.api_host}:{settings.api_port}")
     logger.info(f"Dashboard: http://{settings.api_host}:{settings.api_port}/dashboard")
+    logger.info(f"Anonymiseur: http://{settings.api_host}:{settings.api_port}/anonymizer")
     yield
 
     evolution_engine.stop()
@@ -68,16 +69,28 @@ def create_app() -> FastAPI:
     )
 
     # Routes API
-    from raphael.api.routes import chat_router, agents_router, evolution_router, market_router
+    from raphael.api.routes import (
+        chat_router,
+        agents_router,
+        evolution_router,
+        market_router,
+        anonymizer_router,
+    )
     app.include_router(chat_router, prefix="/api/v1")
     app.include_router(agents_router, prefix="/api/v1")
     app.include_router(evolution_router, prefix="/api/v1")
     app.include_router(market_router, prefix="/api/v1")
+    app.include_router(anonymizer_router, prefix="/api/v1")
 
     # Serve dashboard statique
     dashboard_path = Path(__file__).parent.parent.parent / "dashboard"
     if dashboard_path.exists():
         app.mount("/dashboard", StaticFiles(directory=str(dashboard_path), html=True), name="dashboard")
+
+    # Serve l'anonymiseur de frames statique
+    anonymizer_path = Path(__file__).parent.parent.parent / "anonymizer"
+    if anonymizer_path.exists():
+        app.mount("/anonymizer", StaticFiles(directory=str(anonymizer_path), html=True), name="anonymizer")
 
     @app.get("/")
     async def root():

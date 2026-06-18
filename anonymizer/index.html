@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anonymiseur de Frames — Raphaël</title>
+<style>
+  :root {
+    --bg: #080E1A;
+    --surface: #0F1829;
+    --card: #16213A;
+    --border: #1E2D4A;
+    --accent: #38BDF8;
+    --accent-dim: #0EA5E9;
+    --danger: #F87171;
+    --success: #34D399;
+    --warn: #FBBF24;
+    --text-primary: #F0F6FF;
+    --text-muted: #4A6080;
+    --text-sub: #8AABCF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+  }
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent-dim), #7C3AED);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .header h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .header p { margin: 1px 0 0; font-size: 11px; color: var(--text-muted); }
+  .btn-ghost {
+    margin-left: auto; padding: 5px 12px; font-size: 11px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text-sub); cursor: pointer;
+  }
+  .prompt-panel {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 16px 28px;
+  }
+  .prompt-panel .label {
+    margin: 0 0 8px; font-size: 11px; color: var(--accent);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .prompt-panel pre {
+    margin: 0; font-size: 11px; color: var(--text-sub);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: pre-wrap; line-height: 1.6;
+  }
+  .container { padding: 24px 28px; max-width: 1100px; margin: 0 auto; }
+  .grid { display: grid; gap: 20px; }
+  .grid.two { grid-template-columns: 1fr 1fr; }
+  .col { display: flex; flex-direction: column; gap: 16px; }
+  .dropzone {
+    border: 2px dashed var(--border); border-radius: 12px;
+    padding: 32px 20px; text-align: center; background: var(--surface);
+    cursor: pointer; transition: all 0.15s; min-height: 200px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 8px;
+  }
+  .dropzone.compact { min-height: 80px; }
+  .dropzone.drag { border-color: var(--accent); background: rgba(56,189,248,0.05); }
+  .dropzone .big { font-size: 32px; }
+  .dropzone .main { font-size: 13px; color: var(--text-sub); font-weight: 500; }
+  .dropzone .sub { font-size: 11px; color: var(--text-muted); }
+  .frame {
+    position: relative; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .frame img, .frame canvas { width: 100%; display: block; }
+  .tag {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(0,0,0,0.6); border-radius: 4px;
+    padding: 2px 8px; font-size: 10px; color: var(--text-muted);
+  }
+  .scan-overlay { position: absolute; inset: 0; pointer-events: none; }
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .scan-badge {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.7); border-radius: 4px;
+    padding: 3px 8px; font-size: 10px; color: var(--accent); font-family: monospace;
+  }
+  .btn-primary {
+    padding: 13px 20px; border: none; border-radius: 10px;
+    color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+    letter-spacing: -0.01em; transition: opacity 0.15s;
+    background: linear-gradient(135deg, var(--accent-dim), #7C3AED);
+  }
+  .btn-primary:disabled { background: var(--card); cursor: not-allowed; opacity: 0.7; }
+  .btn-success {
+    padding: 13px 20px; background: var(--success); border: none;
+    border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .result-placeholder {
+    position: absolute; inset: 0; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
+  }
+  .result-placeholder .lock { font-size: 32px; opacity: 0.3; }
+  .result-placeholder span { font-size: 12px; color: var(--text-muted); }
+  .pii-box {
+    background: var(--surface); border-radius: 10px;
+    border: 1px solid var(--border); padding: 14px;
+  }
+  .pii-box .label {
+    margin: 0 0 10px; font-size: 11px; color: var(--accent);
+    font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .pii-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; margin-bottom: 4px;
+    background: var(--card); border-radius: 6px; border: 1px solid var(--border);
+  }
+  .pii-type {
+    font-size: 10px; color: var(--danger); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    background: rgba(248,113,113,0.12); padding: 2px 6px;
+    border-radius: 4px; flex-shrink: 0;
+  }
+  .pii-desc { font-size: 12px; color: var(--text-sub); }
+  .pii-coords { margin-left: auto; font-size: 10px; color: var(--text-muted); font-family: monospace; flex-shrink: 0; }
+  .ok-box {
+    background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 10px; padding: 16px; text-align: center;
+  }
+  .ok-box p { margin: 0; color: var(--success); font-size: 13px; }
+  .log {
+    margin-top: 20px; background: #050A13; border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; max-height: 140px; overflow-y: auto;
+  }
+  .log-row { display: flex; gap: 8px; margin-bottom: 2px; align-items: baseline; }
+  .log-time { font-size: 10px; color: var(--text-muted); font-family: monospace; flex-shrink: 0; }
+  .log-msg { font-size: 11px; font-family: monospace; }
+  .workflow {
+    margin-top: 20px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px;
+  }
+  .workflow .label {
+    margin: 0 0 8px; font-size: 11px; color: var(--accent);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .workflow .steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .step { background: var(--card); border-radius: 8px; padding: 10px 12px; }
+  .step-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent-dim); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0;
+  }
+  .step-label { font-size: 11px; font-weight: 600; color: var(--text-sub); }
+  .step pre { margin: 0; font-size: 10px; color: var(--text-muted); font-family: monospace; white-space: pre-wrap; line-height: 1.5; }
+  .hidden { display: none !important; }
+  @media (max-width: 760px) {
+    .grid.two { grid-template-columns: 1fr; }
+    .workflow .steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🔏</div>
+    <div>
+      <h1>Anonymiseur de Frames</h1>
+      <p>Détection &amp; flouage automatique des IPI via Claude AI</p>
+    </div>
+    <button class="btn-ghost" id="togglePrompt">▾ Voir le prompt</button>
+  </div>
+
+  <div class="prompt-panel hidden" id="promptPanel">
+    <p class="label">Prompt système envoyé à Claude</p>
+    <pre id="promptText"></pre>
+  </div>
+
+  <div class="container">
+    <div class="grid" id="grid">
+      <!-- LEFT -->
+      <div class="col">
+        <div class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept="image/*" class="hidden" />
+          <span class="big" id="dropIcon">📂</span>
+          <span class="main" id="dropMain">Déposer une frame / capture d'écran</span>
+          <span class="sub">JPG · PNG · WEBP</span>
+        </div>
+
+        <div class="frame hidden" id="originalWrap">
+          <img id="originalImg" alt="Original" />
+          <div class="scan-overlay hidden" id="scanOverlay">
+            <div class="scan-line" id="scanLine"></div>
+            <div class="scan-badge">SCAN IN PROGRESS…</div>
+          </div>
+          <div class="tag">ORIGINAL</div>
+        </div>
+
+        <button class="btn-primary hidden" id="detectBtn">🔍 Détecter &amp; Flouter les IPI</button>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="col hidden" id="rightCol">
+        <div class="frame">
+          <canvas id="resultCanvas"></canvas>
+          <div class="result-placeholder" id="resultPlaceholder">
+            <span class="lock">🔒</span>
+            <span id="placeholderText">En attente d'analyse</span>
+          </div>
+          <div class="tag" id="resultTag">RÉSULTAT</div>
+        </div>
+
+        <button class="btn-success hidden" id="downloadBtn">⬇️ Télécharger la frame anonymisée</button>
+
+        <div class="pii-box hidden" id="piiBox">
+          <p class="label" id="piiLabel"></p>
+          <div id="piiList"></div>
+        </div>
+
+        <div class="ok-box hidden" id="okBox">
+          <p>✅ Aucune information personnelle détectée dans cette frame.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="log hidden" id="logBox"></div>
+
+    <div class="workflow">
+      <p class="label">💡 Workflow complet pour une vidéo entière</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-head"><span class="step-num">1</span><span class="step-label">Extraire les frames</span></div>
+          <pre>ffmpeg -i video.mp4 \
+  frames/frame_%04d.png</pre>
+        </div>
+        <div class="step">
+          <div class="step-head"><span class="step-num">2</span><span class="step-label">Anonymiser chaque frame</span></div>
+          <pre>→ Charger chaque frame
+  ici et télécharger</pre>
+        </div>
+        <div class="step">
+          <div class="step-head"><span class="step-num">3</span><span class="step-label">Réassembler la vidéo</span></div>
+          <pre>ffmpeg -r 30 \
+  -i frames/frame_%04d.png \
+  -i video.mp4 -map 0:v -map 1:a \
+  -c:v libx264 sortie.mp4</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ─── PROMPT (affichage uniquement — la détection réelle se fait côté serveur) ──
+const DETECTION_PROMPT = `Tu es un expert en protection des données personnelles (RGPD, vie privée).
+Analyse cette image et identifie TOUS les éléments d'information personnelle identifiable (IPI) visibles.
+
+Éléments à détecter OBLIGATOIREMENT :
+- Visages humains (même partiels, même flous, même de profil)
+- Photos de profil / avatars
+- Noms et prénoms
+- Numéros de téléphone / WhatsApp
+- Adresses email
+- Adresses postales
+- Âge
+- Lieu d'habitation / ville
+- Éléments de contact (réseaux sociaux, pseudo, identifiant)
+- Toute autre information permettant d'identifier une personne
+
+IMPORTANT : Sois exhaustif. Mieux vaut détecter trop que pas assez.
+
+Pour chaque élément, retourne des coordonnées en POURCENTAGES (0 à 100).
+Ajoute une marge de 8-10% autour de chaque zone détectée.
+
+Retourne UNIQUEMENT un tableau JSON valide.`;
+
+const DETECT_ENDPOINT = "/api/v1/anonymize/detect";
+
+// ─── ÉTAT ──────────────────────────────────────────────────────────────────
+let imageFile = null;
+let status = "idle"; // idle | loading | done | error
+let pii = [];
+let scanRAF = null;
+
+// ─── ÉLÉMENTS ──────────────────────────────────────────────────────────────
+const $ = (id) => document.getElementById(id);
+const promptPanel = $("promptPanel"), togglePrompt = $("togglePrompt");
+const dropzone = $("dropzone"), fileInput = $("fileInput");
+const dropIcon = $("dropIcon"), dropMain = $("dropMain");
+const originalWrap = $("originalWrap"), originalImg = $("originalImg");
+const scanOverlay = $("scanOverlay"), scanLine = $("scanLine");
+const detectBtn = $("detectBtn"), rightCol = $("rightCol");
+const resultCanvas = $("resultCanvas"), resultPlaceholder = $("resultPlaceholder");
+const placeholderText = $("placeholderText"), resultTag = $("resultTag");
+const downloadBtn = $("downloadBtn");
+const piiBox = $("piiBox"), piiLabel = $("piiLabel"), piiList = $("piiList");
+const okBox = $("okBox"), logBox = $("logBox"), grid = $("grid");
+
+$("promptText").textContent = DETECTION_PROMPT;
+
+// ─── LOG ───────────────────────────────────────────────────────────────────
+const colorFor = { info: "var(--text-muted)", success: "var(--success)", warn: "var(--warn)", error: "var(--danger)" };
+function addLog(msg, type = "info") {
+  logBox.classList.remove("hidden");
+  const row = document.createElement("div");
+  row.className = "log-row";
+  const t = document.createElement("span");
+  t.className = "log-time";
+  t.textContent = new Date().toLocaleTimeString("fr-FR", { hour12: false });
+  const m = document.createElement("span");
+  m.className = "log-msg";
+  m.style.color = colorFor[type] || "var(--text-muted)";
+  m.textContent = msg;
+  row.append(t, m);
+  logBox.append(row);
+  while (logBox.children.length > 20) logBox.removeChild(logBox.firstChild);
+  logBox.scrollTop = logBox.scrollHeight;
+}
+
+// ─── SCAN ANIMATION ────────────────────────────────────────────────────────
+function startScan() {
+  scanOverlay.classList.remove("hidden");
+  let y = 0;
+  const tick = () => {
+    y = (y + 0.8) % 100;
+    scanLine.style.top = y + "%";
+    scanRAF = requestAnimationFrame(tick);
+  };
+  scanRAF = requestAnimationFrame(tick);
+}
+function stopScan() {
+  if (scanRAF) cancelAnimationFrame(scanRAF);
+  scanRAF = null;
+  scanOverlay.classList.add("hidden");
+}
+
+// ─── UPLOAD ────────────────────────────────────────────────────────────────
+function loadFile(file) {
+  if (!file || !file.type.startsWith("image/")) return;
+  imageFile = file;
+  originalImg.src = URL.createObjectURL(file);
+  pii = [];
+  setStatus("idle");
+  logBox.innerHTML = "";
+  clearCanvas();
+  originalWrap.classList.remove("hidden");
+  rightCol.classList.remove("hidden");
+  grid.classList.add("two");
+  detectBtn.classList.remove("hidden");
+  dropzone.classList.add("compact");
+  dropIcon.textContent = "🔄";
+  dropMain.textContent = "Charger une autre frame";
+  renderResultState();
+  addLog("📁 Image chargée : " + file.name, "success");
+}
+
+function clearCanvas() {
+  const ctx = resultCanvas.getContext("2d");
+  ctx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+}
+
+// ─── PIXELATION ────────────────────────────────────────────────────────────
+function pixelateRegion(ctx, imgEl, x, y, w, h) {
+  const blockSize = Math.max(8, Math.floor(Math.min(w, h) / 5));
+  const tmp = document.createElement("canvas");
+  const tx = tmp.getContext("2d");
+  tmp.width = Math.max(1, Math.floor(w / blockSize));
+  tmp.height = Math.max(1, Math.floor(h / blockSize));
+  tx.drawImage(imgEl, x, y, w, h, 0, 0, tmp.width, tmp.height);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(tmp, 0, 0, tmp.width, tmp.height, x, y, w, h);
+  ctx.imageSmoothingEnabled = true;
+  ctx.save();
+  ctx.fillStyle = "rgba(56, 189, 248, 0.12)";
+  ctx.fillRect(x, y, w, h);
+  ctx.restore();
+}
+
+function applyAnonymization(elements, imgEl) {
+  resultCanvas.width = imgEl.naturalWidth;
+  resultCanvas.height = imgEl.naturalHeight;
+  const ctx = resultCanvas.getContext("2d");
+  ctx.drawImage(imgEl, 0, 0);
+  elements.forEach((el) => {
+    const x = Math.max(0, (el.x / 100) * resultCanvas.width);
+    const y = Math.max(0, (el.y / 100) * resultCanvas.height);
+    const w = Math.min(resultCanvas.width - x, (el.width / 100) * resultCanvas.width);
+    const h = Math.min(resultCanvas.height - y, (el.height / 100) * resultCanvas.height);
+    if (w > 0 && h > 0) pixelateRegion(ctx, imgEl, x, y, w, h);
+  });
+  addLog("✅ Flouage appliqué sur " + elements.length + " zone(s)", "success");
+}
+
+// ─── DÉTECTION (via backend, clé API côté serveur) ───────────────────────────
+async function detect() {
+  if (!imageFile) return;
+  setStatus("loading");
+  startScan();
+  pii = [];
+  renderPii();
+  addLog("🔍 Envoi au serveur pour analyse IPI…", "info");
+
+  try {
+    const base64 = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(",")[1]);
+      r.onerror = rej;
+      r.readAsDataURL(imageFile);
+    });
+
+    const resp = await fetch(DETECT_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image_base64: base64,
+        media_type: imageFile.type || "image/jpeg",
+      }),
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.detail || ("Erreur serveur " + resp.status));
+    addLog("📡 Réponse du serveur reçue", "info");
+
+    const elements = Array.isArray(data.regions) ? data.regions : [];
+    pii = elements;
+    setStatus("done");
+    stopScan();
+
+    if (elements.length === 0) {
+      addLog("✅ Aucun IPI détecté dans cette frame", "success");
+    } else {
+      addLog("🎯 " + elements.length + " élément(s) IPI identifié(s)", "warn");
+      applyAnonymization(elements, originalImg);
+    }
+    renderResultState();
+    renderPii();
+  } catch (err) {
+    setStatus("error");
+    stopScan();
+    addLog("❌ Erreur : " + err.message, "error");
+    renderResultState();
+  }
+}
+
+// ─── TÉLÉCHARGEMENT ──────────────────────────────────────────────────────────
+function download() {
+  const link = document.createElement("a");
+  link.download = "frame_anonymisee_" + Date.now() + ".png";
+  link.href = resultCanvas.toDataURL("image/png");
+  link.click();
+  addLog("⬇️ Image exportée", "success");
+}
+
+// ─── RENDU ───────────────────────────────────────────────────────────────────
+function setStatus(s) {
+  status = s;
+  detectBtn.disabled = s === "loading";
+  detectBtn.textContent = s === "loading" ? "⏳ Analyse en cours…" : "🔍 Détecter & Flouter les IPI";
+}
+
+function renderResultState() {
+  const hasResult = status === "done" && pii.length > 0;
+  resultCanvas.style.opacity = status === "done" ? 1 : 0.3;
+  resultPlaceholder.classList.toggle("hidden", status === "done");
+  placeholderText.textContent = status === "loading" ? "Analyse en cours…" : "En attente d'analyse";
+  resultTag.textContent = status === "done" ? "✓ ANONYMISÉ" : "RÉSULTAT";
+  resultTag.style.color = status === "done" ? "var(--success)" : "var(--text-muted)";
+  downloadBtn.classList.toggle("hidden", !hasResult);
+}
+
+function renderPii() {
+  const ok = status === "done" && pii.length === 0;
+  okBox.classList.toggle("hidden", !ok);
+  if (pii.length === 0) { piiBox.classList.add("hidden"); piiList.innerHTML = ""; return; }
+  piiBox.classList.remove("hidden");
+  piiLabel.textContent = "IPI détectés — " + pii.length + " zone(s) floutée(s)";
+  piiList.innerHTML = "";
+  pii.forEach((el) => {
+    const row = document.createElement("div");
+    row.className = "pii-row";
+    const type = document.createElement("span");
+    type.className = "pii-type"; type.textContent = el.type;
+    const desc = document.createElement("span");
+    desc.className = "pii-desc"; desc.textContent = el.description || "";
+    const coords = document.createElement("span");
+    coords.className = "pii-coords";
+    coords.textContent = Math.round(el.x) + "%, " + Math.round(el.y) + "%";
+    row.append(type, desc, coords);
+    piiList.append(row);
+  });
+}
+
+// ─── ÉVÉNEMENTS ──────────────────────────────────────────────────────────────
+togglePrompt.addEventListener("click", () => {
+  const hidden = promptPanel.classList.toggle("hidden");
+  togglePrompt.textContent = hidden ? "▾ Voir le prompt" : "▲ Masquer";
+});
+dropzone.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", (e) => loadFile(e.target.files[0]));
+dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag"); });
+dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag"));
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault(); dropzone.classList.remove("drag");
+  loadFile(e.dataTransfer.files[0]);
+});
+detectBtn.addEventListener("click", detect);
+downloadBtn.addEventListener("click", download);
+</script>
+</body>
+</html>
