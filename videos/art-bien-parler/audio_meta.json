@@ -1,6 +1,6 @@
 {
-  "tts_provider": "kokoro",
-  "voice_id": "am_michael",
+  "tts_provider": "xtts_v2_clone",
+  "voice_id": "cloned-from-reference",
   "bgm_provider": null,
   "bgm_enabled": false,
   "bgm_path": null,
@@ -11,36 +11,36 @@
   "bgm_target_duration_s": null,
   "bgm_seed_duration_s": null,
   "bgm_loop_count": null,
-  "total_duration_s": 33.472,
+  "total_duration_s": 34.459,
   "scenes": {
     "scene_1": {
       "voicePath": "assets/voice/scene_1.wav",
-      "voiceDuration": 3.499,
+      "voiceDuration": 3.414917,
       "wordsPath": ""
     },
     "scene_2": {
       "voicePath": "assets/voice/scene_2.wav",
-      "voiceDuration": 6.251,
+      "voiceDuration": 8.383542,
       "wordsPath": ""
     },
     "scene_3": {
       "voicePath": "assets/voice/scene_3.wav",
-      "voiceDuration": 5.163,
+      "voiceDuration": 6.594167,
       "wordsPath": ""
     },
     "scene_4": {
       "voicePath": "assets/voice/scene_4.wav",
-      "voiceDuration": 8.789,
+      "voiceDuration": 7.351458,
       "wordsPath": ""
     },
     "scene_5": {
       "voicePath": "assets/voice/scene_5.wav",
-      "voiceDuration": 5.568,
+      "voiceDuration": 5.259917,
       "wordsPath": ""
     },
     "scene_6": {
       "voicePath": "assets/voice/scene_6.wav",
-      "voiceDuration": 4.203,
+      "voiceDuration": 3.454792,
       "wordsPath": ""
     }
   }

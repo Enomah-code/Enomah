@@ -1,5 +1,5 @@
 <template id="scene_6-template">
-  <div id="root" class="scene_6-root" data-composition-id="scene_6" data-width="1080" data-height="1920" data-duration="4.203" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+  <div id="root" class="scene_6-root" data-composition-id="scene_6" data-width="1080" data-height="1920" data-duration="3.455" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
     <style>
       /* Root styles use #root only. Brand tokens inherit from index.html <head>. */
       #root {
@@ -297,7 +297,7 @@
         // --- svg-icon-enrichment: arrow nudges toward the button (pulse pattern) ---
         // and --- sine-wave-loop: gold glow-pulse on the button as the one live element ---
         const IDLE_START = 2.4;               // after release settles
-        const IDLE_DUR = 4.203 - IDLE_START;   // fills to scene end
+        const IDLE_DUR = 3.455 - IDLE_START;   // fills to scene end
         const CYCLES = 2;                     // ~0.86s per cycle across a short window
         const FADE_FRAC = 0.22;               // settle in the tail before black
 
@@ -328,7 +328,7 @@
         );
 
         // --- gentle fade toward black at the very end ---
-        tl.to("#s6-fadeout", { opacity: 1, duration: 0.42, ease: "power2.in" }, 4.203 - 0.42);
+        tl.to("#s6-fadeout", { opacity: 1, duration: 0.42, ease: "power2.in" }, 3.455 - 0.42);
 
         window.__timelines["scene_6"] = tl;
       })();
