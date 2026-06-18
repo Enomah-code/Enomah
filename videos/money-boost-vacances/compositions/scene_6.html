@@ -1,0 +1,295 @@
+<template id="scene_6-template">
+  <div id="root" class="scene_6-root" data-composition-id="scene_6" data-width="1080" data-height="1920" data-duration="6.08" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: radial-gradient(120% 90% at 38% 64%, #14110A 0%, #0A0A0A 58%, #060606 100%);
+        font-family: var(--font-body);
+        color: var(--brand-costume);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper — wraps EVERYTHING, drives the dolly-in */
+      .s6-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      /* sparse gold dust drift base layer (decorative) */
+      .s6-dust {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(1.5px 1.5px at 18% 22%, rgba(212,175,55,0.30) 0%, transparent 60%),
+          radial-gradient(1.5px 1.5px at 72% 16%, rgba(212,175,55,0.22) 0%, transparent 60%),
+          radial-gradient(1.5px 1.5px at 86% 70%, rgba(212,175,55,0.20) 0%, transparent 60%),
+          radial-gradient(1.5px 1.5px at 30% 84%, rgba(212,175,55,0.18) 0%, transparent 60%),
+          radial-gradient(1.5px 1.5px at 54% 46%, rgba(212,175,55,0.16) 0%, transparent 60%);
+        opacity: 0.9;
+      }
+
+      /* dark vignette + bottom scrim to seat white/gold text */
+      .s6-vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(130% 100% at 38% 60%, transparent 40%, rgba(0,0,0,0.55) 100%),
+          linear-gradient(to bottom, rgba(0,0,0,0.0) 55%, rgba(0,0,0,0.45) 100%);
+      }
+
+      /* mono eyebrow */
+      .s6-eyebrow {
+        position: absolute;
+        top: 168px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 38px;
+        letter-spacing: 12px;
+        text-transform: uppercase;
+        color: var(--brand-costume);
+        opacity: 0.92;
+      }
+      .s6-eyebrow .s6-eyebrow-rule {
+        display: block;
+        width: 120px;
+        height: 2px;
+        margin: 26px auto 0;
+        background: var(--brand-primary);
+      }
+
+      /* book — off-center lower/left (~40% across) */
+      .s6-book-wrap {
+        position: absolute;
+        left: 6%;
+        top: 760px;
+        width: 430px;
+        height: 590px;
+        will-change: transform;
+        transform-origin: 50% 50%;
+      }
+      .s6-book {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 34px 80px rgba(0,0,0,0.62), 0 0 0 1px rgba(212,175,55,0.18);
+      }
+
+      /* checklist stack — right side, expands outward from book */
+      .s6-stack {
+        position: absolute;
+        left: 470px;
+        top: 700px;
+        width: 560px;
+      }
+      .s6-list-head {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 30px;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        color: var(--brand-costume);
+        opacity: 0.66;
+        margin-bottom: 38px;
+        will-change: transform;
+      }
+      .s6-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        margin-bottom: 34px;
+        will-change: transform;
+      }
+      .s6-check {
+        flex: 0 0 auto;
+        width: 50px;
+        height: 50px;
+      }
+      .s6-check path {
+        fill: none;
+        stroke: var(--brand-primary);
+        stroke-width: 7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .s6-label {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 50px;
+        letter-spacing: 0.5px;
+        color: var(--brand-costume);
+        line-height: 1.04;
+      }
+      .s6-label .s6-num {
+        color: var(--brand-primary);
+      }
+    </style>
+
+    <div class="s6-camera" id="s6-camera">
+      <div class="s6-dust"></div>
+
+      <div class="s6-book-wrap" id="s6-book-wrap">
+        <img class="s6-book clip" src="public/img/pack_book.jpg" data-start="0" data-duration="6.08" data-track-index="0" />
+      </div>
+
+      <div class="s6-stack">
+        <div class="s6-list-head clip" data-start="0.2" data-duration="5.88" data-track-index="1">À L'INTÉRIEUR</div>
+
+        <div class="s6-item clip" id="s6-item-0" data-start="0.45" data-duration="5.63" data-track-index="2">
+          <svg class="s6-check" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 27 L 21 39 L 42 12" />
+          </svg>
+          <div class="s6-label"><span class="s6-num">15</span> MÉTHODES</div>
+        </div>
+
+        <div class="s6-item clip" id="s6-item-1" data-start="0.55" data-duration="5.53" data-track-index="3">
+          <svg class="s6-check" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 27 L 21 39 L 42 12" />
+          </svg>
+          <div class="s6-label"><span class="s6-num">50</span> SCRIPTS</div>
+        </div>
+
+        <div class="s6-item clip" id="s6-item-2" data-start="0.65" data-duration="5.43" data-track-index="4">
+          <svg class="s6-check" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 27 L 21 39 L 42 12" />
+          </svg>
+          <div class="s6-label">TEMPLATES CANVA</div>
+        </div>
+
+        <div class="s6-item clip" id="s6-item-3" data-start="0.75" data-duration="5.33" data-track-index="5">
+          <svg class="s6-check" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 27 L 21 39 L 42 12" />
+          </svg>
+          <div class="s6-label">PROMPTS IA</div>
+        </div>
+
+        <div class="s6-item clip" id="s6-item-4" data-start="0.85" data-duration="5.23" data-track-index="6">
+          <svg class="s6-check" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 27 L 21 39 L 42 12" />
+          </svg>
+          <div class="s6-label">PLAN D'ACTION</div>
+        </div>
+      </div>
+
+      <div class="s6-vignette"></div>
+      <div class="s6-eyebrow clip" data-start="0" data-duration="6.08" data-track-index="7">
+        À L'INTÉRIEUR DU PACK
+        <span class="s6-eyebrow-rule"></span>
+      </div>
+    </div>
+
+    <script>
+      // EASE / DUR pasted from dispatch easings.js
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      const TOTAL = 6.08;
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const camera = document.querySelector("#s6-camera");
+      const bookWrap = document.querySelector("#s6-book-wrap");
+
+      // ----- multi-phase-camera: slow dolly-in toward the book -----
+      // Phase scale (stepwise). Camera easing stays cinematic (no back/spring).
+      const phase = { scale: 1.0 };
+      // Phase 2 — settle to a touch of focus
+      tl.to(phase, { scale: 1.045, duration: 1.6, ease: "power2.out" }, 0.3);
+      // Phase 3 — slow push-in for the climax (dolly toward the book)
+      tl.to(phase, { scale: 1.10, duration: 1.9, ease: "power2.inOut" }, 2.4);
+
+      // Drift driver — continuous sine micro-motion overlaid on the phase scale
+      const drift = { p: 0 };
+      tl.to(
+        drift,
+        {
+          p: Math.PI * 2 * 1.5,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            const dx = Math.sin(drift.p) * 5;
+            const dy = Math.sin(drift.p * 1.3) * 3;
+            camera.style.transform = `scale(${phase.scale}) translate(${dx}px, ${dy}px)`;
+          },
+        },
+        0,
+      );
+
+      // ----- eyebrow + list header entries -----
+      tl.fromTo(".s6-eyebrow", { opacity: 0, y: -16 }, { opacity: 0.92, y: 0, duration: DUR.med, ease: EASE.entry }, 0);
+      tl.fromTo(".s6-list-head", { opacity: 0, y: 14 }, { opacity: 0.66, y: 0, duration: DUR.med, ease: EASE.entry }, 0.2);
+
+      // ----- center-outward-expansion: items radiate out from the book center -----
+      // Book center (camera-space, approx): bookWrap left 6% of 1080 = 64.8 + 215 ≈ 280 ; top 760 + 295 ≈ 1055.
+      // Each item's resting position is in flow; expansion lerps from a clustered
+      // offset toward the book (down-left) back to 0 as it lands.
+      const items = document.querySelectorAll(".s6-item");
+      items.forEach((el, i) => {
+        const fromX = -150 - i * 8;   // start pulled toward the book (left)
+        const fromY = 40 - i * 18;    // start pulled toward the book center (down→up spread)
+        tl.fromTo(
+          el,
+          { opacity: 0, x: fromX, y: fromY, scale: 0.78 },
+          { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.42, ease: EASE.entry },
+          0.45 + i * 0.09,   // staggered burst, total spread < 500ms
+        );
+      });
+
+      // ----- svg-path-draw: gold checkmark strokes draw on as each item lands -----
+      const checks = document.querySelectorAll(".s6-check path");
+      checks.forEach((p) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = `${len}`;
+        p.style.strokeDashoffset = `${len}`;
+      });
+      checks.forEach((p, i) => {
+        tl.to(
+          p,
+          { strokeDashoffset: 0, duration: 0.34, ease: "power2.out" },
+          0.6 + i * 0.09,   // draws just behind each item's landing
+        );
+      });
+
+      // ----- sine-wave-loop: the book breathes as the one live element -----
+      // Idle starts after the book + list have settled; sin(0)=0 → no jump.
+      const IDLE_START = 1.5;
+      const breath = { p: 0 };
+      tl.to(
+        breath,
+        {
+          p: Math.PI * 2 * 2,   // ~2 breaths over ~4.5s window (period ~2.3s)
+          duration: TOTAL - IDLE_START,
+          ease: "none",
+          onUpdate: () => {
+            const s = 1 + Math.sin(breath.p) * 0.012;
+            const y = Math.sin(breath.p) * 3;
+            bookWrap.style.transform = `translateY(${y}px) scale(${s})`;
+          },
+        },
+        IDLE_START,
+      );
+
+      window.__timelines["scene_6"] = tl;
+    </script>
+  </div>
+</template>

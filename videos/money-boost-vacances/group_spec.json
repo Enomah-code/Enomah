@@ -1,0 +1,385 @@
+{
+  "total_scenes": 7,
+  "width": 1080,
+  "height": 1920,
+  "captions_enabled": false,
+  "film_direction": "**Palette:** 60% deep near-black ground / 30% photographic stills + translucent CSS glass panels + hairline rules / 10% accent — brand-primary gold carries hero keywords, underlines, the value-stack checkmarks and the CTA button only; white (brand-costume) is the working ink for body and headlines. Gold stays rare: keyword, line, or button — never a fill. Ink/canvas read as off-black, never pure #000.\n**Type:** display = single hero claims and scene core words (heavy, tight tracking); mono uppercase wide-tracked = eyebrows / scene markers / app-chip + card labels; body = supporting sentences and checklist items. Three-voice system; size jumps stay 2-3x for one-second legibility.\n**Motion:** entries `EASE.entry`; large photos and the book are heavy; idle drift `EASE.drift`; emphasis `EASE.emphasis`; exits none — scenes hold the final frame. Budget per scene: ONE root-level macro motion (slow Ken-Burns zoom/pan on photo scenes, dolly/push on graphic scenes) + at most 1-2 secondary live elements (a breathing hero, a glowing chip, a CTA glow pulse). Everything else rests.\n**Ambient:** NO WebGPU aurora (render target has no GPU). Base is solid off-black or a simple two-stop CSS gradient toward off-black, full-bleed every scene; on photo scenes a dark vignette + bottom-up scrim gradient seats white/gold text. A faint, sparse gold particle/dust drift is the only optional extra layer. Translucent glass panels use CSS backdrop-blur + low-opacity white, never a shader.\n**Never (film-wide):** no WebGPU/liquid-glass aurora shader, no mesh gradients, no neon-on-black, no glow bloom, no purple-blue AI gradient, no bokeh balls, no nav/browser chrome, no exclamation/all-caps in body copy.\n**Transitions:** crossfade (calm photo↔photo, reveals) + push-slide (montage / card cascade forward flow). Only these two repeated.\n**Stillness-before-climax:** Scene 5 (book reveal) and Scene 7 (CTA) only.\n**Assets:** `public/img/s1_student.jpg` → Scene 1 primary (full-frame still); `public/img/s1_phone.jpg` → Scene 1 inset detail (phone job-search). `public/img/s2_brick.jpg`, `public/img/s2_cement.jpg`, `public/img/s2_sweat.jpg`, `public/img/s2_market.jpg` → Scene 2 montage stills; `public/img/s2_coins.jpg` → Scene 2 closing payoff still. `public/img/pack_book.jpg` → Scene 5 primary reveal, reused Scene 6 (open-value) and Scene 7 (CTA) as the product anchor. Scenes 3 and 4 have no photos — pure gold/black graphic scenes.",
+  "total_duration_s": 51.073,
+  "bgm_path": "",
+  "font_face_css": "",
+  "brand_tokens_css": ":root {\n  --brand-primary:   #D4AF37;\n  --brand-secondary: #C9A14A;\n  --brand-tertiary:  #C9A14A;\n  --brand-accent:    #C9A14A;\n  --brand-costume:   #FFFFFF;\n  --ink:             #0A0A0A;\n  --canvas:          #FFFFFF;\n  --brand-gradient:  linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%);\n  --deco-1:          #F7CB46;\n  --deco-2:          #99E885;\n  --deco-3:          #C0F7FE;\n  --deco-4:          #FE90E8;\n  --font-display:    'Inter', system-ui, sans-serif;\n  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;\n  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;\n  --liquid-bg-deep: #0a0218; /* mandatory dark base — aurora needs blackpoint */\n  --liquid-bg-fallback: linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%);\n  --lg-widget-blur: 0.42;\n  --lg-widget-refraction: 0.82;\n  --lg-widget-specular: 0.34;\n  --lg-widget-fresnel: 1.25;\n  --lg-widget-edge-highlight: 0.26;\n  --lg-widget-chrom-aberration: 0.08;\n  --lg-widget-saturation: 0.38;\n  --lg-widget-corner-radius: 28;\n  --lg-widget-z-radius: 46;\n  --lg-notif-blur: 0.22;\n  --lg-notif-refraction: 0.6;\n  --lg-notif-specular: 0.2;\n  --lg-notif-fresnel: 0.9;\n  --lg-notif-edge-highlight: 0.1;\n  --lg-notif-chrom-aberration: 0.05;\n  --lg-notif-saturation: 0.25;\n  --lg-notif-corner-radius: 36;\n  --lg-notif-z-radius: 38;\n  --lg-notif-shadow-opacity: 0.35;\n  --lg-notif-shadow-spread: 14;\n  --lg-notif-shadow-offset-y: 4;\n  --lg-menu-blur: 0.56;\n  --lg-menu-refraction: 0.52;\n  --lg-menu-specular: 0.26;\n  --lg-menu-fresnel: 1;\n  --lg-menu-edge-highlight: 0.2;\n  --lg-menu-chrom-aberration: 0.035;\n  --lg-menu-saturation: -0.24;\n  --lg-menu-tint: 0.88;\n  --lg-menu-brightness: 0.54;\n  --lg-menu-corner-radius: 30;\n  --lg-menu-z-radius: 48;\n  --ink-on-glass: rgba(255, 255, 255, 0.96);\n  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);\n  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */\n  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);\n  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */\n  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);\n  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */\n  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);\n  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */\n  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */\n  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */\n  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);\n  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */\n  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */\n  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */\n  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */\n  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */\n  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */\n  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */\n  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */\n  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */\n  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */\n  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */\n  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */\n  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */\n  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */\n  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */\n  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */\n  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */\n  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */\n}",
+  "groups": [
+    {
+      "worker_id": "w1",
+      "scene_ids": [
+        "scene_1"
+      ],
+      "scenes": {
+        "scene_1": {
+          "start_s": 0,
+          "effects": [
+            "multi-phase-camera",
+            "asr-keyword-glow",
+            "coordinate-target-zoom"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/coordinate-target-zoom.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 4.075,
+          "voicePath": "assets/voice/scene_1.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Anxious, scroll-stopping, a held breath of frustration. Layered-depth portrait composition: `public/img/s1_student.jpg` fills the full frame as a cinematic still (~100%) under a dark vignette and bottom-up scrim; the frustrated student and phone own the lower-mid frame, white headline stacked in the upper-mid safe zone. Macro motion: slow Ken-Burns push (`multi-phase-camera`) creeping toward the phone across the whole beat. ~0.4s in, the white question \"TU ES EN VACANCES ET TU CHERCHES UN REVENU ?\" rises; \"REVENU\" catches a single gold `asr-keyword-glow` pulse on the narration stress (~1.6s). At ~2.4s a small inset of `public/img/s1_phone.jpg` (job-search results) eases up via `coordinate-target-zoom` into the lower third while the sub-line \"Ne passe pas tes journées dans des jobs qui te fatiguent pour peu.\" fades in beneath. Hold on the frustrated frame. Eye settles on the phone, then cuts forward into the labour montage.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w2",
+      "scene_ids": [
+        "scene_2"
+      ],
+      "scenes": {
+        "scene_2": {
+          "start_s": 4.075,
+          "effects": [
+            "viewport-change",
+            "discrete-text-sequence",
+            "reactive-displacement",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/viewport-change.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/discrete-text-sequence.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/reactive-displacement.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 7.851,
+          "voicePath": "assets/voice/scene_2.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Heavy, fatigued, an accelerating grind that lands on injustice. Fast-montage of full-frame stills, each under dark scrim: `s2_brick.jpg` → `s2_cement.jpg` → `s2_sweat.jpg` → `s2_market.jpg` cut roughly every ~1.3s, each pushed in/out with a small Ken-Burns. Macro motion: continuous left push-pan (`viewport-change`) carrying the montage forward, photos parallaxing past. Over the first stills \"BEAUCOUP TRAVAILLENT PLUS…\" types in via `discrete-text-sequence`; on the market shot it is displaced by \"MAIS GAGNENT TOUJOURS PEU.\" entering hard from the right (`reactive-displacement`), the new line shoving the old off — physical, causal. Final ~1.6s lands on `public/img/s2_coins.jpg` (coins in palm), motion stilling; the mono label \"PETITE RÉMUNÉRATION\" fades in low, \"PEU\" carrying one dim gold `asr-keyword-glow`. The injustice sits on the meagre coins; eye exits toward the reframe.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w3",
+      "scene_ids": [
+        "scene_3"
+      ],
+      "scenes": {
+        "scene_3": {
+          "start_s": 11.926,
+          "effects": [
+            "multi-phase-camera",
+            "orbit-3d-entry",
+            "svg-icon-enrichment",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/orbit-3d-entry.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/svg-icon-enrichment.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 6.848,
+          "voicePath": "assets/voice/scene_3.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Hopeful exhale, a luminous lift after the grind — premium and slow. Centered graphic composition on off-black: a clean CSS phone outline (rendered as a glass-edged device frame, ~45% of canvas) holds the frame center, white headline \"TON TÉLÉPHONE PEUT DEVENIR TON OUTIL DE TRAVAIL.\" stacked above. Macro motion: slow dolly-push (`multi-phase-camera`) into the phone as the light shifts warmer. From ~1.2s three gold-rimmed glass app chips — Canva, ChatGPT, WhatsApp Business — flip in and settle into a shallow arc around/inside the phone via `orbit-3d-entry` (staggered, total <500ms); each chip's small glyph animates alive with `svg-icon-enrichment` (pulsing dot, drawing stroke). After settling, the phone and chips breathe with `sine-wave-loop` as the single live cluster. Gold appears only on the chip rims and the keyword \"OUTIL.\" Eye rests on the lit phone, then pushes through into the services.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w4",
+      "scene_ids": [
+        "scene_4"
+      ],
+      "scenes": {
+        "scene_4": {
+          "start_s": 18.774,
+          "effects": [
+            "viewport-change",
+            "center-outward-expansion",
+            "press-release-spring",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/viewport-change.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/center-outward-expansion.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/press-release-spring.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 8.192,
+          "voicePath": "assets/voice/scene_4.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Confident, concrete, momentum building — four clean beats of \"you could sell this.\" Stacked-band portrait composition (no side-by-side in tall frame): four gold-hairlined glass service cards stack vertically, each ~20% canvas height, a mono uppercase label per card — \"CRÉATION DE CV\", \"FLYERS CANVA\", \"GESTION RÉSEAUX SOCIAUX\", \"SERVICES IA\". Macro motion: gentle vertical drift/parallax on the card stack (`viewport-change`). Cards enter staggered from center outward (`center-outward-expansion`), ~1.7s apart so each lands as its service is named, total reveal pacing the 8s. As the last card seats, a soft `press-release-spring` tap pulses the \"SERVICES IA\" card to mark the climax of the list. Settled cards drift with `sine-wave-loop` as the one live element. Gold only on each card's thin rule and the active label. Eye travels top-to-bottom down the stack, then lifts into the golden product reveal.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w5",
+      "scene_ids": [
+        "scene_5"
+      ],
+      "scenes": {
+        "scene_5": {
+          "start_s": 26.966,
+          "effects": [
+            "coordinate-target-zoom",
+            "3d-text-depth-layers",
+            "sine-wave-loop",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/coordinate-target-zoom.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/3d-text-depth-layers.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 9.088,
+          "voicePath": "assets/voice/scene_5.wav",
+          "wordsPath": "",
+          "blueprint": "based-on `brand-reveal-assemble-zoom`",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Aspirational, luminous, the gold-lit launch moment — slow and reverent. Centered hero composition: `public/img/pack_book.jpg` (book on a gold-lit pedestal) is the primary, ~55% of canvas, on deep off-black with a soft golden floor glow. Following the assemble-zoom skeleton: the title \"PACK MONEY BOOST 2026\" assembles beside/above the book as a `3d-text-depth-layers` gold-and-white stack, \"2026\" the heaviest layer; then the camera `coordinate-target-zoom` pushes in to center the book as the companion title recenters above it. **Stillness-before-climax (~0.6s):** after the zoom settles, a held pause before the sub-line \"LE SYSTÈME COMPLET POUR COMMENCER.\" fades in white below, \"COMPLET\" catching one gold `asr-keyword-glow`. The book then breathes with `sine-wave-loop` (multiplicative, on final scale) as the single live element. Eye locks on the book, carrying into its contents.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w6",
+      "scene_ids": [
+        "scene_6"
+      ],
+      "scenes": {
+        "scene_6": {
+          "start_s": 36.054,
+          "effects": [
+            "multi-phase-camera",
+            "svg-path-draw",
+            "center-outward-expansion",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/svg-path-draw.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/center-outward-expansion.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 6.08,
+          "voicePath": "assets/voice/scene_6.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Desire stacking, generous, \"look how much is inside\" — measured and satisfying. Asymmetric portrait composition: `public/img/pack_book.jpg` sits slightly off-center (lower/left, ~40%) as the source the value flies from; the mono eyebrow \"À L'INTÉRIEUR\" tops the frame. Macro motion: slow dolly-in (`multi-phase-camera`) toward the book. A five-item checklist stacks outward from the book via `center-outward-expansion` — \"15 MÉTHODES\", \"50 SCRIPTS\", \"TEMPLATES CANVA\", \"PROMPTS IA\", \"PLAN D'ACTION\" — staggered (total <500ms), each line led by a gold check whose stroke draws on with `svg-path-draw` as the item lands. The book breathes with `sine-wave-loop` as the one live element while the list holds for reading. Gold only on the five checkmarks and the keyword digits. Eye runs down the value stack, then drives into the CTA.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w7",
+      "scene_ids": [
+        "scene_7"
+      ],
+      "scenes": {
+        "scene_7": {
+          "start_s": 42.134,
+          "effects": [
+            "multi-phase-camera",
+            "press-release-spring",
+            "cursor-click-ripple",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/press-release-spring.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/cursor-click-ripple.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 8.939,
+          "voicePath": "assets/voice/scene_7.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/money-boost-vacances/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Decisive, motivating, a calm confident close — the command lands clean. Centered composition: `public/img/pack_book.jpg` anchored upper-mid (~40%) as the product, the white line \"CHANGE TES VACANCES, CHANGE TON AVENIR.\" stacked above it, and the golden CTA button \"TÉLÉCHARGER MAINTENANT\" owning the center-lower safe zone (captions disabled, so the lower band is usable). Macro motion: slow dolly-push (`multi-phase-camera`) settling on the button. The button enters and breathes with a gentle gold glow pulse (`sine-wave-loop`) as the live element. **Stillness-before-climax (~0.6s):** the button holds glowing and still before a cursor glides in (`cursor-click-ripple`) and a `press-release-spring` depresses it with an outward gold ripple on the click — the payoff. Book breathes faintly behind, demoted to support. Gold carries the button and ripple only. Final frame holds on the pressed CTA.\n"
+        }
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "from": "scene_1",
+      "to": "scene_2",
+      "type": "push-slide",
+      "direction": "LEFT",
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_2",
+      "to": "scene_3",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    },
+    {
+      "from": "scene_3",
+      "to": "scene_4",
+      "type": "push-slide",
+      "direction": "LEFT",
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_4",
+      "to": "scene_5",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    },
+    {
+      "from": "scene_5",
+      "to": "scene_6",
+      "type": "push-slide",
+      "direction": "LEFT",
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_6",
+      "to": "scene_7",
+      "type": "crossfade",
+      "direction": null,
+      "duration_s": 0.5
+    }
+  ],
+  "sfx": []
+}

@@ -1,0 +1,310 @@
+<template id="scene_6-template">
+  <div id="root" class="scene_6-root" data-composition-id="scene_6" data-width="1080" data-height="1920" data-duration="4.672" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      /* Root styles use #root. Brand tokens declared once in index.html <head>; reference via var(--*). */
+      #root {
+        background: var(--canvas);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* dot-grid ambient base (preset-native, never gradient) */
+      .s6-bg {
+        position: absolute;
+        inset: 0;
+        background-color: var(--canvas);
+        background-image: radial-gradient(var(--ink) 2px, transparent 2px);
+        background-size: 46px 46px;
+        opacity: 0.10;
+      }
+
+      /* macro camera layer — everything lives inside so the push-in scales as one unit */
+      .s6-cam {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 42%;
+      }
+
+      /* deco sticker blocks behind content */
+      .s6-deco-yellow {
+        position: absolute;
+        top: 196px;
+        left: 64px;
+        width: 150px;
+        height: 60px;
+        background: var(--deco-1);
+        border: var(--border-bold);
+        box-shadow: var(--shadow-hard);
+        z-index: 2;
+      }
+      .s6-deco-blue {
+        position: absolute;
+        bottom: 250px;
+        right: 70px;
+        width: 120px;
+        height: 120px;
+        background: var(--brand-secondary);
+        border: var(--border-bold);
+        z-index: 2;
+      }
+
+      /* headline block (primary) */
+      .s6-head {
+        position: absolute;
+        top: 120px;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        z-index: 6;
+      }
+      .s6-eyebrow {
+        display: inline-block;
+        padding: 10px 22px;
+        background: var(--brand-secondary);
+        color: var(--canvas);
+        border: var(--border-bold);
+        box-shadow: 6px 6px 0 var(--ink);
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 32px;
+        text-transform: uppercase;
+        letter-spacing: 0.10em;
+      }
+      .s6-headline {
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 150px;
+        line-height: 0.90;
+        letter-spacing: -0.01em;
+        text-transform: uppercase;
+        color: var(--ink);
+        text-align: center;
+        max-width: 940px;
+      }
+
+      /* carousel stage holding the testimonial cards */
+      .s6-stage {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        top: 540px;
+        height: 1010px;
+        z-index: 4;
+      }
+      .s6-card {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 100%;
+        max-width: 940px;
+        background: var(--canvas);
+        border: var(--border-loud);
+        box-shadow: 14px 14px 0 var(--ink);
+        overflow: hidden;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .s6-card img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: var(--brand-tertiary);
+      }
+
+      /* badge pinned bottom of stage */
+      .s6-badge {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 92px;
+        display: flex;
+        justify-content: center;
+        z-index: 7;
+      }
+      .s6-badge-chip {
+        display: inline-block;
+        padding: 16px 30px;
+        background: var(--brand-primary);
+        color: var(--canvas);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 42px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      /* hard-bordered frame wrapping the whole stage (decorative, on top) */
+      .s6-frame {
+        position: absolute;
+        top: 32px;
+        left: 32px;
+        right: 32px;
+        bottom: 32px;
+        border: var(--border-loud);
+        background: transparent;
+        pointer-events: none;
+        z-index: 9;
+      }
+      .s6-corner {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: var(--ink);
+      }
+      .s6-corner-tl { top: -3px; left: -3px; }
+      .s6-corner-tr { top: -3px; right: -3px; }
+      .s6-corner-bl { bottom: -3px; left: -3px; }
+      .s6-corner-br { bottom: -3px; right: -3px; }
+    </style>
+
+    <div class="s6-cam">
+      <div class="s6-bg"></div>
+
+      <div class="s6-deco-yellow"></div>
+      <div class="s6-deco-blue"></div>
+
+      <!-- HEADLINE (primary) -->
+      <div class="s6-head">
+        <span class="s6-eyebrow">+2 400 MEMBRES</span>
+        <h1 class="s6-headline">ILS L'ONT DÉJÀ FAIT</h1>
+      </div>
+
+      <!-- TESTIMONIAL CAROUSEL — 5 real proof images, ~0.9s each, alternating tracks for clean cross-cuts.
+           clip lifecycle + timing on the card; GSAP polishes opacity/transform inside each window. -->
+      <div class="s6-stage">
+        <div class="s6-card s6-card-0 clip" data-start="0" data-duration="1.15" data-track-index="1">
+          <img src="public/proof/proof_kofi.jpg" alt="Avis Kofi" />
+        </div>
+        <div class="s6-card s6-card-1 clip" data-start="0.9" data-duration="1.05" data-track-index="2">
+          <img src="public/proof/proof_fatou.jpg" alt="Avis Fatou" />
+        </div>
+        <div class="s6-card s6-card-2 clip" data-start="1.8" data-duration="1.05" data-track-index="1">
+          <img src="public/proof/proof_moussa.jpg" alt="Avis Moussa" />
+        </div>
+        <div class="s6-card s6-card-3 clip" data-start="2.7" data-duration="1.05" data-track-index="2">
+          <img src="public/proof/proof_wa1.jpg" alt="Preuve WhatsApp premier client" />
+        </div>
+        <div class="s6-card s6-card-4 clip" data-start="3.6" data-duration="1.072" data-track-index="1">
+          <img src="public/proof/proof_wa2.jpg" alt="Preuve WhatsApp paiement" />
+        </div>
+      </div>
+
+      <!-- BADGE -->
+      <div class="s6-badge">
+        <span class="s6-badge-chip">5 ÉTOILES · VÉRIFIÉ</span>
+      </div>
+    </div>
+
+    <!-- hard frame on top so the border reads above content -->
+    <div class="s6-frame">
+      <span class="s6-corner s6-corner-tl"></span>
+      <span class="s6-corner s6-corner-tr"></span>
+      <span class="s6-corner s6-corner-bl"></span>
+      <span class="s6-corner s6-corner-br"></span>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(2.4)", // bouncy slam-pop
+        emphasis: "expo.out", // hard arrival
+        exit: "power4.in", // dive off
+        drift: "sine.inOut", // only for ambient breathing
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+      // RULE: never ease-in-out for primary motion. Hit-and-stick.
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // --- Macro camera: slow push-in (coordinate-target-zoom feel toward 50% 42%) ---
+      tl.fromTo(
+        ".s6-cam",
+        { scale: 1.0 },
+        { scale: 1.07, duration: 4.843, ease: "none" },
+        0,
+      );
+
+      // --- Headline (primary) slams in, then holds ---
+      tl.fromTo(
+        ".s6-eyebrow",
+        { opacity: 0, y: -30 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+        0.1,
+      );
+      tl.fromTo(
+        ".s6-headline",
+        { opacity: 0, y: 36, scale: 0.92 },
+        { opacity: 1, y: 0, scale: 1, duration: DUR.slow, ease: EASE.entry },
+        0.22,
+      );
+
+      // --- Badge slam-pop ---
+      tl.fromTo(
+        ".s6-badge-chip",
+        { opacity: 0, scale: 0.7 },
+        { opacity: 1, scale: 1, duration: DUR.med, ease: EASE.entry },
+        0.55,
+      );
+
+      // --- Deco sticker blocks pop in (ambient support) ---
+      tl.fromTo(
+        ".s6-deco-yellow",
+        { opacity: 0, scale: 0.6, rotation: -3 },
+        { opacity: 1, scale: 1, rotation: -3, duration: DUR.med, ease: EASE.entry },
+        0.3,
+      );
+      tl.fromTo(
+        ".s6-deco-blue",
+        { opacity: 0, scale: 0.6, rotation: 4 },
+        { opacity: 1, scale: 1, rotation: 4, duration: DUR.med, ease: EASE.entry },
+        0.42,
+      );
+
+      // --- Testimonial carousel: each card slides + fades in; earlier cards slide out as the next arrives.
+      //     Timing windows align with each card's clip data-start/data-duration so the clip lifecycle and
+      //     GSAP agree; the final card holds (no exit) per the hold-the-ending rule. ---
+      const cards = [
+        { sel: ".s6-card-0", into: 0.0,  out: 1.0,  dir: 1,  tilt: -2 },
+        { sel: ".s6-card-1", into: 0.9,  out: 1.9,  dir: -1, tilt: 2 },
+        { sel: ".s6-card-2", into: 1.8,  out: 2.8,  dir: 1,  tilt: -1.5 },
+        { sel: ".s6-card-3", into: 2.7,  out: 3.7,  dir: -1, tilt: 2 },
+        { sel: ".s6-card-4", into: 3.6,  out: null, dir: 1,  tilt: -1 }, // final card holds
+      ];
+
+      cards.forEach((c) => {
+        tl.fromTo(
+          c.sel,
+          { opacity: 0, x: 90 * c.dir, scale: 0.9, rotation: c.tilt },
+          { opacity: 1, x: 0, scale: 1, rotation: c.tilt, duration: DUR.med, ease: EASE.emphasis },
+          c.into,
+        );
+        if (c.out !== null) {
+          tl.to(
+            c.sel,
+            { opacity: 0, x: -70 * c.dir, scale: 0.94, duration: 0.26, ease: EASE.exit },
+            c.out,
+          );
+        }
+      });
+
+      window.__timelines["scene_6"] = tl;
+    </script>
+  </div>
+</template>

@@ -1,0 +1,151 @@
+<template id="scene_2-template">
+  <div id="root" class="scene_2-root" data-composition-id="scene_2" data-width="1080" data-height="1920" data-duration="8.384" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--navy);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper — holds the slow push-in on the montage. */
+      .s2-world {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s2-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Navy scrim — top edge only, holds the eyebrow legible. Decorative bg layer. */
+      .s2-scrim {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 360px;
+        background: linear-gradient(180deg, rgba(11,27,46,0.82) 0%, rgba(11,27,46,0.42) 48%, rgba(11,27,46,0) 100%);
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* Small gold eyebrow — the only added type. */
+      .s2-eyebrow {
+        position: absolute;
+        top: 92px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 3;
+        font-family: var(--font-display);
+        font-size: 46px;
+        font-weight: 700;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        color: var(--gold);
+        will-change: transform, text-shadow;
+        transform-origin: 50% 50%;
+      }
+    </style>
+
+    <div class="s2-world">
+      <img class="s2-photo" src="public/img/s2_problemes.png" data-start="0" data-duration="8.384" data-track-index="0" />
+    </div>
+
+    <div class="s2-scrim" data-start="0" data-duration="8.384" data-track-index="1"></div>
+
+    <div class="s2-eyebrow" data-start="0" data-duration="8.384" data-track-index="2">Le problème</div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const SCENE_DURATION = 8.384;
+
+      // viewport-change — single-wrapper slow continuous push-in (~3%) on the
+      // montage so the labelled panels feel like they close in. Centered scale,
+      // no translate needed (T = -offset * S, offset = 0 at center).
+      const world = document.querySelector(".s2-world");
+      const cam = { scale: 1, x: 0, y: 0 };
+      function applyCamera() {
+        world.style.transform = "translate(" + cam.x + "px, " + cam.y + "px) scale(" + cam.scale + ")";
+      }
+      applyCamera();
+
+      tl.to(
+        cam,
+        {
+          scale: 1.035,
+          duration: SCENE_DURATION,
+          ease: "none",
+          onUpdate: applyCamera,
+        },
+        0,
+      );
+
+      // asr-keyword-glow — the gold eyebrow warms faintly as the narration
+      // agitates. Single span; karaoke-ish gold glow envelope on a driver.
+      const eyebrow = document.querySelector(".s2-eyebrow");
+      const ATTACK_DUR = 0.4;
+      const RELEASE = 0.8;
+      const REST_LEVEL = 0.28;
+      const MAX_BLUR = 22;
+      const MAX_SCALE_BOOST = 0.05;
+      // Single emphasis window mid-scene, after the eye settles on the montage.
+      const GLOW = { start: 1.6, end: 3.6 };
+
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+        if (time < releaseEnd) {
+          const decay = (time - end) / RELEASE;
+          return 1 - decay * (1 - REST_LEVEL);
+        }
+        return REST_LEVEL;
+      }
+
+      const driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: SCENE_DURATION,
+          duration: SCENE_DURATION,
+          ease: "none",
+          onUpdate: () => {
+            const env = envelope(driver.t, GLOW.start, GLOW.end);
+            const blur = MAX_BLUR * env;
+            const scale = 1 + MAX_SCALE_BOOST * env;
+            const alpha = 0.18 + env * 0.62;
+            eyebrow.style.textShadow = "0 0 " + blur + "px rgba(212,175,55," + alpha + ")";
+            eyebrow.style.transform = "scale(" + scale + ")";
+          },
+        },
+        0,
+      );
+
+      window.__timelines["scene_2"] = tl;
+    </script>
+  </div>
+</template>

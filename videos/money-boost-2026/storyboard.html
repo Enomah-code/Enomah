@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=Space+Grotesk:wght@500;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{ --blue:#1B3A8C; --orange:#E8521E; --navy:#0E1A3A; --gray:#F2F2F2; }
+  body{ background:#e9eaee; font-family:'Space Grotesk',sans-serif; padding:48px; }
+  h1{ font-family:'Archivo'; font-weight:900; font-size:40px; color:var(--navy); letter-spacing:-1px; margin-bottom:6px; }
+  .sub{ font-size:18px; color:#5a6172; margin-bottom:34px; }
+  .strip{ display:flex; gap:26px; }
+  .cell{ width:300px; }
+  .panel{ width:300px; height:533px; border-radius:16px; overflow:hidden; position:relative;
+          box-shadow:8px 8px 0 var(--navy); border:3px solid var(--navy); display:flex; align-items:center; justify-content:center; }
+  .num{ position:absolute; top:12px; left:14px; font-family:'Archivo'; font-weight:900; font-size:20px;
+        color:#fff; background:var(--orange); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:5; box-shadow:3px 3px 0 var(--navy);}
+  .wm{ position:absolute; top:16px; right:14px; font-family:'Archivo'; font-weight:900; font-size:11px; color:var(--blue); z-index:5; opacity:.85;}
+  .big{ font-family:'Archivo'; font-weight:900; line-height:.95; text-align:center; }
+  .cap{ margin-top:14px; }
+  .cname{ font-weight:700; font-size:15px; color:var(--navy); }
+  .vo{ font-size:13px; color:#5a6172; font-style:italic; margin-top:4px; line-height:1.3; }
+  .badge{ display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--blue); padding:2px 8px; border-radius:20px; margin-top:6px;}
+
+  /* Scene-specific */
+  .s1{ background:radial-gradient(circle at 60% 40%, #2a3550 0%, #0b1020 70%); }
+  .s1 .big{ color:#fff; font-size:42px; }
+  .s1 .glow{ position:absolute; width:90px; height:150px; background:rgba(120,170,255,.35); filter:blur(28px); top:42%; left:50%; transform:translate(-50%,-50%);}
+  .s2{ background:var(--gray); flex-direction:column; }
+  .s2 .n{ font-family:'Archivo'; font-weight:900; font-size:130px; color:var(--blue); line-height:.8;}
+  .s2 .j{ font-family:'Archivo'; font-weight:900; font-size:46px; color:var(--orange);}
+  .s3{ flex-direction:column; gap:0; }
+  .s3 .half{ width:100%; height:50%; display:flex; align-items:center; justify-content:center; font-family:'Archivo'; font-weight:900; font-size:26px; color:#fff;}
+  .s3 .top{ background:#3a4150; } .s3 .bot{ background:var(--blue); }
+  .s3 .seam{ position:absolute; top:50%; left:0; right:0; transform:translateY(-50%); text-align:center; z-index:5;}
+  .s3 .seam b{ font-family:'Archivo'; font-weight:900; font-size:30px; }
+  .s4{ background:var(--gray); flex-direction:column; padding:24px;}
+  .s4 .logo{ font-family:'Archivo'; font-weight:900; font-size:30px; text-align:center; line-height:1; margin-bottom:18px;}
+  .s4 .mod{ font-weight:700; font-size:14px; color:var(--navy); background:#fff; border:2px solid var(--navy); border-radius:8px; padding:7px 10px; margin:5px 0; width:100%; box-shadow:3px 3px 0 var(--orange);}
+  .s5{ background:var(--navy); flex-direction:column; padding:26px; align-items:flex-start; justify-content:center;}
+  .s5 .ben{ font-family:'Archivo'; font-weight:900; font-size:22px; color:#fff; margin:9px 0; line-height:1;}
+  .s5 .ben.o{ color:var(--orange);}
+  .s6{ background:var(--gray); flex-direction:column; padding:20px;}
+  .s6 .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; margin-bottom:14px;}
+  .s6 .ph{ height:78px; border-radius:8px; background:linear-gradient(135deg,#c9d2e8,#9fb0d6); border:2px solid var(--navy);}
+  .s6 .hl{ font-family:'Archivo'; font-weight:900; font-size:24px; color:var(--blue); text-align:center; line-height:1;}
+  .s7{ background:linear-gradient(160deg,var(--blue) 0%, var(--blue) 55%, var(--orange) 55%, var(--orange) 100%); flex-direction:column;}
+  .s7 .t1{ font-family:'Archivo'; font-weight:900; font-size:26px; color:#fff; text-align:center; opacity:.6; text-decoration:line-through;}
+  .s7 .t2{ font-family:'Archivo'; font-weight:900; font-size:30px; color:#fff; text-align:center; margin-top:8px;}
+  .s7 .sig{ font-size:12px; color:#fff; text-align:center; margin-top:14px; font-weight:700;}
+</style>
+</head>
+<body>
+  <h1>MONEY BOOST 2026 — STORYBOARD</h1>
+  <div class="sub">Pub verticale 9:16 · ~65 s · 7 scènes · voix off FR · Pain → Agitate → Solve → Proof → CTA</div>
+  <div class="strip">
+
+    <div class="cell">
+      <div class="panel s1"><div class="num">1</div><div class="wm">MONEY BOOST</div><div class="glow"></div>
+        <div class="big">2026<br>ARRIVE</div></div>
+      <div class="cap"><div class="cname">HOOK — 2026 ARRIVE</div>
+        <div class="vo">« Deux mille vingt-six arrive. Vas-tu encore finir l'année au même point ? »</div>
+        <span class="badge">Accroche · 8-9s</span></div>
+    </div>
+
+    <div class="cell">
+      <div class="panel s2"><div class="num">2</div><div class="wm">MONEY BOOST</div>
+        <div class="n">365</div><div class="j">JOURS</div></div>
+      <div class="cap"><div class="cname">CHIFFRE CHOC — 365 JOURS</div>
+        <div class="vo">« Trois cent soixante-cinq jours pour tout changer. »</div>
+        <span class="badge">Statistique · 6-7s</span></div>
+    </div>
+
+    <div class="cell">
+      <div class="panel s3"><div class="num">3</div>
+        <div class="half top">SCROLLER · DÉPENSER</div>
+        <div class="half bot">GÉRER · INVESTIR</div>
+        <div class="seam"><b style="color:var(--blue)">SUBIR</b> <b style="color:#fff">ou</b> <b style="color:var(--orange)">BOOSTER ?</b></div></div>
+      <div class="cap"><div class="cname">PROBLÈME — SUBIR ou BOOSTER ?</div>
+        <div class="vo">« Chaque année, des milliers attendent le bon moment. Il ne vient jamais. »</div>
+        <span class="badge">Agitation · 8-9s</span></div>
+    </div>
+
+    <div class="cell">
+      <div class="panel s4"><div class="num">4</div>
+        <div class="logo"><span style="color:var(--blue)">MONEY</span> <span style="color:var(--orange)">BOOST</span><br><span style="color:var(--navy);font-size:18px">2026</span></div>
+        <div class="mod">REVENUS EN LIGNE</div>
+        <div class="mod">FINANCES PERSONNELLES</div>
+        <div class="mod">INVESTISSEMENT</div>
+        <div class="mod">BUSINESS DIGITAL</div>
+        <div class="mod">INTELLIGENCE ARTIFICIELLE</div></div>
+      <div class="cap"><div class="cname">SOLUTION — MONEY BOOST 2026</div>
+        <div class="vo">« Avec Money Boost, transforme l'année en revenus… »</div>
+        <span class="badge">Produit · 10-11s</span></div>
+    </div>
+
+    <div class="cell">
+      <div class="panel s5"><div class="num">5</div><div class="wm" style="color:#fff">MONEY BOOST</div>
+        <div class="ben">STRATÉGIES<br>CONCRÈTES</div>
+        <div class="ben o">OUTILS PRÊTS<br>À L'EMPLOI</div>
+        <div class="ben">ACCOMPAGNEMENT<br>PAS À PAS</div>
+        <div class="ben o">COMPÉTENCES<br>RENTABLES</div></div>
+      <div class="cap"><div class="cname">BÉNÉFICES — CE QUE TU OBTIENS</div>
+        <div class="vo">« …transformer tes compétences en argent. »</div>
+        <span class="badge">Value stacking · 10-11s</span></div>
+    </div>
+
+    <div class="cell">
+      <div class="panel s6"><div class="num">6</div>
+        <div class="grid"><div class="ph"></div><div class="ph"></div><div class="ph"></div><div class="ph"></div></div>
+        <div class="hl">ILS L'ONT<br>DÉJÀ FAIT</div></div>
+      <div class="cap"><div class="cname">PREUVE SOCIALE</div>
+        <div class="vo">« Ils ont déjà boosté leurs revenus. À toi de jouer. »</div>
+        <span class="badge">Social proof · 6-7s</span></div>
+    </div>
+
+    <div class="cell">
+      <div class="panel s7"><div class="num">7</div>
+        <div class="t1">PLACES LIMITÉES</div>
+        <div class="t2">INSCRIPTIONS<br>OUVERTES</div>
+        <div class="sig">TRANSFORME 2026 EN ANNÉE DE REVENUS</div></div>
+      <div class="cap"><div class="cname">CTA + URGENCE</div>
+        <div class="vo">« Places limitées. Clique sur le lien et rejoins Money Boost maintenant. »</div>
+        <span class="badge">Scarcité · 11-12s</span></div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,426 @@
+{
+  "total_scenes": 7,
+  "width": 1080,
+  "height": 1920,
+  "captions_enabled": false,
+  "film_direction": "Preset: **neo-brutalism**, portrait 1080×1920, captions disabled. This is a non-mesh preset — the project mesh default does NOT apply. Backgrounds are preset-native and consistent across the whole film: solid brand canvas (`--canvas` white or a flat brand-color fill) OR `dot-grid-bg`. Never gradient, never soft halo, never blur background. Bright/light is the baseline; the only dark scene (Scene 1 hook) is a deliberate narrative open, not a per-scene swing, and the film snaps to bright canvas from Scene 2 onward.\n\nPalette / 60-30-10 (roles from `tokens.css`, never hex in prose): 60% canvas (white or flat brand fill per scene), 30% bold-bordered surfaces + hard `--ink` borders/dividers (the brutalist `--border-bold` / `--border-loud` + `--shadow-hard` does the structural work, not a soft surface tier), 10% accent on the one focal element — `--brand-primary` (orange) as the energy/CTA accent, `--brand-secondary` (blue) as the contrast/stability accent, deco tokens (`--deco-1..4`) only as flat sticker blocks behind hero type. Accent purpose is fixed film-wide: orange = action/urgency/money, blue = control/stability/proof. `--ink` is print-like ink on light scenes. Never neon, never purple-blue AI gradient.\n\nType roles (by role, never px/em): display tier (`--font-display`, Anton) for the one huge hero word per scene with tight tracking; mono (`--font-mono`, Space Mono) UPPERCASE wide-tracked for eyebrows/labels/module tags = \"real-tool\" metadata feel; body (`--font-body`, Inter) only for the rare supporting line, 900 weight if ever used at display size. Hierarchy is 3:1+ size jumps plus weight + case + a deco-block color contrast — legible in under one second. Voice recipe (uppercase, strip articles, noun fragments, `.`-joined, brand punchline) applies to all DOM text by default; no scene needs special text handling — narration stays natural French TTS.\n\nComposition: \"one huge thing per scene\", display 200–340px-feel dominating the frame; primary visual ≥40% of the tall canvas; ≥3 depth layers (flat sticker deco block + hard-shadow framed content + corner-pins/foreground accent). Stack vertically — portrait, so any comparison/triptych becomes top/bottom bands. Vertical center anchors at y≈806 (0.42×1920). Captions disabled, so bottom band is usable. Use `corner-pins` on framed scenes. At least 3 different layout templates across the 7 scenes (Centered, Split→stacked, Full-Width-Strip-as-stack, Asymmetric).\n\nMotion budget — ONE macro move per scene (camera-style drift/push on scene root) + at most 1–2 secondary live elements (hero breathing OR CTA glow), everything else rests. Springs by intent from `easings.js`: `EASE.entry` (back.out slam-pop) for primary hero entries, `EASE.emphasis` (expo.out) for hard arrivals, `EASE.exit` (power4.in) for departures, `EASE.drift` only for ambient breathing. Hit-and-stick — never ease-in-out for primary motion. Stagger 100–150ms between elements, total ≤500ms. Forbid yoyo / bounce.out / elastic.out. Multiplicative breathing (±2–5%) is reserved for a hero holding a live slot, not stamped everywhere.\n\nStillness-before-climax (0.3–0.75s pause between action and payoff) is allocated to exactly 3 scenes where narration lands a payoff: **Scene 2** (number lands), **Scene 4** (brand logo lands), **Scene 7** (CTA confirm). No other scene adds it.\n\nTransition vocabulary — 2 types repeated film-wide: **push-slide** (directional, matches the brutalist hard-directional energy and the script's slide beats) and **zoom-through** (the Scene 4 push-through-the-split reveal + high-energy snaps). Direction alternates across seams. Scene 1 is the open (no incoming transition).\n\nAmbient system: sparse — either a static `dot-grid-bg` or 2–3 flat deco sticker blocks per scene; NO floating particle clouds, NO mesh, NO gradient swell. Aliveness comes from the single macro camera move plus the hero's entry, not from many independent oscillators.\n\nFilm negative list: no gradients, no crossfade/blur transitions, no soft drop-shadows (only hard offset `--shadow-hard`), no mesh background, no neon-on-black, no purple-blue AI gradient, no nav bars / scrollbars / browser chrome (Scene 7 cursor+button is the one intentional UI element), no generic decorative blobs replacing content, no per-scene dark/light swings.\n\nAsset coverage: `assetCandidates` is empty for every scene — there are NO real product assets. Build all visuals from brand-native type, flat deco sticker blocks, hard-bordered frames, corner-pins, and brutalist iconography (simple bold-stroke SVG glyphs for modules/benefits). Social proof (Scene 6) uses brutalist avatar placeholders (bold-bordered circles), not fabricated photos. Money/results framing stays typographic, not faked screenshots.",
+  "total_duration_s": 41.514,
+  "bgm_path": "",
+  "font_face_css": "",
+  "brand_tokens_css": ":root {\n  --brand-primary:   #E8521E;\n  --brand-secondary: #1B3A8C;\n  --brand-tertiary:  #0E1A3A;\n  --brand-accent:    #0E1A3A;\n  --brand-costume:   #FFFFFF;\n  --ink:             #0E1A3A;\n  --canvas:          #FFFFFF;\n  --brand-gradient:  linear-gradient(135deg, #E8521E 0%, #1B3A8C 50%, #0E1A3A 100%);\n  --deco-1:          #F7CB46;\n  --deco-2:          #99E885;\n  --deco-3:          #C0F7FE;\n  --deco-4:          #FE90E8;\n  --font-display:    'Anton', ui-monospace, monospace;\n  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;\n  --font-mono:       'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;\n  --shadow-hard: 8px 8px 0 var(--ink);\n  --shadow-hover: 11px 11px 0 var(--ink);\n  --border-bold: 4px solid var(--ink);\n  --border-loud: 6px solid var(--ink);\n  --tilt-l: -1deg;\n  --tilt-r: 1deg;\n  --gap-loud: 1.7vw; /* ~32px on a 1920 canvas */\n}",
+  "groups": [
+    {
+      "worker_id": "w1",
+      "scene_ids": [
+        "scene_1"
+      ],
+      "scenes": {
+        "scene_1": {
+          "start_s": 0,
+          "effects": [
+            "hacker-flip-3d",
+            "multi-phase-camera",
+            "3d-text-depth-layers"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/hacker-flip-3d.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/3d-text-depth-layers.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 4.288,
+          "voicePath": "assets/voice/scene_1.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "The one dark scene — deliberate night-frame open, not a per-scene swing. Centered template. Background: near-black `--ink` flat ground (the brutalist dark open) with a faint `dot-grid-bg` overlay; this is the single exception, film snaps bright at Scene 2. Hero: \"2026\" in mega display tier decodes via `hacker-flip-3d`, then \"ARRIVE\" slams under it as a `3d-text-depth-layers` stack so the glowing-phone-light feel reads as cold extruded type. Macro move: slow `multi-phase-camera` push-in (pull-back → settle) for unease. A small mono UPPERCASE eyebrow holds the rhetorical-question fragment beneath. Hero holds the live breathing slot ±2%. Corner-pins frame the dark card. The fear question is carried by stillness and the cold extrusion, not by extra motion.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w2",
+      "scene_ids": [
+        "scene_2"
+      ],
+      "scenes": {
+        "scene_2": {
+          "start_s": 4.288,
+          "effects": [
+            "counting-dynamic-scale",
+            "center-outward-expansion",
+            "multi-phase-camera",
+            "svg-icon-enrichment"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/counting-dynamic-scale.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/center-outward-expansion.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/svg-icon-enrichment.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 1.664,
+          "voicePath": "assets/voice/scene_2.wav",
+          "wordsPath": "",
+          "blueprint": "based-on hook-counter-burst",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "Hard snap from dark to bright — flat brand canvas, `dot-grid-bg`. based-on `hook-counter-burst`: role (statistic) + trigger (dramatic number) fit directly. Centered template, one huge thing. \"365\" counts up with `counting-dynamic-scale` (font grows with the value) to fill the vertical frame, \"JOURS\" mono label locked beneath. A few enriched calendar/clock SVG glyphs (`svg-icon-enrichment` — ticking hand) expand outward from center via `center-outward-expansion`, then rest. Macro: `multi-phase-camera` (0.92→1.0→1.08). Deco sticker block (one `--deco` color) sits flat behind the number for brutalist contrast. **stillness-before-climax** 0.5s: the count finishes, everything freezes, only the camera drifts, then \"JOURS\" snaps in — the number lands before the label confirms.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w3",
+      "scene_ids": [
+        "scene_3"
+      ],
+      "scenes": {
+        "scene_3": {
+          "start_s": 5.952,
+          "effects": [
+            "split-tilt-cards",
+            "sine-wave-loop",
+            "reactive-displacement"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/split-tilt-cards.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/reactive-displacement.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 3.285,
+          "voicePath": "assets/voice/scene_3.wav",
+          "wordsPath": "",
+          "blueprint": "based-on comparison-split-cards",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "based-on `comparison-split-cards`, adapted to portrait → top/bottom stacked bands (no side-by-side in a tall frame). Top band = passive drift (scroll/spend, blue-leaning, lower-energy, slight `--ink` desaturated feel); bottom band = active control (manage/invest, orange-leaning, sharper). Each band is a hard-bordered surface with `--shadow-hard`; bands enter from opposite edges via `push-slide`-style opposing motion and a light `reactive-displacement` so the seam feels physical. Bicolor \"SUBIR ou BOOSTER ?\" lands on the seam — \"SUBIR\" blue, \"BOOSTER\" orange, forcing the binary. Macro: slow vertical dolly across the seam. One `sine-wave-loop` float on the seam headline only; bands rest. Corner-pins frame both bands.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w4",
+      "scene_ids": [
+        "scene_4"
+      ],
+      "scenes": {
+        "scene_4": {
+          "start_s": 9.237,
+          "effects": [
+            "discrete-text-sequence",
+            "coordinate-target-zoom",
+            "center-outward-expansion",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/discrete-text-sequence.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/coordinate-target-zoom.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/center-outward-expansion.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 6.869,
+          "voicePath": "assets/voice/scene_4.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "Camera pushes through the prior split into center — `zoom-through` carries it. Composed: brand assemble + module cascade, no single blueprint covers \"logo + 5 stacked module tags\". Centered → then asymmetric stack. \"MONEY BOOST 2026\" wordmark assembles via `discrete-text-sequence` (display tier, orange+blue split lockup) with `coordinate-target-zoom` settling it dead-center on the bright canvas. Then 4–5 module tags (Business en ligne / Finances / Investissement / IA) stagger-drop as mono UPPERCASE hard-bordered chips stacked below via `center-outward-expansion`, 100–150ms apart, total ≤500ms, then rest. Each chip a flat `--deco` sticker. Macro: gentle settle-drift after the push. Hero wordmark holds breathing slot ±3%. **stillness-before-climax** 0.6s: wordmark assembles and freezes, only the drift continues, THEN the module chips cascade — the brand lands before the value stack confirms.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w5",
+      "scene_ids": [
+        "scene_5"
+      ],
+      "scenes": {
+        "scene_5": {
+          "start_s": 16.106,
+          "effects": [
+            "dynamic-content-sequencing",
+            "context-sensitive-cursor",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/dynamic-content-sequencing.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/context-sensitive-cursor.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 6.699,
+          "voicePath": "assets/voice/scene_5.wav",
+          "wordsPath": "",
+          "blueprint": "based-on messaging-multi-phrase",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "based-on `messaging-multi-phrase`: role (sequential statements) + trigger (multiple phrases, dual-color) fit. Full-width-strip-as-vertical-stack template: four benefit lines slide up and stack on one bright surface, eye building downward — \"STRATÉGIES CONCRÈTES\", \"OUTILS PRÊTS\", \"ACCOMPAGNEMENT\", \"COMPÉTENCES → ARGENT\". `dynamic-content-sequencing` computes per-line timing from content length; each line types/reveals with a `context-sensitive-cursor` whose accent flips (blue label → orange payoff word). The final line's money payoff word gets `asr-keyword-glow` emphasis. Each line is a hard-bordered band with offset `--shadow-hard`; the active line is full-contrast, prior lines demote one step (the supporting rail). Macro: slow upward dolly following the stack growth. Lines rest once landed; no extra floats.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w6",
+      "scene_ids": [
+        "scene_6"
+      ],
+      "scenes": {
+        "scene_6": {
+          "start_s": 22.805,
+          "effects": [
+            "avatar-cloud-network",
+            "vertical-spring-ticker",
+            "coordinate-target-zoom"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/avatar-cloud-network.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/vertical-spring-ticker.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/coordinate-target-zoom.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 4.672,
+          "voicePath": "assets/voice/scene_6.wav",
+          "wordsPath": "",
+          "blueprint": "based-on proof-logo-chain",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "**PrimarySubjectTimeline:** 0.0–2.2s primary = avatar-cloud cluster assembling (the proof building); 2.2–5.5s primary = \"ILS L'ONT DÉJÀ FAIT\" headline, avatars + ticker demote to supporting background rail.\n**Handoff:** the avatar cluster and result ticker compact and demote to a lower-contrast supporting background rail outside the headline's safe zone as the headline zooms to primary; nothing competes with the call-to-identify.\n\nbased-on `proof-logo-chain` (social-proof role, \"they already did it\" trigger), adapted: no real photos exist, so use brutalist avatar placeholders. `avatar-cloud-network` arranges bold-bordered avatar circles in a compact portrait cluster connected to a center hub, staggering in as the \"community\". A `vertical-spring-ticker` rolls 2–3 short result fragments (slot-machine) as supporting proof. Bold \"ILS L'ONT DÉJÀ FAIT\" headline overlays as the primary — `coordinate-target-zoom` lands the eye on it; the avatar cluster + ticker are explicitly the supporting/demoted background rail behind the headline, lower contrast, smaller, outside the headline bbox. Macro: slow push-in onto the headline. Hard-bordered frame, corner-pins.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w7",
+      "scene_ids": [
+        "scene_7"
+      ],
+      "scenes": {
+        "scene_7": {
+          "start_s": 27.477,
+          "effects": [
+            "physics-press-reaction",
+            "cursor-click-ripple",
+            "scale-swap-transition",
+            "hacker-flip-3d"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/physics-press-reaction.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/cursor-click-ripple.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/scale-swap-transition.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/hacker-flip-3d.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 14.037,
+          "voicePath": "assets/voice/scene_7.wav",
+          "wordsPath": "",
+          "blueprint": "based-on cta-morph-press",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/button.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/chip.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/corner-pins.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-green-circle.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-pink-block.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/deco-yellow-bar.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/divider-loud.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/dot-grid-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/gradient-mesh-bg.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/hero.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/manifesto.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/rules-do-dont.html",
+              "/home/user/Enomah/videos/money-boost-2026/design-system/chunks/components/stat-counter.html"
+            ]
+          },
+          "creative_brief": "**PrimarySubjectTimeline:** 0.0–4.0s primary = \"REJOINDRE MAINTENANT\" CTA button + cursor (the action); 4.0–9.0s primary = \"INSCRIPTIONS OUVERTES\" end-card headline (the payoff), button demotes.\n**Handoff:** after the click confirms, the CTA button compacts and demotes via scale-swap as the end-card headline scales to primary; the scarcity proof line sits as a supporting rail below, outside the headline bbox, never competing with the confirm.\n\nbased-on `cta-morph-press` (cursor clicks button, brand-to-action). Hard-cut feel into a bright bicolor end card (flat blue/orange split fill — brutalist, NOT a gradient). Phase 1: \"REJOINDRE MAINTENANT\" button (hard-bordered, orange, `--shadow-hard`) sits center; a cursor enters via spring path and presses it through `physics-press-reaction` + `cursor-click-ripple`. **stillness-before-climax** 0.5s: cursor lands, both compress, hold still on the pressed beat. Phase 2: the press triggers `scale-swap-transition` — \"PLACES LIMITÉES\" `hacker-flip-3d` decodes into \"INSCRIPTIONS OUVERTES\" (urgency → open), the payoff. Signature line sits mono UPPERCASE below. Centered template, one huge confirm. Macro: slow push-in onto the end card. CTA holds the one live slot (glow pulse pre-click); after confirm, the headline holds and everything else rests.\n"
+        }
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "from": "scene_1",
+      "to": "scene_2",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    },
+    {
+      "from": "scene_2",
+      "to": "scene_3",
+      "type": "push-slide",
+      "direction": "DOWN",
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_3",
+      "to": "scene_4",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    },
+    {
+      "from": "scene_4",
+      "to": "scene_5",
+      "type": "push-slide",
+      "direction": "UP",
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_5",
+      "to": "scene_6",
+      "type": "push-slide",
+      "direction": "DOWN",
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_6",
+      "to": "scene_7",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    }
+  ],
+  "sfx": [
+    {
+      "file": "glitch-1.mp3",
+      "t": 0.2,
+      "duration": 2.64,
+      "volume": 0.35,
+      "scene_id": "scene_1",
+      "t_local": 0.2,
+      "note": "hard-cut accent on the \"2026 ARRIVE\" punch-in, decay bleeds forward"
+    },
+    {
+      "file": "impact-bass-1.mp3",
+      "t": 0.6,
+      "duration": 2.12,
+      "volume": 0.35,
+      "scene_id": "scene_1",
+      "t_local": 0.6,
+      "note": "headline slam landing"
+    }
+  ]
+}

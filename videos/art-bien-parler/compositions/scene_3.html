@@ -1,0 +1,237 @@
+<template id="scene_3-template">
+  <div id="root" class="scene_3-root" data-composition-id="scene_3" data-width="1080" data-height="1920" data-duration="6.594" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--canvas);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper carries the macro push (multi-phase-camera).
+         transform-origin biased low so the push settles on the downcast
+         character in the lower portion of the frame. */
+      .s3-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 64%;
+        will-change: transform;
+      }
+
+      .s3-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 42%;
+      }
+
+      /* Navy scrim weighted to the lower third under the line. */
+      .s3-scrim {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            to bottom,
+            rgba(11, 27, 46, 0.32) 0%,
+            rgba(11, 27, 46, 0.0) 30%,
+            rgba(11, 27, 46, 0.0) 46%,
+            rgba(11, 27, 46, 0.72) 78%,
+            rgba(11, 27, 46, 0.92) 100%
+          );
+      }
+
+      /* Faint gold hairline accent. */
+      .s3-hairline {
+        position: absolute;
+        left: 96px;
+        bottom: 470px;
+        width: 132px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gold) 0%, rgba(201, 162, 75, 0) 100%);
+        opacity: 0;
+      }
+
+      /* The line sits low-center over the scrim. */
+      .s3-line {
+        position: absolute;
+        left: 96px;
+        right: 96px;
+        bottom: 300px;
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 74px;
+        line-height: 1.18;
+        letter-spacing: 0.5px;
+        color: var(--ink);
+        text-align: left;
+        text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+      }
+
+      .s3-line .s3-word {
+        display: inline-block;
+        transform-origin: 50% 60%;
+        will-change: transform, text-shadow;
+      }
+
+      /* The gold keyword carries the regret. */
+      .s3-line .s3-kw {
+        color: var(--gold);
+      }
+    </style>
+
+    <div class="s3-camera" id="s3-camera">
+      <img class="s3-photo clip" src="public/img/s3_frustration.png" data-start="0" data-duration="6.594" data-track-index="0" alt="" />
+      <div class="s3-scrim clip" data-start="0" data-duration="6.594" data-track-index="1"></div>
+    </div>
+
+    <div class="s3-hairline clip" id="s3-hairline" data-start="0" data-duration="6.594" data-track-index="2"></div>
+
+    <p class="s3-line clip" id="s3-line" data-start="0" data-duration="6.594" data-track-index="3">
+      <span class="s3-word" data-word="tes">Tes</span>
+      <span class="s3-word" data-word="idées">idées</span>
+      <span class="s3-word" data-word="restent">restent</span>
+      <span class="s3-word s3-kw" data-word="invisibles">invisibles…</span>
+    </p>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      const TOTAL = 6.594;
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const camera = document.getElementById("s3-camera");
+
+      // multi-phase-camera — Steady push: a slow forward drift that settles
+      // low on the downcast main character. Heavy, regretful pacing.
+      // Phase 1 neutral hold → Phase 2 ease in → Phase 3 deeper settle.
+      const phase = { scale: 1.0 };
+      tl.to(phase, { scale: 1.045, duration: 1.6, ease: "power2.inOut" }, 0.4);
+      tl.to(phase, { scale: 1.085, duration: 1.8, ease: "power3.out" }, 2.6);
+
+      // Continuous slow drift — one breath across the scene, imperceptible
+      // per-frame, biased downward toward the regretful figure.
+      const drift = { p: 0 };
+      tl.to(
+        drift,
+        {
+          p: Math.PI * 2 * 1,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            const dx = Math.sin(drift.p) * 5;
+            const dy = Math.sin(drift.p * 1.3) * 7 + 4;
+            camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+          },
+        },
+        0,
+      );
+
+      // Line settles in low (no exit — scene holds its final frame).
+      tl.fromTo(
+        "#s3-line",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: 0.9, ease: EASE.entry },
+        0.7,
+      );
+
+      // Gold hairline fades up under the line.
+      tl.fromTo(
+        "#s3-hairline",
+        { opacity: 0, scaleX: 0.6, transformOrigin: "0% 50%" },
+        { opacity: 1, scaleX: 1, duration: 0.7, ease: EASE.emphasis },
+        1.1,
+      );
+
+      // asr-keyword-glow (karaoke style) — the line lands word by word and
+      // "invisibles" fades up as the regretful keyword. Inactive words dim,
+      // the active word lerps toward bright; the gold keyword glows.
+      const ATTACK_DUR = 0.18;
+      const RELEASE = 0.4;
+      const REST_LEVEL = 0.16;
+      const MAX_BLUR = 34;
+      const MAX_SCALE_BOOST = 0.06;
+
+      const REST_RGB = { r: 168, g: 184, b: 204 };   // dim cool white
+      const ACTIVE_RGB = { r: 255, g: 255, b: 255 };  // bright white
+      const BRAND_RGB = { r: 201, g: 162, b: 75 };    // gold keyword
+
+      // Monotonic, non-overlapping windows synced to the slow regretful read.
+      const TIMINGS = {
+        tes: { start: 1.0, end: 1.35 },
+        idées: { start: 1.45, end: 1.85 },
+        restent: { start: 1.95, end: 2.4 },
+        invisibles: { start: 2.55, end: 3.6 }, // keyword sustains longest
+      };
+
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) {
+          return Math.min((time - start) / ATTACK_DUR, 1);
+        }
+        if (time < releaseEnd) {
+          const decay = (time - end) / RELEASE;
+          return 1 - decay * (1 - REST_LEVEL);
+        }
+        return REST_LEVEL;
+      }
+
+      function lerpChannel(a, b, t) {
+        return Math.round(a + (b - a) * t);
+      }
+      function colorAt(env, isBrand) {
+        const target = isBrand ? BRAND_RGB : ACTIVE_RGB;
+        return "rgb(" + lerpChannel(REST_RGB.r, target.r, env) + ", " + lerpChannel(REST_RGB.g, target.g, env) + ", " + lerpChannel(REST_RGB.b, target.b, env) + ")";
+      }
+      function glowRgba(env) {
+        return "rgba(201, 162, 75, " + (0.0 + env * 0.7) + ")";
+      }
+
+      const words = document.querySelectorAll(".s3-word");
+      const driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: TOTAL,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            words.forEach((el) => {
+              const key = el.dataset.word;
+              const timing = TIMINGS[key];
+              if (!timing) return;
+              const env = envelope(driver.t, timing.start, timing.end);
+              const isBrand = el.classList.contains("s3-kw");
+              const blur = MAX_BLUR * env;
+              const scale = 1 + MAX_SCALE_BOOST * env;
+              el.style.color = colorAt(env, isBrand);
+              el.style.textShadow = "0 0 " + blur + "px " + glowRgba(env) + ", 0 2px 24px rgba(0,0,0,0.55)";
+              el.style.transform = "scale(" + scale + ")";
+            });
+          },
+        },
+        0,
+      );
+
+      window.__timelines["scene_3"] = tl;
+    </script>
+  </div>
+</template>

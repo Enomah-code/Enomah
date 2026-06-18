@@ -1,0 +1,190 @@
+<template id="scene_1-template">
+  <div id="root" class="scene_1-root" data-composition-id="scene_1" data-width="1080" data-height="1920" data-duration="3.415" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--navy);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wraps everything for the slow push-in (multi-phase-camera). */
+      .s1-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 42%;
+        will-change: transform;
+      }
+
+      /* Full-bleed cinematic photo — the primary subject, midground depth layer. */
+      .s1-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 38%;
+      }
+
+      /* Navy scrim — darkens top and bottom thirds so white text reads. */
+      .s1-scrim {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(11, 27, 46, 0.78) 0%,
+            rgba(11, 27, 46, 0.28) 26%,
+            rgba(11, 27, 46, 0.30) 58%,
+            rgba(11, 27, 46, 0.86) 100%
+          );
+        pointer-events: none;
+      }
+
+      /* Faint gold hairline accent, per film direction. */
+      .s1-hairline {
+        position: absolute;
+        left: 50%;
+        bottom: 470px;
+        width: 88px;
+        height: 2px;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, rgba(201, 162, 75, 0) 0%, var(--gold) 50%, rgba(201, 162, 75, 0) 100%);
+        opacity: 0.85;
+      }
+
+      /* The rhetorical question — white serif-leaning, foreground depth layer,
+         sits in the lower-middle reading zone over the scrim. */
+      .s1-question {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        bottom: 540px;
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 78px;
+        line-height: 1.24;
+        letter-spacing: 0.2px;
+        color: var(--ink);
+        text-align: center;
+        text-shadow: 0 4px 28px rgba(0, 0, 0, 0.55);
+      }
+
+      .s1-kw {
+        display: inline-block;
+        color: var(--gold);
+        transform-origin: 50% 50%;
+        text-shadow: 0 0 0 rgba(212, 175, 55, 0);
+        will-change: transform, text-shadow;
+      }
+    </style>
+
+    <div class="s1-camera" id="s1-camera">
+      <img class="s1-photo clip" src="public/img/s1_stress.png" data-start="0" data-duration="3.415" data-track-index="0" alt="" />
+      <div class="s1-scrim clip" data-start="0" data-duration="3.415" data-track-index="1"></div>
+      <div class="s1-hairline clip" data-start="0" data-duration="3.415" data-track-index="2"></div>
+      <p class="s1-question clip" data-start="0" data-duration="3.415" data-track-index="3">Tu as de bonnes idées mais tu n'arrives jamais à les <span class="s1-kw" id="s1-kw-exprimer">exprimer</span> ?</p>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 3.415;
+      const camera = document.getElementById("s1-camera");
+
+      // multi-phase-camera — slow push-in toward the man's face across the whole
+      // beat (pull-tight, no pan). Steady-push pattern: neutral -> tighten -> tighter.
+      const phase = { scale: 1.0 };
+      tl.to(phase, { scale: 1.045, duration: 1.6, ease: "power2.out" }, 0.0);
+      tl.to(phase, { scale: 1.08, duration: 1.4, ease: "power2.inOut" }, 1.6);
+
+      // Continuous micro-drift overlaid on the phase scale — organic, imperceptible.
+      const drift = { p: 0 };
+      tl.to(
+        drift,
+        {
+          p: Math.PI * 2 * 1,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            const dx = Math.sin(drift.p) * 4;
+            const dy = Math.sin(drift.p * 1.3) * 2;
+            camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+          },
+        },
+        0,
+      );
+
+      // Question rises in (foreground text layer) as the camera tightens.
+      tl.fromTo(
+        ".s1-question",
+        { opacity: 0, y: 34 },
+        { opacity: 1, y: 0, duration: 0.7, ease: EASE.entry },
+        0.25,
+      );
+
+      // asr-keyword-glow — a single restrained gold pulse on "exprimer" as the
+      // line settles. One spoken window; attack-sustain-release-rest envelope.
+      const ATTACK_DUR = 0.18;
+      const RELEASE = 0.4;
+      const REST_LEVEL = 0.22;
+      const MAX_BLUR = 22;
+      const MAX_SCALE_BOOST = 0.08;
+      const TIMINGS = { exprimer: { start: 1.55, end: 2.25 } };
+
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+        if (time < releaseEnd) {
+          const decay = (time - end) / RELEASE;
+          return 1 - decay * (1 - REST_LEVEL);
+        }
+        return REST_LEVEL;
+      }
+
+      const kwWords = document.querySelectorAll(".s1-kw");
+      const driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: TOTAL,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            kwWords.forEach((el) => {
+              const timing = TIMINGS[el.id.replace("s1-kw-", "")];
+              if (!timing) return;
+              const env = envelope(driver.t, timing.start, timing.end);
+              const blur = MAX_BLUR * env;
+              const scale = 1 + MAX_SCALE_BOOST * env;
+              const alpha = 0.18 + env * 0.62;
+              el.style.textShadow = "0 0 " + blur + "px rgba(212, 175, 55, " + alpha + ")";
+              el.style.transform = "scale(" + scale + ")";
+            });
+          },
+        },
+        0,
+      );
+
+      window.__timelines["scene_1"] = tl;
+    </script>
+  </div>
+</template>

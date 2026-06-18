@@ -1,0 +1,81 @@
+:root {
+  --brand-primary:   #D4AF37;
+  --brand-secondary: #C9A14A;
+  --brand-tertiary:  #C9A14A;
+  --brand-accent:    #C9A14A;
+  --brand-costume:   #FFFFFF;
+  --ink:             #0A0A0A;
+  --canvas:          #FFFFFF;
+  --brand-gradient:  linear-gradient(135deg, #D4AF37 0%, #C9A14A 50%, #C9A14A 100%);
+  --deco-1:          #F7CB46;
+  --deco-2:          #99E885;
+  --deco-3:          #C0F7FE;
+  --deco-4:          #FE90E8;
+  --font-display:    'Inter', system-ui, sans-serif;
+  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --liquid-bg-deep: #0a0218; /* mandatory dark base — aurora needs blackpoint */
+  --liquid-bg-fallback: linear-gradient(160deg, #0a0218 0%, #15082a 60%, #062035 100%);
+  --lg-widget-blur: 0.42;
+  --lg-widget-refraction: 0.82;
+  --lg-widget-specular: 0.34;
+  --lg-widget-fresnel: 1.25;
+  --lg-widget-edge-highlight: 0.26;
+  --lg-widget-chrom-aberration: 0.08;
+  --lg-widget-saturation: 0.38;
+  --lg-widget-corner-radius: 28;
+  --lg-widget-z-radius: 46;
+  --lg-notif-blur: 0.22;
+  --lg-notif-refraction: 0.6;
+  --lg-notif-specular: 0.2;
+  --lg-notif-fresnel: 0.9;
+  --lg-notif-edge-highlight: 0.1;
+  --lg-notif-chrom-aberration: 0.05;
+  --lg-notif-saturation: 0.25;
+  --lg-notif-corner-radius: 36;
+  --lg-notif-z-radius: 38;
+  --lg-notif-shadow-opacity: 0.35;
+  --lg-notif-shadow-spread: 14;
+  --lg-notif-shadow-offset-y: 4;
+  --lg-menu-blur: 0.56;
+  --lg-menu-refraction: 0.52;
+  --lg-menu-specular: 0.26;
+  --lg-menu-fresnel: 1;
+  --lg-menu-edge-highlight: 0.2;
+  --lg-menu-chrom-aberration: 0.035;
+  --lg-menu-saturation: -0.24;
+  --lg-menu-tint: 0.88;
+  --lg-menu-brightness: 0.54;
+  --lg-menu-corner-radius: 30;
+  --lg-menu-z-radius: 48;
+  --ink-on-glass: rgba(255, 255, 255, 0.96);
+  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);
+  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */
+  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);
+  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */
+  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);
+  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */
+  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);
+  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */
+  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */
+  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */
+  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);
+  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */
+  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */
+  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */
+  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */
+  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */
+  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */
+  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */
+  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */
+  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */
+  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */
+  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */
+  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */
+  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */
+  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */
+  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */
+  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */
+  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */
+  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */
+}

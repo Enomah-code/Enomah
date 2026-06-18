@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-06-16T07:58:31.082Z",
+  "source_url": "Style",
+  "preset": "liquid-glass",
+  "tokens_file": "chunks/tokens.css",
+  "easings_file": "chunks/easings.js",
+  "voice_file": "chunks/voice.md",
+  "hints_file": "chunks/composition-hints.md",
+  "type_roles_file": "chunks/type-roles.md",
+  "caption_skin_file": "chunks/caption-skin.html",
+  "components": [
+    {
+      "id": "aurora-bg-fallback",
+      "file": "chunks/components/aurora-bg-fallback.html"
+    },
+    {
+      "id": "glass-media-bar",
+      "file": "chunks/components/glass-media-bar.html"
+    },
+    {
+      "id": "glass-menu",
+      "file": "chunks/components/glass-menu.html"
+    },
+    {
+      "id": "glass-notification",
+      "file": "chunks/components/glass-notification.html"
+    },
+    {
+      "id": "glass-pill-chip",
+      "file": "chunks/components/glass-pill-chip.html"
+    },
+    {
+      "id": "glass-slider",
+      "file": "chunks/components/glass-slider.html"
+    },
+    {
+      "id": "glass-toggle",
+      "file": "chunks/components/glass-toggle.html"
+    },
+    {
+      "id": "glass-widget-card",
+      "file": "chunks/components/glass-widget-card.html"
+    },
+    {
+      "id": "liquid-stage",
+      "file": "chunks/components/liquid-stage.html"
+    }
+  ]
+}

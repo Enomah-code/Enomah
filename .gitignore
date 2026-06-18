@@ -33,3 +33,9 @@ logs/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+
+# HyperFrames transient build artifacts & secrets
+videos/**/.dispatch/
+videos/**/.env
+videos/**/renders/work-*/
+**/node_modules/

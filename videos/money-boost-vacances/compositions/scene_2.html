@@ -1,0 +1,270 @@
+<template id="scene_2-template">
+  <div id="root" class="scene_2-root" data-composition-id="scene_2" data-width="1080" data-height="1920" data-duration="7.851" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--ink);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* World wrapper carries the macro left push-pan camera. */
+      .s2-world {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+
+      /* Each montage still is full-frame; Ken-Burns lives in GSAP. */
+      .s2-shot {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform-origin: 50% 50%;
+        will-change: transform, opacity;
+      }
+
+      /* Dark vignette + bottom-up scrim seats white/gold text on photos. */
+      .s2-scrim {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(120% 90% at 50% 38%, rgba(10,10,10,0) 38%, rgba(10,10,10,0.72) 100%),
+          linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.12) 30%, rgba(10,10,10,0.40) 64%, rgba(10,10,10,0.90) 100%);
+        z-index: 5;
+      }
+
+      /* Type stage holds the displaced headline pair (collision) high. */
+      .s2-stage {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 300px;
+        height: 760px;
+        z-index: 8;
+        overflow: hidden;
+      }
+      .s2-line {
+        position: absolute;
+        left: 64px;
+        right: 64px;
+        top: 0;
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 96px;
+        line-height: 1.05;
+        letter-spacing: -2px;
+        text-transform: uppercase;
+        color: var(--brand-costume);
+        text-shadow: 0 4px 28px rgba(0,0,0,0.7);
+        will-change: transform, opacity;
+      }
+      .s2-line .s2-kw {
+        color: var(--brand-primary);
+        display: inline-block;
+        transform-origin: 50% 50%;
+        will-change: transform, text-shadow;
+      }
+      .s2-caret {
+        display: inline-block;
+        width: 8px;
+        margin-left: 10px;
+        color: var(--brand-primary);
+        will-change: opacity;
+      }
+
+      /* Closing mono label, low on the coins payoff. */
+      .s2-label {
+        position: absolute;
+        left: 64px;
+        right: 64px;
+        bottom: 240px;
+        z-index: 8;
+        font-family: var(--font-mono);
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: 10px;
+        text-transform: uppercase;
+        color: var(--brand-costume);
+        text-shadow: 0 4px 22px rgba(0,0,0,0.8);
+        opacity: 0;
+        will-change: opacity, transform;
+      }
+    </style>
+
+    <div class="s2-world">
+      <img class="s2-shot clip" id="s2-brick" src="public/img/s2_brick.jpg" data-start="0" data-duration="1.6" data-track-index="0" />
+      <img class="s2-shot clip" id="s2-cement" src="public/img/s2_cement.jpg" data-start="1.5" data-duration="1.6" data-track-index="1" />
+      <img class="s2-shot clip" id="s2-sweat" src="public/img/s2_sweat.jpg" data-start="3.0" data-duration="1.6" data-track-index="2" />
+      <img class="s2-shot clip" id="s2-market" src="public/img/s2_market.jpg" data-start="4.5" data-duration="1.85" data-track-index="3" />
+      <img class="s2-shot clip" id="s2-coins" src="public/img/s2_coins.jpg" data-start="6.25" data-duration="1.601" data-track-index="4" />
+    </div>
+
+    <div class="s2-scrim clip" data-start="0" data-duration="7.851" data-track-index="5"></div>
+
+    <div class="s2-stage clip" data-start="0.4" data-duration="7.451" data-track-index="6">
+      <div class="s2-line" id="s2-line-a"><span id="s2-type"></span><span class="s2-caret" id="s2-caret">|</span></div>
+      <div class="s2-line" id="s2-line-b">Mais gagnent toujours <span class="s2-kw" data-word="peu" id="s2-peu">peu.</span></div>
+    </div>
+
+    <div class="s2-label clip" id="s2-label" data-start="6.25" data-duration="1.601" data-track-index="7">Petite rémunération</div>
+
+    <script>
+      // Easings / durations (pasted from design-system/chunks/easings.js role keys)
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = { snap: 0.28, med: 0.5, slow: 1.1 };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const W = 1080;
+
+      // ---- Macro camera: continuous slow LEFT push-pan over the montage ----
+      const world = document.querySelector(".s2-world");
+      const cam = { scale: 1.08, x: 0, y: 0 };
+      function applyCamera() {
+        world.style.transform = "translate(" + cam.x + "px, " + cam.y + "px) scale(" + cam.scale + ")";
+      }
+      applyCamera();
+      tl.to(cam, { x: -120, duration: 7.851, ease: "none", onUpdate: applyCamera }, 0);
+
+      // ---- Per-shot Ken-Burns: small push-in within each clip window ----
+      gsap.set("#s2-brick", { scale: 1.06, x: 0 });
+      tl.to("#s2-brick", { scale: 1.16, x: -22, duration: 1.6, ease: "none" }, 0);
+
+      gsap.set("#s2-cement", { scale: 1.16, x: 20 });
+      tl.to("#s2-cement", { scale: 1.06, x: -10, duration: 1.6, ease: "none" }, 1.5);
+
+      gsap.set("#s2-sweat", { scale: 1.05, x: -18 });
+      tl.to("#s2-sweat", { scale: 1.17, x: 14, duration: 1.6, ease: "none" }, 3.0);
+
+      gsap.set("#s2-market", { scale: 1.18, x: 24 });
+      tl.to("#s2-market", { scale: 1.05, x: -16, duration: 1.85, ease: "none" }, 4.5);
+
+      // Coins payoff — motion stills: a near-imperceptible settle, then hold.
+      gsap.set("#s2-coins", { scale: 1.1, x: 0 });
+      tl.to("#s2-coins", { scale: 1.05, duration: 1.0, ease: EASE.emphasis }, 6.25);
+
+      // ---- discrete-text-sequence: "BEAUCOUP TRAVAILLENT PLUS…" types in ----
+      const typeEl = document.getElementById("s2-type");
+      const caretEl = document.getElementById("s2-caret");
+      const SEQUENCE = [
+        { t: 0.40, text: "" },
+        { t: 0.70, text: "BEAU" },
+        { t: 0.95, text: "BEAUCOUP" },
+        { t: 1.25, text: "BEAUCOUP TRA" },
+        { t: 1.55, text: "BEAUCOUP TRAVAILLENT" },
+        { t: 1.95, text: "BEAUCOUP TRAVAILLENT PLUS" },
+        { t: 2.25, text: "BEAUCOUP TRAVAILLENT PLUS…" },
+      ];
+      function textAt(time) {
+        for (let i = SEQUENCE.length - 1; i >= 0; i--) {
+          if (time >= SEQUENCE[i].t) return SEQUENCE[i].text;
+        }
+        return "";
+      }
+      const typeDriver = { t: 0 };
+      tl.to(typeDriver, {
+        t: 7.851,
+        duration: 7.851,
+        ease: "none",
+        onUpdate: () => { typeEl.textContent = textAt(typeDriver.t); },
+      }, 0);
+
+      // Deterministic caret blink (sin-driven), hides once displacement starts.
+      const DISPLACE_AT = 4.6;
+      const blink = { p: 0 };
+      tl.to(blink, {
+        p: Math.PI * 2 * 9,
+        duration: 7.851,
+        ease: "none",
+        onUpdate: () => {
+          caretEl.style.opacity = (typeDriver.t < DISPLACE_AT && Math.sin(blink.p) > 0) ? "1" : "0";
+        },
+      }, 0);
+
+      // ---- reactive-displacement: line B shoves line A off (causal collision) ----
+      const lineA = document.getElementById("s2-line-a");
+      const lineB = document.getElementById("s2-line-b");
+      const INTRUDER_START_X = W;     // off-stage right
+      const VICTIM_END_X = -W;        // off-stage left, opposite direction
+      const VICTIM_FRACTION = 0.5;
+      const FADE_IN_SHARPNESS = 4;
+      const INTRUDER_TILT = 8;
+
+      gsap.set(lineA, { x: 0, opacity: 1, rotation: 0 });
+      gsap.set(lineB, { x: INTRUDER_START_X, opacity: 0, rotation: -INTRUDER_TILT });
+
+      const displace = { p: 0 };
+      tl.to(displace, {
+        p: 1,
+        duration: 0.9,
+        ease: "back.out(1.5)",
+        onUpdate: () => {
+          const p = displace.p;
+          // Intruder (line B) flies in from the right and settles.
+          const bX = INTRUDER_START_X * (1 - p);
+          const bOp = Math.min(1, p * FADE_IN_SHARPNESS);
+          const bRot = -INTRUDER_TILT * (1 - p);
+          lineB.style.transform = "translateX(" + bX + "px) rotate(" + bRot + "deg)";
+          lineB.style.opacity = String(bOp);
+          // Victim (line A) gets shoved off-left, gone before B centers.
+          const aP = Math.min(1, p / VICTIM_FRACTION);
+          lineA.style.transform = "translateX(" + (VICTIM_END_X * aP) + "px)";
+          lineA.style.opacity = String(1 - aP);
+        },
+      }, DISPLACE_AT);
+
+      // ---- closing mono label fades in low on the coins payoff ----
+      tl.fromTo("#s2-label",
+        { opacity: 0, y: 24 },
+        { opacity: 0.92, y: 0, duration: DUR.med, ease: EASE.entry },
+        6.55);
+
+      // ---- asr-keyword-glow: "PEU" carries one dim gold emphasis on coins ----
+      const peuEl = document.getElementById("s2-peu");
+      const REST_LEVEL = 0.12;
+      const ATTACK = 0.18;
+      const RELEASE = 0.4;
+      const MAX_BLUR = 22;
+      const MAX_SCALE_BOOST = 0.12;
+      const GLOW = { r: 212, g: 175, b: 55 }; // gold #D4AF37
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK, 1);
+        if (time < releaseEnd) return 1 - ((time - end) / RELEASE) * (1 - REST_LEVEL);
+        return REST_LEVEL;
+      }
+      const glowStart = 6.7, glowEnd = 7.35;
+      const glowDriver = { t: 0 };
+      tl.to(glowDriver, {
+        t: 7.851,
+        duration: 7.851,
+        ease: "none",
+        onUpdate: () => {
+          const env = envelope(glowDriver.t, glowStart, glowEnd);
+          const blur = MAX_BLUR * env;
+          const scale = 1 + MAX_SCALE_BOOST * env;
+          const alpha = 0.3 + env * 0.55;
+          peuEl.style.textShadow = "0 0 " + blur + "px rgba(" + GLOW.r + "," + GLOW.g + "," + GLOW.b + "," + alpha + ")";
+          peuEl.style.transform = "scale(" + scale + ")";
+        },
+      }, 0);
+
+      window.__timelines["scene_2"] = tl;
+    </script>
+  </div>
+</template>

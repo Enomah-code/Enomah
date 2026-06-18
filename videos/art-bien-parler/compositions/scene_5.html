@@ -1,0 +1,226 @@
+<template id="scene_5-template">
+  <div id="root" class="scene_5-root" data-composition-id="scene_5" data-width="1080" data-height="1920" data-duration="5.26" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--navy);
+        font-family: var(--font-body);
+        overflow: hidden;
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper — holds the full-bleed photo; macro push-in lives here */
+      .s5-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s5-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 42%;
+      }
+
+      /* Navy scrim — weighted low so the lit stage stays bright up top,
+         white/gold text reads over the darkened lower band. */
+      .s5-scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(11, 27, 46, 0.92) 0%,
+          rgba(11, 27, 46, 0.78) 18%,
+          rgba(11, 27, 46, 0.32) 42%,
+          rgba(11, 27, 46, 0.04) 64%,
+          rgba(11, 27, 46, 0) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Faint gold hairline accent above the line */
+      .s5-rule {
+        position: absolute;
+        left: 50%;
+        top: 1180px;
+        width: 96px;
+        height: 2px;
+        margin-left: -48px;
+        background: linear-gradient(90deg, rgba(201, 162, 75, 0) 0%, var(--gold) 50%, rgba(201, 162, 75, 0) 100%);
+        z-index: 2;
+      }
+
+      /* Low-center text block */
+      .s5-line {
+        position: absolute;
+        left: 50%;
+        top: 1280px;
+        transform: translateX(-50%);
+        width: 880px;
+        z-index: 2;
+        text-align: center;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 92px;
+        line-height: 1.12;
+        letter-spacing: -0.01em;
+        color: rgba(255, 255, 255, 0.98);
+        text-shadow: 0 4px 28px rgba(0, 0, 0, 0.55);
+      }
+      .s5-word {
+        display: inline-block;
+        margin-right: 0.26em;
+        transform-origin: 50% 50%;
+        will-change: transform, text-shadow;
+      }
+      .s5-word.s5-kw {
+        color: var(--gold);
+        font-style: italic;
+      }
+    </style>
+
+    <div class="s5-camera" id="s5-camera">
+      <img class="s5-photo clip" src="public/img/s5_transform.jpg" alt="" data-start="0" data-duration="5.26" data-track-index="0" />
+    </div>
+
+    <div class="s5-scrim clip" data-start="0" data-duration="5.26" data-track-index="1"></div>
+
+    <div class="s5-rule clip" id="s5-rule" data-start="0" data-duration="5.26" data-track-index="2"></div>
+
+    <div class="s5-line clip" id="s5-line" data-start="0" data-duration="5.26" data-track-index="3">
+      <span class="s5-word" data-word="prends">Prends</span>
+      <span class="s5-word" data-word="enfin">enfin</span>
+      <span class="s5-word" data-word="la">la</span>
+      <span class="s5-word" data-word="parole">parole</span>
+      <span class="s5-word" data-word="avec">avec</span>
+      <span class="s5-word s5-kw" data-word="confiance">confiance</span>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 5.26;
+      const camera = document.querySelector("#s5-camera");
+
+      // ---- multi-phase-camera: steady forward push toward the speaker ----
+      // Neutral → slight push → deeper push (the room opens up as we move in).
+      const phase = { scale: 1.0 };
+      tl.to(phase, { scale: 1.05, duration: 1.6, ease: "power2.out" }, 0.4);
+      tl.to(phase, { scale: 1.12, duration: 1.9, ease: "power2.inOut" }, 2.4);
+
+      // Continuous sine micro-drift overlaid on the phase scale
+      const drift = { p: 0 };
+      const DRIFT_AMP_X = 5;
+      const DRIFT_AMP_Y = 3;
+      const DRIFT_FREQ_RATIO = 1.3;
+      tl.to(
+        drift,
+        {
+          p: Math.PI * 2 * 1.2,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            const dx = Math.sin(drift.p) * DRIFT_AMP_X;
+            const dy = Math.sin(drift.p * DRIFT_FREQ_RATIO) * DRIFT_AMP_Y;
+            camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+          },
+        },
+        0,
+      );
+
+      // ---- Text entry: line rises in after the push begins to settle ----
+      tl.from("#s5-rule", { opacity: 0, scaleX: 0, duration: DUR.med, ease: EASE.emphasis }, 0.55);
+      // Entry on the line container (y + opacity) so the per-frame glow driver,
+      // which writes transform: scale() on each .s5-word, never clobbers it.
+      tl.from("#s5-line", { opacity: 0, y: 36, duration: 0.7, ease: EASE.entry }, 0.6);
+      tl.from(".s5-word", { opacity: 0, duration: 0.55, ease: "power2.out", stagger: 0.07 }, 0.7);
+
+      // ---- asr-keyword-glow: lift "confiance" as the line resolves ----
+      // Karaoke-style narration emphasis; "confiance" is the brand/keyword beat.
+      const TIMINGS = {
+        prends: { start: 1.2, end: 1.55 },
+        enfin: { start: 1.6, end: 1.95 },
+        la: { start: 2.0, end: 2.2 },
+        parole: { start: 2.25, end: 2.7 },
+        avec: { start: 2.78, end: 3.05 },
+        confiance: { start: 3.15, end: 4.4 },
+      };
+      const ATTACK_DUR = 0.18;
+      const RELEASE = 0.4;
+      const REST_LEVEL = 0.12;
+      const MAX_BLUR = 38;
+      const MAX_SCALE_BOOST = 0.16;
+      const REST_RGB = { r: 214, g: 222, b: 232 };
+      const ACTIVE_RGB = { r: 255, g: 255, b: 255 };
+      const BRAND_RGB = { r: 201, g: 162, b: 75 };
+
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+        if (time < releaseEnd) {
+          const decay = (time - end) / RELEASE;
+          return 1 - decay * (1 - REST_LEVEL);
+        }
+        return REST_LEVEL;
+      }
+      function lerpChannel(a, b, t) {
+        return Math.round(a + (b - a) * t);
+      }
+      function colorAt(env, isBrand) {
+        const target = isBrand ? BRAND_RGB : ACTIVE_RGB;
+        return "rgb(" + lerpChannel(REST_RGB.r, target.r, env) + ", " + lerpChannel(REST_RGB.g, target.g, env) + ", " + lerpChannel(REST_RGB.b, target.b, env) + ")";
+      }
+
+      const words = document.querySelectorAll(".s5-word");
+      const driver = { t: 0 };
+      tl.to(
+        driver,
+        {
+          t: TOTAL,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            words.forEach((el) => {
+              const timing = TIMINGS[el.dataset.word];
+              if (!timing) return;
+              const isBrand = el.classList.contains("s5-kw");
+              const env = envelope(driver.t, timing.start, timing.end);
+              const blur = MAX_BLUR * env;
+              const scale = 1 + MAX_SCALE_BOOST * env;
+              const glowR = isBrand ? 201 : 255;
+              const glowG = isBrand ? 162 : 255;
+              const glowB = isBrand ? 75 : 255;
+              el.style.color = colorAt(env, isBrand);
+              el.style.textShadow = "0 4px 28px rgba(0,0,0,0.55), 0 0 " + blur + "px rgba(" + glowR + "," + glowG + "," + glowB + "," + (0.15 + env * 0.6) + ")";
+              el.style.transform = "scale(" + scale + ")";
+            });
+          },
+        },
+        0,
+      );
+
+      window.__timelines["scene_5"] = tl;
+    </script>
+  </div>
+</template>

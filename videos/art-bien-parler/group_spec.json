@@ -1,0 +1,317 @@
+{
+  "total_scenes": 6,
+  "width": 1080,
+  "height": 1920,
+  "captions_enabled": false,
+  "film_direction": "**Palette:** 60% deep-navy ground (`--navy` / `--liquid-bg-fallback` cinematic gradient) — for photo scenes this is the navy scrim laid over the full-bleed image / for the CTA it is the literal canvas / 30% the photograph itself + white body text reading on the scrim / 10% accent: GOLD (`--gold` / `--gold-bright`) carries every serif title, the emphasised keyword in each line, hairline rules, checkmarks, and the CTA button + arrow. White is body/supporting text; gold is rare and always the focal word. Never flood gold.\n**Type:** display = Playfair-role serif for the product title, scene headlines and the gold keyword (elegant high-contrast); body = Inter-role for supporting sentences and check-item labels; no mono voice in this film. Hero claims sit in display tier, supporting sentences one tier down with clear 3:1 size + weight + color contrast.\n**Motion:** entries `EASE.entry`, large photo/hero blocks read as `heavy`; idle `EASE.drift`; exits none — each scene holds its final frame and the camera carries continuity. Budget: every scene gets ONE root-level macro motion — a slow Ken-Burns push/pan on the full-bleed photo (or dolly on the CTA poster) — plus at most one secondary live element (a gold keyword glow, a check stagger, or the CTA pulse). Everything else rests.\n**Ambient:** real photographs are the atmosphere — full-bleed, slow Ken-Burns, with a navy scrim gradient (top-and-bottom darken) under all text for legibility; CTA scene swaps to the navy gradient ground with a faint gold-bokeh/starfield from layered radial-gradients. No shader aurora (no GPU). A faint gold hairline accent may sit per scene.\n**Never (film-wide):** no WebGPU/shader aurora, no mesh gradients, no neon-on-black, no glow bloom, no purple-blue AI gradient, no decorative floating bokeh balls, no stock-icon clutter, no letterboxing or stretch-distorting the photos.\n**Transitions:** crossfade + zoom-through only (calm dissolves between emotional beats; zoom-through on the camera-push moments). Scene 1 opening is a placeholder.\n**Stillness-before-climax:** Scene 4 (the gold title + checks land) and Scene 6 (the pulsing CTA button lands) only.\n**Assets:** `public/img/s1_stress.png` → Scene 1 primary (full-bleed); `public/img/s2_problemes.png` → Scene 2 primary (pre-labelled montage, full-bleed); `public/img/s3_frustration.png` → Scene 3 primary (full-bleed); `public/img/s4_solution.jpg` → Scene 4 primary (full-bleed); `public/img/s5_transform.jpg` → Scene 5 primary (full-bleed); `public/img/s6_poster.jpg` → Scene 6 primary (product poster, centered on navy).",
+  "total_duration_s": 34.459,
+  "bgm_path": "",
+  "font_face_css": "",
+  "brand_tokens_css": ":root {\n  /* Creative direction override (mandatory): NAVY ground + GOLD hero accent + WHITE text. */\n  --brand-primary:   #C9A24B; /* GOLD — hero accent: titles, keywords, lines, checks, CTA */\n  --brand-secondary: #D4AF37; /* bright gold — emphasis / specular gold */\n  --brand-tertiary:  #0D1B2A; /* deep navy alt-ground */\n  --brand-accent:    #D4AF37; /* bright gold accent */\n  --brand-costume:   #FFFFFF; /* white supporting text */\n  --navy:            #0B1B2E; /* canvas / cinematic ground */\n  --navy-deep:       #0D1B2A; /* alternate ground stop */\n  --gold:            #C9A24B; /* hero gold */\n  --gold-bright:     #D4AF37; /* highlight gold */\n  --ink:             #FFFFFF; /* body text is white on navy */\n  --canvas:          #0B1B2E; /* navy is the ground, not white */\n  --brand-gradient:  linear-gradient(135deg, #C9A24B 0%, #D4AF37 100%); /* gold-on-gold for titles/CTA */\n  --deco-1:          #0D1B2A;\n  --deco-2:          #C9A24B;\n  --deco-3:          #D4AF37;\n  --deco-4:          #FFFFFF;\n  --font-display:    'Playfair Display', Georgia, 'Times New Roman', serif; /* elegant high-contrast serif */\n  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;\n  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;\n  --liquid-bg-deep: #0B1B2E; /* mandatory dark base — navy cinematic blackpoint */\n  --liquid-bg-fallback: linear-gradient(160deg, #0B1B2E 0%, #0d1b2a 55%, #08131f 100%);\n  --lg-widget-blur: 0.42;\n  --lg-widget-refraction: 0.82;\n  --lg-widget-specular: 0.34;\n  --lg-widget-fresnel: 1.25;\n  --lg-widget-edge-highlight: 0.26;\n  --lg-widget-chrom-aberration: 0.08;\n  --lg-widget-saturation: 0.38;\n  --lg-widget-corner-radius: 28;\n  --lg-widget-z-radius: 46;\n  --lg-notif-blur: 0.22;\n  --lg-notif-refraction: 0.6;\n  --lg-notif-specular: 0.2;\n  --lg-notif-fresnel: 0.9;\n  --lg-notif-edge-highlight: 0.1;\n  --lg-notif-chrom-aberration: 0.05;\n  --lg-notif-saturation: 0.25;\n  --lg-notif-corner-radius: 36;\n  --lg-notif-z-radius: 38;\n  --lg-notif-shadow-opacity: 0.35;\n  --lg-notif-shadow-spread: 14;\n  --lg-notif-shadow-offset-y: 4;\n  --lg-menu-blur: 0.56;\n  --lg-menu-refraction: 0.52;\n  --lg-menu-specular: 0.26;\n  --lg-menu-fresnel: 1;\n  --lg-menu-edge-highlight: 0.2;\n  --lg-menu-chrom-aberration: 0.035;\n  --lg-menu-saturation: -0.24;\n  --lg-menu-tint: 0.88;\n  --lg-menu-brightness: 0.54;\n  --lg-menu-corner-radius: 30;\n  --lg-menu-z-radius: 48;\n  --ink-on-glass: rgba(255, 255, 255, 0.96);\n  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);\n  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */\n  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);\n  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */\n  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);\n  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */\n  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);\n  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */\n  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */\n  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */\n  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);\n  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */\n  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */\n  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */\n  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */\n  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */\n  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */\n  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */\n  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */\n  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */\n  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */\n  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */\n  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */\n  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */\n  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */\n  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */\n  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */\n  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */\n  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */\n}",
+  "groups": [
+    {
+      "worker_id": "w1",
+      "scene_ids": [
+        "scene_1"
+      ],
+      "scenes": {
+        "scene_1": {
+          "start_s": 0,
+          "effects": [
+            "multi-phase-camera",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 3.415,
+          "voicePath": "assets/voice/scene_1.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Anxious, frozen, breath-held — a slow tightening with one held beat, no bounce. Layered-depth composition: `public/img/s1_stress.png` fills 100% of the tall frame (the anxious man frozen as others stare), a navy scrim gradient darkening top and bottom thirds so white text reads. Primary subject is the photo; the white serif-leaning question sits in the lower-middle reading zone over the scrim, three depth layers (photo midground, scrim, text foreground). Macro motion: `multi-phase-camera` slow push-in toward the man's face across the whole beat (pull-tight, no pan). The rhetorical question \"Tu as de bonnes idées mais tu n'arrives jamais à les exprimer ?\" rises in; `asr-keyword-glow` gives a single restrained gold pulse to the keyword **exprimer** as the line settles — the one live element. Eye drifts inward on the push, carrying into the problem montage.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w2",
+      "scene_ids": [
+        "scene_2"
+      ],
+      "scenes": {
+        "scene_2": {
+          "start_s": 3.415,
+          "effects": [
+            "viewport-change",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/viewport-change.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 8.384,
+          "voicePath": "assets/voice/scene_2.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Mounting social stress — a continuous, slightly claustrophobic build, one take. Full-bleed composition: `public/img/s2_problemes.png` fills the frame; it is a PRE-COMPOSED montage that ALREADY carries its own labelled panels (STRESS / HÉSITATION / MANQUE DE CONFIANCE / SILENCE GÊNANT), so it is the whole subject — do NOT overlay competing big headlines on top of it. A light navy scrim only at the very top edge holds a single small gold keyword \"Le problème\" as an eyebrow; the montage's own labels carry the message. Macro motion: `viewport-change` slow continuous push-in (~2-4%) across the montage so the labelled panels feel like they close in. `asr-keyword-glow` lets the small gold eyebrow word warm faintly as the narration agitates — the only added motion. No big white text block over the montage; the photo speaks. Eye stays centered, pressure rising, into the frustration beat.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w3",
+      "scene_ids": [
+        "scene_3"
+      ],
+      "scenes": {
+        "scene_3": {
+          "start_s": 11.799,
+          "effects": [
+            "multi-phase-camera",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 6.594,
+          "voicePath": "assets/voice/scene_3.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Regret and loss — a sinking beat, slower, heavier than Scene 2. Layered-depth composition: `public/img/s3_frustration.png` full-bleed (another presents confidently / people applaud / the main character looks down, regretful); navy scrim weighted to the lower third under the line. White serif line \"Tes idées restent invisibles…\" sits low-center over the scrim, the ellipsis trailing the regret; gold carries only the keyword **invisibles**. Macro motion: `multi-phase-camera` does a slow push that settles on the downcast main character (focus drifts from the applauded speaker to him). `asr-keyword-glow` fades **invisibles** up as the line lands — one live element, everything else still. Eye pushes through toward the turn, zoom-through into the solution reveal.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w4",
+      "scene_ids": [
+        "scene_4"
+      ],
+      "scenes": {
+        "scene_4": {
+          "start_s": 18.393,
+          "effects": [
+            "multi-phase-camera",
+            "svg-path-draw",
+            "asr-keyword-glow",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/svg-path-draw.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 7.351,
+          "voicePath": "assets/voice/scene_4.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "The turn — hope arrives, luminous and premium; a confident slow build with a held breath before the title locks. Centered/hero composition: `public/img/s4_solution.jpg` full-bleed (confident man in tux holding the book), gentle navy scrim top and bottom. Phase 1 (~0–2s): photo pushes in, the gold serif title \"L'ART DE BIEN PARLER\" rises in display tier with \"Maîtriser l'éloquence\" one tier below in white. Phase 2 (~2–5.5s): four gold check items stagger in down the lower reading zone — Confiance, Éloquence, Persuasion, Prise de parole — each checkmark drawn live with `svg-path-draw` (total stagger ≤500ms), the line warming via `asr-keyword-glow` on the spoken benefit words. **stillness-before-climax** (~0.5s) after the title rises, before the first check draws, letting the promise breathe. Macro motion: `multi-phase-camera` slow push on the book; the title block gets a subtle `sine-wave-loop` breathing as the one live hero. Photo subject stays primary; checks are supporting. Eye climbs the check list, zoom-through into the transformation.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w5",
+      "scene_ids": [
+        "scene_5"
+      ],
+      "scenes": {
+        "scene_5": {
+          "start_s": 25.744,
+          "effects": [
+            "multi-phase-camera",
+            "asr-keyword-glow"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/multi-phase-camera.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 5.26,
+          "voicePath": "assets/voice/scene_5.wav",
+          "wordsPath": "",
+          "blueprint": "composed",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "Empowerment — uplifting, expansive, the after-state; a confident rising glide. Layered-depth composition: `public/img/s5_transform.jpg` full-bleed (the man now speaking with a mic to an attentive audience), navy scrim weighted low under the line so the lit stage stays bright. White serif line \"Prends enfin la parole avec confiance\" sits low-center; gold carries the keyword **confiance**. Macro motion: `multi-phase-camera` slow forward travelling/push toward the speaker, echoing the narration's future-pacing — the room opens up as we move in. `asr-keyword-glow` lifts **confiance** as the line resolves — the one live element. Whitespace stays generous over the audience. Eye rides the forward push, crossfading toward the CTA poster.\n\n"
+        }
+      }
+    },
+    {
+      "worker_id": "w6",
+      "scene_ids": [
+        "scene_6"
+      ],
+      "scenes": {
+        "scene_6": {
+          "start_s": 31.004,
+          "effects": [
+            "coordinate-target-zoom",
+            "press-release-spring",
+            "svg-icon-enrichment",
+            "sine-wave-loop"
+          ],
+          "rule_paths": [
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/coordinate-target-zoom.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/press-release-spring.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/svg-icon-enrichment.md",
+            "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
+          ],
+          "assetCandidates": [],
+          "estimatedDuration_s": 3.455,
+          "voicePath": "assets/voice/scene_6.wav",
+          "wordsPath": "",
+          "blueprint": "based-on `cta-morph-press`",
+          "design_chunks": {
+            "tokens_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/tokens.css",
+            "easings_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/easings.js",
+            "voice_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/voice.md",
+            "hints_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/composition-hints.md",
+            "type_roles_file": "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/type-roles.md",
+            "components": [
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/aurora-bg-fallback.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-media-bar.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-menu.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-notification.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-pill-chip.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-slider.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-toggle.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/glass-widget-card.html",
+              "/home/user/Enomah/videos/art-bien-parler/design-system/chunks/components/liquid-stage.html"
+            ]
+          },
+          "creative_brief": "**PrimarySubjectTimeline:** 0–1.6s poster image primary (centered, scaling in); 1.6–4.12s the gold \"TÉLÉCHARGER MAINTENANT\" button is primary with the animated arrow, poster demotes to a held backdrop, brand mark \"eMoneyMind Pro\" a small supporting line.\n**Handoff:** When the CTA button locks, the poster stops moving and recedes one step (it becomes the held backdrop, not a competing subject); the button owns the center safe zone. Camera push does not count as the handoff — the poster's motion stop and contrast drop do.\n\nMotivation and urgency — a decisive, premium close; energetic but classy, resolving to stillness then black. Centered composition on the navy gradient ground (not a photo bleed): a faint gold-bokeh/starfield from layered radial-gradients is the ambient. `public/img/s6_poster.jpg` (full product poster — title, \"Télécharge maintenant ton Ebook !\", price 35.000 → 1.999 FCFA) scales in large and centered via `coordinate-target-zoom`. Below it, a pulsing GOLD \"TÉLÉCHARGER MAINTENANT\" button with an animated gold arrow pointing to it (`svg-icon-enrichment` drives the arrow's nudging motion), and the small \"eMoneyMind Pro\" brand mark as a text line — its bottom edge held above the lower safe area. The button enters and presses/settles via `press-release-spring`, then idles with a `sine-wave-loop` gold glow-pulse as the one live element (the on-screen copy \"📘 Télécharge ton Ebook maintenant\" / \"Commence ta transformation aujourd'hui\"). **stillness-before-climax** (~0.4s) after the poster lands and before the button pulses, so the call to action lands as a beat. The whole frame fades toward black at the very end. Eye locks on the pulsing button — final destination.\n"
+        }
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "from": "scene_1",
+      "to": "scene_2",
+      "type": "crossfade",
+      "direction": null,
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_2",
+      "to": "scene_3",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    },
+    {
+      "from": "scene_3",
+      "to": "scene_4",
+      "type": "zoom-through",
+      "direction": null,
+      "duration_s": 0.4
+    },
+    {
+      "from": "scene_4",
+      "to": "scene_5",
+      "type": "crossfade",
+      "direction": null,
+      "duration_s": 0.5
+    },
+    {
+      "from": "scene_5",
+      "to": "scene_6",
+      "type": "blur-crossfade",
+      "direction": null,
+      "duration_s": 0.6
+    }
+  ],
+  "sfx": []
+}

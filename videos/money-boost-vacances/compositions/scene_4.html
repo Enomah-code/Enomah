@@ -1,0 +1,224 @@
+<template id="scene_4-template">
+  <div id="root" class="scene_4-root" data-composition-id="scene_4" data-width="1080" data-height="1920" data-duration="8.192" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background:
+          radial-gradient(120% 80% at 50% 18%, #141414 0%, #0A0A0A 60%, #060606 100%);
+        font-family: var(--font-body);
+        color: var(--brand-costume);
+      }
+      #root *,
+      #root *::before,
+      #root *::after { box-sizing: border-box; }
+
+      /* faint gold dust deco (background layer) */
+      .s4-dust {
+        position: absolute; inset: 0; z-index: 0; pointer-events: none;
+        background:
+          radial-gradient(2px 2px at 18% 30%, rgba(212,175,55,0.22), transparent 60%),
+          radial-gradient(2px 2px at 82% 22%, rgba(212,175,55,0.16), transparent 60%),
+          radial-gradient(2px 2px at 70% 70%, rgba(212,175,55,0.14), transparent 60%),
+          radial-gradient(2px 2px at 30% 82%, rgba(212,175,55,0.18), transparent 60%);
+      }
+
+      /* world wrapper for viewport-change vertical drift */
+      .s4-world {
+        position: absolute; inset: 0; z-index: 1;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+        padding: 120px 80px;
+      }
+
+      .s4-eyebrow {
+        font-family: var(--font-mono);
+        font-size: 26px;
+        letter-spacing: 7px;
+        text-transform: uppercase;
+        color: var(--brand-primary);
+        text-align: center;
+        margin-bottom: 56px;
+        opacity: 0;
+      }
+
+      .s4-stack {
+        display: flex; flex-direction: column; align-items: stretch;
+        gap: 36px;
+        width: 100%;
+      }
+
+      .s4-card {
+        position: relative;
+        height: 312px;
+        display: flex; flex-direction: row; align-items: center; gap: 40px;
+        padding: 0 56px;
+        border-radius: 28px;
+        background: linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(212,175,55,0.55);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+        opacity: 0;
+        will-change: transform;
+      }
+      /* gold hairline rule along the top edge of each card */
+      .s4-card::after {
+        content: "";
+        position: absolute; left: 56px; right: 56px; top: 28px; height: 2px;
+        background: linear-gradient(90deg, transparent, var(--brand-primary), transparent);
+        opacity: 0.85;
+      }
+
+      .s4-icon {
+        flex: 0 0 auto;
+        width: 132px; height: 132px;
+        display: grid; place-items: center;
+        font-size: 72px; line-height: 1;
+        border-radius: 22px;
+        background: rgba(212,175,55,0.10);
+        border: 1px solid rgba(212,175,55,0.35);
+      }
+
+      .s4-label {
+        font-family: var(--font-mono);
+        font-size: 44px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        line-height: 1.18;
+        text-transform: uppercase;
+        color: var(--brand-costume);
+      }
+      .s4-card4 .s4-label { color: var(--brand-primary); }
+
+      /* press-release-spring glow burst layer behind the climax card */
+      .s4-burst {
+        position: absolute; inset: 0; z-index: 0;
+        border-radius: 28px;
+        background: radial-gradient(60% 60% at 50% 50%, rgba(212,175,55,0.45), transparent 70%);
+        filter: blur(60px);
+        opacity: 0;
+        transform: scale(1);
+        pointer-events: none;
+      }
+    </style>
+
+    <div class="s4-dust"></div>
+
+    <div class="s4-world">
+      <div class="s4-eyebrow" id="s4-eyebrow">DES SERVICES SIMPLES, TRÈS DEMANDÉS</div>
+
+      <div class="s4-stack">
+        <div class="s4-card s4-card1" id="s4-card1">
+          <div class="s4-icon">📄</div>
+          <div class="s4-label">CRÉATION DE CV</div>
+        </div>
+        <div class="s4-card s4-card2" id="s4-card2">
+          <div class="s4-icon">🎨</div>
+          <div class="s4-label">FLYERS CANVA</div>
+        </div>
+        <div class="s4-card s4-card3" id="s4-card3">
+          <div class="s4-icon">📱</div>
+          <div class="s4-label">GESTION RÉSEAUX SOCIAUX</div>
+        </div>
+        <div class="s4-card s4-card4" id="s4-card4">
+          <div class="s4-burst" id="s4-burst"></div>
+          <div class="s4-icon">🤖</div>
+          <div class="s4-label">SERVICES IA</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = { snap: 0.28, med: 0.5, slow: 1.1 };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // viewport-change — gentle continuous vertical drift on the whole stack (macro motion)
+      const world = document.querySelector(".s4-world");
+      const cam = { x: 0, y: 0, scale: 1.0 };
+      function applyCamera() {
+        world.style.transform = "translate(" + cam.x + "px, " + cam.y + "px) scale(" + cam.scale + ")";
+      }
+      applyCamera();
+      // slow downward-then-settle parallax drift across the full scene
+      tl.fromTo(cam,
+        { y: -26, scale: 1.04 },
+        { y: 10, scale: 1.0, duration: 8.192, ease: EASE.drift, onUpdate: applyCamera },
+        0);
+
+      // eyebrow reveal
+      tl.fromTo("#s4-eyebrow",
+        { opacity: 0, y: -18 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+        0.2);
+
+      // center-outward-expansion — cards begin clustered at stack center (y collapsed),
+      // fan out to their resting rows, staggered ~1.1s so each lands as its service is named.
+      const cards = [
+        { sel: "#s4-card1", from: -300, at: 0.45 },
+        { sel: "#s4-card2", from: -110, at: 1.55 },
+        { sel: "#s4-card3", from:  110, at: 2.65 },
+        { sel: "#s4-card4", from:  300, at: 3.75 },
+      ];
+      cards.forEach(function (c) {
+        tl.fromTo(c.sel,
+          { opacity: 0, y: c.from, scale: 0.78 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.85, ease: EASE.entry },
+          c.at);
+      });
+
+      // press-release-spring — soft tap pulse on the SERVICES IA card as the list climaxes
+      const PRESS_START = 4.75;
+      const PRESS_DUR = 0.16;
+      const RELEASE_START = PRESS_START + PRESS_DUR; // 4.91
+      tl.to("#s4-card4",
+        { scale: 0.94, duration: PRESS_DUR, ease: "power1.in" },
+        PRESS_START);
+      tl.to("#s4-card4",
+        { scale: 1, duration: 0.6, ease: "back.out(2.0)" },
+        RELEASE_START);
+      // burst glow behind the climax card, triggered with release
+      tl.fromTo("#s4-burst",
+        { scale: 1, opacity: 0 },
+        { scale: 1.4, opacity: 0.8, duration: 0.5, ease: "power2.out" },
+        RELEASE_START);
+      tl.to("#s4-burst",
+        { opacity: 0, duration: 0.6, ease: "power2.in" },
+        RELEASE_START + 0.5);
+
+      // sine-wave-loop — settled cards drift as the one live element until scene end
+      const idleEls = [
+        document.getElementById("s4-card1"),
+        document.getElementById("s4-card2"),
+        document.getElementById("s4-card3"),
+        document.getElementById("s4-card4"),
+      ];
+      const IDLE_START = 5.6;
+      const IDLE_DUR = 8.192 - IDLE_START; // 2.592
+      const AMP = 3; // per-card translate amplitude (4 concurrent → small)
+      const phase = { p: 0 };
+      tl.to(phase,
+        {
+          p: Math.PI * 2 * 1.0,
+          duration: IDLE_DUR,
+          ease: "none",
+          onUpdate: function () {
+            for (let i = 0; i < idleEls.length; i++) {
+              const off = Math.sin(phase.p + i * (Math.PI / 2)) * AMP;
+              idleEls[i].style.transform = "translateY(" + off + "px)";
+            }
+          },
+        },
+        IDLE_START);
+
+      window.__timelines["scene_4"] = tl;
+    </script>
+  </div>
+</template>

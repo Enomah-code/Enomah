@@ -1,0 +1,312 @@
+<template id="scene_4-template">
+  <div id="root" class="scene_4-root" data-composition-id="scene_4" data-width="1080" data-height="1920" data-duration="6.869" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background-color: var(--canvas);
+        background-image: radial-gradient(var(--ink) 1.5px, transparent 1.5px);
+        background-size: 36px 36px;
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Macro-camera wrappers — outer scales (settle zoom), inner counter-translates */
+      .s4-zoom-outer {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s4-zoom-inner {
+        display: grid;
+        place-items: center;
+        will-change: transform;
+      }
+
+      /* Vertical stage: wordmark on top, module chips stacked below */
+      .s4-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 64px;
+        padding: 0 60px;
+      }
+
+      /* Brand wordmark lockup */
+      .s4-wordmark {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        will-change: transform;
+      }
+      .s4-mark-row {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 22px;
+        white-space: nowrap;
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 168px;
+        line-height: 0.92;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+      }
+      .s4-mark-money {
+        color: var(--brand-primary);
+      }
+      .s4-mark-boost {
+        color: var(--brand-secondary);
+      }
+      .s4-mark-year {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 64px;
+        letter-spacing: 0.34em;
+        color: var(--ink);
+        background: var(--deco-1);
+        border: var(--border-loud);
+        box-shadow: var(--shadow-hard);
+        padding: 8px 26px 8px 34px;
+      }
+
+      /* Module chip stack */
+      .s4-modules {
+        position: relative;
+        width: 760px;
+        height: 560px;
+      }
+      .s4-chip {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 18px 30px;
+        border: var(--border-bold);
+        box-shadow: var(--shadow-hard);
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 38px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink);
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .s4-chip-num {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 46px;
+        line-height: 1;
+        color: var(--ink);
+        opacity: 0.62;
+        min-width: 56px;
+      }
+      .s4-chip-1 { background: var(--deco-1); }
+      .s4-chip-2 { background: var(--deco-2); }
+      .s4-chip-3 { background: var(--deco-3); }
+      .s4-chip-4 { background: var(--deco-4); }
+      .s4-chip-5 { background: var(--brand-costume); }
+
+      /* Decorative corner-pins on the brand frame */
+      .s4-corner {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: var(--ink);
+        z-index: 0;
+      }
+      .s4-corner-tl { top: 64px; left: 64px; }
+      .s4-corner-tr { top: 64px; right: 64px; }
+      .s4-corner-bl { bottom: 64px; left: 64px; }
+      .s4-corner-br { bottom: 64px; right: 64px; }
+    </style>
+
+    <!-- Decorative corner-pins (background layer, full-bleed exempt) -->
+    <span class="s4-corner s4-corner-tl"></span>
+    <span class="s4-corner s4-corner-tr"></span>
+    <span class="s4-corner s4-corner-bl"></span>
+    <span class="s4-corner s4-corner-br"></span>
+
+    <!-- Macro-camera wrappers: outer = settle zoom, inner = counter-translate -->
+    <div class="s4-zoom-outer" id="s4-zoom-outer">
+      <div class="s4-zoom-inner" id="s4-zoom-inner">
+        <div class="s4-stage" id="s4-stage">
+          <!-- Brand wordmark — assembles via discrete-text-sequence, settles via coordinate-target-zoom -->
+          <div class="s4-wordmark" id="s4-wordmark">
+            <span class="s4-mark-row">
+              <span class="s4-mark-money" id="s4-mark-money"></span>
+              <span class="s4-mark-boost" id="s4-mark-boost"></span>
+            </span>
+            <span class="s4-mark-year" id="s4-mark-year"></span>
+          </div>
+
+          <!-- Five module tags — cascade-drop via center-outward-expansion -->
+          <div class="s4-modules" id="s4-modules">
+            <div class="s4-chip s4-chip-1" data-target-y="-240"><span class="s4-chip-num">01</span>REVENUS EN LIGNE</div>
+            <div class="s4-chip s4-chip-2" data-target-y="-120"><span class="s4-chip-num">02</span>FINANCES PERSONNELLES</div>
+            <div class="s4-chip s4-chip-3" data-target-y="0"><span class="s4-chip-num">03</span>INVESTISSEMENT</div>
+            <div class="s4-chip s4-chip-4" data-target-y="120"><span class="s4-chip-num">04</span>BUSINESS DIGITAL</div>
+            <div class="s4-chip s4-chip-5" data-target-y="240"><span class="s4-chip-num">05</span>INTELLIGENCE ARTIFICIELLE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // EASE / DUR — pasted from design-system/chunks/easings.js
+      const EASE = {
+        entry: "back.out(2.4)", // bouncy slam-pop
+        emphasis: "expo.out", // hard arrival
+        exit: "power4.in", // dive off
+        drift: "sine.inOut", // only for ambient breathing
+      };
+      const DUR = {
+        snap: 0.18,
+        med: 0.45,
+        slow: 0.9,
+      };
+
+      window.__timelines = window.__timelines || {};
+
+      (async () => {
+        await document.fonts.ready; // metrics final before measuring the zoom target
+
+        const TOTAL = 6.869;
+        const moneyEl = document.getElementById("s4-mark-money");
+        const boostEl = document.getElementById("s4-mark-boost");
+        const yearEl = document.getElementById("s4-mark-year");
+
+        const tl = gsap.timeline({ paused: true });
+
+        // ---- Phase 1: discrete-text-sequence — wordmark assembles word-by-word ----
+        // Three discrete tracks (MONEY / BOOST / 2026) reach full state by ~1.0s.
+        const SEQ_MONEY = [
+          { t: 0.00, text: "" },
+          { t: 0.10, text: "MON" },
+          { t: 0.22, text: "MONEY" },
+        ];
+        const SEQ_BOOST = [
+          { t: 0.00, text: "" },
+          { t: 0.40, text: "BO" },
+          { t: 0.54, text: "BOOST" },
+        ];
+        const SEQ_YEAR = [
+          { t: 0.00, text: "" },
+          { t: 0.78, text: "20" },
+          { t: 0.92, text: "2026" },
+        ];
+        function textAt(seq, time) {
+          for (let i = seq.length - 1; i >= 0; i--) {
+            if (time >= seq[i].t) return seq[i].text;
+          }
+          return "";
+        }
+        const driver = { t: 0 };
+        tl.to(
+          driver,
+          {
+            t: TOTAL,
+            duration: TOTAL,
+            ease: "none",
+            onUpdate: () => {
+              moneyEl.textContent = textAt(SEQ_MONEY, driver.t);
+              boostEl.textContent = textAt(SEQ_BOOST, driver.t);
+              yearEl.textContent = textAt(SEQ_YEAR, driver.t);
+            },
+          },
+          0,
+        );
+
+        // ---- coordinate-target-zoom — settle the assembled wordmark dead-center ----
+        // Measure the wordmark's real laid-out center; counter-translate = -offset.
+        const W = 1080, H = 1920;
+        const r = document.getElementById("s4-wordmark").getBoundingClientRect();
+        const TARGET_OFFSET_X = r.left + r.width / 2 - W / 2;
+        const TARGET_OFFSET_Y = r.top + r.height / 2 - H / 2;
+        const counterX = -TARGET_OFFSET_X;
+        const counterY = -TARGET_OFFSET_Y;
+        // Gentle settle zoom — headroom-capped so the wordmark stays <= 88% canvas width.
+        const maxScale = Math.min((0.88 * W) / r.width, (0.88 * H) / r.height);
+        const ZOOM_SCALE = Math.min(1.16, maxScale);
+
+        // Start zoomed-in slightly + offset, settle to centered rest by ~1.1s.
+        tl.fromTo(
+          "#s4-zoom-outer",
+          { scale: ZOOM_SCALE },
+          { scale: 1, duration: DUR.slow, ease: EASE.emphasis },
+          0.2,
+        );
+        tl.fromTo(
+          "#s4-zoom-inner",
+          { x: counterX * 0.5, y: counterY * 0.5 },
+          { x: 0, y: 0, duration: DUR.slow, ease: EASE.emphasis },
+          0.2,
+        );
+
+        // ---- stillness-before-climax: 0.6s hold (1.1s -> 1.7s) — only drift continues ----
+
+        // ---- center-outward-expansion — five module chips stagger-drop into the stack ----
+        const CASCADE_START = 1.7;
+        const STAGGER = 0.12; // 120ms apart; 5 chips => 480ms total, <= 500ms
+        const chips = document.querySelectorAll(".s4-chip");
+        chips.forEach((el, i) => {
+          const targetY = Number(el.dataset.targetY);
+          tl.fromTo(
+            el,
+            { xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 0.6, opacity: 0 },
+            {
+              x: 0,
+              y: targetY,
+              scale: 1,
+              opacity: 1,
+              duration: DUR.med,
+              ease: EASE.entry,
+            },
+            CASCADE_START + i * STAGGER,
+          );
+        });
+
+        // ---- sine-wave-loop — hero wordmark breathing (+/-3%) + gentle macro settle-drift ----
+        const wordmark = document.getElementById("s4-wordmark");
+        const stage = document.getElementById("s4-stage");
+        const IDLE_START = 0.2; // breathing begins right after assembly kicks off
+        const IDLE_DUR = TOTAL - IDLE_START;
+        const CYCLES = 3; // ~2.5s per breath across the idle window
+        const FADE_FRAC = 0.18; // settle to rest in the final ~18% before the transition
+        const phase = { p: 0 };
+        tl.to(
+          phase,
+          {
+            p: Math.PI * 2 * CYCLES,
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: () => {
+              const t = phase.p / (Math.PI * 2 * CYCLES); // 0 -> 1
+              const env = t < 1 - FADE_FRAC ? 1 : (1 - t) / FADE_FRAC;
+              // Hero breathing +/-3%
+              const scale = 1 + Math.sin(phase.p) * 0.03 * env;
+              const yBob = Math.sin(phase.p) * 3 * env;
+              wordmark.style.transform = "translateY(" + yBob + "px) scale(" + scale + ")";
+              // Macro settle-drift on the stage (out-of-phase, very small)
+              const driftY = Math.sin(phase.p + Math.PI / 2) * 4 * env;
+              stage.style.transform = "translateY(" + driftY + "px)";
+            },
+          },
+          IDLE_START,
+        );
+
+        window.__timelines["scene_4"] = tl;
+      })();
+    </script>
+  </div>
+</template>

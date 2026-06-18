@@ -1,0 +1,351 @@
+<template id="scene_4-template">
+  <div id="root" class="scene_4-root" data-composition-id="scene_4" data-width="1080" data-height="1920" data-duration="7.351" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      #root {
+        background: var(--navy);
+        font-family: var(--font-body);
+      }
+      #root *,
+      #root *::before,
+      #root *::after {
+        box-sizing: border-box;
+      }
+
+      /* Camera wrapper drives the slow Ken-Burns push on the full-bleed photo. */
+      .s4-camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s4-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 38%;
+      }
+      /* Navy scrim — top and bottom darken so white/gold text stays legible. */
+      .s4-scrim {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(11,27,46,0.88) 0%, rgba(11,27,46,0.30) 26%, rgba(11,27,46,0.12) 48%, rgba(11,27,46,0.55) 74%, rgba(11,27,46,0.94) 100%);
+        pointer-events: none;
+      }
+
+      /* Foreground reading column — flow layout, no overlap by construction. */
+      .s4-stage {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 96px 200px;
+      }
+
+      .s4-titleblock {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 22px;
+        will-change: transform;
+        margin-bottom: 64px;
+      }
+      .s4-eyebrow {
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 30px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--gold-bright);
+      }
+      .s4-hairline {
+        width: 132px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.95;
+      }
+      .s4-title {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 104px;
+        line-height: 1.04;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        color: var(--gold);
+        text-shadow: 0 6px 30px rgba(0,0,0,0.55);
+        margin: 0;
+        max-width: 14ch;
+      }
+      .s4-subtitle {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 46px;
+        line-height: 1.2;
+        letter-spacing: 0.01em;
+        color: var(--ink);
+        text-shadow: 0 3px 18px rgba(0,0,0,0.5);
+        margin: 0;
+      }
+
+      /* Check list — four gold benefits in flow, no overlap. */
+      .s4-checks {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 26px;
+        width: 100%;
+        max-width: 640px;
+      }
+      .s4-check {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        opacity: 0;
+      }
+      .s4-checkmark {
+        flex: 0 0 auto;
+        width: 56px;
+        height: 56px;
+      }
+      .s4-checkmark path {
+        fill: none;
+        stroke: var(--gold-bright);
+        stroke-width: 7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .s4-checklabel {
+        font-family: var(--font-display);
+        font-weight: 650;
+        font-size: 52px;
+        line-height: 1.1;
+        letter-spacing: 0.01em;
+        color: #C8B07A;
+        text-shadow: 0 3px 16px rgba(0,0,0,0.5);
+        will-change: transform, text-shadow;
+        transform-origin: 0% 50%;
+        display: inline-block;
+      }
+    </style>
+
+    <div class="s4-camera" id="s4-camera">
+      <img class="s4-photo clip" src="public/img/s4_solution.jpg" data-start="0" data-duration="7.351" data-track-index="0" alt="" />
+      <div class="s4-scrim"></div>
+    </div>
+
+    <div class="s4-stage">
+      <div class="s4-titleblock" id="s4-titleblock">
+        <div class="s4-eyebrow" id="s4-eyebrow">Enfin</div>
+        <div class="s4-hairline" id="s4-hairline"></div>
+        <h1 class="s4-title" id="s4-title">L'art de bien parler</h1>
+        <p class="s4-subtitle" id="s4-subtitle">Maîtriser l'éloquence</p>
+      </div>
+
+      <div class="s4-checks">
+        <div class="s4-check" id="s4-check-0">
+          <svg class="s4-checkmark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><path class="s4-tick" d="M 10 30 L 23 43 L 47 14" /></svg>
+          <span class="s4-checklabel" data-word="confiance">Confiance</span>
+        </div>
+        <div class="s4-check" id="s4-check-1">
+          <svg class="s4-checkmark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><path class="s4-tick" d="M 10 30 L 23 43 L 47 14" /></svg>
+          <span class="s4-checklabel" data-word="eloquence">Éloquence</span>
+        </div>
+        <div class="s4-check" id="s4-check-2">
+          <svg class="s4-checkmark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><path class="s4-tick" d="M 10 30 L 23 43 L 47 14" /></svg>
+          <span class="s4-checklabel" data-word="persuasion">Persuasion</span>
+        </div>
+        <div class="s4-check" id="s4-check-3">
+          <svg class="s4-checkmark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><path class="s4-tick" d="M 10 30 L 23 43 L 47 14" /></svg>
+          <span class="s4-checklabel" data-word="priseparole">Prise de parole</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = {
+        snap: 0.28,
+        med: 0.5,
+        slow: 1.1,
+      };
+
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const TOTAL = 7.351;
+      const camera = document.querySelector("#s4-camera");
+
+      /* multi-phase-camera — slow Ken-Burns push on the book photo.
+         Phase 1: settle in from a touch wide; Phase 3: slow climax push. */
+      const phase = { scale: 1.04 };
+      tl.to(phase, { scale: 1.06, duration: 1.6, ease: "power2.out" }, 0.2);
+      tl.to(phase, { scale: 1.12, duration: 3.4, ease: "power2.inOut" }, 4.2);
+
+      /* Continuous micro-drift overlaid on the phase scale. */
+      const drift = { p: 0 };
+      tl.to(
+        drift,
+        {
+          p: Math.PI * 2 * 1.5,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            const dx = Math.sin(drift.p) * 6;
+            const dy = Math.sin(drift.p * 1.3) * 3;
+            camera.style.transform = "scale(" + phase.scale + ") translate(" + dx + "px, " + dy + "px)";
+          },
+        },
+        0,
+      );
+
+      /* Phase 1 (~0–2s) — title block rises in display tier. */
+      tl.fromTo(
+        "#s4-eyebrow",
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+        0.25,
+      );
+      tl.fromTo(
+        "#s4-hairline",
+        { opacity: 0, scaleX: 0 },
+        { opacity: 0.95, scaleX: 1, duration: DUR.med, ease: EASE.entry },
+        0.45,
+      );
+      tl.fromTo(
+        "#s4-title",
+        { opacity: 0, y: 40, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "power3.out" },
+        0.6,
+      );
+      tl.fromTo(
+        "#s4-subtitle",
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+        1.25,
+      );
+
+      /* sine-wave-loop — the title block is the one live hero, breathing
+         after it settles. Long-idle so amplitude is kept very low and fades
+         to rest over the tail. IDLE_START after title settles (~2s). */
+      const titleblock = document.querySelector("#s4-titleblock");
+      const breath = { p: 0 };
+      const IDLE_START = 2.05;
+      const IDLE_DUR = TOTAL - IDLE_START;
+      const CYCLES = 2.4;
+      const FADE_FRAC = 0.22;
+      tl.to(
+        breath,
+        {
+          p: Math.PI * 2 * CYCLES,
+          duration: IDLE_DUR,
+          ease: "none",
+          onUpdate: () => {
+            const t = breath.p / (Math.PI * 2 * CYCLES);
+            const env = t < 1 - FADE_FRAC ? 1 : (1 - t) / FADE_FRAC;
+            const y = Math.sin(breath.p) * 3 * env;
+            const sc = 1 + Math.sin(breath.p) * 0.006 * env;
+            titleblock.style.transform = "translateY(" + y + "px) scale(" + sc + ")";
+          },
+        },
+        IDLE_START,
+      );
+
+      /* svg-path-draw — measure each checkmark path and prime its dash. */
+      const ticks = document.querySelectorAll(".s4-tick");
+      ticks.forEach((p) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = "" + len;
+        p.style.strokeDashoffset = "" + len;
+      });
+
+      /* Phase 2 (~2.55–5.5s) — four check items stagger in down the reading
+         zone (stillness ~0.5s held after title before the first draws).
+         Each row fades up, its checkmark draws live. Total stagger ≤500ms
+         between row starts. */
+      const CHECK_START = 2.55;
+      const STAGGER = 0.42;
+      for (let i = 0; i < 4; i++) {
+        const at = CHECK_START + i * STAGGER;
+        tl.fromTo(
+          "#s4-check-" + i,
+          { opacity: 0, x: -24 },
+          { opacity: 1, x: 0, duration: 0.5, ease: EASE.entry },
+          at,
+        );
+        tl.to(
+          "#s4-check-" + i + " .s4-tick",
+          { strokeDashoffset: 0, duration: 0.46, ease: "power2.out" },
+          at + 0.08,
+        );
+      }
+
+      /* asr-keyword-glow — the spoken benefit words warm/glow on cue.
+         Single linear driver, attack-sustain-decay-rest envelope; karaoke-ish
+         contrast (dim gold rest → bright gold peak). Timings monotonic. */
+      const REST_LEVEL = 0.18;
+      const ATTACK_DUR = 0.18;
+      const RELEASE = 0.4;
+      const MAX_BLUR = 26;
+      const MAX_SCALE_BOOST = 0.14;
+      const REST_RGB = { r: 200, g: 176, b: 122 };
+      const ACTIVE_RGB = { r: 244, g: 224, b: 168 };
+      const TIMINGS = {
+        confiance: { start: 2.75, end: 3.25 },
+        eloquence: { start: 3.45, end: 3.95 },
+        persuasion: { start: 4.15, end: 4.7 },
+        priseparole: { start: 4.95, end: 5.7 },
+      };
+      function envelope(time, start, end) {
+        const releaseEnd = end + RELEASE;
+        if (time < start) return 0;
+        if (time < end) return Math.min((time - start) / ATTACK_DUR, 1);
+        if (time < releaseEnd) {
+          const decay = (time - end) / RELEASE;
+          return 1 - decay * (1 - REST_LEVEL);
+        }
+        return REST_LEVEL;
+      }
+      function lerpC(a, b, t) {
+        return Math.round(a + (b - a) * t);
+      }
+      const glowWords = document.querySelectorAll(".s4-checklabel");
+      const glowDriver = { t: 0 };
+      tl.to(
+        glowDriver,
+        {
+          t: TOTAL,
+          duration: TOTAL,
+          ease: "none",
+          onUpdate: () => {
+            glowWords.forEach((el) => {
+              const timing = TIMINGS[el.dataset.word];
+              if (!timing) return;
+              const env = envelope(glowDriver.t, timing.start, timing.end);
+              const blur = MAX_BLUR * env;
+              const sc = 1 + MAX_SCALE_BOOST * env;
+              const r = lerpC(REST_RGB.r, ACTIVE_RGB.r, env);
+              const g = lerpC(REST_RGB.g, ACTIVE_RGB.g, env);
+              const b = lerpC(REST_RGB.b, ACTIVE_RGB.b, env);
+              el.style.color = "rgb(" + r + ", " + g + ", " + b + ")";
+              el.style.textShadow = "0 0 " + blur + "px rgba(212,175,55," + (0.2 + env * 0.6) + "), 0 3px 16px rgba(0,0,0,0.5)";
+              el.style.transform = "scale(" + sc + ")";
+            });
+          },
+        },
+        0,
+      );
+
+      window.__timelines["scene_4"] = tl;
+    </script>
+  </div>
+</template>
