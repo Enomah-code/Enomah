@@ -1,0 +1,116 @@
+{
+  "project": "L'ART DE BIEN PARLER — EBOOK",
+  "narrativeArchetype": "Emotional Pain-Agitate-Solve-Transform-CTA",
+  "orientation": "portrait",
+  "emotionalArc": "Frozen and unheard → stress and self-doubt → frustration as others win → discovery of the ebook → confident transformation → download CTA.",
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "sceneName": "HOOK — BLOQUÉ",
+      "transition": {
+        "intent": "cut",
+        "description": "Young man in a meeting, all eyes on him, he opens his mouth but no words come. Close-up, slow zoom. White flash transition."
+      },
+      "narrativeIntent": {
+        "type": "hook",
+        "narrativeRole": "Confront the viewer with being unable to express good ideas.",
+        "keyMessage": "Good ideas but can't express them?",
+        "persuasion": "Pain validation",
+        "emotionalBeat": "Anxiety"
+      },
+      "assetCandidates": [],
+      "script": "Tu as de bonnes idées mais tu n'arrives jamais à les exprimer ?",
+      "estimatedDuration": "4s"
+    },
+    {
+      "sceneNumber": 2,
+      "sceneName": "LE PROBLÈME — TU PERDS TES MOYENS",
+      "transition": {
+        "intent": "slide",
+        "description": "Fast montage: nervous eyes, trembling hands, hesitation, awkward silence. Close-ups, slight slow-mo. Quick fade."
+      },
+      "narrativeIntent": {
+        "type": "pain_point",
+        "narrativeRole": "Agitate the social stress.",
+        "keyMessage": "Stress, hesitation, lack of confidence.",
+        "persuasion": "Pain agitation",
+        "emotionalBeat": "Stress"
+      },
+      "assetCandidates": [],
+      "script": "Tu sais quoi dire, mais dès que plusieurs personnes te regardent, tu stresses, tu hésites et tu perds tes moyens.",
+      "estimatedDuration": "6s"
+    },
+    {
+      "sceneNumber": 3,
+      "sceneName": "LA FRUSTRATION — IDÉES INVISIBLES",
+      "transition": {
+        "intent": "zoom",
+        "description": "Someone else speaks confidently, people nod; main character stays silent, regretful. Shot/reverse, zoom on frustrated face. Whoosh."
+      },
+      "narrativeIntent": {
+        "type": "pain_point",
+        "narrativeRole": "Stakes: others take the opportunities.",
+        "keyMessage": "Your ideas go unnoticed.",
+        "persuasion": "Loss aversion",
+        "emotionalBeat": "Frustration, regret"
+      },
+      "assetCandidates": [],
+      "script": "Résultat ? Tes idées passent inaperçues et d'autres prennent les opportunités à ta place.",
+      "estimatedDuration": "5s"
+    },
+    {
+      "sceneNumber": 4,
+      "sceneName": "LA SOLUTION — L'EBOOK",
+      "transition": {
+        "intent": "zoom",
+        "description": "Smartphone shows the ebook cover; 3D book animation, pages flip; icons: Confiance, Éloquence, Persuasion, Prise de parole. Light glow."
+      },
+      "narrativeIntent": {
+        "type": "product_intro",
+        "narrativeRole": "Introduce the ebook as the solution.",
+        "keyMessage": "Speak with confidence, captivate, convince.",
+        "persuasion": "Solution + benefits",
+        "emotionalBeat": "Hope"
+      },
+      "assetCandidates": [],
+      "script": "Avec le guide, L'Art de Bien Parler, maîtriser l'éloquence, tu apprends à parler avec assurance, captiver ton public et convaincre efficacement.",
+      "estimatedDuration": "7s"
+    },
+    {
+      "sceneNumber": 5,
+      "sceneName": "LA TRANSFORMATION",
+      "transition": {
+        "intent": "slide",
+        "description": "Same character now standing before a group, confident smile, assured gestures, attentive audience. Forward travelling, hero shot. Zoom to ebook."
+      },
+      "narrativeIntent": {
+        "type": "transformation",
+        "narrativeRole": "Show the after-state.",
+        "keyMessage": "Finally speak with confidence.",
+        "persuasion": "Future pacing",
+        "emotionalBeat": "Empowerment"
+      },
+      "assetCandidates": [],
+      "script": "Même si aujourd'hui tu es timide ou que tu manques de confiance et que tu n'arrives pas à t'exprimer.",
+      "estimatedDuration": "5s"
+    },
+    {
+      "sceneNumber": 6,
+      "sceneName": "CTA — TÉLÉCHARGE",
+      "transition": {
+        "intent": "cut",
+        "description": "Ebook cover full screen, premium light bg, animated arrow to pulsing button; brand logo; Acheter Maintenant; fade to black."
+      },
+      "narrativeIntent": {
+        "type": "cta",
+        "narrativeRole": "Drive the download now.",
+        "keyMessage": "Download now, start your transformation.",
+        "persuasion": "Direct command + urgency",
+        "emotionalBeat": "Motivation"
+      },
+      "assetCandidates": [],
+      "script": "Télécharge ton ibouk maintenant et commence ta transformation aujourd'hui.",
+      "estimatedDuration": "4s"
+    }
+  ]
+}
