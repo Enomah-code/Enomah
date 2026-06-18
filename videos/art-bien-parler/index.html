@@ -124,17 +124,17 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="31.424"
+      data-duration="33.473"
       data-width="1080"
       data-height="1920"
     >
-      <!-- HF-SCENE-CLIP scene_1 (0 → 3.072) -->
+      <!-- HF-SCENE-CLIP scene_1 (0 → 3.499) -->
       <div
         id="el-scene_1"
         data-composition-id="scene_1"
         data-composition-src="compositions/scene_1.html"
         data-start="0"
-        data-duration="3.572"
+        data-duration="3.999"
         data-track-index="0"
         data-width="1080"
         data-height="1920"
@@ -144,17 +144,17 @@
         class="clip"
         src="assets/voice/scene_1.wav"
         data-start="0"
-        data-duration="3.072"
+        data-duration="3.499"
         data-track-index="10"
       ></audio>
 
-      <!-- HF-SCENE-CLIP scene_2 (3.072 → 8.96) -->
+      <!-- HF-SCENE-CLIP scene_2 (3.499 → 9.75) -->
       <div
         id="el-scene_2"
         data-composition-id="scene_2"
         data-composition-src="compositions/scene_2.html"
-        data-start="3.072"
-        data-duration="6.288"
+        data-start="3.499"
+        data-duration="6.651"
         data-track-index="1"
         data-width="1080"
         data-height="1920"
@@ -163,18 +163,18 @@
         id="el-scene_2-voice"
         class="clip"
         src="assets/voice/scene_2.wav"
-        data-start="3.072"
-        data-duration="5.888000000000001"
+        data-start="3.499"
+        data-duration="6.2509999999999994"
         data-track-index="10"
       ></audio>
 
-      <!-- HF-SCENE-CLIP scene_3 (8.96 → 13.867) -->
+      <!-- HF-SCENE-CLIP scene_3 (9.75 → 14.913) -->
       <div
         id="el-scene_3"
         data-composition-id="scene_3"
         data-composition-src="compositions/scene_3.html"
-        data-start="8.96"
-        data-duration="5.307"
+        data-start="9.75"
+        data-duration="5.563"
         data-track-index="0"
         data-width="1080"
         data-height="1920"
@@ -183,18 +183,18 @@
         id="el-scene_3-voice"
         class="clip"
         src="assets/voice/scene_3.wav"
-        data-start="8.96"
-        data-duration="4.907"
+        data-start="9.75"
+        data-duration="5.163"
         data-track-index="10"
       ></audio>
 
-      <!-- HF-SCENE-CLIP scene_4 (13.867 → 22.038) -->
+      <!-- HF-SCENE-CLIP scene_4 (14.913 → 23.702) -->
       <div
         id="el-scene_4"
         data-composition-id="scene_4"
         data-composition-src="compositions/scene_4.html"
-        data-start="13.867"
-        data-duration="8.671"
+        data-start="14.913"
+        data-duration="9.289"
         data-track-index="1"
         data-width="1080"
         data-height="1920"
@@ -203,18 +203,18 @@
         id="el-scene_4-voice"
         class="clip"
         src="assets/voice/scene_4.wav"
-        data-start="13.867"
-        data-duration="8.171"
+        data-start="14.913"
+        data-duration="8.789000000000001"
         data-track-index="10"
       ></audio>
 
-      <!-- HF-SCENE-CLIP scene_5 (22.038 → 27.307) -->
+      <!-- HF-SCENE-CLIP scene_5 (23.702 → 29.27) -->
       <div
         id="el-scene_5"
         data-composition-id="scene_5"
         data-composition-src="compositions/scene_5.html"
-        data-start="22.038"
-        data-duration="5.869"
+        data-start="23.702"
+        data-duration="6.168"
         data-track-index="0"
         data-width="1080"
         data-height="1920"
@@ -223,18 +223,18 @@
         id="el-scene_5-voice"
         class="clip"
         src="assets/voice/scene_5.wav"
-        data-start="22.038"
-        data-duration="5.268999999999998"
+        data-start="23.702"
+        data-duration="5.567999999999998"
         data-track-index="10"
       ></audio>
 
-      <!-- HF-SCENE-CLIP scene_6 (27.307 → 31.424) -->
+      <!-- HF-SCENE-CLIP scene_6 (29.27 → 33.473) -->
       <div
         id="el-scene_6"
         data-composition-id="scene_6"
         data-composition-src="compositions/scene_6.html"
-        data-start="27.307"
-        data-duration="4.117"
+        data-start="29.27"
+        data-duration="4.203"
         data-track-index="1"
         data-width="1080"
         data-height="1920"
@@ -243,8 +243,8 @@
         id="el-scene_6-voice"
         class="clip"
         src="assets/voice/scene_6.wav"
-        data-start="27.307"
-        data-duration="4.117"
+        data-start="29.27"
+        data-duration="4.203"
         data-track-index="10"
       ></audio>
 
@@ -255,16 +255,16 @@
       window.__timelines["main"] = gsap.timeline({ paused: true });
       // ── scene transitions (injected by inject-transitions.mjs) ──
       (function () { var tl = window.__timelines["main"];
-        tl.to("#el-scene_1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 3.072);
-        tl.fromTo("#el-scene_2", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 3.072);
-        tl.to("#el-scene_2", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 8.96);
-        tl.fromTo("#el-scene_3", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 8.96);
-        tl.to("#el-scene_3", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 13.867);
-        tl.fromTo("#el-scene_4", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 13.867);
-        tl.to("#el-scene_4", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 22.038);
-        tl.fromTo("#el-scene_5", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 22.038);
-        tl.to("#el-scene_5", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 27.307);
-        tl.fromTo("#el-scene_6", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 27.307);
+        tl.to("#el-scene_1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 3.499);
+        tl.fromTo("#el-scene_2", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 3.499);
+        tl.to("#el-scene_2", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 9.75);
+        tl.fromTo("#el-scene_3", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 9.75);
+        tl.to("#el-scene_3", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 14.913);
+        tl.fromTo("#el-scene_4", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 14.913);
+        tl.to("#el-scene_4", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 23.702);
+        tl.fromTo("#el-scene_5", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 23.702);
+        tl.to("#el-scene_5", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 29.27);
+        tl.fromTo("#el-scene_6", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 29.27);
       })();
     </script>
   </body>

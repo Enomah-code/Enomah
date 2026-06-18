@@ -1,47 +1,47 @@
 {
- "tts_provider": "kokoro",
- "voice_id": "ff_siwis",
- "bgm_provider": null,
- "bgm_enabled": false,
- "bgm_path": null,
- "bgm_pending": false,
- "bgm_log": null,
- "bgm_pid": null,
- "bgm_mode": null,
- "bgm_target_duration_s": null,
- "bgm_seed_duration_s": null,
- "bgm_loop_count": null,
- "total_duration_s": 31.424,
- "scenes": {
-  "scene_1": {
-   "voicePath": "assets/voice/scene_1.wav",
-   "voiceDuration": 3.072,
-   "wordsPath": ""
-  },
-  "scene_2": {
-   "voicePath": "assets/voice/scene_2.wav",
-   "voiceDuration": 5.888,
-   "wordsPath": ""
-  },
-  "scene_3": {
-   "voicePath": "assets/voice/scene_3.wav",
-   "voiceDuration": 4.907,
-   "wordsPath": ""
-  },
-  "scene_4": {
-   "voicePath": "assets/voice/scene_4.wav",
-   "voiceDuration": 8.171,
-   "wordsPath": ""
-  },
-  "scene_5": {
-   "voicePath": "assets/voice/scene_5.wav",
-   "voiceDuration": 5.269,
-   "wordsPath": ""
-  },
-  "scene_6": {
-   "voicePath": "assets/voice/scene_6.wav",
-   "voiceDuration": 4.117,
-   "wordsPath": ""
+  "tts_provider": "kokoro",
+  "voice_id": "am_michael",
+  "bgm_provider": null,
+  "bgm_enabled": false,
+  "bgm_path": null,
+  "bgm_pending": false,
+  "bgm_log": null,
+  "bgm_pid": null,
+  "bgm_mode": null,
+  "bgm_target_duration_s": null,
+  "bgm_seed_duration_s": null,
+  "bgm_loop_count": null,
+  "total_duration_s": 33.472,
+  "scenes": {
+    "scene_1": {
+      "voicePath": "assets/voice/scene_1.wav",
+      "voiceDuration": 3.499,
+      "wordsPath": ""
+    },
+    "scene_2": {
+      "voicePath": "assets/voice/scene_2.wav",
+      "voiceDuration": 6.251,
+      "wordsPath": ""
+    },
+    "scene_3": {
+      "voicePath": "assets/voice/scene_3.wav",
+      "voiceDuration": 5.163,
+      "wordsPath": ""
+    },
+    "scene_4": {
+      "voicePath": "assets/voice/scene_4.wav",
+      "voiceDuration": 8.789,
+      "wordsPath": ""
+    },
+    "scene_5": {
+      "voicePath": "assets/voice/scene_5.wav",
+      "voiceDuration": 5.568,
+      "wordsPath": ""
+    },
+    "scene_6": {
+      "voicePath": "assets/voice/scene_6.wav",
+      "voiceDuration": 4.203,
+      "wordsPath": ""
+    }
   }
- }
 }

@@ -4,7 +4,7 @@
   "height": 1920,
   "captions_enabled": false,
   "film_direction": "**Palette:** 60% deep-navy ground (`--navy` / `--liquid-bg-fallback` cinematic gradient) — for photo scenes this is the navy scrim laid over the full-bleed image / for the CTA it is the literal canvas / 30% the photograph itself + white body text reading on the scrim / 10% accent: GOLD (`--gold` / `--gold-bright`) carries every serif title, the emphasised keyword in each line, hairline rules, checkmarks, and the CTA button + arrow. White is body/supporting text; gold is rare and always the focal word. Never flood gold.\n**Type:** display = Playfair-role serif for the product title, scene headlines and the gold keyword (elegant high-contrast); body = Inter-role for supporting sentences and check-item labels; no mono voice in this film. Hero claims sit in display tier, supporting sentences one tier down with clear 3:1 size + weight + color contrast.\n**Motion:** entries `EASE.entry`, large photo/hero blocks read as `heavy`; idle `EASE.drift`; exits none — each scene holds its final frame and the camera carries continuity. Budget: every scene gets ONE root-level macro motion — a slow Ken-Burns push/pan on the full-bleed photo (or dolly on the CTA poster) — plus at most one secondary live element (a gold keyword glow, a check stagger, or the CTA pulse). Everything else rests.\n**Ambient:** real photographs are the atmosphere — full-bleed, slow Ken-Burns, with a navy scrim gradient (top-and-bottom darken) under all text for legibility; CTA scene swaps to the navy gradient ground with a faint gold-bokeh/starfield from layered radial-gradients. No shader aurora (no GPU). A faint gold hairline accent may sit per scene.\n**Never (film-wide):** no WebGPU/shader aurora, no mesh gradients, no neon-on-black, no glow bloom, no purple-blue AI gradient, no decorative floating bokeh balls, no stock-icon clutter, no letterboxing or stretch-distorting the photos.\n**Transitions:** crossfade + zoom-through only (calm dissolves between emotional beats; zoom-through on the camera-push moments). Scene 1 opening is a placeholder.\n**Stillness-before-climax:** Scene 4 (the gold title + checks land) and Scene 6 (the pulsing CTA button lands) only.\n**Assets:** `public/img/s1_stress.png` → Scene 1 primary (full-bleed); `public/img/s2_problemes.png` → Scene 2 primary (pre-labelled montage, full-bleed); `public/img/s3_frustration.png` → Scene 3 primary (full-bleed); `public/img/s4_solution.jpg` → Scene 4 primary (full-bleed); `public/img/s5_transform.jpg` → Scene 5 primary (full-bleed); `public/img/s6_poster.jpg` → Scene 6 primary (product poster, centered on navy).",
-  "total_duration_s": 31.424,
+  "total_duration_s": 33.473,
   "bgm_path": "",
   "font_face_css": "",
   "brand_tokens_css": ":root {\n  /* Creative direction override (mandatory): NAVY ground + GOLD hero accent + WHITE text. */\n  --brand-primary:   #C9A24B; /* GOLD — hero accent: titles, keywords, lines, checks, CTA */\n  --brand-secondary: #D4AF37; /* bright gold — emphasis / specular gold */\n  --brand-tertiary:  #0D1B2A; /* deep navy alt-ground */\n  --brand-accent:    #D4AF37; /* bright gold accent */\n  --brand-costume:   #FFFFFF; /* white supporting text */\n  --navy:            #0B1B2E; /* canvas / cinematic ground */\n  --navy-deep:       #0D1B2A; /* alternate ground stop */\n  --gold:            #C9A24B; /* hero gold */\n  --gold-bright:     #D4AF37; /* highlight gold */\n  --ink:             #FFFFFF; /* body text is white on navy */\n  --canvas:          #0B1B2E; /* navy is the ground, not white */\n  --brand-gradient:  linear-gradient(135deg, #C9A24B 0%, #D4AF37 100%); /* gold-on-gold for titles/CTA */\n  --deco-1:          #0D1B2A;\n  --deco-2:          #C9A24B;\n  --deco-3:          #D4AF37;\n  --deco-4:          #FFFFFF;\n  --font-display:    'Playfair Display', Georgia, 'Times New Roman', serif; /* elegant high-contrast serif */\n  --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;\n  --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;\n  --liquid-bg-deep: #0B1B2E; /* mandatory dark base — navy cinematic blackpoint */\n  --liquid-bg-fallback: linear-gradient(160deg, #0B1B2E 0%, #0d1b2a 55%, #08131f 100%);\n  --lg-widget-blur: 0.42;\n  --lg-widget-refraction: 0.82;\n  --lg-widget-specular: 0.34;\n  --lg-widget-fresnel: 1.25;\n  --lg-widget-edge-highlight: 0.26;\n  --lg-widget-chrom-aberration: 0.08;\n  --lg-widget-saturation: 0.38;\n  --lg-widget-corner-radius: 28;\n  --lg-widget-z-radius: 46;\n  --lg-notif-blur: 0.22;\n  --lg-notif-refraction: 0.6;\n  --lg-notif-specular: 0.2;\n  --lg-notif-fresnel: 0.9;\n  --lg-notif-edge-highlight: 0.1;\n  --lg-notif-chrom-aberration: 0.05;\n  --lg-notif-saturation: 0.25;\n  --lg-notif-corner-radius: 36;\n  --lg-notif-z-radius: 38;\n  --lg-notif-shadow-opacity: 0.35;\n  --lg-notif-shadow-spread: 14;\n  --lg-notif-shadow-offset-y: 4;\n  --lg-menu-blur: 0.56;\n  --lg-menu-refraction: 0.52;\n  --lg-menu-specular: 0.26;\n  --lg-menu-fresnel: 1;\n  --lg-menu-edge-highlight: 0.2;\n  --lg-menu-chrom-aberration: 0.035;\n  --lg-menu-saturation: -0.24;\n  --lg-menu-tint: 0.88;\n  --lg-menu-brightness: 0.54;\n  --lg-menu-corner-radius: 30;\n  --lg-menu-z-radius: 48;\n  --ink-on-glass: rgba(255, 255, 255, 0.96);\n  --ink-on-glass-soft: rgba(255, 255, 255, 0.74);\n  --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */\n  --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);\n  --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */\n  --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);\n  --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */\n  --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);\n  --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */\n  --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */\n  --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */\n  --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);\n  --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */\n  --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */\n  --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */\n  --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */\n  --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */\n  --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */\n  --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */\n  --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */\n  --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */\n  --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */\n  --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */\n  --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */\n  --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */\n  --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */\n  --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */\n  --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */\n  --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */\n  --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */\n}",
@@ -26,7 +26,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 3.072,
+          "estimatedDuration_s": 3.499,
           "voicePath": "assets/voice/scene_1.wav",
           "wordsPath": "",
           "blueprint": "composed",
@@ -59,7 +59,7 @@
       ],
       "scenes": {
         "scene_2": {
-          "start_s": 3.072,
+          "start_s": 3.499,
           "effects": [
             "viewport-change",
             "asr-keyword-glow"
@@ -69,7 +69,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 5.888,
+          "estimatedDuration_s": 6.251,
           "voicePath": "assets/voice/scene_2.wav",
           "wordsPath": "",
           "blueprint": "composed",
@@ -102,7 +102,7 @@
       ],
       "scenes": {
         "scene_3": {
-          "start_s": 8.96,
+          "start_s": 9.75,
           "effects": [
             "multi-phase-camera",
             "asr-keyword-glow"
@@ -112,7 +112,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 4.907,
+          "estimatedDuration_s": 5.163,
           "voicePath": "assets/voice/scene_3.wav",
           "wordsPath": "",
           "blueprint": "composed",
@@ -145,7 +145,7 @@
       ],
       "scenes": {
         "scene_4": {
-          "start_s": 13.867,
+          "start_s": 14.913,
           "effects": [
             "multi-phase-camera",
             "svg-path-draw",
@@ -159,7 +159,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 8.171,
+          "estimatedDuration_s": 8.789,
           "voicePath": "assets/voice/scene_4.wav",
           "wordsPath": "",
           "blueprint": "composed",
@@ -192,7 +192,7 @@
       ],
       "scenes": {
         "scene_5": {
-          "start_s": 22.038,
+          "start_s": 23.702,
           "effects": [
             "multi-phase-camera",
             "asr-keyword-glow"
@@ -202,7 +202,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/asr-keyword-glow.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 5.269,
+          "estimatedDuration_s": 5.568,
           "voicePath": "assets/voice/scene_5.wav",
           "wordsPath": "",
           "blueprint": "composed",
@@ -235,7 +235,7 @@
       ],
       "scenes": {
         "scene_6": {
-          "start_s": 27.307,
+          "start_s": 29.27,
           "effects": [
             "coordinate-target-zoom",
             "press-release-spring",
@@ -249,7 +249,7 @@
             "/home/user/Enomah/.agents/skills/hyperframes-animation/rules/sine-wave-loop.md"
           ],
           "assetCandidates": [],
-          "estimatedDuration_s": 4.117,
+          "estimatedDuration_s": 4.203,
           "voicePath": "assets/voice/scene_6.wav",
           "wordsPath": "",
           "blueprint": "based-on `cta-morph-press`",
