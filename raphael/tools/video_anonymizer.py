@@ -32,7 +32,7 @@ MAX_DURATION_SEC = 10 * 60 + 30          # ~10 min (petite marge)
 SAMPLE_INTERVAL_SEC = 2.0                # 1 image envoyée à Claude toutes les 2 s
 CLAUDE_CONCURRENCY = 5                   # appels Claude simultanés max
 DETECT_MAX_DIM = 720                     # downscale pour la détection de visages
-BLUR_MARGIN = 0.12                       # marge ajoutée autour des visages détectés
+BLUR_MARGIN = 0.06                       # marge (réduite) autour des visages détectés
 
 # ─── ÉTAT DES JOBS (en mémoire — process uvicorn unique) ─────────────────────
 JOBS: dict[str, dict[str, Any]] = {}
@@ -59,17 +59,32 @@ def _set(job_id: str, **kwargs: Any) -> None:
 
 
 # ─── FLOUTAGE ────────────────────────────────────────────────────────────────
-def _pixelate(frame: np.ndarray, x: int, y: int, w: int, h: int) -> None:
-    """Pixelise une région du frame (in place)."""
+def _blur_region(frame: np.ndarray, x: int, y: int, w: int, h: int, ellipse: bool = False) -> None:
+    """Applique un flou gaussien lisse sur une région (in place).
+
+    `ellipse=True` (visages) : masque elliptique aux bords adoucis pour un rendu
+    naturel qui épouse le visage. Sinon (texte) : flou rectangulaire serré.
+    """
     fh, fw = frame.shape[:2]
-    x, y = max(0, x), max(0, y)
-    w, h = min(w, fw - x), min(h, fh - y)
-    if w <= 0 or h <= 0:
+    x0, y0 = max(0, x), max(0, y)
+    x1, y1 = min(fw, x + w), min(fh, y + h)
+    w, h = x1 - x0, y1 - y0
+    if w <= 1 or h <= 1:
         return
-    roi = frame[y : y + h, x : x + w]
-    block = max(8, min(w, h) // 5)
-    small = cv2.resize(roi, (max(1, w // block), max(1, h // block)), interpolation=cv2.INTER_LINEAR)
-    frame[y : y + h, x : x + w] = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
+    roi = frame[y0:y1, x0:x1]
+    sigma = max(4.0, min(w, h) / 5.0)               # flou proportionnel = anonymisation forte
+    blurred = cv2.GaussianBlur(roi, (0, 0), sigmaX=sigma, sigmaY=sigma)
+
+    if ellipse:
+        mask = np.zeros((h, w), np.uint8)
+        cv2.ellipse(mask, (w // 2, h // 2), (max(1, w // 2 - 1), max(1, h // 2 - 1)),
+                    0, 0, 360, 255, -1)
+        feather = max(1.0, min(w, h) * 0.07)        # bords adoucis
+        mask = cv2.GaussianBlur(mask, (0, 0), sigmaX=feather, sigmaY=feather)
+        alpha = (mask.astype(np.float32) / 255.0)[..., None]
+        frame[y0:y1, x0:x1] = (roi * (1.0 - alpha) + blurred * alpha).astype(np.uint8)
+    else:
+        frame[y0:y1, x0:x1] = blurred
 
 
 def _detect_faces(frame: np.ndarray) -> list[tuple[int, int, int, int]]:
@@ -173,14 +188,14 @@ def _process_full(
             break
 
         for (x, y, fw_, fh_) in _detect_faces(frame):
-            _pixelate(frame, x, y, fw_, fh_)
+            _blur_region(frame, x, y, fw_, fh_, ellipse=True)
             face_count += 1
 
         for (start, end, regions) in detections:
             if start <= idx < end:
                 for region in regions:
                     bx, by, bw, bh = _pct_to_box(region, w, h)
-                    _pixelate(frame, bx, by, bw, bh)
+                    _blur_region(frame, bx, by, bw, bh, ellipse=False)
                     text_zone_frames += 1
 
         writer.write(frame)

@@ -442,20 +442,19 @@ function clearCanvas() {
   ctx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
 }
 
-// ─── PIXELATION ────────────────────────────────────────────────────────────
-function pixelateRegion(ctx, imgEl, x, y, w, h) {
-  const blockSize = Math.max(8, Math.floor(Math.min(w, h) / 5));
-  const tmp = document.createElement("canvas");
-  const tx = tmp.getContext("2d");
-  tmp.width = Math.max(1, Math.floor(w / blockSize));
-  tmp.height = Math.max(1, Math.floor(h / blockSize));
-  tx.drawImage(imgEl, x, y, w, h, 0, 0, tmp.width, tmp.height);
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(tmp, 0, 0, tmp.width, tmp.height, x, y, w, h);
-  ctx.imageSmoothingEnabled = true;
+// ─── FLOU LISSE ──────────────────────────────────────────────────────────────
+// Flou gaussien doux, aux coins arrondis, qui ne couvre que la zone détectée.
+function blurRegion(ctx, imgEl, x, y, w, h) {
+  const radius = Math.min(w, h) * 0.18;            // coins arrondis = rendu lisse
+  const blur = Math.max(5, Math.round(Math.min(w, h) / 6));
   ctx.save();
-  ctx.fillStyle = "rgba(56, 189, 248, 0.12)";
-  ctx.fillRect(x, y, w, h);
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, radius);
+  else ctx.rect(x, y, w, h);
+  ctx.clip();
+  ctx.filter = `blur(${blur}px)`;
+  ctx.drawImage(imgEl, 0, 0, resultCanvas.width, resultCanvas.height);
+  ctx.filter = "none";
   ctx.restore();
 }
 
@@ -469,7 +468,7 @@ function applyAnonymization(elements, imgEl) {
     const y = Math.max(0, (el.y / 100) * resultCanvas.height);
     const w = Math.min(resultCanvas.width - x, (el.width / 100) * resultCanvas.width);
     const h = Math.min(resultCanvas.height - y, (el.height / 100) * resultCanvas.height);
-    if (w > 0 && h > 0) pixelateRegion(ctx, imgEl, x, y, w, h);
+    if (w > 0 && h > 0) blurRegion(ctx, imgEl, x, y, w, h);
   });
   addLog("✅ Flouage appliqué sur " + elements.length + " zone(s)", "success");
 }

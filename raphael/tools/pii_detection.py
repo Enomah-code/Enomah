@@ -27,7 +27,7 @@ Analyse cette image et identifie TOUS les éléments d'information personnelle i
 IMPORTANT : Sois exhaustif. Mieux vaut détecter trop que pas assez.
 
 Pour chaque élément, retourne des coordonnées en POURCENTAGES (0 à 100) de la largeur/hauteur de l'image.
-Ajoute une marge de 8-10% autour de chaque zone détectée pour garantir un flouage complet.
+Les coordonnées doivent ÉPOUSER AU PLUS PRÈS la zone, sans la surdimensionner (marge de 2-3% maximum).
 
 Retourne UNIQUEMENT un tableau JSON valide. Aucun texte avant ou après. Aucun markdown.
 
@@ -64,7 +64,7 @@ identifiables (IPI) **textuelles ou graphiques** visibles à l'écran.
 (Les visages sont déjà traités séparément : ne les retourne PAS.)
 
 Pour chaque élément, retourne des coordonnées en POURCENTAGES (0 à 100) de la largeur/hauteur.
-Ajoute une marge de 8-10% autour de chaque zone.
+Les coordonnées doivent COLLER AU PLUS PRÈS du texte, sans le surdimensionner (marge de 2-3% maximum).
 
 Retourne UNIQUEMENT un tableau JSON valide. Aucun texte avant ou après. Aucun markdown.
 Format EXACT :
