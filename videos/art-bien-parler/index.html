@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="viewport" content="width=1080, height=1920" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
       * {
@@ -13,18 +13,109 @@
       html,
       body {
         margin: 0;
-        width: 1920px;
-        height: 1080px;
+        width: 1080px;
+        height: 1920px;
         overflow: hidden;
         background: #000;
       }
-      body {
-        font-family: "Inter", sans-serif;
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
       }
-      code,
-      pre,
-      .monospace {
-        font-family: "JetBrains Mono", monospace;
+      /* Sub-comp slots stretch to fill the root */
+      #root > div[data-composition-src] {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* Brand design tokens (from design-system/chunks/tokens.css) */
+      :root {
+        /* Creative direction override (mandatory): NAVY ground + GOLD hero accent + WHITE text. */
+        --brand-primary:   #C9A24B; /* GOLD — hero accent: titles, keywords, lines, checks, CTA */
+        --brand-secondary: #D4AF37; /* bright gold — emphasis / specular gold */
+        --brand-tertiary:  #0D1B2A; /* deep navy alt-ground */
+        --brand-accent:    #D4AF37; /* bright gold accent */
+        --brand-costume:   #FFFFFF; /* white supporting text */
+        --navy:            #0B1B2E; /* canvas / cinematic ground */
+        --navy-deep:       #0D1B2A; /* alternate ground stop */
+        --gold:            #C9A24B; /* hero gold */
+        --gold-bright:     #D4AF37; /* highlight gold */
+        --ink:             #FFFFFF; /* body text is white on navy */
+        --canvas:          #0B1B2E; /* navy is the ground, not white */
+        --brand-gradient:  linear-gradient(135deg, #C9A24B 0%, #D4AF37 100%); /* gold-on-gold for titles/CTA */
+        --deco-1:          #0D1B2A;
+        --deco-2:          #C9A24B;
+        --deco-3:          #D4AF37;
+        --deco-4:          #FFFFFF;
+        --font-display:    'Playfair Display', Georgia, 'Times New Roman', serif; /* elegant high-contrast serif */
+        --font-body:       'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        --font-mono:       'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --liquid-bg-deep: #0B1B2E; /* mandatory dark base — navy cinematic blackpoint */
+        --liquid-bg-fallback: linear-gradient(160deg, #0B1B2E 0%, #0d1b2a 55%, #08131f 100%);
+        --lg-widget-blur: 0.42;
+        --lg-widget-refraction: 0.82;
+        --lg-widget-specular: 0.34;
+        --lg-widget-fresnel: 1.25;
+        --lg-widget-edge-highlight: 0.26;
+        --lg-widget-chrom-aberration: 0.08;
+        --lg-widget-saturation: 0.38;
+        --lg-widget-corner-radius: 28;
+        --lg-widget-z-radius: 46;
+        --lg-notif-blur: 0.22;
+        --lg-notif-refraction: 0.6;
+        --lg-notif-specular: 0.2;
+        --lg-notif-fresnel: 0.9;
+        --lg-notif-edge-highlight: 0.1;
+        --lg-notif-chrom-aberration: 0.05;
+        --lg-notif-saturation: 0.25;
+        --lg-notif-corner-radius: 36;
+        --lg-notif-z-radius: 38;
+        --lg-notif-shadow-opacity: 0.35;
+        --lg-notif-shadow-spread: 14;
+        --lg-notif-shadow-offset-y: 4;
+        --lg-menu-blur: 0.56;
+        --lg-menu-refraction: 0.52;
+        --lg-menu-specular: 0.26;
+        --lg-menu-fresnel: 1;
+        --lg-menu-edge-highlight: 0.2;
+        --lg-menu-chrom-aberration: 0.035;
+        --lg-menu-saturation: -0.24;
+        --lg-menu-tint: 0.88;
+        --lg-menu-brightness: 0.54;
+        --lg-menu-corner-radius: 30;
+        --lg-menu-z-radius: 48;
+        --ink-on-glass: rgba(255, 255, 255, 0.96);
+        --ink-on-glass-soft: rgba(255, 255, 255, 0.74);
+        --ink-on-light-glass: rgb(0, 7, 14); /* for menu/light-tinted glass */
+        --text-shadow-glass: 0 2px 12px rgba(0, 0, 0, 0.42);
+        --lg-rim-hi: rgba(255, 255, 255, 0.5); /* brightest inset highlight */
+        --lg-rim-hi-soft: rgba(255, 255, 255, 0.48);
+        --lg-rim-mid: rgba(255, 255, 255, 0.36); /* hairline edge / border */
+        --lg-rim-mid-soft: rgba(255, 255, 255, 0.34);
+        --lg-rim-edge: rgba(255, 255, 255, 0.18); /* glass-panel hairline border */
+        --lg-rim-glow: rgba(255, 255, 255, 0.32); /* radial glint / inset highlight */
+        --lg-rim-lo: rgba(255, 255, 255, 0.28); /* gradient stop / faint edge */
+        --lg-rim-lo-soft: rgba(255, 255, 255, 0.26);
+        --lg-rim-track: rgba(255, 255, 255, 0.24); /* slider/sep rail fill */
+        --lg-rim-faint: rgba(255, 255, 255, 0.16); /* mid gradient stop */
+        --lg-rim-glint: rgba(255, 255, 255, 0.14); /* toggle-pill base wash */
+        --lg-rim-ghost: rgba(255, 255, 255, 0.1); /* lowest gradient stop */
+        --lg-rim-haze: rgba(255, 255, 255, 0.09); /* lower inner bevel */
+        --lg-rim-mist: rgba(255, 255, 255, 0.08); /* inset under-glow */
+        --lg-rim-veil: rgba(255, 255, 255, 0.06); /* faintest fill */
+        --lg-rim-trace: rgba(255, 255, 255, 0.055); /* media-panel base wash */
+        --lg-rim-dust: rgba(255, 255, 255, 0.04); /* near-zero gradient stop */
+        --lg-glass-tint-menu: rgba(255, 255, 255, 0.15); /* light-tinted menu panel base */
+        --lg-glint-white: #fff; /* pure-white glint: slider fill, active toggle text, avatar ink */
+        --lg-glint-glow: rgba(255, 255, 255, 0.88); /* slider icon stroke */
+        --lg-glint-halo: rgba(255, 255, 255, 0.5); /* slider-fill glow */
+        --lg-base-veil: rgba(9, 18, 31, 0.2); /* dark base wash under widget rim */
+        --lg-base-shadow: rgba(0, 0, 0, 0.24); /* album-art cast shadow */
+        --lg-base-shadow-deep: rgba(0, 0, 0, 0.32); /* glass-panel cast shadow */
+        --lg-kbd-ink: rgba(0, 7, 14, 0.82); /* near-black kbd glyph on light glass */
+        --lg-light-emboss: rgba(255, 255, 255, 0.26); /* light-glass text emboss */
       }
     </style>
   </head>
@@ -33,27 +124,148 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
+      data-duration="31.424"
+      data-width="1080"
+      data-height="1920"
     >
-      
-      
+      <!-- HF-SCENE-CLIP scene_1 (0 → 3.072) -->
+      <div
+        id="el-scene_1"
+        data-composition-id="scene_1"
+        data-composition-src="compositions/scene_1.html"
+        data-start="0"
+        data-duration="3.572"
+        data-track-index="0"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio
+        id="el-scene_1-voice"
+        class="clip"
+        src="assets/voice/scene_1.wav"
+        data-start="0"
+        data-duration="3.072"
+        data-track-index="10"
+      ></audio>
 
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
-        </div>
-      -->
+      <!-- HF-SCENE-CLIP scene_2 (3.072 → 8.96) -->
+      <div
+        id="el-scene_2"
+        data-composition-id="scene_2"
+        data-composition-src="compositions/scene_2.html"
+        data-start="3.072"
+        data-duration="6.288"
+        data-track-index="1"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio
+        id="el-scene_2-voice"
+        class="clip"
+        src="assets/voice/scene_2.wav"
+        data-start="3.072"
+        data-duration="5.888000000000001"
+        data-track-index="10"
+      ></audio>
+
+      <!-- HF-SCENE-CLIP scene_3 (8.96 → 13.867) -->
+      <div
+        id="el-scene_3"
+        data-composition-id="scene_3"
+        data-composition-src="compositions/scene_3.html"
+        data-start="8.96"
+        data-duration="5.307"
+        data-track-index="0"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio
+        id="el-scene_3-voice"
+        class="clip"
+        src="assets/voice/scene_3.wav"
+        data-start="8.96"
+        data-duration="4.907"
+        data-track-index="10"
+      ></audio>
+
+      <!-- HF-SCENE-CLIP scene_4 (13.867 → 22.038) -->
+      <div
+        id="el-scene_4"
+        data-composition-id="scene_4"
+        data-composition-src="compositions/scene_4.html"
+        data-start="13.867"
+        data-duration="8.671"
+        data-track-index="1"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio
+        id="el-scene_4-voice"
+        class="clip"
+        src="assets/voice/scene_4.wav"
+        data-start="13.867"
+        data-duration="8.171"
+        data-track-index="10"
+      ></audio>
+
+      <!-- HF-SCENE-CLIP scene_5 (22.038 → 27.307) -->
+      <div
+        id="el-scene_5"
+        data-composition-id="scene_5"
+        data-composition-src="compositions/scene_5.html"
+        data-start="22.038"
+        data-duration="5.869"
+        data-track-index="0"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio
+        id="el-scene_5-voice"
+        class="clip"
+        src="assets/voice/scene_5.wav"
+        data-start="22.038"
+        data-duration="5.268999999999998"
+        data-track-index="10"
+      ></audio>
+
+      <!-- HF-SCENE-CLIP scene_6 (27.307 → 31.424) -->
+      <div
+        id="el-scene_6"
+        data-composition-id="scene_6"
+        data-composition-src="compositions/scene_6.html"
+        data-start="27.307"
+        data-duration="4.117"
+        data-track-index="1"
+        data-width="1080"
+        data-height="1920"
+      ></div>
+      <audio
+        id="el-scene_6-voice"
+        class="clip"
+        src="assets/voice/scene_6.wav"
+        data-start="27.307"
+        data-duration="4.117"
+        data-track-index="10"
+      ></audio>
+
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
-      window.__timelines["main"] = tl;
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── scene transitions (injected by inject-transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-scene_1", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 3.072);
+        tl.fromTo("#el-scene_2", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 3.072);
+        tl.to("#el-scene_2", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 8.96);
+        tl.fromTo("#el-scene_3", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 8.96);
+        tl.to("#el-scene_3", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 13.867);
+        tl.fromTo("#el-scene_4", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 13.867);
+        tl.to("#el-scene_4", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 22.038);
+        tl.fromTo("#el-scene_5", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 22.038);
+        tl.to("#el-scene_5", { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.6, ease: "power2.inOut" }, 27.307);
+        tl.fromTo("#el-scene_6", { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.6, ease: "power2.inOut" }, 27.307);
+      })();
     </script>
   </body>
 </html>

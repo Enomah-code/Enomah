@@ -1,0 +1,337 @@
+<template id="scene_6-template">
+  <div id="root" class="scene_6-root" data-composition-id="scene_6" data-width="1080" data-height="1920" data-duration="4.117" style="position:relative; width:1080px; height:1920px; overflow:hidden;">
+    <style>
+      /* Root styles use #root only. Brand tokens inherit from index.html <head>. */
+      #root {
+        background:
+          radial-gradient(1200px 1200px at 50% 18%, rgba(201,162,75,0.10), transparent 60%),
+          var(--liquid-bg-fallback, linear-gradient(160deg, #0B1B2E 0%, #0d1b2a 55%, #08131f 100%));
+        font-family: var(--font-body);
+        color: var(--ink);
+      }
+      #root *,
+      #root *::before,
+      #root *::after { box-sizing: border-box; }
+
+      /* Faint gold-bokeh / starfield ambient (decorative background layer). */
+      .s6-starfield {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(2px 2px at 12% 14%, rgba(212,175,55,0.55), transparent 60%),
+          radial-gradient(2px 2px at 82% 10%, rgba(201,162,75,0.45), transparent 60%),
+          radial-gradient(3px 3px at 24% 80%, rgba(212,175,55,0.40), transparent 60%),
+          radial-gradient(2px 2px at 70% 86%, rgba(201,162,75,0.40), transparent 60%),
+          radial-gradient(2px 2px at 50% 6%, rgba(255,255,255,0.30), transparent 60%),
+          radial-gradient(2px 2px at 90% 60%, rgba(212,175,55,0.30), transparent 60%),
+          radial-gradient(2px 2px at 8% 52%, rgba(212,175,55,0.30), transparent 60%);
+      }
+
+      /* coordinate-target-zoom wrappers — outer scales, inner translates. */
+      .s6-zoom-outer {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: grid;
+        place-items: center;
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      .s6-zoom-inner {
+        display: grid;
+        place-items: center;
+        will-change: transform;
+      }
+
+      /* The content column: poster on top, CTA stack below. */
+      .s6-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+      }
+
+      .s6-poster {
+        display: block;
+        width: 760px;
+        height: 760px;
+        border-radius: 22px;
+        object-fit: cover;
+        box-shadow: 0 30px 90px rgba(0,0,0,0.55), 0 0 0 1px var(--lg-rim-edge);
+        will-change: transform, opacity;
+      }
+
+      .s6-cta-zone {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+      }
+
+      .s6-arrow-wrap {
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .s6-arrow {
+        width: 64px;
+        height: 78px;
+        filter: drop-shadow(0 6px 16px rgba(201,162,75,0.45));
+        will-change: transform;
+      }
+
+      .s6-btn-stage {
+        position: relative;
+        display: grid;
+        place-items: center;
+      }
+      .s6-btn-glow {
+        position: absolute;
+        inset: -120px;
+        z-index: 1;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(212,175,55,0.45), rgba(201,162,75,0.0) 72%);
+        opacity: 0;
+        pointer-events: none;
+        will-change: transform, opacity;
+      }
+      .s6-btn {
+        position: relative;
+        z-index: 2;
+        width: 620px;
+        height: 124px;
+        border: none;
+        border-radius: 62px;
+        background: var(--brand-gradient, linear-gradient(135deg, #C9A24B 0%, #D4AF37 100%));
+        color: #1a1206;
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 40px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        transform-origin: 50% 50%;
+        box-shadow: 0 22px 56px rgba(201,162,75,0.42), inset 0 1px 0 var(--lg-rim-hi);
+        will-change: transform, box-shadow;
+      }
+
+      .s6-cta-line {
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 34px;
+        color: var(--ink);
+        text-align: center;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+      .s6-cta-line.s6-cta-sub {
+        font-size: 30px;
+        font-weight: 500;
+        color: rgba(255,255,255,0.86);
+      }
+
+      .s6-brand {
+        margin-top: 8px;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 30px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gold);
+        opacity: 0;
+        will-change: opacity;
+      }
+
+      /* End fade-to-black overlay (decorative, full-bleed). */
+      .s6-fadeout {
+        position: absolute;
+        inset: 0;
+        z-index: 50;
+        background: #000;
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+
+    <div class="s6-starfield"></div>
+
+    <div class="s6-zoom-outer" id="s6-zoom-outer">
+      <div class="s6-zoom-inner" id="s6-zoom-inner">
+        <div class="s6-col">
+          <img class="s6-poster" id="s6-poster" src="public/img/s6_poster.jpg" alt="L'art de bien parler — Ebook" />
+
+          <div class="s6-cta-zone">
+            <div class="s6-arrow-wrap">
+              <svg class="s6-arrow" id="s6-arrow" viewBox="0 0 64 78" xmlns="http://www.w3.org/2000/svg">
+                <line x1="32" y1="6" x2="32" y2="56" stroke="var(--gold-bright)" stroke-width="8" stroke-linecap="round" />
+                <polyline points="14,42 32,62 50,42" fill="none" stroke="var(--gold-bright)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+            <div class="s6-btn-stage">
+              <div class="s6-btn-glow" id="s6-btn-glow"></div>
+              <button class="s6-btn" id="s6-btn" type="button">Télécharger maintenant</button>
+            </div>
+
+            <div class="s6-cta-line" id="s6-cta-1">📘 Télécharge ton Ebook maintenant</div>
+            <div class="s6-cta-line s6-cta-sub" id="s6-cta-2">Commence ta transformation aujourd'hui</div>
+            <div class="s6-brand" id="s6-brand">eMoneyMind Pro</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="s6-fadeout" id="s6-fadeout"></div>
+
+    <script>
+      // EASE / DUR — pasted from design-system easings.js (canonical role keys).
+      const EASE = {
+        entry: "back.out(1.04)",
+        emphasis: "power3.inOut",
+        exit: "power2.in",
+        drift: "sine.inOut",
+      };
+      const DUR = { snap: 0.28, med: 0.5, slow: 1.1 };
+
+      window.__timelines = window.__timelines || {};
+
+      // Build inside async setup: coordinate-target-zoom measures the poster's
+      // real center after fonts settle, then bakes the counter-translation.
+      (async () => {
+        if (document.fonts && document.fonts.ready) {
+          try { await document.fonts.ready; } catch (e) {}
+        }
+
+        const W = 1080, H = 1920;
+        const tl = gsap.timeline({ paused: true });
+
+        // --- coordinate-target-zoom: focus the poster as it scales in ---
+        // The poster column is horizontally centered; measure its real center so
+        // any layout slop is corrected (T = -offset). Outer scales, inner translates.
+        const posterEl = document.getElementById("s6-poster");
+        const r = posterEl.getBoundingClientRect();
+        const TARGET_OFFSET_X = r.left + r.width / 2 - W / 2;
+        const TARGET_OFFSET_Y = r.top + r.height / 2 - H / 2;
+        const counterX = -TARGET_OFFSET_X;
+        const counterY = -TARGET_OFFSET_Y;
+
+        // Headroom budget: keep the poster <= 88% of canvas width at peak.
+        const maxScale = Math.min((0.88 * W) / r.width, (0.88 * H) / r.height);
+        const ZOOM_SCALE = Math.min(1.16, maxScale);
+
+        // Poster eases in: gentle scale-up dolly (coordinate-target-zoom).
+        tl.fromTo(
+          "#s6-zoom-outer",
+          { scale: 0.86, opacity: 0 },
+          { scale: ZOOM_SCALE, opacity: 1, duration: 1.0, ease: EASE.entry },
+          0,
+        );
+        // Inner counter-translate runs in lockstep (same duration + ease).
+        tl.fromTo(
+          "#s6-zoom-inner",
+          { x: 0, y: 0 },
+          { x: counterX, y: counterY, duration: 1.0, ease: EASE.entry },
+          0,
+        );
+
+        // Poster lands ~t=1.0. STILLNESS-BEFORE-CLIMAX ~0.4s beat (1.0 -> 1.6),
+        // then the CTA button becomes primary and presses in.
+
+        // --- press-release-spring on the button (handoff at ~1.6s) ---
+        const PRESS_START = 1.6;
+        const PRESS_DUR = 0.16;
+        const RELEASE_START = PRESS_START + PRESS_DUR; // 1.76 — adjacency = state continuity
+        const RELEASE_DUR = 0.5;
+
+        // Arrow + button appear together as the new primary enters.
+        tl.fromTo(
+          "#s6-arrow",
+          { opacity: 0, y: -16 },
+          { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+          PRESS_START - 0.18,
+        );
+        tl.fromTo(
+          "#s6-btn",
+          { opacity: 0, scale: 0.6 },
+          { opacity: 1, scale: 0.92, duration: PRESS_DUR, ease: "power1.in" },
+          PRESS_START,
+        );
+        // Release: spring pop back to rest scale 1 with overshoot.
+        tl.to(
+          "#s6-btn",
+          { scale: 1, duration: RELEASE_DUR, ease: "back.out(2.2)" },
+          RELEASE_START,
+        );
+        // Burst glow behind the button, triggered with the release.
+        tl.fromTo(
+          "#s6-btn-glow",
+          { scale: 0.7, opacity: 0 },
+          { scale: 1.15, opacity: 0.85, duration: 0.5, ease: "power2.out" },
+          RELEASE_START,
+        );
+        tl.to("#s6-btn-glow", { opacity: 0.32, duration: 0.45, ease: "power2.in" }, RELEASE_START + 0.5);
+
+        // Supporting CTA copy + brand mark fade up (lower contrast, after the button).
+        tl.fromTo(
+          "#s6-cta-1",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+          RELEASE_START + 0.1,
+        );
+        tl.fromTo(
+          "#s6-cta-2",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: DUR.med, ease: EASE.entry },
+          RELEASE_START + 0.24,
+        );
+        tl.fromTo(
+          "#s6-brand",
+          { opacity: 0 },
+          { opacity: 1, duration: DUR.med, ease: "power2.out" },
+          RELEASE_START + 0.4,
+        );
+
+        // --- svg-icon-enrichment: arrow nudges toward the button (pulse pattern) ---
+        // and --- sine-wave-loop: gold glow-pulse on the button as the one live element ---
+        const IDLE_START = 2.4;               // after release settles
+        const IDLE_DUR = 4.12 - IDLE_START;   // fills to scene end
+        const CYCLES = 2;                     // ~0.86s per cycle across a short window
+        const FADE_FRAC = 0.22;               // settle in the tail before black
+
+        const btnGlow = document.getElementById("s6-btn-glow");
+        const arrow = document.getElementById("s6-arrow");
+
+        const phase = { p: 0 };
+        tl.to(
+          phase,
+          {
+            p: Math.PI * 2 * CYCLES,
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: () => {
+              const t = phase.p / (Math.PI * 2 * CYCLES); // 0 -> 1
+              const env = t < 1 - FADE_FRAC ? 1 : (1 - t) / FADE_FRAC; // settle to rest
+              // Gold glow-pulse (sine-wave-loop) — opacity + scale breathe.
+              const gOpacity = 0.32 + (Math.sin(phase.p) * 0.5 + 0.5) * 0.5 * env;
+              const gScale = 1 + Math.sin(phase.p) * 0.06 * env;
+              btnGlow.style.opacity = String(gOpacity);
+              btnGlow.style.transform = "scale(" + gScale + ")";
+              // svg-icon-enrichment — arrow nudges down toward the button (pulse).
+              const ay = Math.sin(phase.p) * 7 * env; // px
+              arrow.style.transform = "translateY(" + ay + "px)";
+            },
+          },
+          IDLE_START,
+        );
+
+        // --- gentle fade toward black at the very end ---
+        tl.to("#s6-fadeout", { opacity: 1, duration: 0.42, ease: "power2.in" }, 4.12 - 0.42);
+
+        window.__timelines["scene_6"] = tl;
+      })();
+    </script>
+  </div>
+</template>
