@@ -167,6 +167,35 @@
   }
   .step-label { font-size: 11px; font-weight: 600; color: var(--text-sub); }
   .step pre { margin: 0; font-size: 10px; color: var(--text-muted); font-family: monospace; white-space: pre-wrap; line-height: 1.5; }
+  /* Onglets */
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+  .tab {
+    padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 9px; color: var(--text-sub); transition: all 0.15s;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, var(--accent-dim), #7C3AED);
+    color: #fff; border-color: transparent;
+  }
+  /* Vidéo */
+  .vinfo {
+    background: rgba(56,189,248,0.06); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; font-size: 12px; color: var(--text-sub);
+    line-height: 1.6;
+  }
+  .vinfo b { color: var(--text-primary); }
+  .progress-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .progress-bar-bg { background: var(--card); border-radius: 6px; height: 10px; overflow: hidden; margin: 8px 0; }
+  .progress-bar { height: 100%; width: 0%; border-radius: 6px;
+    background: linear-gradient(90deg, var(--accent-dim), var(--accent)); transition: width 0.3s; }
+  .progress-msg { font-size: 12px; color: var(--text-sub); font-family: monospace; }
+  .progress-pct { font-size: 12px; color: var(--accent); font-weight: 700; float: right; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+  .stat .num { font-size: 18px; font-weight: 700; color: var(--accent); }
+  .stat .lab { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .vresult video { width: 100%; border-radius: 10px; display: block; border: 1px solid var(--border); }
   .hidden { display: none !important; }
   @media (max-width: 760px) {
     .grid.two { grid-template-columns: 1fr; }
@@ -190,6 +219,12 @@
   </div>
 
   <div class="container">
+    <div class="tabs">
+      <button class="tab active" id="tabImage">🖼️ Image</button>
+      <button class="tab" id="tabVideo">🎬 Vidéo</button>
+    </div>
+
+    <div id="imageTab">
     <div class="grid" id="grid">
       <!-- LEFT -->
       <div class="col">
@@ -237,9 +272,45 @@
     </div>
 
     <div class="log hidden" id="logBox"></div>
+    </div><!-- /imageTab -->
+
+    <div id="videoTab" class="hidden">
+      <div class="col" style="max-width: 720px; margin: 0 auto;">
+        <div class="dropzone" id="vdropzone">
+          <input id="vfileInput" type="file" accept="video/*" class="hidden" />
+          <span class="big" id="vdropIcon">🎬</span>
+          <span class="main" id="vdropMain">Déposer une vidéo (MP4, MOV, WEBM…)</span>
+          <span class="sub">Max 10 min · l'audio d'origine est conservé</span>
+        </div>
+
+        <div class="vinfo">
+          🔏 <b>Visages</b> floutés automatiquement sur chaque image (en local, gratuit).
+          <b>Texte</b> (noms, numéros, adresses…) détecté via Claude sur des images échantillonnées.
+          Le traitement tourne côté serveur ; garde cet onglet ouvert.
+        </div>
+
+        <button class="btn-primary hidden" id="vstartBtn">🚀 Lancer l'anonymisation</button>
+
+        <div class="progress-wrap hidden" id="vprogressWrap">
+          <span class="progress-pct" id="vprogressPct">0%</span>
+          <span class="progress-msg" id="vprogressMsg">Préparation…</span>
+          <div class="progress-bar-bg"><div class="progress-bar" id="vprogressBar"></div></div>
+        </div>
+
+        <div class="vresult hidden" id="vresultWrap">
+          <div class="stats-grid" id="vstats"></div>
+          <video id="vvideo" controls></video>
+          <button class="btn-success" id="vdownloadBtn">⬇️ Télécharger la vidéo anonymisée</button>
+        </div>
+
+        <div class="ok-box hidden" id="verrBox" style="background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.25);">
+          <p id="verrMsg" style="color: var(--danger);"></p>
+        </div>
+      </div>
+    </div><!-- /videoTab -->
 
     <div class="workflow">
-      <p class="label">💡 Workflow complet pour une vidéo entière</p>
+      <p class="label">💡 Workflow manuel (alternative, pour personnaliser chaque image)</p>
       <div class="steps">
         <div class="step">
           <div class="step-head"><span class="step-num">1</span><span class="step-label">Extraire les frames</span></div>
@@ -517,6 +588,137 @@ dropzone.addEventListener("drop", (e) => {
 });
 detectBtn.addEventListener("click", detect);
 downloadBtn.addEventListener("click", download);
+
+// ─── ONGLETS ─────────────────────────────────────────────────────────────────
+const tabImage = $("tabImage"), tabVideo = $("tabVideo");
+const imageTab = $("imageTab"), videoTab = $("videoTab");
+tabImage.addEventListener("click", () => {
+  tabImage.classList.add("active"); tabVideo.classList.remove("active");
+  imageTab.classList.remove("hidden"); videoTab.classList.add("hidden");
+});
+tabVideo.addEventListener("click", () => {
+  tabVideo.classList.add("active"); tabImage.classList.remove("active");
+  videoTab.classList.remove("hidden"); imageTab.classList.add("hidden");
+});
+
+// ─── ANONYMISATION VIDÉO ─────────────────────────────────────────────────────
+const vdropzone = $("vdropzone"), vfileInput = $("vfileInput");
+const vdropIcon = $("vdropIcon"), vdropMain = $("vdropMain");
+const vstartBtn = $("vstartBtn");
+const vprogressWrap = $("vprogressWrap"), vprogressBar = $("vprogressBar");
+const vprogressMsg = $("vprogressMsg"), vprogressPct = $("vprogressPct");
+const vresultWrap = $("vresultWrap"), vvideo = $("vvideo"), vstats = $("vstats");
+const vdownloadBtn = $("vdownloadBtn");
+const verrBox = $("verrBox"), verrMsg = $("verrMsg");
+
+let videoFile = null;
+let vpollTimer = null;
+let vdownloadUrl = null;
+
+function vLoadFile(file) {
+  if (!file || !file.type.startsWith("video/")) return;
+  videoFile = file;
+  vdropIcon.textContent = "🔄";
+  const mb = (file.size / 1048576).toFixed(1);
+  vdropMain.textContent = `${file.name} (${mb} Mo) — cliquer pour changer`;
+  vstartBtn.classList.remove("hidden");
+  vprogressWrap.classList.add("hidden");
+  vresultWrap.classList.add("hidden");
+  verrBox.classList.add("hidden");
+}
+
+function vShowError(msg) {
+  verrBox.classList.remove("hidden");
+  verrMsg.textContent = "❌ " + msg;
+  vstartBtn.disabled = false;
+  vstartBtn.textContent = "🚀 Lancer l'anonymisation";
+}
+
+async function vStart() {
+  if (!videoFile) return;
+  vstartBtn.disabled = true;
+  vstartBtn.textContent = "⏳ Envoi…";
+  verrBox.classList.add("hidden");
+  vresultWrap.classList.add("hidden");
+  vprogressWrap.classList.remove("hidden");
+  vSetProgress(0, "Téléversement de la vidéo…");
+
+  try {
+    const fd = new FormData();
+    fd.append("file", videoFile);
+    const resp = await fetch("/api/v1/anonymize/video", { method: "POST", body: fd });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.detail || ("Erreur serveur " + resp.status));
+    vstartBtn.textContent = "⏳ Traitement en cours…";
+    vPoll(data.job_id);
+  } catch (err) {
+    vprogressWrap.classList.add("hidden");
+    vShowError(err.message);
+  }
+}
+
+function vSetProgress(pct, msg) {
+  vprogressBar.style.width = pct + "%";
+  vprogressPct.textContent = pct + "%";
+  if (msg) vprogressMsg.textContent = msg;
+}
+
+function vPoll(jobId) {
+  clearInterval(vpollTimer);
+  vpollTimer = setInterval(async () => {
+    try {
+      const resp = await fetch("/api/v1/anonymize/video/" + jobId);
+      const s = await resp.json();
+      if (!resp.ok) throw new Error(s.detail || "Statut indisponible");
+      vSetProgress(s.progress || 0, s.message);
+      if (s.status === "done") {
+        clearInterval(vpollTimer);
+        vShowResult(jobId, s.stats);
+      } else if (s.status === "error") {
+        clearInterval(vpollTimer);
+        vprogressWrap.classList.add("hidden");
+        vShowError(s.message || "Le traitement a échoué.");
+      }
+    } catch (err) {
+      clearInterval(vpollTimer);
+      vprogressWrap.classList.add("hidden");
+      vShowError(err.message);
+    }
+  }, 1000);
+}
+
+function vShowResult(jobId, stats) {
+  vSetProgress(100, "Terminé ✓");
+  const url = "/api/v1/anonymize/video/" + jobId + "/download";
+  vdownloadUrl = url;
+  vvideo.src = url;
+  vstats.innerHTML = "";
+  const cells = [
+    ["Visages floutés", stats?.faces_blurred ?? "—"],
+    ["Zones texte (IPI)", stats?.text_pii_zones ?? "—"],
+    ["Images traitées", stats?.frames ?? "—"],
+  ];
+  cells.forEach(([lab, num]) => {
+    const d = document.createElement("div");
+    d.className = "stat";
+    d.innerHTML = `<div class="num">${num}</div><div class="lab">${lab}</div>`;
+    vstats.append(d);
+  });
+  vresultWrap.classList.remove("hidden");
+  vstartBtn.disabled = false;
+  vstartBtn.textContent = "🚀 Relancer";
+}
+
+vdropzone.addEventListener("click", () => vfileInput.click());
+vfileInput.addEventListener("change", (e) => vLoadFile(e.target.files[0]));
+vdropzone.addEventListener("dragover", (e) => { e.preventDefault(); vdropzone.classList.add("drag"); });
+vdropzone.addEventListener("dragleave", () => vdropzone.classList.remove("drag"));
+vdropzone.addEventListener("drop", (e) => {
+  e.preventDefault(); vdropzone.classList.remove("drag");
+  vLoadFile(e.dataTransfer.files[0]);
+});
+vstartBtn.addEventListener("click", vStart);
+vdownloadBtn.addEventListener("click", () => { if (vdownloadUrl) window.location.href = vdownloadUrl; });
 </script>
 </body>
 </html>

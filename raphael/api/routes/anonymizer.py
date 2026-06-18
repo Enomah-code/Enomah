@@ -1,64 +1,36 @@
-"""Route d'anonymisation de frames vidéo / images.
+"""Routes d'anonymisation d'images et de vidéos.
 
-Détecte les informations personnelles identifiables (IPI) dans une image via
-Claude, puis renvoie les zones à flouter (en pourcentages). Le flouage lui-même
-est appliqué côté client (canvas) afin de ne jamais transférer l'image floutée.
+Image : Claude détecte les IPI et renvoie les zones à flouter (en %) ; le flouage
+est appliqué côté client (canvas).
 
-La clé API Anthropic reste côté serveur — l'image est envoyée en base64 au
-backend, qui interroge Claude. Le navigateur n'a jamais accès à la clé.
+Vidéo : traitement en tâche de fond — visages floutés en local (OpenCV) sur chaque
+image + Claude sur des images échantillonnées pour le texte. Voir
+`raphael.tools.video_anonymizer`.
+
+La clé API Anthropic reste côté serveur : le navigateur n'y a jamais accès.
 """
-import json
+import shutil
+import tempfile
+import uuid
+from pathlib import Path
+
 import anthropic
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from loguru import logger
 
 from raphael.config import get_settings
+from raphael.tools.pii_detection import DETECTION_PROMPT, detect_pii
 
 router = APIRouter(prefix="/anonymize", tags=["Anonymiseur"])
 
-
-# ─── PROMPT SYSTÈME POUR LA DÉTECTION IPI ───────────────────────────────────
-DETECTION_PROMPT = """Tu es un expert en protection des données personnelles (RGPD, vie privée).
-Analyse cette image et identifie TOUS les éléments d'information personnelle identifiable (IPI) visibles.
-
-Éléments à détecter OBLIGATOIREMENT :
-- Visages humains (même partiels, même flous, même de profil)
-- Photos de profil / avatars
-- Noms et prénoms
-- Numéros de téléphone / WhatsApp
-- Adresses email
-- Adresses postales
-- Âge
-- Lieu d'habitation / ville
-- Éléments de contact (réseaux sociaux, pseudo, identifiant)
-- Toute autre information permettant d'identifier une personne
-
-IMPORTANT : Sois exhaustif. Mieux vaut détecter trop que pas assez.
-
-Pour chaque élément, retourne des coordonnées en POURCENTAGES (0 à 100) de la largeur/hauteur de l'image.
-Ajoute une marge de 8-10% autour de chaque zone détectée pour garantir un flouage complet.
-
-Retourne UNIQUEMENT un tableau JSON valide. Aucun texte avant ou après. Aucun markdown.
-
-Format EXACT :
-[
-  {
-    "type": "visage",
-    "description": "Visage masculin côté gauche",
-    "x": 12,
-    "y": 8,
-    "width": 20,
-    "height": 28
-  }
-]
-
-Si aucun IPI n'est détecté, retourne exactement : []"""
-
-# Types MIME acceptés par l'API Anthropic pour les images.
-SUPPORTED_MEDIA_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+# Dossier temporaire pour les vidéos en cours / terminées.
+_VIDEO_DIR = Path(tempfile.gettempdir()) / "raphael_anonymizer"
+_VIDEO_DIR.mkdir(parents=True, exist_ok=True)
 
 
+# ─── IMAGE ────────────────────────────────────────────────────────────────────
 class DetectRequest(BaseModel):
     """Image encodée en base64 (sans le préfixe data:...;base64,)."""
 
@@ -80,84 +52,106 @@ class DetectResponse(BaseModel):
     count: int = 0
 
 
-def _parse_regions(raw_text: str) -> list[dict]:
-    """Extrait le tableau JSON renvoyé par Claude, en tolérant un wrapping markdown."""
-    cleaned = raw_text.replace("```json", "").replace("```", "").strip()
-    try:
-        data = json.loads(cleaned)
-    except json.JSONDecodeError:
-        # Tente de récupérer le premier tableau JSON présent dans le texte.
-        start, end = cleaned.find("["), cleaned.rfind("]")
-        if start == -1 or end == -1 or end <= start:
-            logger.warning("Réponse Claude non parsable: {}", raw_text[:200])
-            return []
-        try:
-            data = json.loads(cleaned[start : end + 1])
-        except json.JSONDecodeError:
-            logger.warning("Tableau JSON non parsable: {}", raw_text[:200])
-            return []
-    return data if isinstance(data, list) else []
-
-
 @router.post("/detect", response_model=DetectResponse)
 async def detect(request: DetectRequest) -> DetectResponse:
     """Détecte les IPI d'une image et renvoie les zones à flouter (en %)."""
     settings = get_settings()
     if not settings.anthropic_api_key:
-        raise HTTPException(
-            status_code=503,
-            detail="ANTHROPIC_API_KEY non configurée côté serveur.",
-        )
-
-    media_type = request.media_type if request.media_type in SUPPORTED_MEDIA_TYPES else "image/jpeg"
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY non configurée côté serveur.")
 
     client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
     try:
-        response = await client.messages.create(
-            model=settings.specialist_model,
-            max_tokens=1000,
-            system=DETECTION_PROMPT,
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": media_type,
-                                "data": request.image_base64,
-                            },
-                        },
-                        {"type": "text", "text": "Analyse et retourne le JSON des IPI détectés."},
-                    ],
-                }
-            ],
+        raw_regions = await detect_pii(
+            client, request.image_base64, request.media_type, settings.specialist_model, DETECTION_PROMPT
         )
     except anthropic.APIError as exc:
         logger.error("Erreur API Anthropic lors de la détection IPI: {}", exc)
         raise HTTPException(status_code=502, detail=f"Erreur API Anthropic: {exc}") from exc
 
-    raw_text = "".join(block.text for block in response.content if block.type == "text") or "[]"
-    raw_regions = _parse_regions(raw_text)
-
-    regions: list[PiiRegion] = []
-    for item in raw_regions:
-        if not isinstance(item, dict):
-            continue
-        try:
-            regions.append(
-                PiiRegion(
-                    type=str(item.get("type", "inconnu")),
-                    description=str(item.get("description", "")),
-                    x=float(item["x"]),
-                    y=float(item["y"]),
-                    width=float(item["width"]),
-                    height=float(item["height"]),
-                )
-            )
-        except (KeyError, TypeError, ValueError):
-            logger.warning("Zone IPI ignorée (format invalide): {}", item)
-            continue
-
+    regions = [PiiRegion(**r) for r in raw_regions]
     return DetectResponse(regions=regions, count=len(regions))
+
+
+# ─── VIDÉO ────────────────────────────────────────────────────────────────────
+class VideoJobCreated(BaseModel):
+    job_id: str
+
+
+class VideoJobStatus(BaseModel):
+    job_id: str
+    status: str            # queued | processing | done | error
+    progress: int = 0
+    message: str = ""
+    stats: dict | None = None
+
+
+def _import_video_engine():
+    """Import paresseux : opencv/imageio-ffmpeg ne sont chargés que si la vidéo est utilisée."""
+    try:
+        from raphael.tools import video_anonymizer
+        return video_anonymizer
+    except ImportError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Dépendances vidéo manquantes (opencv-python, imageio-ffmpeg). "
+                "Installez-les : pip install -r requirements.txt"
+            ),
+        ) from exc
+
+
+@router.post("/video", response_model=VideoJobCreated)
+async def anonymize_video(file: UploadFile = File(...)) -> VideoJobCreated:
+    """Lance l'anonymisation d'une vidéo (visages + texte) en tâche de fond."""
+    engine = _import_video_engine()
+
+    if not (file.content_type or "").startswith("video/"):
+        raise HTTPException(status_code=400, detail="Le fichier fourni n'est pas une vidéo.")
+
+    job_id = uuid.uuid4().hex
+    suffix = Path(file.filename or "video.mp4").suffix or ".mp4"
+    input_path = _VIDEO_DIR / f"{job_id}_in{suffix}"
+    output_path = _VIDEO_DIR / f"{job_id}_anonymise.mp4"
+
+    # Écrit le fichier uploadé sur disque en streaming (gros fichiers).
+    try:
+        with input_path.open("wb") as out:
+            shutil.copyfileobj(file.file, out)
+    finally:
+        await file.close()
+
+    engine.JOBS[job_id] = {"status": "queued", "progress": 0, "message": "En file d'attente…"}
+    engine.schedule_job(job_id, str(input_path), str(output_path))
+    logger.info("Job vidéo {} créé ({})", job_id, file.filename)
+    return VideoJobCreated(job_id=job_id)
+
+
+@router.get("/video/{job_id}", response_model=VideoJobStatus)
+async def video_status(job_id: str) -> VideoJobStatus:
+    """Renvoie l'état d'avancement d'un job vidéo."""
+    engine = _import_video_engine()
+    job = engine.JOBS.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job introuvable.")
+    return VideoJobStatus(
+        job_id=job_id,
+        status=job.get("status", "unknown"),
+        progress=job.get("progress", 0),
+        message=job.get("message", ""),
+        stats=job.get("stats"),
+    )
+
+
+@router.get("/video/{job_id}/download")
+async def video_download(job_id: str):
+    """Télécharge la vidéo anonymisée une fois le traitement terminé."""
+    engine = _import_video_engine()
+    job = engine.JOBS.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job introuvable.")
+    if job.get("status") != "done":
+        raise HTTPException(status_code=409, detail="Le traitement n'est pas terminé.")
+    output_path = job.get("output_path")
+    if not output_path or not Path(output_path).exists():
+        raise HTTPException(status_code=404, detail="Fichier de sortie introuvable.")
+    return FileResponse(output_path, media_type="video/mp4", filename=f"video_anonymisee_{job_id}.mp4")

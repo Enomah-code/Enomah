@@ -119,17 +119,24 @@ curl -X POST http://localhost:8000/api/v1/anonymize/detect \
   -d '{"image_base64": "<base64>", "media_type": "image/png"}'
 ```
 
-### Anonymiser une vidéo entière
+### Anonymiser une vidéo (jusqu'à 10 min)
+
+Onglet **Vidéo** de l'interface `/anonymizer` : dépose une vidéo, le serveur la
+traite en tâche de fond et renvoie une vidéo anonymisée (audio d'origine conservé).
+
+- **Visages** : détectés et floutés en local (OpenCV) sur chaque image — rapide, sans coût API.
+- **Texte / IPI** (noms, numéros, adresses…) : détectés par Claude sur des images
+  échantillonnées (~1 toutes les 2 s), puis floutés.
+- Ré-encodage H.264 compatible navigateur via le ffmpeg embarqué (`imageio-ffmpeg`,
+  **aucune installation manuelle de ffmpeg requise**).
 
 ```bash
-# 1. Extraire les frames
-ffmpeg -i video.mp4 frames/frame_%04d.png
-
-# 2. Anonymiser chaque frame via l'interface /anonymizer (charger + télécharger)
-
-# 3. Réassembler la vidéo (avec l'audio original)
-ffmpeg -r 30 -i frames/frame_%04d.png -i video.mp4 \
-  -map 0:v -map 1:a -c:v libx264 video_anonymisee.mp4
+# Lancer (multipart) — renvoie un job_id
+curl -X POST http://localhost:8000/api/v1/anonymize/video -F "file=@video.mp4"
+# Suivre la progression
+curl http://localhost:8000/api/v1/anonymize/video/<job_id>
+# Télécharger le résultat
+curl -o video_anonymisee.mp4 http://localhost:8000/api/v1/anonymize/video/<job_id>/download
 ```
 
 ## Auto-Évolution

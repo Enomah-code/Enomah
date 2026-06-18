@@ -31,6 +31,10 @@ apscheduler>=3.10.4
 python-multipart>=0.0.12
 pillow>=10.0.0
 
+# Anonymisation vidéo (détection de visages locale + réintégration audio)
+opencv-python>=4.9.0
+imageio-ffmpeg>=0.5.1
+
 # Optionnel — installez selon vos besoins
 # ta>=0.11.0               # Indicateurs trading (Felix) — build instable, importé à la demande
 # chromadb>=0.5.0          # Mémoire vectorielle (peut être lourd)
