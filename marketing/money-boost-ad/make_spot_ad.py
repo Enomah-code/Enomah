@@ -22,6 +22,14 @@ import ta_shim  # noqa: F401
 from clone import NATURAL, SR, load_tts, say  # noqa: E402
 from narrate import FX_FILTER, ffmpeg_bin     # noqa: E402
 
+# Ad-read preset: keeps NATURAL's long conditioning (stable timbre/accent, no
+# hollow drift) but lifts temperature & speed for a livelier, more energetic
+# delivery suited to advertising.
+AD = dict(NATURAL, temperature=0.78, speed=1.06, top_p=0.88, top_k=55)
+
+# Pre-master cleanup to kill XTTS parasites (clicks, crackle, hiss) before EQ.
+CLEAN = "adeclick=window=55:overlap=75,adeclip,afftdn=nf=-25:nr=12"
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.join(ROOT, "build")
 REF = os.path.join(VOICE_DIR, "assets", "my_voice_ref.wav")
@@ -88,7 +96,7 @@ def main():
             gap = NAT_GAP if gap is None else gap
             out = np.concatenate([out, np.zeros(int(gap * SR), dtype=np.float32)])
         start = round(len(out) / SR, 3)
-        clip = say(tts, txt, REF, NATURAL)
+        clip = say(tts, txt, REF, AD)
         clip = clip / (np.max(np.abs(clip)) + 1e-9) * 0.97
         out = np.concatenate([out, clip])
         seg.append({"t": start, "scene": scene, "cap": cap})
@@ -102,7 +110,7 @@ def main():
 
     fb = ffmpeg_bin()
     master = os.path.join(BUILD, "narration_master.mp3")
-    subprocess.run([fb, "-y", "-loglevel", "error", "-i", narr, "-af", FX_FILTER,
+    subprocess.run([fb, "-y", "-loglevel", "error", "-i", narr, "-af", CLEAN + "," + FX_FILTER,
                     "-ar", "44100", "-b:a", "192k", master], check=True)
 
     total = narr_dur + TAIL
