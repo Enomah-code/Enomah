@@ -1,0 +1,88 @@
+# =============================================================================
+# Angeleck OS — Stack complète auto-hébergeable
+# Lancement : docker compose up -d
+# =============================================================================
+services:
+  # --- Base de données relationnelle ---
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: angeleck
+      POSTGRES_PASSWORD: angeleck
+      POSTGRES_DB: angeleck
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U angeleck"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- Cache / mémoire court terme ---
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # --- Moteur IA local (Ollama) ---
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    # Décommentez pour activer le GPU NVIDIA :
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # --- API Backend Angeleck ---
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://angeleck:angeleck@postgres:5432/angeleck
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_BASE_URL: http://ollama:11434
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    volumes:
+      - appdata:/app/data
+
+  # --- Interface d'administration (Streamlit) ---
+  admin:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    command: ["streamlit", "run", "admin/dashboard.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    environment:
+      ANGELECK_API_URL: http://backend:8000/api/v1
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  ollama:
+  appdata:
