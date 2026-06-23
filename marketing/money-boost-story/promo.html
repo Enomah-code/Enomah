@@ -27,7 +27,19 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const lerp=(a,b,t)=>a+(b-a)*t;
 const easeOut=t=>1-Math.pow(1-t,3);
 const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const easeOutBack=t=>1+2.5*Math.pow(t-1,3)+1.6*Math.pow(t-1,2);
 let T=0;
+
+// ---- Ken Burns motion presets (deterministic per shot index) --------------
+// z = zoom over the shot; (x,y) = pan as a fraction of the available overflow.
+const KB=[
+  {z0:1.05,z1:1.17, x0:-0.55,y0:-0.20, x1:0.55,y1:0.22},
+  {z0:1.17,z1:1.05, x0:0.50,y0:0.28,  x1:-0.45,y1:-0.26},
+  {z0:1.06,z1:1.18, x0:0.52,y0:-0.30, x1:-0.50,y1:0.30},
+  {z0:1.18,z1:1.06, x0:-0.50,y0:0.30, x1:0.48,y1:-0.28},
+  {z0:1.05,z1:1.16, x0:0.0, y0:-0.55, x1:0.0, y1:0.45},
+  {z0:1.16,z1:1.05, x0:-0.52,y0:-0.28,x1:0.52,y1:0.30},
+];
 
 // ---- flatten scenes into image sub-shots ----------------------------------
 function endOf(i){return i+1<SEG.length?SEG[i+1].t:DUR;}
@@ -66,20 +78,61 @@ function buildBG(key){
   BG[key]=oc;
 }
 
-// ---- draw one sub (blurred bg + full contained image, gentle drift) -------
+// ---- draw one sub: full-bleed Ken Burns (cover) for portrait shots,
+//      blurred-bg contain for wide shots — always with real motion ----------
 function drawSub(sub,t,alpha){
   const img=IMG[sub.img]; if(!img||!img.naturalWidth) return;
   const d=Math.max(sub.end-sub.start,0.001), local=clamp((t-sub.start)/d,0,1);
+  const e=easeIO(local);
+  const iw=img.naturalWidth, ih=img.naturalHeight, ar=iw/ih, frameAR=W/H;
+  const k=KB[Math.max(0,SUBS.indexOf(sub))%KB.length];
+  const z=lerp(k.z0,k.z1,e);
   ctx.save(); ctx.globalAlpha=alpha;
-  if(BG[sub.img]) ctx.drawImage(BG[sub.img],0,0);
-  // contain the full image, inset 1.5% so a tiny drift never crops it
-  const iw=img.naturalWidth, ih=img.naturalHeight;
-  const base=Math.min(W/iw,H/ih)*0.985;
-  const sc=base*lerp(1.0,1.02,easeOut(local));     // very slow push, stays within inset
-  const dw=iw*sc, dh=ih*sc;
-  const dy=lerp(-6,6,local);                         // subtle vertical drift
-  ctx.drawImage(img,(W-dw)/2,(H-dh)/2+dy,dw,dh);
+  if(ar>frameAR*1.30){
+    // wide / landscape image → keep it whole over its blurred self, gentle drift
+    if(BG[sub.img]) ctx.drawImage(BG[sub.img],0,0);
+    const base=Math.min(W/iw,H/ih)*0.97;
+    const scl=base*lerp(1.0,1.06,e);
+    const dw=iw*scl, dh=ih*scl;
+    const px=lerp(k.x0,k.x1,e)*Math.max(0,(dw-W)/2)*0.5;
+    const py=lerp(k.y0,k.y1,e)*38;
+    ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
+  } else {
+    // portrait image → fill the frame (cover) and pan within the overflow
+    const base=Math.max(W/iw,H/ih);
+    const scl=base*z;
+    const dw=iw*scl, dh=ih*scl;
+    const maxX=(dw-W)/2, maxY=(dh-H)/2;
+    const px=lerp(k.x0,k.x1,e)*maxX;
+    const py=lerp(k.y0,k.y1,e)*maxY;
+    ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
+  }
   ctx.restore();
+}
+
+// ---- ambient life: drifting golden bokeh + slow warm light sweep ----------
+const BOKEH=Array.from({length:13},(_,i)=>({
+  bx:(i*0.1373+0.04)%1, by:(i*0.2310+0.07)%1,
+  r:22+(i%5)*16, sp:0.010+(i%4)*0.004, ph:i*0.77
+}));
+function bokeh(t){
+  ctx.save(); ctx.globalCompositeOperation='screen';
+  for(const b of BOKEH){
+    const yy=(((b.by - t*b.sp)%1)+1)%1;
+    const xx=b.bx+Math.sin(t*0.18+b.ph)*0.022;
+    const cx=xx*W, cy=yy*H;
+    const al=Math.max(0,0.05+0.045*Math.sin(t*0.5+b.ph));
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,b.r);
+    g.addColorStop(0,`rgba(255,212,138,${al})`); g.addColorStop(1,'rgba(255,212,138,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,b.r,0,7); ctx.fill();
+  }
+  ctx.restore();
+}
+function lightSweep(t){
+  const p=(t*0.045)%1, cx=lerp(-0.25,1.25,p)*W;
+  const g=ctx.createRadialGradient(cx,H*0.34,0,cx,H*0.34,920);
+  g.addColorStop(0,'rgba(255,238,196,0.07)'); g.addColorStop(1,'rgba(255,238,196,0)');
+  ctx.save(); ctx.globalCompositeOperation='screen'; ctx.fillStyle=g; ctx.fillRect(0,0,W,H); ctx.restore();
 }
 
 // ---- text -----------------------------------------------------------------
@@ -88,11 +141,12 @@ function wrap(str,s,w,maxw){setFont(s,w);const words=str.split(' ');const out=[]
   for(const wd of words){const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>maxw&&cur){out.push(cur);cur=wd;}else cur=test;}
   if(cur)out.push(cur);return out;}
 function softText(str,x,y,size,startT,o={}){
-  const a=easeOut(clamp((T-startT)/0.45,0,1)); if(a<=0)return;
+  const p=clamp((T-startT)/0.5,0,1), a=easeOut(p); if(a<=0)return;
+  const sc=lerp(0.9,1,easeOutBack(p));               // subtle scale pop
   const lines=wrap(str,size,o.weight||800,o.maxw||(W-180));
   const lh=size*1.22; let yy=y-(lines.length-1)*lh/2;
   ctx.save(); ctx.globalAlpha=a; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.translate(0,(1-a)*12);
+  ctx.translate(x,y); ctx.scale(sc,sc); ctx.translate(-x,-y+(1-a)*14);
   for(const ln of lines){
     ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=18;
     setFont(size,o.weight||800); ctx.fillStyle=o.color||'#fff'; ctx.fillText(ln,x,yy); yy+=lh;
@@ -112,8 +166,9 @@ function captionBox(str,startT,opts={}){
 // ---- realistic notifications (scene 5) ------------------------------------
 function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function notif(kind,startT,yTop){
-  const a=easeOut(clamp((T-startT)/0.4,0,1)); if(a<=0)return;
-  const x=70, w=W-140, h=150, y=yTop-(1-a)*24;
+  const p=clamp((T-startT)/0.45,0,1), a=easeOut(p); if(a<=0)return;
+  const eb=easeOutBack(p);
+  const x=70+(1-eb)*150, w=W-140, h=150, y=yTop-(1-a)*10;   // slide in from right + settle
   ctx.save(); ctx.globalAlpha=a;
   ctx.shadowColor='rgba(0,0,0,0.45)'; ctx.shadowBlur=26;
   ctx.fillStyle='rgba(252,252,252,0.97)'; rr(x,y,w,h,28); ctx.fill(); ctx.shadowBlur=0;
@@ -144,10 +199,11 @@ function grade(){
 function frame(t){
   T=t; ctx.clearRect(0,0,W,H); ctx.fillStyle='#05070b'; ctx.fillRect(0,0,W,H);
   const sub=subAt(t), idx=SUBS.indexOf(sub), prev=SUBS[idx-1];
-  const XF=0.6; const into=prev && (t-sub.start)<XF;
+  const XF=0.7; const into=prev && (t-sub.start)<XF;
   if(into){ drawSub(prev,t,1); drawSub(sub,t,easeIO((t-sub.start)/XF)); }
   else drawSub(sub,t,1);
   grade();
+  lightSweep(t); bokeh(t);
 
   const seg=segAt(t), scene=seg.scene;
   // captions / notifications
