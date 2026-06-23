@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;padding:0;background:#000;overflow:hidden}#c{display:block}</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="timeline.js"></script>
+<script>
+// ===========================================================================
+// PACK MONEY BOOST 2026 — Script 2 "Storytelling Enock".
+// Human-creator style: each provided image shown IN FULL (contain) over a soft
+// blurred fill of itself — never cropped. Slow drift, cinematic dissolves,
+// sincere captions only where the image has no baked-in text, realistic S5
+// notifications. Deterministic: window.seek(t).
+// ===========================================================================
+const W=1080,H=1920;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const SEG=window.SEG, DUR=window.DURATION;
+
+const SRC={s1:'assets/s1.png',s2:'assets/s2.png',s3a:'assets/s3a.png',s3b:'assets/s3b.png',
+  s4a:'assets/s4a.png',s4b:'assets/s4b.png',s5:'assets/s5.png',s6:'assets/s6.png',s7:'assets/s7.png'};
+const IMG={}, BG={};
+
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const easeOut=t=>1-Math.pow(1-t,3);
+const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+let T=0;
+
+// ---- flatten scenes into image sub-shots ----------------------------------
+function endOf(i){return i+1<SEG.length?SEG[i+1].t:DUR;}
+const SUBS=[];
+(function(){
+  let i=0;
+  while(i<SEG.length){
+    let j=i; while(j<SEG.length&&SEG[j].scene===SEG[i].scene) j++;
+    const sc=SEG[i].scene, bs=SEG[i].t, be=endOf(j-1), n=j-i;
+    const push=(img,a,b)=>SUBS.push({img,start:a,end:b,scene:sc});
+    if(sc===1) push('s1',bs,be);
+    else if(sc===2) push('s2',bs,be);
+    else if(sc===3){const mid=i+2; push('s3a',bs,SEG[mid].t); push('s3b',SEG[mid].t,be);}
+    else if(sc===4){const mid=i+2; push('s4a',bs,SEG[mid].t); push('s4b',SEG[mid].t,be);}
+    else if(sc===5) push('s5',bs,be);
+    else if(sc===6) push('s6',bs,be);
+    else if(sc===7) push('s7',bs,be);
+    i=j;
+  }
+})();
+function subAt(t){let s=SUBS[0];for(const x of SUBS)if(t>=x.start)s=x;return s;}
+function segAt(t){let s=SEG[0];for(const x of SEG)if(t>=x.t)s=x;return s;}
+
+// ---- cached blurred background per image ----------------------------------
+function buildBG(key){
+  const img=IMG[key]; if(!img||!img.naturalWidth) return;
+  const oc=document.createElement('canvas'); oc.width=W; oc.height=H;
+  const o=oc.getContext('2d');
+  const iw=img.naturalWidth, ih=img.naturalHeight;
+  const s=Math.max(W/iw,H/ih)*1.15;           // cover (slightly over)
+  const dw=iw*s, dh=ih*s;
+  o.filter='blur(34px) brightness(0.5) saturate(1.1)';
+  o.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh);
+  o.filter='none';
+  o.fillStyle='rgba(6,8,12,0.34)'; o.fillRect(0,0,W,H);
+  BG[key]=oc;
+}
+
+// ---- draw one sub (blurred bg + full contained image, gentle drift) -------
+function drawSub(sub,t,alpha){
+  const img=IMG[sub.img]; if(!img||!img.naturalWidth) return;
+  const d=Math.max(sub.end-sub.start,0.001), local=clamp((t-sub.start)/d,0,1);
+  ctx.save(); ctx.globalAlpha=alpha;
+  if(BG[sub.img]) ctx.drawImage(BG[sub.img],0,0);
+  // contain the full image, inset 1.5% so a tiny drift never crops it
+  const iw=img.naturalWidth, ih=img.naturalHeight;
+  const base=Math.min(W/iw,H/ih)*0.985;
+  const sc=base*lerp(1.0,1.02,easeOut(local));     // very slow push, stays within inset
+  const dw=iw*sc, dh=ih*sc;
+  const dy=lerp(-6,6,local);                         // subtle vertical drift
+  ctx.drawImage(img,(W-dw)/2,(H-dh)/2+dy,dw,dh);
+  ctx.restore();
+}
+
+// ---- text -----------------------------------------------------------------
+function setFont(s,w){ctx.font=`${w||800} ${s}px Arial, Helvetica, sans-serif`;}
+function wrap(str,s,w,maxw){setFont(s,w);const words=str.split(' ');const out=[];let cur='';
+  for(const wd of words){const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>maxw&&cur){out.push(cur);cur=wd;}else cur=test;}
+  if(cur)out.push(cur);return out;}
+function softText(str,x,y,size,startT,o={}){
+  const a=easeOut(clamp((T-startT)/0.45,0,1)); if(a<=0)return;
+  const lines=wrap(str,size,o.weight||800,o.maxw||(W-180));
+  const lh=size*1.22; let yy=y-(lines.length-1)*lh/2;
+  ctx.save(); ctx.globalAlpha=a; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.translate(0,(1-a)*12);
+  for(const ln of lines){
+    ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=18;
+    setFont(size,o.weight||800); ctx.fillStyle=o.color||'#fff'; ctx.fillText(ln,x,yy); yy+=lh;
+  }
+  ctx.restore();
+}
+function captionBox(str,startT,opts={}){
+  const y=opts.y||1560;
+  const a=easeOut(clamp((T-startT)/0.45,0,1));
+  ctx.save(); ctx.globalAlpha=a*0.5;
+  const g=ctx.createLinearGradient(0,y-150,0,y+150);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(.5,'rgba(0,0,0,0.8)'); g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,y-160,W,320); ctx.restore();
+  softText(str,W/2,y,opts.size||52,startT,{weight:opts.weight||800,color:opts.color||'#fff'});
+}
+
+// ---- realistic notifications (scene 5) ------------------------------------
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function notif(kind,startT,yTop){
+  const a=easeOut(clamp((T-startT)/0.4,0,1)); if(a<=0)return;
+  const x=70, w=W-140, h=150, y=yTop-(1-a)*24;
+  ctx.save(); ctx.globalAlpha=a;
+  ctx.shadowColor='rgba(0,0,0,0.45)'; ctx.shadowBlur=26;
+  ctx.fillStyle='rgba(252,252,252,0.97)'; rr(x,y,w,h,28); ctx.fill(); ctx.shadowBlur=0;
+  if(kind==='wa'){
+    ctx.fillStyle='#25D366'; ctx.beginPath(); ctx.arc(x+78,y+h/2,46,0,7); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=8; ctx.lineCap='round';
+    ctx.beginPath(); ctx.arc(x+78,y+h/2,24,Math.PI*0.82,Math.PI*2.4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+62,y+h/2-16); ctx.lineTo(x+74,y+h/2-2); ctx.lineTo(x+58,y+h/2+2); ctx.closePath(); ctx.fill();
+    setFont(27,800); ctx.fillStyle='#0b6b34'; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('WhatsApp',x+150,y+44);
+    setFont(31,500); ctx.fillStyle='#1a1f29'; ctx.fillText('Bonjour, votre service m’intéresse.',x+150,y+92);
+  } else {
+    ctx.fillStyle='#f4b400'; ctx.beginPath(); ctx.arc(x+78,y+h/2,46,0,7); ctx.fill();
+    setFont(44,400); ctx.fillStyle='#1a1f29'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('₣',x+78,y+h/2);
+    setFont(27,800); ctx.fillStyle='#1a1f29'; ctx.textAlign='left'; ctx.fillText('Paiement reçu',x+150,y+44);
+    setFont(33,800); ctx.fillStyle='#0b6b34'; ctx.fillText('+ 5 000 FCFA',x+150,y+92);
+  }
+  ctx.restore();
+}
+
+// ---- grain + vignette for filmic realism ----------------------------------
+function grade(){
+  const v=ctx.createRadialGradient(W/2,H*0.46,560,W/2,H/2,1180);
+  v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,0.34)');
+  ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
+}
+
+// ===========================================================================
+function frame(t){
+  T=t; ctx.clearRect(0,0,W,H); ctx.fillStyle='#05070b'; ctx.fillRect(0,0,W,H);
+  const sub=subAt(t), idx=SUBS.indexOf(sub), prev=SUBS[idx-1];
+  const XF=0.6; const into=prev && (t-sub.start)<XF;
+  if(into){ drawSub(prev,t,1); drawSub(sub,t,easeIO((t-sub.start)/XF)); }
+  else drawSub(sub,t,1);
+  grade();
+
+  const seg=segAt(t), scene=seg.scene;
+  // captions / notifications
+  if(seg.cap==='WA') notif('wa',seg.t,300);
+  else if(seg.cap==='PAY'){ notif('wa',seg.t-3.0,300); notif('pay',seg.t,470); }
+  else if(seg.cap && seg.cap.length>2){
+    const isArrow=seg.cap.indexOf('→')>=0;
+    captionBox(seg.cap,seg.t,{y:scene===1?1560:1560,size:isArrow?50:54,
+      weight:isArrow?800:800,color:isArrow?'#ffe08a':'#fff'});
+  }
+  // scene 7 tagline (image already has the CTA button)
+  if(scene===7){
+    const ts=SUBS.find(s=>s.scene===7).start;
+    softText('Ton téléphone peut devenir bien plus\nqu’un outil de divertissement.',W/2,250,42,ts+0.6,
+      {weight:700,color:'#f2f4f8',maxw:W-150});
+  }
+}
+
+// ---- preload --------------------------------------------------------------
+let loaded=0, keys=Object.keys(SRC);
+keys.forEach(k=>{const im=new Image();
+  im.onload=()=>{IMG[k]=im; buildBG(k); loaded++; if(loaded===keys.length){frame(0); window.__ready=true;}};
+  im.onerror=()=>{loaded++; if(loaded===keys.length){frame(0); window.__ready=true;}};
+  im.src=SRC[k]; IMG[k]=im;});
+window.seek=function(t){frame(Math.max(0,Math.min(t,DUR)));};
+</script>
+</body>
+</html>
