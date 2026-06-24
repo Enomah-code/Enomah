@@ -137,9 +137,13 @@ function lightSweep(t){
 
 // ---- text -----------------------------------------------------------------
 function setFont(s,w){ctx.font=`${w||800} ${s}px Arial, Helvetica, sans-serif`;}
-function wrap(str,s,w,maxw){setFont(s,w);const words=str.split(' ');const out=[];let cur='';
-  for(const wd of words){const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>maxw&&cur){out.push(cur);cur=wd;}else cur=test;}
-  if(cur)out.push(cur);return out;}
+function wrap(str,s,w,maxw){setFont(s,w);const out=[];
+  for(const para of String(str).split('\n')){
+    const words=para.split(' ');let cur='';
+    for(const wd of words){const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>maxw&&cur){out.push(cur);cur=wd;}else cur=test;}
+    out.push(cur);
+  }
+  return out;}
 function softText(str,x,y,size,startT,o={}){
   const p=clamp((T-startT)/0.5,0,1), a=easeOut(p); if(a<=0)return;
   const sc=lerp(0.9,1,easeOutBack(p));               // subtle scale pop
@@ -217,7 +221,7 @@ function frame(t){
   // scene 7 tagline (image already has the CTA button)
   if(scene===7){
     const ts=SUBS.find(s=>s.scene===7).start;
-    softText('Ton téléphone peut devenir bien plus\nqu’un outil de divertissement.',W/2,250,42,ts+0.6,
+    softText('Construis tes premières\nopportunités en ligne.',W/2,250,44,ts+0.6,
       {weight:700,color:'#f2f4f8',maxw:W-150});
   }
 }

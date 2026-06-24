@@ -25,16 +25,17 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.join(ROOT, "build")
 REF = os.path.join(VOICE_DIR, "assets", "my_voice_ref.wav")
 MUSIC = os.path.join(VOICE_DIR, "assets", "music_bg.m4a")
-NAT_GAP = 0.42
+NAT_GAP = 0.30
 MUSIC_VOL = 0.30
-TAIL = 3.0
+TAIL = 2.5
+SPEED = 1.10          # tighten delivery (atempo, pitch preserved) — script is long
 
 # Sincere storytelling delivery: calm, natural, believable (not rushed/hyped).
 TELL = dict(NATURAL, temperature=0.72, speed=1.0)
 
 # Credible-creator master: gentle body + presence, tame box, firm-but-natural
-# glue, and a barely-there pitch drop for a touch of grounded maturity.
-PITCH = "asetrate=24000*0.985,atempo=1.015228,aresample=44100"
+# glue, a barely-there pitch drop, plus the SPEED tighten (atempo keeps pitch).
+PITCH = f"asetrate=24000*0.985,atempo=1.015228,atempo={SPEED},aresample=44100"
 CLEAN = "adeclick=window=55:overlap=75,adeclip,afftdn=nf=-26:nr=11"
 MASTER = (
     "highpass=f=60,"
@@ -50,49 +51,75 @@ MASTER = (
 PMB = "Pack Mauni Bouste deux mille vingt-six"
 
 # (text, scene, on-screen caption or "" if the image already carries text, pause)
+# Script « J'ai arrêté de chercher l'argent facile ». On-screen text is kept
+# minimal (storyboard beats only) — several images already carry baked text.
 SEGMENTS = [
-    ("Pendant longtemps, je pensais que pour gagner de l'argent sur Internet, il fallait forcément avoir beaucoup d'argent.",
+    # --- SCÈNE 1 — HOOK (s1) ---
+    ("Pendant longtemps, je pensais que pour gagner de l'argent sur Internet, il fallait forcément avoir de l'argent au départ.",
      1, "Je cherchais une solution…", 0.4),
-    ("Jusqu'au jour où j'ai compris que je cherchais au mauvais endroit.",
-     1, "…mais pas au bon endroit.", 1.0),
+    ("Jusqu'au jour où j'ai compris que je cherchais simplement au mauvais endroit.",
+     1, "…mais pas au bon endroit.", 0.8),
 
-    ("Comme beaucoup de gens, je voyais toutes ces histoires de personnes qui réussissaient grâce à Internet.",
+    # --- SCÈNE 2 — LA RECHERCHE (s2 : montage méthodes / problèmes) ---
+    ("Comme beaucoup de personnes, je voyais toutes ces histoires de gens qui réussissaient grâce à Internet.",
+     2, "", 0.3),
+    ("Des personnes qui créaient des activités, trouvaient des clients en ligne, et travaillaient simplement avec un ordinateur, ou même un téléphone.",
      2, "", 0.35),
-    ("Alors moi aussi, j'ai voulu comprendre.", 2, "", 0.35),
-    ("J'ai essayé plusieurs choses : le trading, le dropshipping, différentes méthodes.",
-     2, "", 0.4),
-    ("Mais à chaque fois, je retombais sur les mêmes obstacles : investir beaucoup d'argent, prendre des risques, apprendre des systèmes compliqués.",
-     2, "", 0.9),
+    ("Alors moi aussi, j'ai voulu comprendre comment ça fonctionnait.", 2, "", 0.35),
+    ("J'ai essayé plusieurs choses : le trading, le dropshipping, différentes méthodes qu'on voyait partout.",
+     2, "", 0.35),
+    ("Mais à chaque fois, je retrouvais les mêmes problèmes : il fallait souvent beaucoup d'argent pour commencer, prendre des risques, comprendre des systèmes compliqués.",
+     2, "", 0.35),
+    ("Et parfois, la réalité était très différente de ce qu'on m'avait présenté.", 2, "", 0.7),
 
-    ("Puis j'ai réalisé quelque chose d'important.", 3, "", 0.4),
-    ("Internet n'était pas seulement un endroit où regarder des vidéos.", 3, "", 0.4),
-    ("C'était devenu un immense marché, où des gens cherchent chaque jour des solutions.",
-     3, "Un besoin → Une solution → Une valeur", 0.5),
-    ("Le principe était simple : trouver un besoin, apporter une solution, et être payé pour la valeur créée.",
-     3, "", 0.9),
+    # --- SCÈNE 3 — LE DÉCLIC (s3a/s3b : marché, valeur, bons outils) ---
+    ("Puis j'ai compris quelque chose d'important.", 3, "", 0.35),
+    ("Le problème, ce n'était pas Internet.", 3, "", 0.3),
+    ("Le problème, c'était que je ne savais pas encore comment l'utiliser correctement.", 3, "", 0.45),
+    ("Internet n'était pas seulement un endroit pour regarder des vidéos ou passer le temps.", 3, "", 0.35),
+    ("C'était devenu un immense marché, où chaque jour, des milliers de personnes recherchent des solutions.",
+     3, "", 0.4),
+    ("Les personnes qui réussissent en ligne font simplement une chose : elles apportent de la valeur à quelqu'un qui a un besoin.",
+     3, "", 0.7),
 
-    ("Comme un réparateur de téléphone, dans un quartier.", 4, "", 0.4),
-    ("Il a une compétence. Quelqu'un a un problème.", 4, "", 0.4),
-    ("Il apporte une solution, et il est payé.", 4, "", 0.4),
-    ("Sur Internet, ton quartier devient beaucoup plus grand.",
-     4, "Internet = un marché mondial", 0.9),
+    # --- SCÈNE 3 (suite) — métaphore du réparateur (s4a/s4b) ---
+    ("Comme un réparateur de téléphone dans un quartier :", 4, "", 0.3),
+    ("il possède une compétence, quelqu'un a un problème, il apporte une solution, et il est payé.",
+     4, "", 0.5),
+    ("Sur Internet, ton quartier devient le monde entier.",
+     4, "Ton quartier devient le monde entier.", 0.4),
+    ("Et aujourd'hui, avec l'intelligence artificielle, il est devenu beaucoup plus simple d'apprendre plus vite, et de créer des services utiles.",
+     4, "", 0.7),
 
-    ("J'ai commencé simplement.", 5, "", 0.4),
-    ("Quelques jours après, mon premier client m'a contacté.", 5, "WA", 0.4),
-    ("Un flyer : cinq mille francs.", 5, "PAY", 0.4),
-    ("Puis un C.V. Puis d'autres demandes.", 5, "", 0.4),
-    ("Petit à petit, j'ai compris que ce n'était pas une question de chance.", 5, "", 0.35),
-    ("J'avais simplement appris à répondre à un besoin réel.", 5, "", 0.9),
+    # --- SCÈNE 4 — LA NOUVELLE APPROCHE (s5 : client, design, paiement) ---
+    ("Alors j'ai arrêté de chercher des méthodes qui demandaient toujours plus d'argent.", 5, "", 0.35),
+    ("Je me suis concentré sur quelque chose de plus solide : apprendre des compétences, et résoudre de vrais problèmes.",
+     5, "", 0.45),
+    ("Créer un C.V. professionnel. Concevoir des flyers. Réaliser des catalogues pour des entreprises.",
+     5, "", 0.4),
+    ("Aider des entrepreneurs à mieux présenter leurs activités sur Internet.", 5, "", 0.45),
+    ("Des choses qu'on peut apprendre et réaliser avec un téléphone, Internet, et les bons outils.",
+     5, "", 0.5),
+    ("Et progressivement, les choses ont commencé à changer.", 5, "", 0.35),
+    ("Après avoir appris et appliqué ces méthodes, j'ai commencé à recevoir mes premières demandes.",
+     5, "WA", 0.45),
+    ("Un flyer. Puis un C.V. Puis d'autres projets. Et ça s'est enchaîné.", 5, "PAY", 0.45),
+    ("J'ai compris que ce n'était pas une question de chance.", 5, "", 0.3),
+    ("Il fallait simplement apprendre à répondre à un besoin réel.", 5, "", 0.7),
 
-    (f"C'est exactement pour ça que j'ai créé le {PMB}.", 6, "", 0.4),
-    ("J'ai regroupé ce que j'aurais aimé avoir quand j'ai commencé :", 6, "", 0.35),
-    ("les services à apprendre, les outils à utiliser, et les étapes pour démarrer.",
-     6, "", 0.9),
+    # --- SCÈNE 5 — POURQUOI MONEY BOOST (s6 : révélation du pack) ---
+    ("Aujourd'hui, j'ai décidé de partager ces méthodes avec vous.", 6, "", 0.35),
+    (f"C'est exactement pour cette raison que j'ai créé le {PMB}.", 6, "", 0.4),
+    ("Parce qu'au début, j'aurais aimé avoir quelqu'un qui m'explique simplement : quoi apprendre, quels services proposer, quels outils utiliser, et comment trouver ses premiers clients.",
+     6, "", 0.45),
+    ("J'ai donc regroupé tout ce parcours dans un guide pratique.", 6, "", 0.4),
+    ("Des idées de services digitaux, des outils d'intelligence artificielle, des scripts, des stratégies, et un plan clair pour commencer.",
+     6, "", 0.7),
 
-    ("Pas de promesse magique.", 7, "", 0.4),
-    ("Juste une méthode claire pour apprendre à créer de la valeur avec les outils que tu as déjà.",
-     7, "", 0.5),
-    (f"Découvre le {PMB}, et commence ton parcours.", 7, "", 0.4),
+    # --- SCÈNE 5 (CTA) — (s7 : costume + bouton télécharger) ---
+    ("Pas de promesse magique. Pas de raccourci.", 7, "", 0.35),
+    ("Juste une méthode pour apprendre à créer de la valeur, avec les outils que tu as déjà.", 7, "", 0.5),
+    (f"Télécharge le {PMB}, et commence à construire tes premières opportunités en ligne.", 7, "", 0.4),
 ]
 
 
@@ -148,6 +175,9 @@ def main():
                     "-map", "[out]", "-ar", "44100", "-b:a", "192k", spot], check=True)
     os.remove(padded)
 
+    # the master is sped by SPEED (atempo), so every segment start compresses too
+    for s in seg:
+        s["t"] = round(s["t"] / SPEED, 3)
     with open(os.path.join(ROOT, "timeline.js"), "w", encoding="utf-8") as f:
         f.write("window.SEG = " + json.dumps(seg, ensure_ascii=False) + ";\n")
         f.write(f"window.DURATION = {dur(spot):.3f};\n")
