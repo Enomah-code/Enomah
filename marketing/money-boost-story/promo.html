@@ -9,18 +9,24 @@
 <script src="timeline.js"></script>
 <script>
 // ===========================================================================
-// PACK MONEY BOOST 2026 — Script 2 "Storytelling Enock".
-// Human-creator style: each provided image shown IN FULL (contain) over a soft
-// blurred fill of itself — never cropped. Slow drift, cinematic dissolves,
-// sincere captions only where the image has no baked-in text, realistic S5
-// notifications. Deterministic: window.seek(t).
+// PACK MONEY BOOST 2026 — Storytelling « J'ai arrêté de chercher l'argent
+// facile ». Data-driven per segment: scene 2 shows cropped panels in sequence,
+// scene 3 is a vector transition (quartier→monde→téléphone→IA→services),
+// scene 5 layers UI motion-graphics (Canva, livraison WhatsApp, paiement MTN
+// MoMo, pluie de commandes). Deterministic: window.seek(t).
 // ===========================================================================
 const W=1080,H=1920;
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
 const SEG=window.SEG, DUR=window.DURATION;
+const GOLD='#f4b400', WA='#25D366';
 
-const SRC={s1:'assets/s1.png',s2:'assets/s2.png',s3a:'assets/s3a.png',s3b:'assets/s3b.png',
-  s4a:'assets/s4a.png',s4b:'assets/s4b.png',s5:'assets/s5.png',s6:'assets/s6.png',s7:'assets/s7.png'};
+const SRC={
+  s1:'assets/s1.png', s4a:'assets/s4a.png', s4b:'assets/s4b.png',
+  s5:'assets/s5.png', s6:'assets/s6.png', s7:'assets/s7.png',
+  trading:'assets/s2parts/trading.png', pensive:'assets/s2parts/pensive.png',
+  formation:'assets/s2parts/formation.png', ecom:'assets/s2parts/ecom.png',
+  frust:'assets/s2parts/frust.png', spent:'assets/s2parts/spent.png',
+};
 const IMG={}, BG={};
 
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -30,8 +36,6 @@ const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 const easeOutBack=t=>1+2.5*Math.pow(t-1,3)+1.6*Math.pow(t-1,2);
 let T=0;
 
-// ---- Ken Burns motion presets (deterministic per shot index) --------------
-// z = zoom over the shot; (x,y) = pan as a fraction of the available overflow.
 const KB=[
   {z0:1.05,z1:1.17, x0:-0.55,y0:-0.20, x1:0.55,y1:0.22},
   {z0:1.17,z1:1.05, x0:0.50,y0:0.28,  x1:-0.45,y1:-0.26},
@@ -41,64 +45,65 @@ const KB=[
   {z0:1.16,z1:1.05, x0:-0.52,y0:-0.28,x1:0.52,y1:0.30},
 ];
 
-// ---- flatten scenes into image sub-shots ----------------------------------
+// ---- per-segment ordinal within its scene ---------------------------------
+const ORD=[]; {const c={}; for(const s of SEG){c[s.scene]=c[s.scene]||0; ORD.push(c[s.scene]++);}}
+function segIndexAt(t){let k=0;for(let i=0;i<SEG.length;i++)if(t>=SEG[i].t)k=i;return k;}
+function segAt(t){return SEG[segIndexAt(t)];}
 function endOf(i){return i+1<SEG.length?SEG[i+1].t:DUR;}
-const SUBS=[];
-(function(){
-  let i=0;
-  while(i<SEG.length){
-    let j=i; while(j<SEG.length&&SEG[j].scene===SEG[i].scene) j++;
-    const sc=SEG[i].scene, bs=SEG[i].t, be=endOf(j-1), n=j-i;
-    const push=(img,a,b)=>SUBS.push({img,start:a,end:b,scene:sc});
-    if(sc===1) push('s1',bs,be);
-    else if(sc===2) push('s2',bs,be);
-    else if(sc===3){const mid=i+2; push('s3a',bs,SEG[mid].t); push('s3b',SEG[mid].t,be);}
-    else if(sc===4){const mid=i+2; push('s4a',bs,SEG[mid].t); push('s4b',SEG[mid].t,be);}
-    else if(sc===5) push('s5',bs,be);
-    else if(sc===6) push('s6',bs,be);
-    else if(sc===7) push('s7',bs,be);
-    i=j;
-  }
-})();
-function subAt(t){let s=SUBS[0];for(const x of SUBS)if(t>=x.start)s=x;return s;}
-function segAt(t){let s=SEG[0];for(const x of SEG)if(t>=x.t)s=x;return s;}
+
+// ---- shot plan per segment ------------------------------------------------
+const SC2=['trading','ecom','pensive',['trading','formation'],'spent','frust'];
+function planFor(i){
+  const sc=SEG[i].scene, o=ORD[i];
+  if(sc===1) return {img:'s1'};
+  if(sc===2) return {img:SC2[o]!==undefined?SC2[o]:'pensive'};
+  if(sc===3) return {img:null, fx:'declic'};
+  if(sc===4) return {img:o<2?'s4a':'s4b'};
+  if(sc===5){let fx=null;
+    if(o===2||o===3) fx='canva'; else if(o===6) fx='wain';
+    else if(o===7) fx='delivpay'; else if(o===8||o===9) fx='orders';
+    return {img:'s5', fx};}
+  if(sc===6) return {img:'s6'};
+  if(sc===7) return {img:'s7'};
+  return {img:'s1'};
+}
+// flatten into merged image shots (skip vector segments)
+const SHOTS=[]; {
+  const raw=[];
+  for(let i=0;i<SEG.length;i++){const p=planFor(i); if(p.img==null) continue;
+    const st=SEG[i].t, en=endOf(i), ims=Array.isArray(p.img)?p.img:[p.img], d=(en-st)/ims.length;
+    ims.forEach((k,j)=>raw.push({img:k,start:st+j*d,end:st+(j+1)*d}));}
+  for(const s of raw){const l=SHOTS[SHOTS.length-1];
+    if(l&&l.img===s.img&&Math.abs(l.end-s.start)<0.01) l.end=s.end; else SHOTS.push({...s});}
+}
+function shotAt(t){let s=SHOTS[0];for(const x of SHOTS)if(t>=x.start)s=x;return s;}
 
 // ---- cached blurred background per image ----------------------------------
 function buildBG(key){
   const img=IMG[key]; if(!img||!img.naturalWidth) return;
   const oc=document.createElement('canvas'); oc.width=W; oc.height=H;
   const o=oc.getContext('2d');
-  const iw=img.naturalWidth, ih=img.naturalHeight;
-  const s=Math.max(W/iw,H/ih)*1.15;           // cover (slightly over)
+  const iw=img.naturalWidth, ih=img.naturalHeight, s=Math.max(W/iw,H/ih)*1.15;
   const dw=iw*s, dh=ih*s;
   o.filter='blur(34px) brightness(0.5) saturate(1.1)';
-  o.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh);
-  o.filter='none';
+  o.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh); o.filter='none';
   o.fillStyle='rgba(6,8,12,0.34)'; o.fillRect(0,0,W,H);
   BG[key]=oc;
 }
 
-// Designed frames carry baked text / labels / CTA at their edges — never crop
-// these: show them whole with only a subtle drift. Pure photos get full-bleed
-// Ken Burns for energy.
-const NOCROP=new Set(['s2','s3a','s3b','s6','s7']);
-function drawSub(sub,t,alpha){
-  const img=IMG[sub.img]; if(!img||!img.naturalWidth) return;
-  const d=Math.max(sub.end-sub.start,0.001), local=clamp((t-sub.start)/d,0,1);
-  const e=easeIO(local);
-  const iw=img.naturalWidth, ih=img.naturalHeight, ar=iw/ih, frameAR=W/H;
-  const k=KB[Math.max(0,SUBS.indexOf(sub))%KB.length];
+const NOCROP=new Set(['trading','pensive','formation','ecom','frust','spent','s6','s7']);
+function drawImgShot(shot,t,alpha){
+  const img=IMG[shot.img]; if(!img||!img.naturalWidth) return;
+  const d=Math.max(shot.end-shot.start,0.001), e=easeIO(clamp((t-shot.start)/d,0,1));
+  const iw=img.naturalWidth, ih=img.naturalHeight, ar=iw/ih;
+  const k=KB[Math.max(0,SHOTS.indexOf(shot))%KB.length];
   ctx.save(); ctx.globalAlpha=alpha;
-  if(NOCROP.has(sub.img) || ar>frameAR*1.30){
-    // contain the whole image over its blurred self — guaranteed no crop
-    if(BG[sub.img]) ctx.drawImage(BG[sub.img],0,0);
-    const base=Math.min(W/iw,H/ih)*0.94;           // 6% inset so drift never clips
-    const scl=base*lerp(1.0,1.03,e);               // stays below 1.0 → never crops
-    const dw=iw*scl, dh=ih*scl;
-    const px=lerp(k.x0,k.x1,e)*9, py=lerp(k.y0,k.y1,e)*9;
+  if(NOCROP.has(shot.img) || ar>(W/H)*1.30){
+    if(BG[shot.img]) ctx.drawImage(BG[shot.img],0,0);
+    const base=Math.min(W/iw,H/ih)*0.94, scl=base*lerp(1.0,1.03,e);
+    const dw=iw*scl, dh=ih*scl, px=lerp(k.x0,k.x1,e)*9, py=lerp(k.y0,k.y1,e)*9;
     ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
   } else {
-    // pure photo → fill the frame (cover) and pan within the overflow
     const base=Math.max(W/iw,H/ih), scl=base*lerp(k.z0,k.z1,e);
     const dw=iw*scl, dh=ih*scl;
     const px=lerp(k.x0,k.x1,e)*((dw-W)/2), py=lerp(k.y0,k.y1,e)*((dh-H)/2);
@@ -107,120 +112,360 @@ function drawSub(sub,t,alpha){
   ctx.restore();
 }
 
-// ---- ambient life: drifting golden bokeh + slow warm light sweep ----------
-const BOKEH=Array.from({length:13},(_,i)=>({
-  bx:(i*0.1373+0.04)%1, by:(i*0.2310+0.07)%1,
-  r:22+(i%5)*16, sp:0.010+(i%4)*0.004, ph:i*0.77
-}));
-function bokeh(t){
-  ctx.save(); ctx.globalCompositeOperation='screen';
-  for(const b of BOKEH){
-    const yy=(((b.by - t*b.sp)%1)+1)%1;
-    const xx=b.bx+Math.sin(t*0.18+b.ph)*0.022;
-    const cx=xx*W, cy=yy*H;
-    const al=Math.max(0,0.05+0.045*Math.sin(t*0.5+b.ph));
+// ---- ambient life ---------------------------------------------------------
+const BOKEH=Array.from({length:13},(_,i)=>({bx:(i*0.1373+0.04)%1,by:(i*0.2310+0.07)%1,
+  r:22+(i%5)*16, sp:0.010+(i%4)*0.004, ph:i*0.77}));
+function bokeh(t){ctx.save(); ctx.globalCompositeOperation='screen';
+  for(const b of BOKEH){const yy=(((b.by-t*b.sp)%1)+1)%1, xx=b.bx+Math.sin(t*0.18+b.ph)*0.022;
+    const cx=xx*W, cy=yy*H, al=Math.max(0,0.05+0.045*Math.sin(t*0.5+b.ph));
     const g=ctx.createRadialGradient(cx,cy,0,cx,cy,b.r);
     g.addColorStop(0,`rgba(255,212,138,${al})`); g.addColorStop(1,'rgba(255,212,138,0)');
-    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,b.r,0,7); ctx.fill();
-  }
-  ctx.restore();
-}
-function lightSweep(t){
-  const p=(t*0.045)%1, cx=lerp(-0.25,1.25,p)*W;
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,b.r,0,7); ctx.fill();}
+  ctx.restore();}
+function lightSweep(t){const p=(t*0.045)%1, cx=lerp(-0.25,1.25,p)*W;
   const g=ctx.createRadialGradient(cx,H*0.34,0,cx,H*0.34,920);
   g.addColorStop(0,'rgba(255,238,196,0.07)'); g.addColorStop(1,'rgba(255,238,196,0)');
-  ctx.save(); ctx.globalCompositeOperation='screen'; ctx.fillStyle=g; ctx.fillRect(0,0,W,H); ctx.restore();
-}
+  ctx.save(); ctx.globalCompositeOperation='screen'; ctx.fillStyle=g; ctx.fillRect(0,0,W,H); ctx.restore();}
+function grade(){const v=ctx.createRadialGradient(W/2,H*0.46,560,W/2,H/2,1180);
+  v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,0.34)');
+  ctx.fillStyle=v; ctx.fillRect(0,0,W,H);}
 
 // ---- text -----------------------------------------------------------------
 function setFont(s,w){ctx.font=`${w||800} ${s}px Arial, Helvetica, sans-serif`;}
 function wrap(str,s,w,maxw){setFont(s,w);const out=[];
-  for(const para of String(str).split('\n')){
-    const words=para.split(' ');let cur='';
+  for(const para of String(str).split('\n')){const words=para.split(' ');let cur='';
     for(const wd of words){const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>maxw&&cur){out.push(cur);cur=wd;}else cur=test;}
-    out.push(cur);
-  }
+    out.push(cur);}
   return out;}
 function softText(str,x,y,size,startT,o={}){
   const p=clamp((T-startT)/0.5,0,1), a=easeOut(p); if(a<=0)return;
-  const sc=lerp(0.9,1,easeOutBack(p));               // subtle scale pop
+  const sc=lerp(0.9,1,easeOutBack(p));
   const lines=wrap(str,size,o.weight||800,o.maxw||(W-180));
   const lh=size*1.22; let yy=y-(lines.length-1)*lh/2;
   ctx.save(); ctx.globalAlpha=a; ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.translate(x,y); ctx.scale(sc,sc); ctx.translate(-x,-y+(1-a)*14);
-  for(const ln of lines){
-    ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=18;
-    setFont(size,o.weight||800); ctx.fillStyle=o.color||'#fff'; ctx.fillText(ln,x,yy); yy+=lh;
-  }
-  ctx.restore();
-}
+  for(const ln of lines){ctx.shadowColor='rgba(0,0,0,0.9)'; ctx.shadowBlur=18;
+    setFont(size,o.weight||800); ctx.fillStyle=o.color||'#fff'; ctx.fillText(ln,x,yy); yy+=lh;}
+  ctx.restore();}
 function captionBox(str,startT,opts={}){
-  const y=opts.y||1560;
-  const a=easeOut(clamp((T-startT)/0.45,0,1));
+  const y=opts.y||1560, a=easeOut(clamp((T-startT)/0.45,0,1));
   ctx.save(); ctx.globalAlpha=a*0.5;
   const g=ctx.createLinearGradient(0,y-150,0,y+150);
   g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(.5,'rgba(0,0,0,0.8)'); g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g; ctx.fillRect(0,y-160,W,320); ctx.restore();
-  softText(str,W/2,y,opts.size||52,startT,{weight:opts.weight||800,color:opts.color||'#fff'});
+  softText(str,W/2,y,opts.size||52,startT,{weight:opts.weight||800,color:opts.color||'#fff'});}
+
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function scrim(a){ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#05070b';ctx.fillRect(0,0,W,H);ctx.restore();}
+
+// ---- WhatsApp logo glyph --------------------------------------------------
+function waGlyph(cx,cy,r){
+  ctx.fillStyle=WA; ctx.beginPath(); ctx.arc(cx,cy,r,0,7); ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=r*0.17; ctx.lineCap='round';
+  ctx.beginPath(); ctx.arc(cx,cy,r*0.52,Math.PI*0.82,Math.PI*2.4); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx-r*0.35,cy-r*0.35); ctx.lineTo(cx-r*0.10,cy-r*0.05);
+  ctx.lineTo(cx-r*0.45,cy+0); ctx.closePath(); ctx.fill();
 }
 
-// ---- realistic notifications (scene 5) ------------------------------------
-function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
-function notif(kind,startT,yTop){
-  const p=clamp((T-startT)/0.45,0,1), a=easeOut(p); if(a<=0)return;
-  const eb=easeOutBack(p);
-  const x=70+(1-eb)*150, w=W-140, h=150, y=yTop-(1-a)*10;   // slide in from right + settle
-  ctx.save(); ctx.globalAlpha=a;
-  ctx.shadowColor='rgba(0,0,0,0.45)'; ctx.shadowBlur=26;
-  ctx.fillStyle='rgba(252,252,252,0.97)'; rr(x,y,w,h,28); ctx.fill(); ctx.shadowBlur=0;
-  if(kind==='wa'){
-    ctx.fillStyle='#25D366'; ctx.beginPath(); ctx.arc(x+78,y+h/2,46,0,7); ctx.fill();
-    ctx.strokeStyle='#fff'; ctx.lineWidth=8; ctx.lineCap='round';
-    ctx.beginPath(); ctx.arc(x+78,y+h/2,24,Math.PI*0.82,Math.PI*2.4); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x+62,y+h/2-16); ctx.lineTo(x+74,y+h/2-2); ctx.lineTo(x+58,y+h/2+2); ctx.closePath(); ctx.fill();
-    setFont(27,800); ctx.fillStyle='#0b6b34'; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('WhatsApp',x+150,y+44);
-    setFont(31,500); ctx.fillStyle='#1a1f29'; ctx.fillText('Bonjour, votre service m’intéresse.',x+150,y+92);
-  } else {
-    ctx.fillStyle='#f4b400'; ctx.beginPath(); ctx.arc(x+78,y+h/2,46,0,7); ctx.fill();
-    setFont(44,400); ctx.fillStyle='#1a1f29'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('₣',x+78,y+h/2);
-    setFont(27,800); ctx.fillStyle='#1a1f29'; ctx.textAlign='left'; ctx.fillText('Paiement reçu',x+150,y+44);
-    setFont(33,800); ctx.fillStyle='#0b6b34'; ctx.fillText('+ 5 000 FCFA',x+150,y+92);
-  }
+// ===========================================================================
+// SCÈNE 3 — transition vectorielle quartier → monde → téléphone → IA → services
+// ===========================================================================
+function stageQuartier(cx,cy,s,a){
+  ctx.save(); ctx.globalAlpha=a; ctx.translate(cx,cy); ctx.scale(s,s);
+  ctx.strokeStyle='#cfe0ff'; ctx.fillStyle='rgba(207,224,255,0.10)'; ctx.lineWidth=6;
+  const shops=[[-300,-40,150,200],[-130,-90,160,250],[60,-30,150,190],[240,-70,150,230]];
+  for(const[x,y,w,h] of shops){rr(x,y,w,h,10); ctx.fill(); ctx.stroke();
+    // roof
+    ctx.beginPath(); ctx.moveTo(x-12,y); ctx.lineTo(x+w/2,y-46); ctx.lineTo(x+w+12,y); ctx.closePath(); ctx.stroke();
+    // window
+    ctx.fillStyle=GOLD; ctx.globalAlpha=a*0.85; rr(x+w*0.28,y+h*0.30,w*0.44,h*0.30,6); ctx.fill();
+    ctx.globalAlpha=a; ctx.fillStyle='rgba(207,224,255,0.10)';}
+  ctx.strokeStyle='#cfe0ff'; ctx.beginPath(); ctx.moveTo(-360,160); ctx.lineTo(420,160); ctx.stroke();
+  ctx.restore();
+}
+function stageMonde(cx,cy,s,a,t){
+  ctx.save(); ctx.globalAlpha=a; ctx.translate(cx,cy); ctx.scale(s,s);
+  const R=210;
+  ctx.strokeStyle='#7fb0ff'; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.arc(0,0,R,0,7); ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.arc(0,0,R,0,7); ctx.clip();
+  // latitudes
+  for(let i=-2;i<=2;i++){ctx.beginPath(); ctx.ellipse(0,i*R*0.42,R,R*0.30,0,0,7); ctx.stroke();}
+  // longitudes (animated sweep)
+  for(let i=0;i<5;i++){const ph=(t*0.25+i/5)%1; const w=Math.cos(ph*Math.PI*2)*R;
+    ctx.beginPath(); ctx.ellipse(0,0,Math.abs(w),R,0,0,7); ctx.stroke();}
+  ctx.restore();
+  // pins
+  ctx.fillStyle=GOLD;
+  for(const[px,py] of [[-90,-70],[70,-30],[-30,90],[120,70]]){
+    ctx.beginPath(); ctx.arc(px,py,16,0,7); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px,py,6,0,7); ctx.fill(); ctx.fillStyle=GOLD;}
+  ctx.restore();
+}
+function phoneOutline(a){
+  ctx.strokeStyle='#cfe0ff'; ctx.lineWidth=7; ctx.fillStyle='rgba(10,16,28,0.6)';
+  rr(-150,-260,300,520,40); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='rgba(207,224,255,0.5)'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.moveTo(-40,-232); ctx.lineTo(40,-232); ctx.stroke();
+}
+function stagePhone(cx,cy,s,a){
+  ctx.save(); ctx.globalAlpha=a; ctx.translate(cx,cy); ctx.scale(s,s);
+  phoneOutline(a);
+  // chat bubbles on screen
+  ctx.fillStyle='rgba(37,211,102,0.85)'; rr(-30,-170,150,70,18); ctx.fill();
+  ctx.fillStyle='rgba(207,224,255,0.22)'; rr(-120,-70,150,70,18); ctx.fill();
+  ctx.fillStyle='rgba(37,211,102,0.85)'; rr(-30,30,150,70,18); ctx.fill();
+  // signal/value bars
+  ctx.fillStyle=GOLD; for(let i=0;i<4;i++){const bh=30+i*28; rr(-110+i*60,180-bh,38,bh,6); ctx.fill();}
+  ctx.restore();
+}
+function stageIA(cx,cy,s,a,t){
+  ctx.save(); ctx.globalAlpha=a; ctx.translate(cx,cy); ctx.scale(s,s);
+  // chip
+  ctx.strokeStyle=GOLD; ctx.lineWidth=6; ctx.fillStyle='rgba(244,180,0,0.10)';
+  rr(-150,-150,300,300,28); ctx.fill(); ctx.stroke();
+  // pins
+  ctx.lineWidth=5; for(let i=0;i<5;i++){const p=-110+i*55;
+    ctx.beginPath(); ctx.moveTo(p,-150); ctx.lineTo(p,-185); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(p,150); ctx.lineTo(p,185); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-150,p); ctx.lineTo(-185,p); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(150,p); ctx.lineTo(185,p); ctx.stroke();}
+  // nodes pulsing
+  const nodes=[[-60,-40],[60,-50],[0,20],[-50,70],[70,60]];
+  ctx.strokeStyle='rgba(255,224,140,0.55)'; ctx.lineWidth=3;
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    ctx.beginPath(); ctx.moveTo(nodes[i][0],nodes[i][1]); ctx.lineTo(nodes[j][0],nodes[j][1]); ctx.stroke();}
+  for(let i=0;i<nodes.length;i++){const pr=6+3*Math.sin(t*3+i);
+    ctx.fillStyle=GOLD; ctx.beginPath(); ctx.arc(nodes[i][0],nodes[i][1],10+pr*0.3,0,7); ctx.fill();}
+  ctx.fillStyle='#fff'; setFont(60,800); ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('IA',0,-105);
+  ctx.restore();
+}
+function tile(x,y,w,h,label,iconFn){
+  ctx.fillStyle='rgba(20,28,44,0.85)'; ctx.strokeStyle='rgba(244,180,0,0.7)'; ctx.lineWidth=4;
+  rr(x,y,w,h,18); ctx.fill(); ctx.stroke();
+  ctx.save(); ctx.translate(x+w/2,y+h*0.40); iconFn(); ctx.restore();
+  ctx.fillStyle='#eef3fb'; setFont(26,700); ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(label,x+w/2,y+h*0.80);
+}
+function stageServices(cx,cy,s,a){
+  ctx.save(); ctx.globalAlpha=a; ctx.translate(cx,cy); ctx.scale(s,s);
+  const w=210,h=190,gx=24,gy=24, x0=-(w+gx/2), y0=-(h+gy/2);
+  // CV
+  tile(x0,y0,w,h,'CV',()=>{ctx.fillStyle='#eef3fb'; rr(-34,-46,68,86,8); ctx.fill();
+    ctx.strokeStyle=GOLD; ctx.lineWidth=5; for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(-22,-26+i*16);ctx.lineTo(22,-26+i*16);ctx.stroke();}});
+  // Flyer
+  tile(x0+w+gx,y0,w,h,'Flyer',()=>{ctx.fillStyle=GOLD; rr(-34,-46,68,86,8); ctx.fill();
+    ctx.fillStyle='#1a1f29'; ctx.beginPath(); ctx.arc(-10,-18,12,0,7); ctx.fill();
+    rr(-26,6,52,18,4); ctx.fill();});
+  // Catalogue
+  tile(x0,y0+h+gy,w,h,'Catalogue',()=>{ctx.fillStyle='#eef3fb'; rr(-40,-44,38,82,6); ctx.fill();
+    ctx.fillStyle='#bcd0f0'; rr(2,-44,38,82,6); ctx.fill();});
+  // Design
+  tile(x0+w+gx,y0+h+gy,w,h,'Design',()=>{ctx.strokeStyle=GOLD; ctx.lineWidth=6;
+    ctx.beginPath(); ctx.arc(0,-4,30,0,7); ctx.stroke();
+    ctx.fillStyle='#eef3fb'; ctx.beginPath(); ctx.arc(-16,-12,8,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(16,-12,8,0,7); ctx.fill();});
+  ctx.restore();
+}
+const DECLIC=[
+  {f:(cx,cy,s,a,t)=>stageQuartier(cx,cy,s,a), label:'Ton quartier'},
+  {f:(cx,cy,s,a,t)=>stageMonde(cx,cy,s,a,t), label:'Le monde entier'},
+  {f:(cx,cy,s,a,t)=>stagePhone(cx,cy,s,a), label:'Un téléphone'},
+  {f:(cx,cy,s,a,t)=>stageIA(cx,cy,s,a,t), label:"L'intelligence artificielle"},
+  {f:(cx,cy,s,a,t)=>stageServices(cx,cy,s,a), label:'Des services digitaux'},
+];
+function drawDeclic(t){
+  // background
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0a1020'); g.addColorStop(1,'#05070b');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  // span of scene 3
+  let S=DUR,E=0; for(let i=0;i<SEG.length;i++) if(SEG[i].scene===3){S=Math.min(S,SEG[i].t); E=Math.max(E,endOf(i));}
+  const n=DECLIC.length, sd=(E-S)/n, f=(t-S)/sd; let idx=clamp(Math.floor(f),0,n-1); const loc=f-idx;
+  const cx=W/2, cy=H*0.42;
+  const drawStage=(k,a)=>{const z=lerp(0.86,1.0,easeOut(clamp(a*1.3,0,1)));
+    DECLIC[k].f(cx,cy,z,a,t);
+    softText(DECLIC[k].label,cx,H*0.70,52,S+ k*sd,{weight:800,color:'#fff'});};
+  // current stage fades out at the tail, next fades in
+  const xf=0.78;
+  if(loc<1-xf || idx>=n-1){ drawStage(idx,1); }
+  else { const m=(loc-(1-xf))/xf; drawStage(idx,1-easeIO(m)); drawStage(idx+1,easeIO(m)); }
+  // connecting arrows progress dots
+  ctx.save(); ctx.globalAlpha=0.9;
+  for(let i=0;i<n;i++){ctx.fillStyle=i<=idx?GOLD:'rgba(255,255,255,0.25)';
+    ctx.beginPath(); ctx.arc(W/2-(n-1)*22+i*44,H*0.80,9,0,7); ctx.fill();}
   ctx.restore();
 }
 
-// ---- grain + vignette for filmic realism ----------------------------------
-function grade(){
-  const v=ctx.createRadialGradient(W/2,H*0.46,560,W/2,H/2,1180);
-  v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,0.34)');
-  ctx.fillStyle=v; ctx.fillRect(0,0,W,H);
+// ===========================================================================
+// SCÈNE 5 — overlays UI (Canva, livraison WhatsApp, paiement MoMo, commandes)
+// ===========================================================================
+function panel(x,y,w,h,r,fill){ctx.save(); ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=40; ctx.shadowOffsetY=14;
+  ctx.fillStyle=fill; rr(x,y,w,h,r); ctx.fill(); ctx.restore();}
+
+function drawCanva(p){
+  scrim(0.55*clamp(p*2,0,1));
+  const eb=easeOutBack(clamp(p*1.4,0,1)), w=860, h=1140, x=(W-w)/2, y=320+(1-eb)*40;
+  ctx.save(); ctx.globalAlpha=clamp(p*2,0,1);
+  panel(x,y,w,h,26,'#1f2430');
+  // top bar
+  ctx.fillStyle='#2b3240'; rr(x,y,w,64,26); ctx.fill(); ctx.fillRect(x,y+34,w,30);
+  const dots=['#ff5f57','#febc2e','#28c840']; dots.forEach((c,i)=>{ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x+34+i*30,y+32,9,0,7); ctx.fill();});
+  ctx.fillStyle='#00c4cc'; setFont(26,800); ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('Canva',x+150,y+33);
+  ctx.fillStyle='#3a4252'; rr(x+260,y+16,360,34,17); ctx.fill();
+  // left toolbar
+  ctx.fillStyle='#262c38'; ctx.fillRect(x,y+64,96,h-64);
+  for(let i=0;i<6;i++){ctx.fillStyle=i===1?'#00c4cc':'#39414f'; rr(x+24,y+96+i*92,48,48,12); ctx.fill();}
+  // artboard
+  const ax=x+128, ay=y+96, aw=w-160, ah=h-150;
+  ctx.fillStyle='#f3f5f8'; rr(ax,ay,aw,ah,10); ctx.fill();
+  const step=(thr)=>clamp((p-thr)/0.12,0,1);
+  // header band
+  let s=step(0.15); if(s>0){ctx.save(); ctx.globalAlpha=s; ctx.fillStyle=GOLD; ctx.fillRect(ax,ay,aw,150);
+    ctx.fillStyle='#1a1f29'; setFont(56,900); ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('FLYER',ax+40,ay+78); ctx.restore();}
+  // logo circle
+  s=step(0.32); if(s>0){ctx.save(); ctx.globalAlpha=s; ctx.fillStyle='#00c4cc'; ctx.beginPath(); ctx.arc(ax+aw-110,ay+78,46*s,0,7); ctx.fill(); ctx.restore();}
+  // image placeholder
+  s=step(0.48); if(s>0){ctx.save(); ctx.globalAlpha=s; ctx.fillStyle='#cdd6e4'; rr(ax+40,ay+210,aw-80,330,14); ctx.fill();
+    ctx.fillStyle='#9fb0c8'; ctx.beginPath(); ctx.arc(ax+aw/2,ay+360,46,0,7); ctx.fill(); ctx.restore();}
+  // text lines
+  s=step(0.62); if(s>0){ctx.save(); ctx.globalAlpha=s; ctx.fillStyle='#41566f';
+    for(let i=0;i<3;i++){const lw=(aw-120)*[1,0.8,0.55][i]; rr(ax+50,ay+600+i*46,lw,22,11); ctx.fill();} ctx.restore();}
+  // CTA button
+  s=step(0.78); if(s>0){ctx.save(); ctx.globalAlpha=s; ctx.fillStyle=GOLD; rr(ax+50,ay+770,300,86,16); ctx.fill();
+    ctx.fillStyle='#1a1f29'; setFont(30,800); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('CONTACTEZ-NOUS',ax+200,ay+813); ctx.restore();}
+  // cursor
+  const cxp=ax+aw-160+Math.sin(p*7)*30, cyp=ay+760+Math.cos(p*5)*40;
+  ctx.fillStyle='#fff'; ctx.strokeStyle='#1a1f29'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(cxp,cyp); ctx.lineTo(cxp,cyp+34); ctx.lineTo(cxp+10,cyp+25); ctx.lineTo(cxp+22,cyp+24); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  // label
+  softText('Création du design',W/2,1560,46,0,{weight:800,color:'#fff'});
+}
+
+function phoneFrame(x,y,w,h){ctx.fillStyle='#0c1016'; panel(x,y,w,h,46,'#0c1016');
+  ctx.fillStyle='#05070b'; rr(x+10,y+10,w-20,h-20,38); ctx.fill();}
+function drawDelivery(p,shift){
+  shift=shift||0;
+  scrim(0.5*clamp(p*2,0,1));
+  const eb=easeOutBack(clamp(p*1.4,0,1)), w=760, h=1180, x=(W-w)/2, y=300-shift+(1-eb)*40;
+  ctx.save(); ctx.globalAlpha=clamp(p*2,0,1);
+  phoneFrame(x,y,w,h);
+  const sx=x+10, sy=y+10, sw=w-20;
+  // WA header
+  ctx.fillStyle='#075E54'; rr(sx,sy,sw,120,38); ctx.fill(); ctx.fillRect(sx,sy+60,sw,60);
+  ctx.fillStyle='#cfeede'; ctx.beginPath(); ctx.arc(sx+90,sy+72,34,0,7); ctx.fill();
+  ctx.fillStyle='#fff'; setFont(30,800); ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('Client',sx+140,sy+62);
+  setFont(22,500); ctx.fillStyle='#bfe3d6'; ctx.fillText('en ligne',sx+140,sy+96);
+  // chat area
+  ctx.fillStyle='#0b141a'; ctx.fillRect(sx,sy+120,sw,h-160);
+  // incoming bubble
+  const s1=clamp(p/0.4,0,1);
+  if(s1>0){ctx.save(); ctx.globalAlpha=s1; ctx.fillStyle='#1f2c33'; rr(sx+40,sy+200,440,110,20); ctx.fill();
+    ctx.fillStyle='#e9edef'; setFont(27,500); ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText('Tu peux m’envoyer',sx+66,sy+240); ctx.fillText('le flyer ?',sx+66,sy+276); ctx.restore();}
+  // outgoing file card
+  const s2=clamp((p-0.4)/0.35,0,1);
+  if(s2>0){ctx.save(); ctx.globalAlpha=s2; const by=sy+360+(1-easeOutBack(s2))*30;
+    ctx.fillStyle='#005c4b'; rr(sx+sw-500,by,460,180,20); ctx.fill();
+    ctx.fillStyle='#0b141a'; rr(sx+sw-480,by+22,90,110,14); ctx.fill();
+    ctx.strokeStyle=GOLD; ctx.lineWidth=5; rr(sx+sw-462,by+40,54,74,6); ctx.stroke();
+    ctx.fillStyle=GOLD; setFont(22,800); ctx.textAlign='center'; ctx.fillText('PDF',sx+sw-435,by+82);
+    ctx.fillStyle='#e9edef'; setFont(27,700); ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText('flyer_final.pdf',sx+sw-370,by+58); setFont(22,500); ctx.fillStyle='#bcd6cd'; ctx.fillText('248 Ko · PDF',sx+sw-370,by+96);
+    // ticks
+    const blue=clamp((p-0.7)/0.2,0,1); ctx.strokeStyle=blue>0.5?'#53bdeb':'#8aa6a0'; ctx.lineWidth=5; ctx.lineCap='round';
+    const tx=sx+sw-150, ty=by+150;
+    ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(tx+12,ty+12); ctx.lineTo(tx+34,ty-14); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tx+16,ty); ctx.lineTo(tx+28,ty+12); ctx.lineTo(tx+50,ty-14); ctx.stroke();
+    ctx.fillStyle='#bcd6cd'; setFont(20,600); ctx.textAlign='right'; ctx.fillText('Livré',sx+sw-60,by+150); ctx.restore();}
+  ctx.restore();
+  if(!shift) softText('Livraison du travail',W/2,1560,46,0,{weight:800,color:'#fff'});
+}
+function drawMomo(p){
+  const eb=easeOutBack(clamp(p*1.5,0,1)), w=W-120, h=190, x=60, y=150-(1-eb)*180;
+  ctx.save(); ctx.globalAlpha=clamp(p*2,0,1);
+  panel(x,y,w,h,30,'#ffcb05');
+  ctx.fillStyle='#1a1f29'; ctx.beginPath(); ctx.arc(x+96,y+h/2,54,0,7); ctx.fill();
+  ctx.fillStyle='#ffcb05'; setFont(30,900); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('MTN',x+96,y+h/2-12);
+  ctx.fillStyle='#1a1f29'; setFont(24,800); ctx.fillText('MoMo',x+96,y+h/2+22);
+  ctx.textAlign='left'; ctx.fillStyle='#1a1f29'; setFont(30,900); ctx.fillText('MTN MoMo · maintenant',x+186,y+58);
+  setFont(30,600); ctx.fillText('Vous avez reçu',x+186,y+104);
+  setFont(40,900); ctx.fillText('5 000 FCFA de Client',x+186,y+150);
+  ctx.restore();
+}
+function drawDelivPay(p){
+  // first part: delivery; from 0.55 the MoMo banner drops in over it
+  drawDelivery(clamp(p/0.62,0,1), p>0.55?120:0);
+  if(p>0.55){drawMomo(clamp((p-0.55)/0.3,0,1));
+    softText('Paiement reçu',W/2,1560,46,0,{weight:800,color:'#fff'});}
+}
+function orderChip(cx,cy,sc,a,n){
+  ctx.save(); ctx.globalAlpha=a; ctx.translate(cx,cy); ctx.scale(sc,sc);
+  ctx.shadowColor='rgba(0,0,0,0.4)'; ctx.shadowBlur=24;
+  ctx.fillStyle='#fff'; rr(-150,-54,300,108,26); ctx.fill(); ctx.shadowBlur=0;
+  waGlyph(-96,0,38);
+  ctx.fillStyle='#0b6b34'; setFont(24,800); ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('WhatsApp',-44,-18);
+  ctx.fillStyle='#1a1f29'; setFont(24,500); ctx.fillText('Nouvelle commande',-44,16);
+  // red unread badge
+  ctx.fillStyle='#ff3b30'; ctx.beginPath(); ctx.arc(132,-44,26,0,7); ctx.fill();
+  ctx.fillStyle='#fff'; setFont(26,800); ctx.textAlign='center'; ctx.fillText(String(n),132,-43);
+  ctx.restore();
+}
+function drawOrders(p){
+  scrim(0.45*clamp(p*2,0,1));
+  const slots=[[W/2,560],[W/2-150,760],[W/2+160,720],[W/2-120,980],[W/2+150,960],[W/2,1180]];
+  for(let i=0;i<slots.length;i++){
+    const st=i*0.12, a=clamp((p-st)/0.16,0,1); if(a<=0) continue;
+    const eb=easeOutBack(clamp(a*1.3,0,1)); const sc=lerp(0.6,1,eb);
+    orderChip(slots[i][0],slots[i][1]+(1-eb)*20,sc,Math.min(a,1),i+1);
+  }
+  softText('Et plusieurs demandes…',W/2,1430,50,0,{weight:800,color:'#fff'});
 }
 
 // ===========================================================================
 function frame(t){
   T=t; ctx.clearRect(0,0,W,H); ctx.fillStyle='#05070b'; ctx.fillRect(0,0,W,H);
-  const sub=subAt(t), idx=SUBS.indexOf(sub), prev=SUBS[idx-1];
-  const XF=0.7; const into=prev && (t-sub.start)<XF;
-  if(into){ drawSub(prev,t,1); drawSub(sub,t,easeIO((t-sub.start)/XF)); }
-  else drawSub(sub,t,1);
-  grade();
-  lightSweep(t); bokeh(t);
+  const si=segIndexAt(t), sc=SEG[si].scene, p=planFor(si);
 
-  const seg=segAt(t), scene=seg.scene;
-  // captions / notifications
-  if(seg.cap==='WA') notif('wa',seg.t,300);
-  else if(seg.cap==='PAY'){ notif('wa',seg.t-3.0,300); notif('pay',seg.t,470); }
-  else if(seg.cap && seg.cap.length>2){
-    const isArrow=seg.cap.indexOf('→')>=0;
-    captionBox(seg.cap,seg.t,{y:scene===1?1560:1560,size:isArrow?50:54,
-      weight:isArrow?800:800,color:isArrow?'#ffe08a':'#fff'});
+  if(sc===3){ drawDeclic(t); }
+  else {
+    const shot=shotAt(t), idx=SHOTS.indexOf(shot), prev=SHOTS[idx-1];
+    const XF=0.55, into=prev && (t-shot.start)<XF && Math.abs(prev.end-shot.start)<0.01;
+    if(into){ drawImgShot(prev,t,1); drawImgShot(shot,t,easeIO((t-shot.start)/XF)); }
+    else drawImgShot(shot,t,1);
+    grade(); lightSweep(t); bokeh(t);
   }
-  // scene 7 tagline (image already has the CTA button)
-  if(scene===7){
-    const ts=SUBS.find(s=>s.scene===7).start;
-    softText('Construis tes premières\nopportunités en ligne.',W/2,250,44,ts+0.6,
-      {weight:700,color:'#f2f4f8',maxw:W-150});
+
+  // ---- scene-5 UI overlays ----
+  if(p.fx){
+    const st=SEG[si].t, en=endOf(si), loc=clamp((t-st)/Math.max(en-st,0.001),0,1);
+    if(p.fx==='canva') drawCanva(loc);
+    else if(p.fx==='wain') notif('wain',st,300);
+    else if(p.fx==='delivpay') drawDelivPay(loc);
+    else if(p.fx==='orders') drawOrders(loc);
   }
+
+  // ---- captions (storyboard beats only) ----
+  const seg=SEG[si], cap=seg.cap;
+  if(cap && cap!=='WA' && cap!=='PAY' && cap.length>2)
+    captionBox(cap,seg.t,{y:1560,size:cap.indexOf('→')>=0?50:54,color:cap.indexOf('→')>=0?'#ffe08a':'#fff'});
+
+  if(sc===7){const ts=SHOTS.find(s=>s.img==='s7').start;
+    softText('Construis tes premières\nopportunités en ligne.',W/2,250,44,ts+0.6,{weight:700,color:'#f2f4f8',maxw:W-150});}
+}
+
+// override notif to support custom WhatsApp incoming text ("wain")
+function notif(kind,startT,yTop){
+  const p=clamp((T-startT)/0.45,0,1), a=easeOut(p); if(a<=0)return;
+  const eb=easeOutBack(p), x=70+(1-eb)*150, w=W-140, h=150, y=yTop-(1-a)*10;
+  ctx.save(); ctx.globalAlpha=a; ctx.shadowColor='rgba(0,0,0,0.45)'; ctx.shadowBlur=26;
+  ctx.fillStyle='rgba(252,252,252,0.97)'; rr(x,y,w,h,28); ctx.fill(); ctx.shadowBlur=0;
+  waGlyph(x+78,y+h/2,46);
+  ctx.fillStyle='#0b6b34'; setFont(27,800); ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('WhatsApp · Client',x+150,y+44);
+  ctx.fillStyle='#1a1f29'; setFont(31,500);
+  ctx.fillText('Bonjour, je suis intéressé par un flyer.',x+150,y+92);
+  ctx.restore();
 }
 
 // ---- preload --------------------------------------------------------------
