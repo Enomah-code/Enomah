@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;padding:0;background:#000;overflow:hidden}#c{display:block}</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="timeline.js"></script>
+<script>
+// ===========================================================================
+// PACK MONEY BOOST 2026 — « Le salaire qui disparaît avant la fin du mois ».
+// Per-segment image plan following the storyboard's plans & transitions.
+// Deterministic: window.seek(t).
+// ===========================================================================
+const W=1080,H=1920;
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const SEG=window.SEG, DUR=window.DURATION;
+const GOLD='#f4b400';
+
+const SRC={
+  n_happy:'assets/n_happy.png', n_worried:'assets/n_worried.png', n_despair:'assets/n_despair.png',
+  n_hope:'assets/n_hope.png', n_canva:'assets/n_canva.png', n_client:'assets/n_client.png',
+  n_cv:'assets/n_cv.png', n_catalog:'assets/n_catalog.png', n_pay:'assets/n_pay.png',
+  n_pack:'assets/n_pack.png', n_cta:'assets/n_cta.png',
+  n_dep:'assets/n_dep.png', n_cal:'assets/n_cal.png', n_count:'assets/n_count.png',
+};
+const IMG={}, BG={};
+
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const easeOut=t=>1-Math.pow(1-t,3);
+const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const easeOutBack=t=>1+2.5*Math.pow(t-1,3)+1.6*Math.pow(t-1,2);
+let T=0;
+
+const KB=[
+  {z0:1.05,z1:1.17, x0:-0.55,y0:-0.20, x1:0.55,y1:0.22},
+  {z0:1.17,z1:1.05, x0:0.50,y0:0.28,  x1:-0.45,y1:-0.26},
+  {z0:1.06,z1:1.18, x0:0.52,y0:-0.30, x1:-0.50,y1:0.30},
+  {z0:1.18,z1:1.06, x0:-0.50,y0:0.30, x1:0.48,y1:-0.28},
+  {z0:1.05,z1:1.16, x0:0.0, y0:-0.55, x1:0.0, y1:0.45},
+  {z0:1.16,z1:1.05, x0:-0.52,y0:-0.28,x1:0.52,y1:0.30},
+];
+
+const ORD=[]; {const c={}; for(const s of SEG){c[s.scene]=c[s.scene]||0; ORD.push(c[s.scene]++);}}
+function segIndexAt(t){let k=0;for(let i=0;i<SEG.length;i++)if(t>=SEG[i].t)k=i;return k;}
+function endOf(i){return i+1<SEG.length?SEG[i+1].t:DUR;}
+
+// ---- shot plan per segment (follows the storyboard) ------------------------
+const SC1=['n_happy','n_dep','n_worried'];
+const SC2=['n_cal','n_happy','n_dep','n_count','n_dep','n_count','n_worried','n_despair','n_worried','n_cal'];
+const SC3=['n_despair','n_worried','n_worried','n_despair'];
+const SC4=['n_hope','n_hope','n_cv','n_hope','n_hope','n_cv','n_cv','n_hope','n_pay'];
+const SC5=['n_client','n_canva','n_cv',['n_cv','n_canva','n_catalog'],'n_client','n_pay','n_hope','n_pay'];
+const SC6=['n_pack','n_pack','n_pack','n_cta','n_cta'];
+const TOOLS={4:'phone',5:'net',6:'ia'};   // scene-4 ordinal -> tool chip
+function planFor(i){
+  const sc=SEG[i].scene, o=ORD[i], pick=a=>a[o]!==undefined?a[o]:a[a.length-1];
+  if(sc===1) return {img:pick(SC1)};
+  if(sc===2) return {img:pick(SC2)};
+  if(sc===3) return {img:pick(SC3)};
+  if(sc===4) return {img:pick(SC4), fx:TOOLS[o]?('tool_'+TOOLS[o]):null};
+  if(sc===5) return {img:pick(SC5)};
+  if(sc===6) return {img:pick(SC6)};
+  return {img:'n_hope'};
+}
+const SHOTS=[]; {
+  const raw=[];
+  for(let i=0;i<SEG.length;i++){const p=planFor(i); if(!p.img) continue;
+    const st=SEG[i].t, en=endOf(i), ims=Array.isArray(p.img)?p.img:[p.img], d=(en-st)/ims.length;
+    ims.forEach((k,j)=>raw.push({img:k,start:st+j*d,end:st+(j+1)*d}));}
+  for(const s of raw){const l=SHOTS[SHOTS.length-1];
+    if(l&&l.img===s.img&&Math.abs(l.end-s.start)<0.01) l.end=s.end; else SHOTS.push({...s});}
+}
+function shotAt(t){let s=SHOTS[0];for(const x of SHOTS)if(t>=x.start)s=x;return s;}
+
+function buildBG(key){
+  const img=IMG[key]; if(!img||!img.naturalWidth) return;
+  const oc=document.createElement('canvas'); oc.width=W; oc.height=H;
+  const o=oc.getContext('2d');
+  const iw=img.naturalWidth, ih=img.naturalHeight, s=Math.max(W/iw,H/ih)*1.15;
+  const dw=iw*s, dh=ih*s;
+  o.filter='blur(34px) brightness(0.5) saturate(1.1)';
+  o.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh); o.filter='none';
+  o.fillStyle='rgba(6,8,12,0.34)'; o.fillRect(0,0,W,H);
+  BG[key]=oc;
+}
+const COVER=new Set(['n_worried','n_despair','n_hope']);   // pure 9:16 photos → full-bleed
+function drawImgShot(shot,t,alpha){
+  const img=IMG[shot.img]; if(!img||!img.naturalWidth) return;
+  const d=Math.max(shot.end-shot.start,0.001), e=easeIO(clamp((t-shot.start)/d,0,1));
+  const iw=img.naturalWidth, ih=img.naturalHeight;
+  const k=KB[Math.max(0,SHOTS.indexOf(shot))%KB.length];
+  ctx.save(); ctx.globalAlpha=alpha;
+  if(COVER.has(shot.img)){
+    const base=Math.max(W/iw,H/ih), scl=base*lerp(k.z0,k.z1,e);
+    const dw=iw*scl, dh=ih*scl;
+    const px=lerp(k.x0,k.x1,e)*((dw-W)/2), py=lerp(k.y0,k.y1,e)*((dh-H)/2);
+    ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
+  } else {
+    if(BG[shot.img]) ctx.drawImage(BG[shot.img],0,0);
+    const base=Math.min(W/iw,H/ih)*0.94, scl=base*lerp(1.0,1.04,e);
+    const dw=iw*scl, dh=ih*scl, px=lerp(k.x0,k.x1,e)*9, py=lerp(k.y0,k.y1,e)*14;
+    ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
+  }
+  ctx.restore();
+}
+
+// ---- ambient life ---------------------------------------------------------
+const BOKEH=Array.from({length:13},(_,i)=>({bx:(i*0.1373+0.04)%1,by:(i*0.2310+0.07)%1,
+  r:22+(i%5)*16, sp:0.010+(i%4)*0.004, ph:i*0.77}));
+function bokeh(t){ctx.save(); ctx.globalCompositeOperation='screen';
+  for(const b of BOKEH){const yy=(((b.by-t*b.sp)%1)+1)%1, xx=b.bx+Math.sin(t*0.18+b.ph)*0.022;
+    const cx=xx*W, cy=yy*H, al=Math.max(0,0.05+0.045*Math.sin(t*0.5+b.ph));
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,b.r);
+    g.addColorStop(0,`rgba(255,212,138,${al})`); g.addColorStop(1,'rgba(255,212,138,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,b.r,0,7); ctx.fill();}
+  ctx.restore();}
+function lightSweep(t){const p=(t*0.045)%1, cx=lerp(-0.25,1.25,p)*W;
+  const g=ctx.createRadialGradient(cx,H*0.34,0,cx,H*0.34,920);
+  g.addColorStop(0,'rgba(255,238,196,0.07)'); g.addColorStop(1,'rgba(255,238,196,0)');
+  ctx.save(); ctx.globalCompositeOperation='screen'; ctx.fillStyle=g; ctx.fillRect(0,0,W,H); ctx.restore();}
+function grade(){const v=ctx.createRadialGradient(W/2,H*0.46,560,W/2,H/2,1180);
+  v.addColorStop(0,'rgba(0,0,0,0)'); v.addColorStop(1,'rgba(0,0,0,0.34)');
+  ctx.fillStyle=v; ctx.fillRect(0,0,W,H);}
+
+// ---- text -----------------------------------------------------------------
+function setFont(s,w){ctx.font=`${w||800} ${s}px Arial, Helvetica, sans-serif`;}
+function wrap(str,s,w,maxw){setFont(s,w);const out=[];
+  for(const para of String(str).split('\n')){const words=para.split(' ');let cur='';
+    for(const wd of words){const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>maxw&&cur){out.push(cur);cur=wd;}else cur=test;}
+    out.push(cur);}
+  return out;}
+function softText(str,x,y,size,startT,o={}){
+  const p=clamp((T-startT)/0.5,0,1), a=easeOut(p); if(a<=0)return;
+  const sc=lerp(0.9,1,easeOutBack(p));
+  const lines=wrap(str,size,o.weight||800,o.maxw||(W-180));
+  const lh=size*1.24; let yy=y-(lines.length-1)*lh/2;
+  ctx.save(); ctx.globalAlpha=a; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.translate(x,y); ctx.scale(sc,sc); ctx.translate(-x,-y+(1-a)*14);
+  for(const ln of lines){ctx.shadowColor='rgba(0,0,0,0.92)'; ctx.shadowBlur=20;
+    setFont(size,o.weight||800); ctx.fillStyle=o.color||'#fff'; ctx.fillText(ln,x,yy); yy+=lh;}
+  ctx.restore();}
+function captionBox(str,startT,opts={}){
+  const y=opts.y||1560, a=easeOut(clamp((T-startT)/0.45,0,1));
+  ctx.save(); ctx.globalAlpha=a*0.5;
+  const g=ctx.createLinearGradient(0,y-160,0,y+160);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(.5,'rgba(0,0,0,0.82)'); g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,y-170,W,340); ctx.restore();
+  softText(str,W/2,y,opts.size||52,startT,{weight:opts.weight||800,color:opts.color||'#fff',maxw:opts.maxw});}
+
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+// ---- scene-4 "outils que vous avez déjà" : chips animés -------------------
+function toolIcon(kind,cx,cy){
+  ctx.strokeStyle='#0c1016'; ctx.fillStyle='#0c1016'; ctx.lineWidth=6; ctx.lineCap='round';
+  if(kind==='phone'){ rr(cx-26,cy-40,52,80,12); ctx.fill();
+    ctx.strokeStyle='#f4b400'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(cx-10,cy-30); ctx.lineTo(cx+10,cy-30); ctx.stroke(); }
+  else if(kind==='net'){ ctx.strokeStyle='#0c1016'; ctx.lineWidth=7;
+    for(let i=1;i<=3;i++){ctx.beginPath(); ctx.arc(cx,cy+22,i*16,Math.PI*1.25,Math.PI*1.75); ctx.stroke();}
+    ctx.beginPath(); ctx.arc(cx,cy+22,4,0,7); ctx.fill(); }
+  else { rr(cx-34,cy-34,68,68,14); ctx.fill();
+    ctx.fillStyle='#f4b400'; setFont(34,900); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('IA',cx,cy+2); }
+}
+function drawToolChip(kind,p){
+  const lbl={phone:'Votre téléphone',net:'Votre connexion Internet',ia:"L'intelligence artificielle"}[kind];
+  const eb=easeOutBack(clamp(p*1.6,0,1)), a=clamp(p*3,0,1);
+  setFont(40,800); const tw=ctx.measureText(lbl).width, w=tw+200, x=(W-w)/2, y=1330+(1-eb)*30, h=120;
+  ctx.save(); ctx.globalAlpha=a;
+  ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=30; ctx.shadowOffsetY=8;
+  ctx.fillStyle='rgba(252,252,252,0.97)'; rr(x,y,w,h,28); ctx.fill(); ctx.shadowBlur=0;
+  ctx.fillStyle=GOLD; ctx.beginPath(); ctx.arc(x+72,y+h/2,46,0,7); ctx.fill();
+  toolIcon(kind,x+72,y+h/2);
+  ctx.fillStyle='#16202b'; setFont(40,800); ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(lbl,x+140,y+h/2+2);
+  ctx.restore();
+}
+
+// ===========================================================================
+function frame(t){
+  T=t; ctx.clearRect(0,0,W,H); ctx.fillStyle='#05070b'; ctx.fillRect(0,0,W,H);
+  const si=segIndexAt(t), sc=SEG[si].scene, p=planFor(si);
+
+  const shot=shotAt(t), idx=SHOTS.indexOf(shot), prev=SHOTS[idx-1];
+  const XF=0.55, into=prev && (t-shot.start)<XF && Math.abs(prev.end-shot.start)<0.01;
+  if(into){ drawImgShot(prev,t,1); drawImgShot(shot,t,easeIO((t-shot.start)/XF)); }
+  else drawImgShot(shot,t,1);
+  grade(); lightSweep(t); bokeh(t);
+
+  if(p.fx && p.fx.indexOf('tool_')===0){
+    const st=SEG[si].t, en=endOf(si), loc=clamp((t-st)/Math.max(en-st,0.001),0,1);
+    drawToolChip(p.fx.slice(5),loc);
+  }
+
+  // ---- captions ----
+  const cap=SEG[si].cap;
+  if(cap && cap.length>2){
+    if(cap.indexOf('\n')>=0)               // final two-line statement → top
+      softText(cap,W/2,300,48,SEG[si].t,{weight:800,color:'#fff',maxw:W-150});
+    else
+      captionBox(cap,SEG[si].t,{y:1560,size:cap.indexOf('→')>=0?50:50,
+        color:cap.indexOf('→')>=0?'#ffe08a':'#fff',maxw:W-150});
+  }
+}
+
+// ---- preload --------------------------------------------------------------
+let loaded=0, keys=Object.keys(SRC);
+keys.forEach(k=>{const im=new Image();
+  im.onload=()=>{IMG[k]=im; buildBG(k); loaded++; if(loaded===keys.length){frame(0); window.__ready=true;}};
+  im.onerror=()=>{loaded++; if(loaded===keys.length){frame(0); window.__ready=true;}};
+  im.src=SRC[k]; IMG[k]=im;});
+window.seek=function(t){frame(Math.max(0,Math.min(t,DUR)));};
+</script>
+</body>
+</html>
