@@ -78,33 +78,30 @@ function buildBG(key){
   BG[key]=oc;
 }
 
-// ---- draw one sub: full-bleed Ken Burns (cover) for portrait shots,
-//      blurred-bg contain for wide shots — always with real motion ----------
+// Designed frames carry baked text / labels / CTA at their edges — never crop
+// these: show them whole with only a subtle drift. Pure photos get full-bleed
+// Ken Burns for energy.
+const NOCROP=new Set(['s2','s3a','s3b','s6','s7']);
 function drawSub(sub,t,alpha){
   const img=IMG[sub.img]; if(!img||!img.naturalWidth) return;
   const d=Math.max(sub.end-sub.start,0.001), local=clamp((t-sub.start)/d,0,1);
   const e=easeIO(local);
   const iw=img.naturalWidth, ih=img.naturalHeight, ar=iw/ih, frameAR=W/H;
   const k=KB[Math.max(0,SUBS.indexOf(sub))%KB.length];
-  const z=lerp(k.z0,k.z1,e);
   ctx.save(); ctx.globalAlpha=alpha;
-  if(ar>frameAR*1.30){
-    // wide / landscape image → keep it whole over its blurred self, gentle drift
+  if(NOCROP.has(sub.img) || ar>frameAR*1.30){
+    // contain the whole image over its blurred self — guaranteed no crop
     if(BG[sub.img]) ctx.drawImage(BG[sub.img],0,0);
-    const base=Math.min(W/iw,H/ih)*0.97;
-    const scl=base*lerp(1.0,1.06,e);
+    const base=Math.min(W/iw,H/ih)*0.94;           // 6% inset so drift never clips
+    const scl=base*lerp(1.0,1.03,e);               // stays below 1.0 → never crops
     const dw=iw*scl, dh=ih*scl;
-    const px=lerp(k.x0,k.x1,e)*Math.max(0,(dw-W)/2)*0.5;
-    const py=lerp(k.y0,k.y1,e)*38;
+    const px=lerp(k.x0,k.x1,e)*9, py=lerp(k.y0,k.y1,e)*9;
     ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
   } else {
-    // portrait image → fill the frame (cover) and pan within the overflow
-    const base=Math.max(W/iw,H/ih);
-    const scl=base*z;
+    // pure photo → fill the frame (cover) and pan within the overflow
+    const base=Math.max(W/iw,H/ih), scl=base*lerp(k.z0,k.z1,e);
     const dw=iw*scl, dh=ih*scl;
-    const maxX=(dw-W)/2, maxY=(dh-H)/2;
-    const px=lerp(k.x0,k.x1,e)*maxX;
-    const py=lerp(k.y0,k.y1,e)*maxY;
+    const px=lerp(k.x0,k.x1,e)*((dw-W)/2), py=lerp(k.y0,k.y1,e)*((dh-H)/2);
     ctx.drawImage(img,(W-dw)/2+px,(H-dh)/2+py,dw,dh);
   }
   ctx.restore();
