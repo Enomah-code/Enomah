@@ -8,7 +8,7 @@ SHARDS=${SHARDS:-4}
 FF=$(python3 -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())")
 FRAMES_DIR="build/frames"
 AUDIO="build/spot.mp3"
-OUT="money-boost-video.mp4"
+OUT="salaire-video.mp4"
 
 rm -rf "$FRAMES_DIR"; mkdir -p "$FRAMES_DIR"
 echo "Rendering frames @ ${FPS}fps on ${SHARDS} shards…"
@@ -26,5 +26,5 @@ echo "Encoding $OUT …"
   -c:a aac -b:a 192k -shortest \
   "$OUT"
 
-"$FF" -y -ss 00:00:10 -i "$OUT" -frames:v 1 -q:v 2 -update 1 money-boost-video-poster.jpg
-echo "Done:"; ls -lh "$OUT" money-boost-video-poster.jpg
+"$FF" -y -ss 00:00:10 -i "$OUT" -frames:v 1 -q:v 2 -update 1 salaire-video-poster.jpg
+echo "Done:"; ls -lh "$OUT" salaire-video-poster.jpg
