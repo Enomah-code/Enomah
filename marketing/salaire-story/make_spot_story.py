@@ -113,7 +113,9 @@ SEGMENTS = [
     # --- SCÈNE 6 — POURQUOI CE PACK + CTA ---
     ("Ces méthodes, je les ai utilisées moi-même, et j'ai décidé de les partager.", 6, "", 0.4),
     (f"C'est exactement pour cette raison que le {PMB} a été créé.", 6, "", 0.45),
-    (f"J'ai regroupé dans le {PMB} un guide pratique : quinze services à proposer, les outils à utiliser, les scripts pour utiliser les intelligences artificielles comme Chat G.P.T., les stratégies pour trouver vos premiers clients, et une méthode claire pour commencer.",
+    (f"J'ai regroupé dans le {PMB} un guide pratique : quinze services à proposer, les outils à utiliser, et les scripts pour utiliser les intelligences artificielles comme Chat G.P.T.",
+     6, "", 0.4),
+    ("Avec, en plus, les stratégies pour trouver vos premiers clients, et une méthode claire pour commencer.",
      6, "", 0.5),
     ("Vous gardez votre travail, mais vous transformez votre téléphone en un outil capable de créer de nouvelles opportunités.",
      6, "", 0.5),

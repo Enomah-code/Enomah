@@ -51,9 +51,9 @@ function endOf(i){return i+1<SEG.length?SEG[i+1].t:DUR;}
 const SC1=['n_happy','n_dep','n_worried'];
 const SC2=['n_cal','n_happy','n_dep','n_count','n_dep','n_count','n_worried','n_despair','n_worried','n_cal'];
 const SC3=['n_despair','n_worried','n_worried','n_despair'];
-const SC4=['n_hope','n_hope','n_cv','n_hope','n_hope','n_cv','n_cv','n_hope','n_pay'];
+const SC4=['n_hope','n_hope','n_cv','n_hope','n_hope','n_cv','n_cv','n_hope','n_hope'];
 const SC5=['n_client','n_canva','n_cv',['n_cv','n_canva','n_catalog'],'n_client','n_pay','n_hope','n_pay'];
-const SC6=['n_pack','n_pack','n_pack','n_cta','n_cta'];
+const SC6=['n_pack','n_pack','n_pack','n_pack','n_cta','n_cta'];
 const TOOLS={4:'phone',5:'net',6:'ia'};   // scene-4 ordinal -> tool chip
 function planFor(i){
   const sc=SEG[i].scene, o=ORD[i], pick=a=>a[o]!==undefined?a[o]:a[a.length-1];
