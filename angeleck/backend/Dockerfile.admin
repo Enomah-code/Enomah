@@ -1,0 +1,21 @@
+# ============================================================
+#  Angeleck OS — Interface Admin (Streamlit)
+# ============================================================
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /code
+
+COPY requirements.txt /code/requirements.txt
+# L'admin n'a besoin que de streamlit + requests, mais on réutilise le même
+# requirements pour la simplicité (image partagée possible).
+RUN pip install --upgrade pip && pip install streamlit requests
+
+COPY backend/admin /code/admin
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "admin/dashboard.py", \
+     "--server.address=0.0.0.0", "--server.port=8501"]

@@ -1,0 +1,101 @@
+# ============================================================
+#  Angeleck OS — Orchestration Docker complète
+#
+#  Services :
+#    postgres  — base relationnelle (mémoire courte / registre)
+#    chroma    — mémoire vectorielle longue
+#    ollama    — serveur de modèles IA locaux (Llama, Mistral, Qwen, Phi)
+#    backend   — API FastAPI + cerveau central
+#    admin     — interface de contrôle Streamlit
+#
+#  Démarrage :  docker compose up --build
+#  Modèles   :  docker compose exec ollama ollama pull llama3.1
+# ============================================================
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: angeleck-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-angeleck}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-angeleck}
+      POSTGRES_DB: ${POSTGRES_DB:-angeleck}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-angeleck}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: angeleck-chroma
+    restart: unless-stopped
+    volumes:
+      - chromadata:/chroma/chroma
+    ports:
+      - "8001:8000"   # hôte:conteneur — Chroma écoute sur 8000 en interne
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: angeleck-ollama
+    restart: unless-stopped
+    volumes:
+      - ollamadata:/root/.ollama
+    ports:
+      - "11434:11434"
+    # Décommentez pour activer le GPU NVIDIA :
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: angeleck-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+      OLLAMA_BASE_URL: http://ollama:11434
+    depends_on:
+      postgres:
+        condition: service_healthy
+      chroma:
+        condition: service_started
+      ollama:
+        condition: service_started
+    volumes:
+      - ./backend:/code
+      - uploads:/code/uploads
+    ports:
+      - "8000:8000"
+
+  admin:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.admin
+    container_name: angeleck-admin
+    restart: unless-stopped
+    environment:
+      ANGELECK_API_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "8501:8501"
+
+volumes:
+  pgdata:
+  chromadata:
+  ollamadata:
+  uploads:
