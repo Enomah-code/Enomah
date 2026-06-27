@@ -26,3 +26,9 @@ chromadata/
 .DS_Store
 .idea/
 .vscode/
+
+# Version locale — artefacts d'exécution
+local/.venv/
+local/angeleck.db
+local/server.log
+local/uploads/
