@@ -11,7 +11,11 @@ Elle inclut :
 - une **interface de chat intégrée** (page web) ;
 - l'**API** compatible avec ton frontend EMK Blue Diamond Studio.
 
-Elle fonctionne **avec Ollama** (vraie IA) ou **sans** (mode démonstration).
+Elle fonctionne avec trois moteurs au choix : **Claude API** (recommandé, le plus
+puissant), **Ollama** (local gratuit), ou **mode démonstration** (sans rien).
+
+Priorité automatique : si `ANTHROPIC_API_KEY` est définie → Claude ; sinon si
+Ollama tourne → Ollama ; sinon → démonstration.
 
 ---
 
@@ -62,12 +66,38 @@ Puis ouvre **http://localhost:8000**.
 
 ---
 
-## 🧠 Activer la vraie IA (optionnel mais recommandé)
+## 🧠 Activer la vraie IA
 
-Sans Ollama, l'app marche déjà mais répond en **mode démonstration** (elle montre
-quel agent est choisi, sans générer de vrai contenu).
+Sans moteur configuré, l'app marche déjà mais répond en **mode démonstration**
+(elle montre quel agent est choisi, sans générer de vrai contenu). Deux options
+pour de vraies réponses :
 
-Pour de vraies réponses IA, **100 % gratuites et locales** :
+### Option 1 — Claude API (recommandé, qualité maximale)
+
+C'est l'option la plus puissante. Il te suffit de définir ta clé API **avant** de
+lancer.
+
+**Windows (PowerShell)** — dans le dossier `angeleck\local` :
+```powershell
+$env:ANTHROPIC_API_KEY="sk-ant-..."   # ta clé Anthropic
+.\start.bat
+```
+
+**macOS / Linux :**
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+./start.sh
+```
+
+Le statut en haut de la page affichera **« Moteur : Claude API (claude-opus-4-8) 🟢 »**.
+
+> Le modèle par défaut est `claude-opus-4-8` (le plus capable). Pour en changer :
+> `set CLAUDE_MODEL=claude-sonnet-4-6` (Windows) avant de lancer.
+> La dépendance `anthropic` s'installe automatiquement via `start.bat`.
+
+### Option 2 — Ollama (local, gratuit)
+
+Pour de vraies réponses IA **100 % gratuites et locales** :
 
 1. Installe **Ollama** : https://ollama.com (bouton Download).
 2. Ouvre un terminal et télécharge un modèle :

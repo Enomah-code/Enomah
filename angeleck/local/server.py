@@ -38,9 +38,16 @@ from pydantic import BaseModel
 # --------------------------------------------------------------------------- #
 #  Configuration (modifiable via variables d'environnement, sinon défauts)
 # --------------------------------------------------------------------------- #
+# --- Fournisseur Claude API (Anthropic) — prioritaire si une clé est présente ---
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-opus-4-8")  # le plus capable
+USE_CLAUDE = bool(ANTHROPIC_API_KEY)
+
+# --- Fournisseur Ollama (local) — utilisé si pas de clé Claude ---
 OLLAMA_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 BRAIN_MODEL = os.environ.get("OLLAMA_BRAIN_MODEL", "llama3.1")
 AGENT_MODEL = os.environ.get("OLLAMA_AGENT_MODEL", "llama3.1")
+
 DB_PATH = os.environ.get("ANGELECK_DB", os.path.join(os.path.dirname(__file__), "angeleck.db"))
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -237,6 +244,70 @@ async def ollama_chat(system: str, user: str, model: str = AGENT_MODEL) -> Optio
 
 
 # --------------------------------------------------------------------------- #
+#  Accès Claude API (Anthropic) — SDK officiel
+# --------------------------------------------------------------------------- #
+_claude_client = None
+
+
+def _get_claude_client():
+    """Initialise (paresseusement) le client Anthropic. Lit ANTHROPIC_API_KEY."""
+    global _claude_client
+    if _claude_client is None:
+        import anthropic
+
+        _claude_client = anthropic.Anthropic()  # clé lue depuis l'environnement
+    return _claude_client
+
+
+async def claude_chat(system: str, user: str, model: Optional[str] = None) -> Optional[str]:
+    """
+    Interroge Claude via le SDK officiel. Le SDK est synchrone : on l'exécute
+    dans un thread pour ne pas bloquer la boucle async de FastAPI.
+    """
+    import asyncio
+
+    def _call() -> str:
+        client = _get_claude_client()
+        msg = client.messages.create(
+            model=model or CLAUDE_MODEL,
+            max_tokens=4096,
+            system=system,
+            messages=[{"role": "user", "content": user}],
+        )
+        return "".join(b.text for b in msg.content if b.type == "text").strip()
+
+    try:
+        return await asyncio.to_thread(_call)
+    except Exception:  # noqa: BLE001 - clé invalide, réseau, quota...
+        return None
+
+
+# --------------------------------------------------------------------------- #
+#  Couche fournisseur unifiée — Claude API > Ollama > démo
+# --------------------------------------------------------------------------- #
+def active_provider() -> str:
+    return "claude" if USE_CLAUDE else "ollama"
+
+
+async def llm_online() -> bool:
+    """Un vrai LLM est-il disponible ?"""
+    if USE_CLAUDE:
+        return True
+    return await ollama_online()
+
+
+async def llm_chat(system: str, user: str, kind: str = "agent") -> Optional[str]:
+    """
+    Point d'entrée unique des agents/cerveau. `kind` ∈ {"agent","brain"} ne sert
+    qu'à choisir le modèle Ollama (Claude utilise le même modèle pour tout).
+    """
+    if USE_CLAUDE:
+        return await claude_chat(system, user)
+    model = BRAIN_MODEL if kind == "brain" else AGENT_MODEL
+    return await ollama_chat(system, user, model)
+
+
+# --------------------------------------------------------------------------- #
 #  Cerveau central — routage + recrutement + exécution (Modules 1 & 3)
 # --------------------------------------------------------------------------- #
 def route(request: str) -> List[str]:
@@ -275,7 +346,7 @@ async def recruit(skill: str, online: bool) -> Dict[str, Any]:
             "Réponds en JSON: {\"name\":\"...\",\"role\":\"...\",\"skills\":[\"..\"],"
             "\"system_prompt\":\"instructions expertes\"}."
         )
-        raw = await ollama_chat("Tu es le recruteur d'agents d'Angeleck OS.", prompt, BRAIN_MODEL)
+        raw = await llm_chat("Tu es le recruteur d'agents d'Angeleck OS.", prompt, kind="brain")
         if raw:
             m = re.search(r"\{.*\}", raw, re.DOTALL)
             if m:
@@ -317,21 +388,24 @@ async def recruit(skill: str, online: bool) -> Dict[str, Any]:
 
 
 def demo_answer(agent: Dict[str, Any], request: str) -> str:
-    """Réponse de démonstration quand Ollama n'est pas disponible."""
+    """Réponse de démonstration quand aucun LLM n'est disponible."""
     return (
-        f"🟡 **Mode démonstration** (Ollama n'est pas lancé — réponse simulée)\n\n"
+        f"🟡 **Mode démonstration** (aucun moteur IA actif — réponse simulée)\n\n"
         f"**Agent sélectionné :** {agent['name']} — _{agent['role']}_\n\n"
         f"**Ta demande :** {request}\n\n"
         f"En mode réel, cet agent traiterait ta demande avec ses compétences : "
         f"{', '.join(agent['skills'])}.\n\n"
-        f"👉 Pour activer la vraie IA : installe Ollama (https://ollama.com), puis "
-        f"dans un terminal lance `ollama pull llama3.1`. Recharge ensuite cette page."
+        f"👉 Pour activer la vraie IA, au choix :\n"
+        f"• **Claude API** (recommandé) : définis la variable d'environnement "
+        f"`ANTHROPIC_API_KEY` avant de lancer.\n"
+        f"• **Ollama** (local gratuit) : installe https://ollama.com puis "
+        f"`ollama pull llama3.1`. Recharge ensuite cette page."
     )
 
 
 async def handle(request: str, conversation_id: str, extra_context: str = "") -> Dict[str, Any]:
     """Pipeline complet du cerveau central."""
-    online = await ollama_online()
+    online = await llm_online()
     agents = all_agents()
     keys = route(request)
     recruited = None
@@ -351,7 +425,7 @@ async def handle(request: str, conversation_id: str, extra_context: str = "") ->
             continue
         user_block = request if not extra_context else f"{request}\n\n[CONTEXTE]\n{extra_context}"
         if online:
-            reply = await ollama_chat(agent["system_prompt"], user_block, AGENT_MODEL)
+            reply = await llm_chat(agent["system_prompt"], user_block, kind="agent")
             reply = reply or demo_answer(agent, request)
         else:
             reply = demo_answer(agent, request)
@@ -360,10 +434,10 @@ async def handle(request: str, conversation_id: str, extra_context: str = "") ->
     # Synthèse si plusieurs agents.
     if len(outputs) > 1 and online:
         combined = "\n\n".join(f"### {o['name']}\n{o['content']}" for o in outputs)
-        synth = await ollama_chat(
+        synth = await llm_chat(
             "Tu es le cerveau central Angeleck OS. Synthétise les contributions des agents en une réponse cohérente.",
             f"Demande : {request}\n\n{combined}",
-            BRAIN_MODEL,
+            kind="brain",
         )
         answer = synth or combined
     elif outputs:
@@ -434,7 +508,7 @@ async def api_agents():
 
 @app.post("/api/create-agent")
 async def api_create_agent(body: CreateAgentBody):
-    agent = await recruit(body.skill, await ollama_online())
+    agent = await recruit(body.skill, await llm_online())
     return {"created": True, "agent": agent}
 
 
@@ -472,12 +546,20 @@ async def api_history(conversation_id: Optional[str] = None):
 
 @app.get("/api/system/status")
 async def api_status():
-    online = await ollama_online()
+    provider = active_provider()
+    online = await llm_online()
+    if provider == "claude":
+        engine = {"provider": "Claude API", "model": CLAUDE_MODEL, "online": online}
+        mode = "Claude API"
+    else:
+        models = await ollama_models() if online else []
+        engine = {"provider": "Ollama", "models": models, "online": online}
+        mode = "IA réelle (Ollama)" if online else "démonstration"
     return {
         "app": "Angeleck OS (local)",
-        "ollama": {"online": online, "models": await ollama_models() if online else []},
+        "engine": engine,
         "agents": {"count": len(all_agents())},
-        "mode": "IA réelle" if online else "démonstration",
+        "mode": mode,
     }
 
 
@@ -571,9 +653,10 @@ const send = document.getElementById('send');
 async function loadStatus() {
   try {
     const s = await (await fetch('/api/system/status')).json();
+    const dot = s.engine.online ? '🟢' : '🔴';
+    const eng = s.engine.provider + (s.engine.model ? ' (' + s.engine.model + ')' : '');
     document.getElementById('status').innerHTML =
-      'Mode : <b>' + s.mode + '</b> · Agents : <b>' + s.agents.count + '</b>' +
-      (s.ollama.online ? ' · Ollama 🟢' : ' · Ollama 🔴');
+      'Moteur : <b>' + eng + ' ' + dot + '</b> · Agents : <b>' + s.agents.count + '</b>';
   } catch(e) {}
 }
 async function loadAgents() {

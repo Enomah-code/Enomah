@@ -3,3 +3,6 @@ fastapi>=0.115.0
 uvicorn>=0.32.0
 httpx>=0.27.0
 python-multipart>=0.0.12
+
+# Fournisseur Claude API (optionnel — requis seulement si tu utilises ANTHROPIC_API_KEY)
+anthropic>=0.40.0
