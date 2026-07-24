@@ -139,6 +139,35 @@ function initReveal() {
   });
 }
 
+function initBookTilt() {
+  const stages = document.querySelectorAll(".book-stage");
+  if (!stages.length) return;
+
+  const canTilt = window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!canTilt) return;
+
+  stages.forEach(function (stage) {
+    const book = stage.querySelector(".book-3d");
+    if (!book) return;
+
+    stage.addEventListener("pointermove", function (e) {
+      const rect = stage.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      const rotY = -18 + x * 26;
+      const rotX = 6 - y * 20;
+      book.style.animationPlayState = "paused";
+      book.style.transform = "rotateY(" + rotY.toFixed(2) + "deg) rotateX(" + rotX.toFixed(2) + "deg)";
+    });
+
+    stage.addEventListener("pointerleave", function () {
+      book.style.transform = "";
+      book.style.animationPlayState = "running";
+    });
+  });
+}
+
 function wireCheckoutLinks() {
   document.querySelectorAll("[data-checkout]").forEach(function (link) {
     link.setAttribute("href", window.FUNNEL_CONFIG.checkoutUrl);
@@ -157,5 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initFaq();
   initStickyCta();
   initReveal();
+  initBookTilt();
   wireCheckoutLinks();
 });

@@ -11,11 +11,18 @@
   --white: #ffffff;
   --radius: 16px;
   --shadow: 0 10px 30px rgba(10, 40, 20, 0.10);
+  --shadow-lg: 0 30px 60px -15px rgba(6, 40, 20, 0.35);
   --max: 880px;
+  --ease-out: cubic-bezier(.16,.9,.28,1);
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
 
 body {
   margin: 0;
@@ -74,10 +81,49 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Hero ---------- */
 .hero {
+  position: relative;
   background: linear-gradient(180deg, var(--green-pale) 0%, var(--cream) 65%);
-  padding: 44px 0 30px;
+  padding: 52px 0 36px;
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero::before, .hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .55;
+}
+.hero::before {
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(10,138,63,.35), transparent 70%);
+  top: -140px; left: -100px;
+}
+.hero::after {
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(242,183,5,.30), transparent 70%);
+  bottom: -160px; right: -80px;
+}
+.hero .container.hero-grid {
+  display: grid;
+  gap: 34px;
+  align-items: center;
   text-align: center;
 }
+@media (min-width: 900px) {
+  .hero .container.hero-grid {
+    grid-template-columns: 1.05fr .95fr;
+    text-align: left;
+  }
+  .hero .hero-copy { order: 1; }
+  .hero .hero-visual { order: 2; }
+  .hero p.lead { margin: 0 0 22px; }
+  .hero .eyebrow { margin-left: 0; }
+  .hero-copy #hero-cta { margin: 0; }
+}
+.hero-copy #hero-cta { margin: 0 auto; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -92,8 +138,9 @@ img { max-width: 100%; display: block; }
   margin-bottom: 18px;
 }
 .hero h1 {
-  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  font-size: clamp(1.7rem, 4.6vw, 2.6rem);
   color: var(--ink);
+  text-wrap: balance;
 }
 .hero h1 .accent { color: var(--green); }
 .hero p.lead {
@@ -101,6 +148,38 @@ img { max-width: 100%; display: block; }
   color: var(--ink-soft);
   max-width: 620px;
   margin: 0 auto 22px;
+}
+
+/* ---------- 3D Book mockup ---------- */
+.book-stage {
+  perspective: 1400px;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+.book-3d {
+  width: min(70vw, 300px);
+  transform-style: preserve-3d;
+  transform: rotateY(-18deg) rotateX(6deg);
+  transition: transform .35s var(--ease-out);
+  animation: book-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+.book-3d img {
+  border-radius: 6px 10px 10px 6px;
+  box-shadow:
+    -18px 22px 40px -12px rgba(6, 40, 20, .40),
+    0 2px 0 1px rgba(0,0,0,.06);
+}
+@keyframes book-float {
+  0%, 100% { transform: rotateY(-18deg) rotateX(6deg) translateY(0); }
+  50% { transform: rotateY(-14deg) rotateX(4deg) translateY(-10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .book-3d { animation: none; }
+}
+@media (max-width: 899px) {
+  .book-3d { width: min(56vw, 240px); }
 }
 
 /* ---------- Cards / forms ---------- */
@@ -466,5 +545,20 @@ footer a { color: var(--green-dark); font-weight: 600; text-decoration: none; }
 
 /* Le contenu est visible par défaut (sans JS). L'animation ne s'applique
    qu'aux éléments explicitement armés en JS (progressive enhancement). */
-.reveal-armed { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.reveal-armed {
+  opacity: 0;
+  transform: translateY(18px) scale(.98);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+  transition-delay: calc(var(--stagger, 0) * 70ms);
+}
 .reveal-armed.in { opacity: 1; transform: none; }
+
+/* ---------- Kit image (3 livres) ---------- */
+.kit-shot {
+  max-width: 720px;
+  margin: 0 auto 26px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.kit-shot img { width: 100%; }
