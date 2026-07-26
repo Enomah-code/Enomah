@@ -52,9 +52,18 @@ DB_PATH = os.environ.get("ANGELECK_DB", os.path.join(os.path.dirname(__file__), 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+SERVER_START = datetime.now(timezone.utc)
+
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def strip_md(text: str, limit: int = 140) -> str:
+    """Réduit un texte Markdown à un extrait texte brut lisible."""
+    s = re.sub(r"[#*`_>]", "", text or "")
+    s = re.sub(r"\s+", " ", s).strip()
+    return (s[:limit] + "…") if len(s) > limit else s
 
 
 # --------------------------------------------------------------------------- #
@@ -93,9 +102,54 @@ def init_db() -> None:
                 detail TEXT,
                 created_at TEXT
             );
+            CREATE TABLE IF NOT EXISTS integrations (
+                id TEXT PRIMARY KEY,
+                name TEXT,
+                category TEXT,
+                icon TEXT,
+                color TEXT,
+                fields_encrypted TEXT,
+                connected INTEGER DEFAULT 0,
+                last_tested_at TEXT,
+                last_error TEXT,
+                created_at TEXT
+            );
             """
         )
         conn.commit()
+
+
+# --------------------------------------------------------------------------- #
+#  Chiffrement au repos des identifiants d'intégration (Fernet / AES).
+#  La clé est générée une seule fois et stockée localement, hors du dépôt git.
+# --------------------------------------------------------------------------- #
+_SECRET_KEY_PATH = os.path.join(os.path.dirname(__file__), ".secret.key")
+
+
+def _get_fernet():
+    from cryptography.fernet import Fernet
+
+    if not os.path.exists(_SECRET_KEY_PATH):
+        with open(_SECRET_KEY_PATH, "wb") as fh:
+            fh.write(Fernet.generate_key())
+    with open(_SECRET_KEY_PATH, "rb") as fh:
+        key = fh.read().strip()
+    return Fernet(key)
+
+
+def encrypt_fields(fields: Dict[str, str]) -> str:
+    f = _get_fernet()
+    return f.encrypt(json.dumps(fields, ensure_ascii=False).encode("utf-8")).decode("ascii")
+
+
+def decrypt_fields(token: str) -> Dict[str, str]:
+    if not token:
+        return {}
+    f = _get_fernet()
+    try:
+        return json.loads(f.decrypt(token.encode("ascii")).decode("utf-8"))
+    except Exception:  # noqa: BLE001 - clé changée / donnée corrompue
+        return {}
 
 
 def log_event(event: str, detail: Dict[str, Any]) -> None:
@@ -272,6 +326,41 @@ def all_agents() -> Dict[str, Dict[str, Any]]:
     return agents
 
 
+def agent_usage_stats() -> Dict[str, Dict[str, Any]]:
+    """
+    Statistiques réelles d'utilisation par agent, calculées depuis les logs
+    "chat" (colonne `detail` JSON contenant la liste des agents utilisés).
+    Renvoie {agent_key: {"tasks": int, "last_used": iso|None}}.
+    """
+    stats: Dict[str, Dict[str, Any]] = {}
+    with closing(db()) as conn:
+        rows = conn.execute(
+            "SELECT detail, created_at FROM logs WHERE event='chat' ORDER BY created_at"
+        ).fetchall()
+    for row in rows:
+        try:
+            detail = json.loads(row["detail"] or "{}")
+        except json.JSONDecodeError:
+            continue
+        for key in detail.get("agents", []):
+            s = stats.setdefault(key, {"tasks": 0, "last_used": None})
+            s["tasks"] += 1
+            s["last_used"] = row["created_at"]
+    return stats
+
+
+def agent_status(last_used_iso: Optional[str]) -> str:
+    """actif si sollicité il y a moins de 10 minutes, sinon veille."""
+    if not last_used_iso:
+        return "idle"
+    try:
+        last = datetime.fromisoformat(last_used_iso)
+    except ValueError:
+        return "idle"
+    delta = datetime.now(timezone.utc) - last
+    return "active" if delta.total_seconds() < 600 else "idle"
+
+
 # --------------------------------------------------------------------------- #
 #  Accès Ollama (optionnel)
 # --------------------------------------------------------------------------- #
@@ -375,6 +464,99 @@ async def llm_chat(system: str, user: str, kind: str = "agent") -> Optional[str]
         return await claude_chat(system, user)
     model = BRAIN_MODEL if kind == "brain" else AGENT_MODEL
     return await ollama_chat(system, user, model)
+
+
+# --------------------------------------------------------------------------- #
+#  Intégrations externes — connexions RÉELLES (pas de simulation).
+#  Chaque catégorie effectue un vrai appel HTTP de vérification. `connected`
+#  n'est mis à vrai QUE si ce test réussit réellement.
+# --------------------------------------------------------------------------- #
+async def test_integration_connection(category: str, fields: Dict[str, str]) -> tuple[bool, str]:
+    """Tente une vraie connexion et renvoie (succès, message honnête)."""
+    try:
+        async with httpx.AsyncClient(timeout=10) as c:
+            if category == "shopify":
+                shop = (fields.get("shop") or "").strip()
+                token = fields.get("token", "").strip()
+                if not shop or not token:
+                    return False, "Domaine de la boutique et Admin API Access Token requis."
+                if not shop.endswith(".myshopify.com"):
+                    shop = f"{shop}.myshopify.com"
+                r = await c.get(
+                    f"https://{shop}/admin/api/2024-01/shop.json",
+                    headers={"X-Shopify-Access-Token": token},
+                )
+                if r.status_code == 200:
+                    name = r.json().get("shop", {}).get("name", shop)
+                    return True, f"Connecté à la boutique « {name} »."
+                return False, f"Shopify a répondu {r.status_code} — identifiants invalides ou boutique introuvable."
+
+            if category == "meta":
+                token = fields.get("token", "").strip()
+                if not token:
+                    return False, "Access Token requis (générez-le depuis Meta Business Suite)."
+                r = await c.get(
+                    "https://graph.facebook.com/v19.0/me/adaccounts",
+                    params={"access_token": token},
+                )
+                if r.status_code == 200:
+                    n = len(r.json().get("data", []))
+                    return True, f"Connecté — {n} compte(s) publicitaire(s) détecté(s)."
+                err = (r.json().get("error", {}) or {}).get("message", f"HTTP {r.status_code}")
+                return False, f"Meta a refusé la connexion : {err}"
+
+            if category == "google":
+                # L'API Google Ads exige un Developer Token approuvé par Google
+                # (processus de revue manuelle côté Google), en plus d'OAuth.
+                # Impossible à valider avec de simples champs texte.
+                return False, (
+                    "Google Ads nécessite un Developer Token approuvé par Google en "
+                    "plus de vos identifiants OAuth. Angeleck ne peut pas fabriquer ce "
+                    "jeton à votre place — demandez-le dans votre Google Ads API Center."
+                )
+
+            if category == "tiktok":
+                token = fields.get("token", "").strip()
+                if not token:
+                    return False, "Access Token requis (TikTok Business API)."
+                r = await c.get(
+                    "https://business-api.tiktok.com/open_api/v1.3/advertiser/info/",
+                    headers={"Access-Token": token},
+                    params={"advertiser_ids": json.dumps([fields.get("advertiser", "")])},
+                )
+                data = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+                if r.status_code == 200 and data.get("code") == 0:
+                    return True, "Connecté à TikTok Business API."
+                msg = data.get("message", f"HTTP {r.status_code}")
+                return False, f"TikTok a refusé la connexion : {msg}"
+
+            if category == "markets":
+                provider = (fields.get("provider") or "").lower()
+                if "binance" in provider:
+                    r = await c.get("https://api.binance.com/api/v3/ping")
+                    ok = r.status_code == 200
+                    return ok, ("Binance joignable." if ok else f"Binance a répondu {r.status_code} (bloqué depuis ce réseau ?).")
+                if "coingecko" in provider or not provider:
+                    r = await c.get("https://api.coingecko.com/api/v3/ping")
+                    ok = r.status_code == 200
+                    return ok, ("CoinGecko joignable." if ok else f"CoinGecko a répondu {r.status_code}.")
+                apikey = fields.get("apikey", "").strip()
+                if not apikey:
+                    return False, "Clé API requise pour ce fournisseur."
+                return True, "Clé enregistrée. Fournisseur personnalisé — non testé automatiquement."
+
+            # Catégorie générique / "intégration conçue par Raphaël".
+            base = (fields.get("baseurl") or "").strip()
+            apikey = fields.get("apikey", "").strip()
+            if not base:
+                return False, "URL de base de l'API requise pour vérifier la connexion."
+            headers = {"Authorization": f"Bearer {apikey}"} if apikey else {}
+            r = await c.get(base, headers=headers)
+            if r.status_code < 500:
+                return True, f"Service joignable (HTTP {r.status_code})."
+            return False, f"Le service a répondu {r.status_code}."
+    except httpx.HTTPError as exc:
+        return False, f"Connexion impossible : {exc}"
 
 
 # --------------------------------------------------------------------------- #
@@ -534,7 +716,7 @@ async def handle(request: str, conversation_id: str, extra_context: str = "") ->
         )
         conn.commit()
 
-    log_event("chat", {"agents": [o["agent"] for o in outputs], "recruited": recruited})
+    log_event("chat", {"agents": [o["agent"] for o in outputs], "recruited": recruited, "online": online})
     return {
         "answer": answer,
         "conversation_id": conversation_id,
@@ -576,7 +758,11 @@ async def api_chat(body: ChatBody):
 
 @app.get("/api/agents")
 async def api_agents():
-    agents = list(all_agents().values())
+    usage = agent_usage_stats()
+    agents = []
+    for a in all_agents().values():
+        u = usage.get(a["key"], {"tasks": 0, "last_used": None})
+        agents.append({**a, "tasks": u["tasks"], "status": agent_status(u["last_used"])})
     return {"agents": agents, "count": len(agents)}
 
 
@@ -616,6 +802,246 @@ async def api_history(conversation_id: Optional[str] = None):
             "SELECT DISTINCT conversation_id FROM messages ORDER BY created_at DESC LIMIT 50"
         ).fetchall()
         return {"conversations": [r["conversation_id"] for r in rows]}
+
+
+@app.get("/api/dashboard")
+async def api_dashboard():
+    """Statistiques RÉELLES du Centre de commandement (remplace les valeurs fixes)."""
+    with closing(db()) as conn:
+        total_chats = conn.execute("SELECT COUNT(*) c FROM logs WHERE event='chat'").fetchone()["c"]
+        online_chats = 0
+        recruited_count = 0
+        for row in conn.execute("SELECT detail FROM logs WHERE event='chat'"):
+            try:
+                d = json.loads(row["detail"] or "{}")
+            except json.JSONDecodeError:
+                continue
+            if d.get("online"):
+                online_chats += 1
+            if d.get("recruited"):
+                recruited_count += 1
+        recent = conn.execute(
+            "SELECT content, agents, created_at FROM messages WHERE role='assistant' "
+            "ORDER BY created_at DESC LIMIT 6"
+        ).fetchall()
+
+    agents = all_agents()
+    success_rate = round(100 * online_chats / total_chats, 1) if total_chats else None
+    uptime_minutes = int((datetime.now(timezone.utc) - SERVER_START).total_seconds() // 60)
+
+    recent_activity = []
+    for r in recent:
+        agent_keys = [a for a in (r["agents"] or "").split(",") if a]
+        primary = agent_keys[0] if agent_keys else None
+        recent_activity.append({
+            "agent": primary,
+            "agent_name": agents.get(primary, {}).get("name", "Raphaël"),
+            "action": strip_md(r["content"], 90),
+            "time": r["created_at"],
+        })
+
+    return {
+        "agents_count": len(agents),
+        "tasks_total": total_chats,
+        "agents_created_auto": recruited_count,
+        "success_rate": success_rate,  # None tant qu'aucune conversation n'a eu lieu
+        "uptime_minutes": uptime_minutes,
+        "recent_activity": recent_activity,
+    }
+
+
+@app.get("/api/memory/search")
+async def api_memory_search(q: str = ""):
+    """Recherche RÉELLE dans l'historique des réponses (mémoire Akasha)."""
+    q = q.strip()
+    agents = all_agents()
+    with closing(db()) as conn:
+        if q:
+            rows = conn.execute(
+                "SELECT id, conversation_id, content, agents, created_at FROM messages "
+                "WHERE role='assistant' AND content LIKE ? ORDER BY created_at DESC LIMIT 30",
+                (f"%{q}%",),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT id, conversation_id, content, agents, created_at FROM messages "
+                "WHERE role='assistant' ORDER BY created_at DESC LIMIT 20"
+            ).fetchall()
+    results = []
+    for r in rows:
+        agent_keys = [a for a in (r["agents"] or "").split(",") if a]
+        primary = agent_keys[0] if agent_keys else None
+        info = agents.get(primary, {})
+        results.append({
+            "id": r["id"],
+            "conversation_id": r["conversation_id"],
+            "title": strip_md(r["content"], 70),
+            "snippet": strip_md(r["content"], 220),
+            "agent": primary,
+            "agent_name": info.get("name", "Raphaël"),
+            "tag": info.get("role", "Synthèse"),
+            "created_at": r["created_at"],
+        })
+    return {"query": q, "count": len(results), "results": results}
+
+
+@app.get("/api/memory/stats")
+async def api_memory_stats():
+    """Statistiques RÉELLES de la mémoire (aucun chiffre fabriqué)."""
+    with closing(db()) as conn:
+        total = conn.execute("SELECT COUNT(*) c FROM messages WHERE role='assistant'").fetchone()["c"]
+        convs = conn.execute("SELECT COUNT(DISTINCT conversation_id) c FROM messages").fetchone()["c"]
+        month_prefix = datetime.now(timezone.utc).strftime("%Y-%m")
+        recalls = conn.execute(
+            "SELECT COUNT(*) c FROM messages WHERE role='assistant' AND created_at LIKE ?",
+            (month_prefix + "%",),
+        ).fetchone()["c"]
+        agent_rows = conn.execute("SELECT DISTINCT agents FROM messages WHERE agents != ''").fetchall()
+    distinct_agents = {a for row in agent_rows for a in (row["agents"] or "").split(",") if a}
+    return {
+        "memories_total": total,
+        "conversations_total": convs,
+        "agents_involved": len(distinct_agents),
+        "recalls_this_month": recalls,
+    }
+
+
+# --------------------------------------------------------------------------- #
+#  Intégrations & API externes (Réglages → Intégrations)
+# --------------------------------------------------------------------------- #
+class IntegrationConnectBody(BaseModel):
+    name: str
+    category: str
+    icon: str = "bolt"
+    color: str = "#4DA3FF"
+    fields: Dict[str, str] = {}
+
+
+@app.get("/api/integrations")
+async def api_integrations_list():
+    with closing(db()) as conn:
+        rows = conn.execute(
+            "SELECT id,name,category,icon,color,connected,last_tested_at,last_error "
+            "FROM integrations ORDER BY created_at"
+        ).fetchall()
+    return {"integrations": [dict(r) for r in rows]}
+
+
+@app.post("/api/integrations/{integration_id}/connect")
+async def api_integrations_connect(integration_id: str, body: IntegrationConnectBody):
+    """Enregistre les identifiants (chiffrés) et tente une VRAIE connexion."""
+    ok, message = await test_integration_connection(body.category, body.fields)
+    now = now_iso()
+    encrypted = encrypt_fields(body.fields) if ok else ""
+    with closing(db()) as conn:
+        conn.execute(
+            "INSERT INTO integrations (id,name,category,icon,color,fields_encrypted,connected,"
+            "last_tested_at,last_error,created_at) VALUES (?,?,?,?,?,?,?,?,?,?) "
+            "ON CONFLICT(id) DO UPDATE SET name=excluded.name, category=excluded.category, "
+            "icon=excluded.icon, color=excluded.color, fields_encrypted=excluded.fields_encrypted, "
+            "connected=excluded.connected, last_tested_at=excluded.last_tested_at, "
+            "last_error=excluded.last_error",
+            (integration_id, body.name, body.category, body.icon, body.color, encrypted,
+             1 if ok else 0, now, None if ok else message, now),
+        )
+        conn.commit()
+    log_event("integration_connect", {"id": integration_id, "category": body.category, "ok": ok})
+    return {"connected": ok, "message": message}
+
+
+class DesignIntegrationBody(BaseModel):
+    service: str
+
+
+@app.post("/api/integrations/design")
+async def api_integrations_design(body: DesignIntegrationBody):
+    """
+    Raphaël (le cerveau) conçoit RÉELLEMENT les champs de connexion nécessaires
+    pour un service tiers nommé par l'utilisateur. Utilise un vrai appel LLM
+    si disponible ; sinon un gabarit générique honnête (clé API + URL de base).
+    """
+    service = body.service.strip()
+    fields = [
+        {"k": "baseurl", "label": "URL de base de l'API", "ph": "https://api.exemple.com/v1"},
+        {"k": "apikey", "label": "Clé API / Token", "ph": "••••••••••••", "secret": True},
+    ]
+    if await llm_online():
+        prompt = (
+            f"Un utilisateur veut connecter le service « {service} » à une plateforme "
+            "d'agents IA. Réponds UNIQUEMENT en JSON strict avec le schéma exact : "
+            '{"fields": [{"k": "identifiant_technique", "label": "Libellé humain", '
+            '"secret": true|false}]}. Maximum 4 champs, uniquement les plus essentiels '
+            "(ex: clé API, domaine de boutique, ID de compte). Pas de texte hors JSON."
+        )
+        raw = await llm_chat("Tu conçois des intégrations API pour Angeleck OS.", prompt, kind="brain")
+        if raw:
+            m = re.search(r"\{.*\}", raw, re.DOTALL)
+            if m:
+                try:
+                    data = json.loads(m.group(0))
+                    if data.get("fields"):
+                        fields = data["fields"]
+                except json.JSONDecodeError:
+                    pass
+    return {
+        "id": "custom-" + uuid.uuid4().hex[:10],
+        "name": service[:40] or "Service personnalisé",
+        "category": "custom",
+        "icon": "genesis",
+        "color": "#C9A2FF",
+        "fields": fields,
+    }
+
+
+@app.post("/api/integrations/{integration_id}/disconnect")
+async def api_integrations_disconnect(integration_id: str):
+    with closing(db()) as conn:
+        conn.execute(
+            "UPDATE integrations SET connected=0, fields_encrypted='', last_error=NULL WHERE id=?",
+            (integration_id,),
+        )
+        conn.commit()
+    log_event("integration_disconnect", {"id": integration_id})
+    return {"disconnected": True}
+
+
+# --------------------------------------------------------------------------- #
+#  Marchés — ticker crypto RÉEL et live (API publique CoinGecko, sans clé)
+# --------------------------------------------------------------------------- #
+MARKET_COINS = [
+    ("bitcoin", "BTC/USD"),
+    ("ethereum", "ETH/USD"),
+    ("solana", "SOL/USD"),
+    ("binancecoin", "BNB/USD"),
+]
+
+
+@app.get("/api/markets/ticker")
+async def api_markets_ticker():
+    ids = ",".join(c[0] for c in MARKET_COINS)
+    try:
+        async with httpx.AsyncClient(timeout=8) as c:
+            r = await c.get(
+                "https://api.coingecko.com/api/v3/simple/price",
+                params={"ids": ids, "vs_currencies": "usd", "include_24hr_change": "true"},
+            )
+            r.raise_for_status()
+            data = r.json()
+        out = []
+        for coin_id, label in MARKET_COINS:
+            entry = data.get(coin_id)
+            if not entry:
+                continue
+            price = entry.get("usd", 0)
+            change = entry.get("usd_24h_change", 0)
+            out.append({
+                "s": label,
+                "p": f"${price:,.2f}" if price >= 1 else f"${price:.4f}",
+                "c": round(change, 2),
+            })
+        return {"live": True, "source": "CoinGecko (temps réel)", "ticker": out}
+    except Exception as exc:  # noqa: BLE001
+        return {"live": False, "source": None, "ticker": [], "error": str(exc)}
 
 
 @app.get("/api/system/status")

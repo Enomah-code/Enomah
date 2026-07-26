@@ -1,5 +1,24 @@
 /* global React, Icon, Avatar, Badge, Button, GlassCard, Eyebrow, SectionLabel, AOS_MEMORIES, aosInk */
 function Akasha() {
+  const [query, setQuery] = React.useState('');
+  const [results, setResults] = React.useState(null); // null = pas encore cherché
+  const [searching, setSearching] = React.useState(false);
+  const [stats, setStats] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch('/api/memory/stats').then(r => r.json()).then(setStats).catch(() => {});
+    runSearch('');
+  }, []);
+
+  function runSearch(text) {
+    const q = (text !== undefined ? text : query).trim();
+    setSearching(true);
+    fetch('/api/memory/search?q=' + encodeURIComponent(q))
+      .then(r => r.json())
+      .then(d => { setResults(d.results || []); setSearching(false); })
+      .catch(() => setSearching(false));
+  }
+
   // memory constellation nodes
   const nodes = React.useMemo(() => {
     const seeds = [[18, 30], [32, 62], [46, 26], [58, 54], [70, 34], [80, 66], [26, 80], [62, 80], [40, 44], [52, 70], [74, 18], [88, 44], [12, 56], [34, 18]];
@@ -27,35 +46,52 @@ function Akasha() {
         React.createElement('div', { style: { position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', width: '70%', maxWidth: 460, textAlign: 'center' } },
           React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(9,15,31,0.7)', backdropFilter: 'blur(12px)', border: '1px solid var(--border-accent)', borderRadius: 'var(--r-pill)', boxShadow: 'var(--glow-diamond)' } },
             React.createElement(Icon, { name: 'search', size: 17, color: 'var(--diamond-400)' }),
-            React.createElement('input', { placeholder: 'Interroger la mémoire d\'Angeleck…', style: { flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#EAF3FF', fontFamily: 'var(--font-sans)', fontSize: 14 } }),
-            React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)' } }, '⏎')))),
+            React.createElement('input', { value: query, onChange: e => setQuery(e.target.value),
+              onKeyDown: e => { if (e.key === 'Enter') runSearch(); },
+              placeholder: 'Interroger la mémoire d\'Angeleck…', style: { flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#EAF3FF', fontFamily: 'var(--font-sans)', fontSize: 14 } }),
+            React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)' } }, searching ? '…' : '⏎')))),
 
-      /* memory stream */
-      React.createElement(SectionLabel, null, 'Souvenirs récents'),
+      /* memory stream — RÉEL, issu de vos conversations passées */
+      React.createElement(SectionLabel, null, query ? 'Résultats pour « ' + query + ' »' : 'Souvenirs récents (réels)'),
+      (!results || results.length === 0) && React.createElement('div', { style: { fontSize: 12.5, color: 'var(--text-muted)', padding: '8px 2px' } },
+        searching ? 'Recherche…' : query ? 'Aucun souvenir ne correspond à cette recherche.' : 'Aucune conversation enregistrée pour le moment — parlez à Raphaël pour commencer à remplir la mémoire.'),
       React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 14 } },
-        AOS_MEMORIES.map((m, i) => React.createElement(GlassCard, { key: i, interactive: true, padding: 16, style: { animation: `aos-rise var(--dur-slow) var(--ease-out) ${i * 0.05}s both` } },
+        (results || []).map((m, i) => React.createElement(GlassCard, { key: m.id || i, interactive: true, padding: 16, style: { animation: `aos-rise var(--dur-slow) var(--ease-out) ${Math.min(i, 8) * 0.05}s both` } },
           React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 } },
-            React.createElement('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.08em', textTransform: 'uppercase', color: aosInk(m.color) } },
-              React.createElement('span', { style: { width: 7, height: 7, borderRadius: '2px', background: m.color, boxShadow: `0 0 6px ${m.color}` } }), m.tag),
-            React.createElement('span', { style: { fontSize: 11, fontWeight: 700, color: aosInk(m.color) } }, m.agent)),
+            React.createElement('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--diamond-400)' } },
+              React.createElement('span', { style: { width: 7, height: 7, borderRadius: '2px', background: 'var(--diamond-400)' } }), m.tag),
+            React.createElement('span', { style: { fontSize: 11, fontWeight: 700, color: 'var(--diamond-400)' } }, m.agent_name)),
           React.createElement('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15, color: 'var(--text-strong)', lineHeight: 1.35 } }, m.title),
-          React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)', marginTop: 10 } }, m.meta))))
+          React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)', marginTop: 10 } }, new Date(m.created_at).toLocaleString('fr-FR')))))
     ),
 
     /* right rail */
     React.createElement('div', { className: 'aos-scroll', style: { width: 290, flexShrink: 0, borderLeft: '1px solid var(--border-hairline)', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18, background: 'var(--panel-tint)' } },
       React.createElement('div', null,
-        React.createElement(SectionLabel, null, 'Volume de mémoire'),
+        React.createElement(SectionLabel, null, 'Volume de mémoire (réel)'),
         React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 10 } },
-          [['12 480', 'nœuds mémorisés', '#4DA3FF'], ['38 210', 'connexions', '#57E6E0'], ['1 942', 'rappels ce mois', '#C9A2FF']].map((s, i) => React.createElement(GlassCard, { key: i, padding: 14 },
+          [[String((stats && stats.memories_total) || 0), 'souvenirs enregistrés', '#4DA3FF'],
+           [String((stats && stats.conversations_total) || 0), 'conversations', '#57E6E0'],
+           [String((stats && stats.recalls_this_month) || 0), 'rappels ce mois', '#C9A2FF']].map((s, i) => React.createElement(GlassCard, { key: i, padding: 14 },
             React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 600, color: aosInk(s[2]) } }, s[0]),
             React.createElement('div', { style: { fontSize: 11, color: 'var(--text-muted)', marginTop: 2 } }, s[1]))))),
       React.createElement('div', null,
-        React.createElement(SectionLabel, null, 'Domaines les plus actifs'),
-        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 12 } },
-          [['Marketing', 86, '#FF6FA5'], ['Business', 72, '#4DA3FF'], ['Finance', 64, '#E7CD93'], ['Data', 51, '#57E6E0'], ['Création', 33, '#C9A2FF']].map((d, i) => React.createElement('div', { key: i },
-            React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-body)', marginBottom: 5 } }, React.createElement('span', null, d[0]), React.createElement('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--text-faint)' } }, d[1] + '%')),
-            React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' } }, React.createElement('div', { style: { height: '100%', width: d[1] + '%', borderRadius: 4, background: d[2], boxShadow: `0 0 8px ${d[2]}` } }))))))
+        React.createElement(SectionLabel, null, 'Agents les plus sollicités (réel)'),
+        (() => {
+          const counts = {};
+          (results || []).forEach(m => { const k = m.agent_name || 'Raphaël'; counts[k] = (counts[k] || 0) + 1; });
+          const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+          const max = entries.length ? entries[0][1] : 1;
+          const palette = ['#FF6FA5', '#4DA3FF', '#E7CD93', '#57E6E0', '#C9A2FF'];
+          if (!entries.length) return React.createElement('div', { style: { fontSize: 11.5, color: 'var(--text-faint)' } }, 'Pas encore de données.');
+          return React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 12 } },
+            entries.map(([name, count], i) => {
+              const pct = Math.round(100 * count / max);
+              return React.createElement('div', { key: name },
+                React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-body)', marginBottom: 5 } }, React.createElement('span', null, name), React.createElement('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--text-faint)' } }, count)),
+                React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' } }, React.createElement('div', { style: { height: '100%', width: pct + '%', borderRadius: 4, background: palette[i % palette.length], boxShadow: `0 0 8px ${palette[i % palette.length]}` } })));
+            }));
+        })())
     )
   );
 }

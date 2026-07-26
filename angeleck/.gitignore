@@ -32,3 +32,4 @@ local/.venv/
 local/angeleck.db
 local/server.log
 local/uploads/
+local/.secret.key

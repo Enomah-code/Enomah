@@ -117,8 +117,34 @@ Pour de vraies réponses IA **100 % gratuites et locales** :
 - Ouvre **http://localhost:8000**.
 - Écris ta demande (ex. *« Crée une publicité Facebook pour mon produit »*).
 - Le cerveau choisit le bon agent et répond.
-- Demande quelque chose hors des 5 agents (ex. *« Analyse mes campagnes TikTok »*)
-  → un **nouvel agent est créé automatiquement** et apparaît dans la liste de gauche.
+- Demande quelque chose hors du roster (ex. *« Compose une mélodie »*)
+  → un **nouvel agent est créé automatiquement** et apparaît dans le Centre des agents.
+
+---
+
+## 🔗 Ce qui est réel dans l'interface « Command Center »
+
+Toutes les sections de l'interface sont branchées sur le vrai backend — aucune
+donnée décorative :
+
+- **Dashboard** : santé du réseau, nombre de tâches, activité récente et ticker
+  crypto (CoinGecko, live) sont calculés depuis tes vraies conversations.
+- **Centre des agents** : statuts (actif/veille) et compteurs de tâches réels ;
+  les agents créés automatiquement y apparaissent.
+- **Akasha (mémoire)** : la recherche interroge réellement ta base de conversations.
+- **Appel audio** : reconnaissance et synthèse vocales réelles (Web Speech API —
+  fonctionne dans **Chrome/Edge**, pas Firefox/Safari).
+- **Réglages → Intégrations** : chaque « Connecter » déclenche un vrai appel
+  réseau vers le service (Shopify, Meta Ads, marchés via CoinGecko/Binance, ou
+  un service personnalisé). Les identifiants sont chiffrés localement
+  (`local/.secret.key`, jamais commité). Un badge « Connecté » ne s'affiche
+  que si le test a réellement réussi.
+  - ⚠️ **Google Ads** ne peut pas être validé automatiquement : Google exige un
+    *Developer Token* approuvé manuellement par leurs équipes, en plus de
+    l'OAuth — c'est une limite de Google, pas d'Angeleck.
+  - TikTok Ads / Meta Ads nécessitent un **Access Token** déjà généré par toi
+    depuis leur espace développeur respectif (Angeleck ne peut pas créer de
+    compte développeur à ta place).
 
 ---
 

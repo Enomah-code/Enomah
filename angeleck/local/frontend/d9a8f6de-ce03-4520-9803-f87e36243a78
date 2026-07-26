@@ -1,22 +1,23 @@
 /* global React, Icon, Avatar, AgentPortrait, Badge, Button, GlassCard, Eyebrow, SectionLabel, AOS_AGENTS, AOS_TICKER, aosInk */
-function Dashboard({ onTalk, onCall }) {
-  const agents = AOS_AGENTS.filter(a => !a.elite);
+function Dashboard({ onTalk, onCall, liveAgents, dashboardStats, ticker }) {
+  const agents = (liveAgents && liveAgents.length) ? liveAgents : AOS_AGENTS.filter(a => !a.elite);
   const raphael = AOS_AGENTS.find(a => a.elite);
   const [sel, setSel] = React.useState(null);
   const COLX = [10, 30, 50, 70, 90];
-  const pts = agents.map((a, i) => {
+  const pts = agents.slice(0, 10).map((a, i) => {
     const row = i < 5 ? 0 : 1;
     const col = i % 5;
     const baseY = row === 0 ? 50 : 81;
     const zig = (col % 2 === 1) ? (row === 0 ? 7 : -7) : 0;
     return { a, x: COLX[col], y: baseY + zig };
   });
-  const activity = [
-    { agent: 'Sofia', color: '#4DA3FF', action: 'Analyse de marché finalisée', t: '14:32' },
-    { agent: 'Maya', color: '#FF6FA5', action: 'Campagne Meta générée — 3 audiences', t: '14:28' },
-    { agent: 'Emma', color: '#57E6E0', action: 'Forecast 12 mois actualisé', t: '14:21' },
-    { agent: 'Adam', color: '#E7CD93', action: 'Rééquilibrage portefeuille proposé', t: '14:09' },
-  ];
+  const agentByKey = Object.fromEntries(agents.map(a => [a.id, a]));
+  const activity = ((dashboardStats && dashboardStats.recent_activity) || []).map(r => ({
+    agent: r.agent_name,
+    color: (agentByKey[r.agent] && agentByKey[r.agent].color) || 'var(--diamond-500)',
+    action: r.action,
+    t: new Date(r.time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+  }));
 
   return React.createElement('div', { style: { display: 'flex', width: '100%', height: '100%' } },
     /* ---- CENTER STAGE ---- */
@@ -74,27 +75,38 @@ function Dashboard({ onTalk, onCall }) {
     /* ---- RIGHT PANEL ---- */
     React.createElement('div', { className: 'aos-scroll', style: { width: 312, flexShrink: 0, borderLeft: '1px solid var(--border-hairline)', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18, background: 'var(--panel-tint)' } },
       React.createElement('div', null,
-        React.createElement(SectionLabel, null, 'Santé du réseau'),
+        React.createElement(SectionLabel, null, 'Santé du réseau (données réelles)'),
         React.createElement(GlassCard, { padding: 16, glow: true },
-          React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' } },
-            React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 30, fontWeight: 600, color: 'var(--text-strong)' } }, '98.6%'),
-            React.createElement(Badge, { tone: 'success' }, '+1.2%')),
-          React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', marginTop: 12, overflow: 'hidden' } },
-            React.createElement('div', { style: { height: '100%', width: '98.6%', borderRadius: 4, background: 'var(--grad-diamond)', boxShadow: 'var(--glow-diamond)' } })),
-          React.createElement('div', { style: { display: 'flex', gap: 18, marginTop: 14 } },
-            ['10 agents', '1 284 tâches', '6 h cycle'].map((t, i) => React.createElement('div', { key: i },
-              React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--text-body)' } }, t.split(' ')[0]),
-              React.createElement('div', { style: { fontSize: 10, color: 'var(--text-faint)' } }, t.split(' ').slice(1).join(' ')))))),
+          (() => {
+            const s = dashboardStats;
+            const rate = s && s.success_rate !== null && s.success_rate !== undefined ? s.success_rate : null;
+            const uptimeH = s ? (s.uptime_minutes / 60).toFixed(1) : '0.0';
+            return React.createElement(React.Fragment, null,
+              React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' } },
+                React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 26, fontWeight: 600, color: 'var(--text-strong)' } },
+                  rate === null ? 'En attente…' : rate + '%'),
+                rate !== null && React.createElement(Badge, { tone: rate >= 80 ? 'success' : 'neutral' }, 'IA active')),
+              React.createElement('div', { style: { fontSize: 10.5, color: 'var(--text-faint)', marginTop: 4 } },
+                rate === null ? "Se calcule dès votre première conversation." : 'Part des réponses générées par une vraie IA (vs mode démo).'),
+              React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', marginTop: 12, overflow: 'hidden' } },
+                React.createElement('div', { style: { height: '100%', width: (rate || 0) + '%', borderRadius: 4, background: 'var(--grad-diamond)', boxShadow: 'var(--glow-diamond)' } })),
+              React.createElement('div', { style: { display: 'flex', gap: 18, marginTop: 14 } },
+                [[String(agents.length), 'agents'], [String((s && s.tasks_total) || 0), 'tâches'], [uptimeH + ' h', 'en ligne']].map((t, i) => React.createElement('div', { key: i },
+                  React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--text-body)' } }, t[0]),
+                  React.createElement('div', { style: { fontSize: 10, color: 'var(--text-faint)' } }, t[1])))));
+          })())),
 
       React.createElement('div', null,
-        React.createElement(SectionLabel, null, 'Marchés en direct'),
+        React.createElement(SectionLabel, null, 'Marchés en direct' + (ticker.live ? ' · live' : '')),
         React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
-          AOS_TICKER.slice(0, 4).map((t, i) => React.createElement(GlassCard, { key: i, padding: 12 },
+          (ticker.ticker && ticker.ticker.length ? ticker.ticker : []).map((t, i) => React.createElement(GlassCard, { key: i, padding: 12 },
             React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
               React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-body)' } }, t.s),
               React.createElement('div', { style: { textAlign: 'right' } },
                 React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, color: 'var(--text-strong)' } }, t.p),
-                React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: t.c >= 0 ? 'var(--success)' : 'var(--danger)' } }, (t.c >= 0 ? '+' : '') + t.c + '%')))))))),
+                React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: t.c >= 0 ? 'var(--success)' : 'var(--danger)' } }, (t.c >= 0 ? '+' : '') + t.c + '%')))),
+          !ticker.live && React.createElement('div', { style: { fontSize: 11, color: 'var(--text-faint)', padding: '4px 2px' } }, 'Marchés indisponibles pour le moment.'),
+          React.createElement('div', { style: { fontSize: 10, color: 'var(--text-faint)', padding: '4px 2px' } }, 'Cotations actions/BRVM : connectez « Marchés boursiers » dans Réglages → Intégrations.')))),
 
       React.createElement('div', null,
         React.createElement(SectionLabel, null, 'Activité récente'),

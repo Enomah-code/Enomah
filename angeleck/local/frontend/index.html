@@ -1185,6 +1185,35 @@ a { color: var(--diamond-400); text-decoration: none; }
     }
 
     const LS = window.localStorage;
+    /* Palette de secours pour les agents crees dynamiquement (Genesis / recruteur) */
+    const AOS_FALLBACK_PALETTE = ['#4DA3FF', '#57E6E0', '#3DDC97', '#2FD6C3', '#C9A2FF', '#FF6FA5', '#FF9E5C', '#FF6B81', '#5B8CFF', '#E7CD93'];
+
+    /* Fusionne les agents REELS du backend (statut, taches) avec le visuel
+       statique du roster (portrait, couleur) ; synthetise un visuel pour
+       les agents generes qui n'ont pas d'entree dans AOS_AGENTS. */
+    function aosMergeAgents(liveAgents) {
+      const staticById = Object.fromEntries(AOS_AGENTS.filter(a => !a.elite).map(a => [a.id, a]));
+      return (liveAgents || []).map((a, i) => {
+        const s = staticById[a.key];
+        if (s) return { ...s, tasks: a.tasks, status: a.status, origin: a.origin };
+        const color = AOS_FALLBACK_PALETTE[i % AOS_FALLBACK_PALETTE.length];
+        return {
+          id: a.key, name: a.name, role: a.role,
+          domain: a.origin === 'generated' ? 'Cree par Raphael' : a.role,
+          color, tasks: a.tasks, status: a.status, origin: a.origin,
+          blurb: (a.skills || []).join(', ') || a.role,
+          portrait: { id: a.key, skin: 'light', hair: 'crop', hairColor: '#241712', top: color, topShade: gnDarkenSafe(color) },
+        };
+      });
+    }
+    function gnDarkenSafe(hex) {
+      const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+      if (!m) return '#10203c';
+      const n = parseInt(m[1], 16);
+      const r = Math.round(((n >> 16) & 255) * 0.55), g = Math.round(((n >> 8) & 255) * 0.55), b = Math.round((n & 255) * 0.55);
+      return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    }
+
     function App() {
       const [view, setView] = useState('dashboard');
       const [seed, setSeed] = useState(null);
@@ -1200,13 +1229,37 @@ a { color: var(--diamond-400); text-decoration: none; }
       React.useEffect(() => { document.documentElement.setAttribute('data-theme', theme); LS.setItem('aos-theme', theme); }, [theme]);
       React.useEffect(() => { applyAccent(accent); LS.setItem('aos-accent', accent || ''); }, [accent]);
 
-      const talk = (agent) => { setSeed(agent || null); setView('conversation'); };
-      const call = (agent) => setCallAgent(agent || (window.AOS_AGENTS.find(a => a.elite)));
+      /* ---- Donnees REELLES issues du backend Angeleck (plus de valeurs figees) ---- */
+      const [liveAgentsRaw, setLiveAgentsRaw] = useState([]);
+      const [dashboardStats, setDashboardStats] = useState(null);
+      const [ticker, setTicker] = useState({ live: false, ticker: [] });
+      const liveAgents = React.useMemo(() => aosMergeAgents(liveAgentsRaw), [liveAgentsRaw]);
 
-      const main = view === 'dashboard' ? React.createElement(Dashboard, { onTalk: talk, onCall: call })
-        : view === 'conversation' ? React.createElement(Conversation, { seedAgent: seed, onCall: call })
-        : view === 'agents' ? React.createElement(AgentsCenter, { onTalk: talk, onCall: call, onCreate: () => setView('genesis') })
-        : view === 'genesis' ? React.createElement(Genesis, { onTalk: talk })
+      const refreshAgents = React.useCallback(() => {
+        fetch('/api/agents').then(r => r.json()).then(d => setLiveAgentsRaw(d.agents || [])).catch(() => {});
+      }, []);
+      const refreshDashboard = React.useCallback(() => {
+        fetch('/api/dashboard').then(r => r.json()).then(setDashboardStats).catch(() => {});
+      }, []);
+      const refreshTicker = React.useCallback(() => {
+        fetch('/api/markets/ticker').then(r => r.json()).then(setTicker).catch(() => {});
+      }, []);
+
+      React.useEffect(() => {
+        refreshAgents(); refreshDashboard(); refreshTicker();
+        const i1 = setInterval(refreshDashboard, 15000);
+        const i2 = setInterval(refreshTicker, 30000);
+        const i3 = setInterval(refreshAgents, 15000);
+        return () => { clearInterval(i1); clearInterval(i2); clearInterval(i3); };
+      }, [refreshAgents, refreshDashboard, refreshTicker]);
+
+      const talk = (agent) => { setSeed(agent || null); setView('conversation'); };
+      const call = (agent) => setCallAgent(agent || liveAgents.find(a => a.id === 'raphael') || (window.AOS_AGENTS.find(a => a.elite)));
+
+      const main = view === 'dashboard' ? React.createElement(Dashboard, { onTalk: talk, onCall: call, liveAgents, dashboardStats, ticker })
+        : view === 'conversation' ? React.createElement(Conversation, { seedAgent: seed, onCall: call, onAfterChat: () => { refreshDashboard(); refreshAgents(); } })
+        : view === 'agents' ? React.createElement(AgentsCenter, { onTalk: talk, onCall: call, onCreate: () => setView('genesis'), liveAgents })
+        : view === 'genesis' ? React.createElement(Genesis, { onTalk: talk, onCreated: refreshAgents })
         : React.createElement(Akasha, null);
 
       return React.createElement('div', { className: 'aos-app' },
@@ -1223,11 +1276,15 @@ a { color: var(--diamond-400); text-decoration: none; }
               React.createElement('div', { className: 'sig' }, 'Powered by EMK Blue Diamond'))),
           React.createElement('div', { className: 'aos-ticker' },
             React.createElement('div', { className: 'aos-ticker-inner' },
-              [...window.AOS_TICKER, ...window.AOS_TICKER].map((t, i) =>
+              (ticker.ticker && ticker.ticker.length
+                ? [...ticker.ticker, ...ticker.ticker]
+                : [{ s: 'Marches', p: ticker.live === false ? 'indisponible' : 'chargement…', c: 0 }]
+              ).map((t, i) =>
                 React.createElement('span', { key: i, style: { fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)' } },
                   t.s + '  ',
                   React.createElement('span', { style: { color: 'var(--text-body)' } }, t.p + ' '),
-                  React.createElement('span', { style: { color: t.c >= 0 ? 'var(--success)' : 'var(--danger)' } }, (t.c >= 0 ? '+' : '') + t.c + '%'))))),
+                  React.createElement('span', { style: { color: t.c >= 0 ? 'var(--success)' : 'var(--danger)' } }, (t.c >= 0 ? '+' : '') + t.c + '%'))),
+              ticker.live && React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--text-faint)', marginLeft: 18 } }, '● ' + ticker.source))),
           React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
             React.createElement(TopBtn, { name: 'phone', label: 'Appel audio', onClick: () => call(), accent: true }),
             React.createElement(TopBtn, { name: theme === 'dark' ? 'sun' : 'moon', label: 'Th\u00e8me', onClick: () => setThemeState(t => t === 'dark' ? 'light' : 'dark') }),

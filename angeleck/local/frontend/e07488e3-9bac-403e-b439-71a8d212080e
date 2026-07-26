@@ -19,7 +19,7 @@ function aosMdToHtml(md) {
   return s;
 }
 
-function Conversation({ seedAgent, onCall }) {
+function Conversation({ seedAgent, onCall, onAfterChat }) {
   const raphael = AOS_AGENTS.find(a => a.elite);
   const byId = Object.fromEntries(AOS_AGENTS.map(a => [a.id, a]));
   const [messages, setMessages] = React.useState([]);
@@ -77,6 +77,7 @@ function Conversation({ seedAgent, onCall }) {
             if (apiData.conversation_id) convRef.current = apiData.conversation_id;
             const real = (apiData.agents_used || []).filter(id => byId[id]);
             setMessages(m => [...m, { role: 'assistant', content: aosMdToHtml(apiData.answer), agents: real.length ? real : ids, time: now() }]);
+            if (onAfterChat) onAfterChat();
           } else {
             // Backend indisponible : reponse de secours simulee.
             setMessages(m => [...m, { role: 'assistant', content: answerFor(q, ids), agents: ids, time: now() }]);

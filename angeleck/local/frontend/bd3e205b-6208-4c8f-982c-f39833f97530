@@ -50,7 +50,7 @@ const GN_TRAIT_KW = {
 };
 const gnRand = a => a[Math.floor(Math.random() * a.length)];
 
-function Genesis({ onTalk }) {
+function Genesis({ onTalk, onCreated }) {
   const [name, setName] = React.useState('');
   const [domain, setDomain] = React.useState(GN_DOMAINS[0]);
   const [color, setColor] = React.useState(GN_DOMAINS[0].color);
@@ -63,6 +63,7 @@ function Genesis({ onTalk }) {
   const [customDomains, setCustomDomains] = React.useState([]);
   const [addingDomain, setAddingDomain] = React.useState(false);
   const [domainDraft, setDomainDraft] = React.useState('');
+  const [backendResult, setBackendResult] = React.useState(null); // {ok, agent, error} — creation REELLE cote serveur
 
   const set = (k, v) => setCfg(c => ({ ...c, [k]: v }));
   const cycle = (k, arr) => set(k, arr[(arr.indexOf(cfg[k]) + 1) % arr.length]);
@@ -80,16 +81,18 @@ function Genesis({ onTalk }) {
     const gDomain = (over && over.domain) || domain;
     const gColor = (over && over.color) || color;
     const gCfg = (over && over.cfg) || portraitCfg;
-    setPhase('gen'); setProg(0);
-    // Creation reelle de l'agent dans le backend Angeleck (Module 3 - recruteur).
-    // Fire-and-forget : l'animation Genesis reste inchangee.
-    try {
-      fetch('/api/create-agent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ skill: gDomain.label + ' (agent nomme ' + gName + ')' }),
-      }).catch(() => {});
-    } catch (e) {}
+    setPhase('gen'); setProg(0); setBackendResult(null);
+    // Creation REELLE de l'agent dans le backend Angeleck (Module 3 - recruteur).
+    // Le nom/avatar choisis ici sont cosmetiques ; Raphael concoit sa propre
+    // fiche d'agent (nom, role, prompt) a partir de la competence demandee.
+    fetch('/api/create-agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ skill: gDomain.label + ' : ' + (brief.trim() || gName) }),
+    })
+      .then(r => r.json())
+      .then(d => setBackendResult({ ok: !!d.created, agent: d.agent || null, error: null }))
+      .catch(err => setBackendResult({ ok: false, agent: null, error: String(err) }));
     const iv = setInterval(() => {
       setProg(p => {
         const next = p + 4 + Math.random() * 5;
@@ -97,6 +100,7 @@ function Genesis({ onTalk }) {
           clearInterval(iv);
           setPhase('done');
           setRoster(r => [{ name: gName, role: gDomain.label, color: gColor, cfg: gCfg }, ...r].slice(0, 6));
+          if (onCreated) onCreated();
           return 100;
         }
         return next;
@@ -171,7 +175,15 @@ function Genesis({ onTalk }) {
               React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' } },
                 React.createElement('div', { style: { height: '100%', width: prog + '%', borderRadius: 4, background: 'var(--grad-diamond)', boxShadow: 'var(--glow-diamond)', transition: 'width .1s linear' } })))
             : phase === 'done' ? React.createElement('div', { className: 'aos-rise', style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 } },
-                React.createElement(Badge, { tone: 'success', dot: true }, 'Agent éveillé · intégré au réseau'),
+                backendResult === null
+                  ? React.createElement(Badge, { tone: 'neutral', dot: true }, 'Enregistrement côté serveur…')
+                  : backendResult.ok
+                    ? React.createElement(Badge, { tone: 'success', dot: true }, 'Agent réel créé · disponible dans le Centre des agents')
+                    : React.createElement(Badge, { tone: 'danger', dot: true }, 'Échec de la création côté serveur'),
+                backendResult && backendResult.ok && backendResult.agent && React.createElement('div', { style: { fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', maxWidth: 280 } },
+                  'Raphaël l’a nommé « ' + backendResult.agent.name + ' » (identifiant technique : ' + backendResult.agent.key + '). Le nom/avatar ci-dessus sont votre proposition ; celui-ci est ce qui a réellement été créé.'),
+                backendResult && !backendResult.ok && React.createElement('div', { style: { fontSize: 11, color: 'var(--danger)', textAlign: 'center', maxWidth: 280 } },
+                  backendResult.error || 'Le serveur Angeleck est peut-être hors ligne.'),
                 React.createElement('div', { style: { display: 'flex', gap: 10 } },
                   React.createElement(Button, { variant: 'primary', iconLeft: React.createElement(Icon, { name: 'message', size: 16, color: '#fff' }), onClick: () => onTalk && onTalk({ name: displayName, color }) }, 'Parler à ' + displayName),
                   React.createElement(Button, { variant: 'secondary', iconLeft: React.createElement(Icon, { name: 'plus', size: 16 }), onClick: reset }, 'Forger un autre')))

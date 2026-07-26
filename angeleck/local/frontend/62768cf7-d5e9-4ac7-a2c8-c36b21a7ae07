@@ -82,7 +82,7 @@
     ],
   };
   function intgFields(t) {
-    return INTG_FIELDS[t.id] || [
+    return t.customFields || INTG_FIELDS[t.id] || [
       { k: 'account', label: 'Nom du service', ph: t.name },
       { k: 'baseurl', label: 'URL de base de l\u2019API', ph: 'https://api.exemple.com/v1' },
       { k: 'apikey', label: 'Clé API / Token', ph: '••••••••••••', secret: true },
@@ -92,10 +92,10 @@
 
   function Integrations() {
     const DEFAULTS = [
-      { id: 'tiktok', name: 'TikTok Ads', cat: 'Publicité', icon: 'sparkles', color: '#FF4D67', on: true },
-      { id: 'meta', name: 'Meta Ads', cat: 'Publicité', icon: 'network', color: '#4D8BFF', on: true },
+      { id: 'tiktok', name: 'TikTok Ads', cat: 'Publicité', icon: 'sparkles', color: '#FF4D67', on: false },
+      { id: 'meta', name: 'Meta Ads', cat: 'Publicité', icon: 'network', color: '#4D8BFF', on: false },
       { id: 'google', name: 'Google Ads', cat: 'Publicité', icon: 'search', color: '#E7CD93', on: false },
-      { id: 'markets', name: 'Marchés boursiers', cat: 'Trading & Finance', icon: 'chart', color: '#3DDC97', on: true },
+      { id: 'markets', name: 'Marchés boursiers', cat: 'Trading & Finance', icon: 'chart', color: '#3DDC97', on: false },
       { id: 'shopify', name: 'Shopify', cat: 'E-commerce', icon: 'bolt', color: '#2FD6C3', on: false },
       { id: 'analytics', name: 'Google Analytics', cat: 'Data', icon: 'chart', color: '#57E6E0', on: false },
     ];
@@ -105,20 +105,64 @@
     const [active, setActive] = React.useState(null);  // integration being connected / managed
     const [form, setForm] = React.useState({});
     const [reveal, setReveal] = React.useState({});
+    const [saving, setSaving] = React.useState(false);
+    const [connectMsg, setConnectMsg] = React.useState(null); // resultat REEL du test de connexion
 
-    const open = (t) => { setActive(t); setForm({}); setReveal({}); };
+    // Charge l'etat REEL des intégrations depuis le backend (persiste au rechargement).
+    React.useEffect(() => {
+      fetch('/api/integrations').then(r => r.json()).then(d => {
+        const rows = d.integrations || [];
+        const byId = Object.fromEntries(rows.map(x => [x.id, x]));
+        setList(l => l.map(x => byId[x.id] ? { ...x, on: !!byId[x.id].connected } : x));
+        const knownIds = new Set(DEFAULTS.map(x => x.id));
+        const extra = rows.filter(x => !knownIds.has(x.id)).map(x => ({
+          id: x.id, name: x.name, cat: x.category === 'custom' ? 'Conçu par Raphaël' : x.category,
+          icon: x.icon || 'bolt', color: x.color || '#C9A2FF', on: !!x.connected, custom: true, category: x.category,
+        }));
+        if (extra.length) setList(l => [...extra, ...l]);
+      }).catch(() => {});
+    }, []);
+
+    const open = (t) => { setActive(t); setForm({}); setReveal({}); setConnectMsg(null); };
     const close = () => setActive(null);
-    function submit() { if (!active) return; const id = active.id; setList(l => l.map(x => x.id === id ? { ...x, on: true } : x)); setActive(null); }
-    function disconnect() { if (!active) return; const id = active.id; setList(l => l.map(x => x.id === id ? { ...x, on: false } : x)); setActive(null); }
+
+    function submit() {
+      if (!active) return;
+      const id = active.id;
+      setSaving(true); setConnectMsg(null);
+      fetch('/api/integrations/' + id + '/connect', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: active.name, category: active.category || active.id, icon: active.icon, color: active.color, fields: form }),
+      }).then(r => r.json()).then(res => {
+        setSaving(false); setConnectMsg(res);
+        if (res.connected) {
+          setList(l => l.map(x => x.id === id ? { ...x, on: true } : x));
+          setTimeout(() => setActive(a => (a && a.id === id ? null : a)), 1100);
+        }
+      }).catch(err => { setSaving(false); setConnectMsg({ connected: false, message: 'Connexion au serveur Angeleck impossible : ' + err }); });
+    }
+
+    function disconnect() {
+      if (!active) return;
+      const id = active.id;
+      fetch('/api/integrations/' + id + '/disconnect', { method: 'POST' }).then(() => {
+        setList(l => l.map(x => x.id === id ? { ...x, on: false } : x));
+        setActive(null);
+      }).catch(() => setActive(null));
+    }
+
     function requestRaphael() {
       const t = draft.trim(); if (!t || building) return;
       setBuilding(t);
-      setTimeout(() => {
-        const item = { id: 'custom-' + Date.now(), name: t.length > 26 ? t.slice(0, 26) + '\u2026' : t, cat: 'Conçu par Raphaël', icon: 'genesis', color: '#C9A2FF', on: false, custom: true };
+      fetch('/api/integrations/design', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ service: t }),
+      }).then(r => r.json()).then(spec => {
+        const item = { id: spec.id, name: spec.name, cat: 'Conçu par Raphaël', icon: spec.icon || 'genesis', color: spec.color || '#C9A2FF', on: false, custom: true, category: 'custom', customFields: spec.fields };
         setList(l => [item, ...l]);
         setBuilding(null); setDraft('');
-        setActive(item); setForm({}); setReveal({});   // open connect panel to finish
-      }, 2200);
+        setActive(item); setForm({}); setReveal({}); setConnectMsg(null);
+      }).catch(() => setBuilding(null));
     }
 
     const reqKey = active ? intgFields(active)[0].k : null;
@@ -168,7 +212,7 @@
                   h('span', { style: { fontSize: 12.5, fontWeight: 600, color: 'var(--success)' } }, 'Connecté · clés chiffrées dans le coffre Angeleck')),
                 h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 4 } }, 'Raphaël et les agents concernés peuvent agir sur ' + active.name + '. Déconnectez à tout moment pour révoquer l\u2019accès.'))
             : h('div', null,
-                h('p', { style: { margin: '6px 0 16px', fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5 } }, 'Renseignez les informations requises par ' + active.name + '. Angeleck chiffre et stocke vos clés de façon sécurisée — elles ne quittent jamais votre coffre.'),
+                h('p', { style: { margin: '6px 0 16px', fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5 } }, 'Renseignez les informations requises par ' + active.name + '. Angeleck chiffre vos clés et les stocke localement ; une vraie tentative de connexion est effectuée pour vérifier qu\u2019elles fonctionnent.'),
                 h('div', { style: { display: 'flex', flexDirection: 'column', gap: 13 } },
                   intgFields(active).map(f => h('div', { key: f.k },
                     h('label', { style: { display: 'block', fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 6 } }, f.label),
@@ -176,12 +220,17 @@
                       ? h('textarea', { value: form[f.k] || '', onChange: e => setForm(s => ({ ...s, [f.k]: e.target.value })), placeholder: f.ph, rows: 3, style: { ...INPUT_ST, height: 'auto', minHeight: 70, padding: '10px 14px', resize: 'vertical', fontFamily: 'var(--font-mono)', fontSize: 11.5, lineHeight: 1.5 } })
                       : h('div', { style: { position: 'relative' } },
                           h('input', { type: f.secret && !reveal[f.k] ? 'password' : 'text', value: form[f.k] || '', onChange: e => setForm(s => ({ ...s, [f.k]: e.target.value })), placeholder: f.ph, style: { ...INPUT_ST, paddingRight: f.secret ? 42 : 14 } }),
-                          f.secret && h('button', { type: 'button', onClick: () => setReveal(r => ({ ...r, [f.k]: !r[f.k] })), title: 'Afficher / masquer', style: { position: 'absolute', right: 7, top: '50%', transform: 'translateY(-50%)', width: 28, height: 28, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--text-faint)', cursor: 'pointer' } }, h(Icon, { name: reveal[f.k] ? 'eyeOff' : 'eye', size: 15 }))))))),
+                          f.secret && h('button', { type: 'button', onClick: () => setReveal(r => ({ ...r, [f.k]: !r[f.k] })), title: 'Afficher / masquer', style: { position: 'absolute', right: 7, top: '50%', transform: 'translateY(-50%)', width: 28, height: 28, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--text-faint)', cursor: 'pointer' } }, h(Icon, { name: reveal[f.k] ? 'eyeOff' : 'eye', size: 15 })))))),
+                connectMsg && h('div', { style: { display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 14, padding: '10px 12px', borderRadius: 'var(--r-md)',
+                    background: connectMsg.connected ? 'color-mix(in srgb, var(--success) 12%, transparent)' : 'color-mix(in srgb, var(--danger) 12%, transparent)',
+                    border: '1px solid ' + (connectMsg.connected ? 'rgba(61,220,151,0.4)' : 'rgba(255,107,129,0.4)') } },
+                  h(Icon, { name: connectMsg.connected ? 'check' : 'close', size: 15, color: connectMsg.connected ? 'var(--success)' : 'var(--danger)' }),
+                  h('span', { style: { fontSize: 12, color: connectMsg.connected ? 'var(--success)' : 'var(--danger)', lineHeight: 1.4 } }, connectMsg.message))),
 
           h('div', { style: { display: 'flex', gap: 10, marginTop: 20 } },
             active.on
               ? h('button', { onClick: disconnect, style: { flex: 1, height: 42, borderRadius: 'var(--r-md)', cursor: 'pointer', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid rgba(255,107,129,0.4)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600 } }, 'Déconnecter')
-              : h('button', { onClick: submit, disabled: !canSubmit, style: { flex: 1, height: 42, borderRadius: 'var(--r-md)', cursor: canSubmit ? 'pointer' : 'not-allowed', opacity: canSubmit ? 1 : 0.5, background: 'var(--grad-diamond)', color: '#fff', border: '1px solid var(--border-accent)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600, boxShadow: canSubmit ? 'var(--glow-diamond)' : 'none' } }, 'Connecter ' + active.name),
+              : h('button', { onClick: submit, disabled: !canSubmit || saving, style: { flex: 1, height: 42, borderRadius: 'var(--r-md)', cursor: (canSubmit && !saving) ? 'pointer' : 'not-allowed', opacity: (canSubmit && !saving) ? 1 : 0.5, background: 'var(--grad-diamond)', color: '#fff', border: '1px solid var(--border-accent)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600, boxShadow: canSubmit ? 'var(--glow-diamond)' : 'none' } }, saving ? 'Vérification de la connexion…' : 'Connecter ' + active.name),
             h('button', { onClick: close, style: { height: 42, padding: '0 18px', borderRadius: 'var(--r-md)', cursor: 'pointer', background: 'var(--glass-fill)', color: 'var(--text-body)', border: '1px solid var(--border-soft)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600 } }, active.on ? 'Fermer' : 'Annuler')))));
   }
 

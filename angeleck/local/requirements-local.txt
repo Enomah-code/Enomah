@@ -6,3 +6,6 @@ python-multipart>=0.0.12
 
 # Fournisseur Claude API (optionnel — requis seulement si tu utilises ANTHROPIC_API_KEY)
 anthropic>=0.40.0
+
+# Chiffrement au repos des identifiants d'intégration (module Réglages)
+cryptography>=42.0.0
