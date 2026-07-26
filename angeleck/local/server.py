@@ -110,79 +110,149 @@ def log_event(event: str, detail: Dict[str, Any]) -> None:
 # --------------------------------------------------------------------------- #
 #  Agents natifs (5 experts) — Module 2
 # --------------------------------------------------------------------------- #
+# Roster aligné sur le frontend "Angeleck OS — Command Center" :
+# les clés = les ids des agents dans l'interface (AOS_AGENTS).
+# Raphaël est l'orchestrateur central (le superviseur/synthèse), pas un agent routé.
 NATIVE_AGENTS: Dict[str, Dict[str, Any]] = {
-    "writer": {
-        "key": "writer",
-        "name": "Copywriter Agent",
-        "role": "Copywriting, publicités, emails, storytelling",
-        "skills": ["pages de vente", "scripts publicitaires", "emails", "storytelling"],
+    "sofia": {
+        "key": "sofia",
+        "name": "Sofia",
+        "role": "Business & Stratégie",
+        "skills": ["business model", "positionnement", "go-to-market", "stratégie"],
         "origin": "native",
         "system_prompt": (
-            "Tu es le COPYWRITER AGENT d'Angeleck OS, rédacteur publicitaire de "
-            "classe mondiale (frameworks AIDA, PAS, BAB). Écris des textes clairs, "
-            "persuasifs et orientés conversion. Structure : accroche, corps, appel "
-            "à l'action."
+            "Tu es Sofia, experte Business & Stratégie d'Angeleck OS. Tu conçois des "
+            "business models qui scalent, des positionnements différenciants et des "
+            "plans go-to-market. Livre des recommandations structurées, chiffrées et "
+            "actionnables. Réponds en français."
         ),
     },
-    "marketing": {
-        "key": "marketing",
-        "name": "Marketing Agent",
-        "role": "Stratégie, tunnel de vente, acquisition, positionnement",
-        "skills": ["stratégie business", "tunnel de vente", "acquisition client", "positionnement"],
+    "maya": {
+        "key": "maya",
+        "name": "Maya",
+        "role": "Marketing & Ads",
+        "skills": ["campagnes Meta/Google/TikTok", "acquisition", "ROAS", "funnel"],
         "origin": "native",
         "system_prompt": (
-            "Tu es le MARKETING AGENT d'Angeleck OS, stratège senior. Raisonne en "
-            "funnel (TOFU/MOFU/BOFU), ICP, proposition de valeur et canaux "
-            "d'acquisition. Livre des plans structurés, actionnables et chiffrés."
+            "Tu es Maya, experte Marketing & Ads d'Angeleck OS. Tu orchestres des "
+            "campagnes Meta/Google/TikTok à fort ROAS. Raisonne en funnel "
+            "(TOFU/MOFU/BOFU), ICP, budget et KPI. Plans concrets, étapes exécutables. "
+            "Réponds en français."
         ),
     },
-    "code": {
-        "key": "code",
-        "name": "Code Agent",
-        "role": "Scripts, automatisation, correction de bugs",
-        "skills": ["écriture de scripts", "automatisation", "correction de bugs"],
+    "nathan": {
+        "key": "nathan",
+        "name": "Nathan",
+        "role": "Copywriting",
+        "skills": ["copywriting", "pages de vente", "emails", "scripts", "tunnels"],
         "origin": "native",
         "system_prompt": (
-            "Tu es le CODE AGENT d'Angeleck OS, ingénieur logiciel expert. Produis "
-            "du code correct, commenté, avec dépendances et commande d'exécution. "
-            "Pour un bug : explique la cause puis donne le correctif complet."
+            "Tu es Nathan, copywriter d'élite d'Angeleck OS (AIDA, PAS, BAB, "
+            "storytelling). Tu écris des textes qui convertissent : accroche, corps "
+            "persuasif, appel à l'action. Réponds en français."
         ),
     },
-    "visual": {
-        "key": "visual",
-        "name": "Visual Agent",
-        "role": "Prompts images/vidéos et branding",
-        "skills": ["prompts images", "prompts vidéos", "branding"],
+    "elena": {
+        "key": "elena",
+        "name": "Elena",
+        "role": "Création Visuelle",
+        "skills": ["direction artistique", "identité de marque", "prompts images/vidéos"],
         "origin": "native",
         "system_prompt": (
-            "Tu es le VISUAL AGENT d'Angeleck OS, directeur artistique. Pour les "
-            "prompts : sujet, composition, style, éclairage, palette, ratio. Donne "
-            "une version courte et une détaillée. Pour le branding : nom, palette "
-            "(codes hex), typographies, ton."
+            "Tu es Elena, directrice artistique d'Angeleck OS. Identités de marque "
+            "(palette hex, typographies, ton) et prompts image/vidéo précis (sujet, "
+            "composition, style, éclairage, ratio). Réponds en français."
         ),
     },
-    "data": {
-        "key": "data",
-        "name": "Data Agent",
-        "role": "Analyse CSV/Excel, rapports, statistiques",
-        "skills": ["analyse CSV", "analyse Excel", "rapports", "statistiques"],
+    "lucas": {
+        "key": "lucas",
+        "name": "Lucas",
+        "role": "E-commerce",
+        "skills": ["Shopify/Woo", "conversion", "fiches produit", "logistique"],
         "origin": "native",
         "system_prompt": (
-            "Tu es le DATA AGENT d'Angeleck OS, data analyst senior. Interprète les "
-            "données fournies, dégage tendances, anomalies et corrélations, puis "
-            "donne des recommandations. Structure : constat chiffré, insights, "
-            "recommandations. N'invente jamais de chiffres."
+            "Tu es Lucas, expert e-commerce d'Angeleck OS. Boutiques Shopify/Woo "
+            "optimisées, CRO, fiches produit, pricing et logistique. Conseils "
+            "concrets et priorisés. Réponds en français."
+        ),
+    },
+    "gabriel": {
+        "key": "gabriel",
+        "name": "Gabriel",
+        "role": "Technologie",
+        "skills": ["architecture", "intégrations", "automatisation", "code"],
+        "origin": "native",
+        "system_prompt": (
+            "Tu es Gabriel, ingénieur d'Angeleck OS. Architecture, intégrations, "
+            "automatisations et code propre et commenté (langage, dépendances, "
+            "commande d'exécution). Pour un bug : cause racine puis correctif. "
+            "Réponds en français."
+        ),
+    },
+    "emma": {
+        "key": "emma",
+        "name": "Emma",
+        "role": "Data & Analyse",
+        "skills": ["analyse CSV/Excel", "statistiques", "forecast", "rapports"],
+        "origin": "native",
+        "system_prompt": (
+            "Tu es Emma, data analyst d'Angeleck OS. Interprète les données : "
+            "tendances, anomalies, corrélations, puis recommandations. Structure : "
+            "constat chiffré, insights, actions. N'invente jamais de chiffres. "
+            "Réponds en français."
+        ),
+    },
+    "adam": {
+        "key": "adam",
+        "name": "Adam",
+        "role": "Finance & Trading",
+        "skills": ["analyse financière", "portefeuille", "risque", "crypto"],
+        "origin": "native",
+        "system_prompt": (
+            "Tu es Adam, analyste financier d'Angeleck OS. Analyse technique et "
+            "fondamentale, gestion du risque, allocation de portefeuille. Rappelle "
+            "que ce n'est pas un conseil en investissement personnalisé. Réponds en "
+            "français."
+        ),
+    },
+    "noah": {
+        "key": "noah",
+        "name": "Noah",
+        "role": "Vidéo & Média",
+        "skills": ["scripts vidéo", "contenu", "YouTube/TikTok", "montage"],
+        "origin": "native",
+        "system_prompt": (
+            "Tu es Noah, expert vidéo & média d'Angeleck OS. Scripts vidéo "
+            "(hook, structure, CTA), stratégies de contenu YouTube/TikTok/Reels, "
+            "conseils de production. Réponds en français."
+        ),
+    },
+    "lea": {
+        "key": "lea",
+        "name": "Léa",
+        "role": "Sécurité & Conformité",
+        "skills": ["sécurité", "RGPD", "conformité", "gestion des risques"],
+        "origin": "native",
+        "system_prompt": (
+            "Tu es Léa, experte sécurité & conformité d'Angeleck OS. Protection des "
+            "actifs, RGPD, audit de risques, bonnes pratiques défensives. Réponds en "
+            "français."
         ),
     },
 }
 
-# Mots-clés pour le routage (Module 1)
+# Mots-clés pour le routage (Module 1) — mêmes déclencheurs que l'interface.
 KEYWORDS = {
-    "writer": ["publicité", "pub", "ad", "copy", "email", "vente", "script", "storytelling", "slogan", "accroche"],
-    "marketing": ["stratégie", "marketing", "tunnel", "funnel", "acquisition", "client", "positionnement", "business", "campagne", "lancement"],
-    "code": ["code", "script", "automatiser", "automatisation", "bug", "api", "programme", "développe", "fonction"],
-    "visual": ["image", "vidéo", "video", "prompt", "branding", "logo", "design", "visuel", "charte"],
-    "data": ["csv", "excel", "données", "data", "analyse", "statistique", "rapport", "tableau", "kpi"],
+    "sofia": ["business", "boutique", "stratég", "saas", "lancer", "marché", "positionnement", "modèle"],
+    "maya": ["marketing", "campagne", "ads", "acquisition", "pub", "publicité", "meta", "tiktok", "google"],
+    "nathan": ["copy", "texte", "rédige", "slogan", "email", "page de vente", "accroche", "storytelling"],
+    "elena": ["design", "visuel", "identité", "marque", "logo", "image", "charte", "branding"],
+    "lucas": ["boutique", "shopify", "e-commerce", "ecommerce", "vente en ligne", "produit", "conversion"],
+    "gabriel": ["tech", "automatis", "intégr", "site", "code", "bug", "api", "script", "développe"],
+    "emma": ["data", "analyse", "forecast", "rapport", "csv", "excel", "statistique", "kpi", "données"],
+    "adam": ["finance", "portefeuille", "trading", "investir", "crypto", "bourse", "budget"],
+    "noah": ["vidéo", "video", "média", "contenu", "youtube", "reel", "montage", "podcast"],
+    "lea": ["sécurité", "risque", "conformité", "rgpd", "protection", "audit"],
 }
 
 
@@ -435,7 +505,11 @@ async def handle(request: str, conversation_id: str, extra_context: str = "") ->
     if len(outputs) > 1 and online:
         combined = "\n\n".join(f"### {o['name']}\n{o['content']}" for o in outputs)
         synth = await llm_chat(
-            "Tu es le cerveau central Angeleck OS. Synthétise les contributions des agents en une réponse cohérente.",
+            "Tu es Raphaël, l'orchestrateur central d'Angeleck OS. Tes experts ont "
+            "travaillé sur la demande de l'utilisateur : synthétise leurs "
+            "contributions en UNE réponse cohérente, fidèle, sans répétition, en "
+            "français. Parle à la première personne (« voici ce que l'équipe a "
+            "produit »).",
             f"Demande : {request}\n\n{combined}",
             kind="brain",
         )
@@ -564,11 +638,48 @@ async def api_status():
 
 
 # --------------------------------------------------------------------------- #
-#  Interface web intégrée (chat) — servie sur /
+#  Frontend — "Angeleck OS Command Center" (React) servi sur /
+#  Le dossier frontend/ contient index.html + les assets nommés par UUID
+#  (polices, JS, SVG) référencés en chemin relatif par la page.
+#  Fallback : si le dossier est absent, on sert l'interface intégrée simple.
 # --------------------------------------------------------------------------- #
+import re as _re
+
+FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
+_ASSET_RE = _re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+_ASSET_MIME = {}  # rempli au démarrage si besoin
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index():
+    fp = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(fp):
+        with open(fp, "r", encoding="utf-8") as fh:
+            return HTMLResponse(fh.read())
     return HTMLResponse(INDEX_HTML)
+
+
+@app.get("/{asset_id}")
+async def frontend_asset(asset_id: str):
+    """Sert les assets du frontend référencés par UUID (fonts, JS, SVG)."""
+    from fastapi.responses import FileResponse, JSONResponse as _JR
+
+    if not _ASSET_RE.match(asset_id):
+        return _JR({"detail": "Not found"}, status_code=404)
+    # Les fichiers sur disque sont nommés <uuid> (nom exact).
+    path = os.path.join(FRONTEND_DIR, asset_id)
+    if not os.path.exists(path):
+        return _JR({"detail": "Not found"}, status_code=404)
+    # Type MIME par sniffing simple.
+    with open(path, "rb") as fh:
+        head = fh.read(64)
+    if head.startswith(b"wOF2"):
+        media = "font/woff2"
+    elif b"<svg" in head or head.startswith(b"<?xml"):
+        media = "image/svg+xml"
+    else:
+        media = "text/javascript; charset=utf-8"
+    return FileResponse(path, media_type=media)
 
 
 INDEX_HTML = r"""<!DOCTYPE html>

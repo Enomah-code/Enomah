@@ -1,0 +1,120 @@
+/* global React, Icon, AgentPortrait, Badge, AOS_AGENTS */
+/* Angeleck OS — Audio Call overlay.
+   Parlez en direct avec Raphaël ; les autres agents restent en veille
+   et peuvent être invités dans l'appel d'un tap. */
+(function () {
+  const h = React.createElement;
+
+  function Waveform({ color, active }) {
+    const bars = 30;
+    return h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, height: 56 } },
+      Array.from({ length: bars }).map((_, i) => {
+        const mid = Math.abs(i - bars / 2) / (bars / 2);      // 0 center → 1 edges
+        const base = 12 + (1 - mid) * 30;
+        return h('span', { key: i, className: 'aos-wavebar', style: {
+          height: base, background: color,
+          animationDelay: (i * 0.045) + 's',
+          animationDuration: (0.7 + (i % 5) * 0.12) + 's',
+          opacity: active ? (0.45 + (1 - mid) * 0.55) : 0.18,
+          animationPlayState: active ? 'running' : 'paused',
+          boxShadow: active ? `0 0 8px ${color}` : 'none',
+          transition: 'opacity .3s ease',
+        } });
+      }));
+  }
+
+  function CtrlButton({ icon, label, on = true, danger = false, onClick, rotate }) {
+    const bg = danger ? 'var(--danger)' : on ? 'var(--glass-fill-strong)' : 'rgba(255,107,129,0.16)';
+    const bd = danger ? 'var(--danger)' : on ? 'var(--border-soft)' : 'rgba(255,107,129,0.5)';
+    const col = danger ? '#fff' : on ? 'var(--text-strong)' : 'var(--danger)';
+    return h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 } },
+      h('button', { onClick, title: label, style: {
+        width: danger ? 64 : 54, height: 54, borderRadius: danger ? 999 : 16, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: bg, border: `1px solid ${bd}`, color: col,
+        boxShadow: danger ? '0 8px 22px -6px rgba(255,107,129,0.6)' : 'var(--shadow-sm)',
+        transition: 'transform var(--dur-fast), filter var(--dur-fast)' },
+        onMouseEnter: e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.filter = 'brightness(1.08)'; },
+        onMouseLeave: e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.filter = 'none'; } },
+        h(Icon, { name: icon, size: 21, color: col, style: rotate ? { transform: `rotate(${rotate}deg)` } : undefined })),
+      h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-faint)' } }, label));
+  }
+
+  function AudioCall({ agent, onClose }) {
+    const all = AOS_AGENTS;
+    const primary = (agent && all.find(a => a.id === agent.id)) || all.find(a => a.elite) || all[0];
+    const [inCall, setInCall] = React.useState([primary.id]);
+    const [secs, setSecs] = React.useState(0);
+    const [mic, setMic] = React.useState(true);
+    const [speaker, setSpeaker] = React.useState(true);
+    const [speakingId, setSpeakingId] = React.useState(primary.id);
+
+    React.useEffect(() => { const iv = setInterval(() => setSecs(s => s + 1), 1000); return () => clearInterval(iv); }, []);
+    React.useEffect(() => {
+      const iv = setInterval(() => setSpeakingId(() => inCall[Math.floor(Math.random() * inCall.length)]), 2400);
+      return () => clearInterval(iv);
+    }, [inCall]);
+    React.useEffect(() => {
+      const onKey = e => { if (e.key === 'Escape') onClose && onClose(); };
+      window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
+    }, [onClose]);
+
+    const speaker_ = all.find(a => a.id === speakingId) || primary;
+    const mmss = `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
+    const toggle = id => setInCall(c => c.includes(id) ? (id === primary.id ? c : c.filter(x => x !== id)) : [...c, id]);
+
+    return h('div', { className: 'aos-overlay', onClick: e => { if (e.target === e.currentTarget) onClose && onClose(); } },
+      h('div', { style: {
+        width: 'min(560px, 92vw)', padding: '30px 30px 26px', borderRadius: 'var(--r-xl, 24px)', textAlign: 'center',
+        background: 'var(--glass-fill-strong)', backdropFilter: 'blur(var(--blur-lg))', WebkitBackdropFilter: 'blur(var(--blur-lg))',
+        border: '1px solid var(--border-soft)', boxShadow: 'var(--sheen-card), var(--shadow-xl), var(--glow-diamond)',
+        animation: 'aos-pop-in var(--dur-slow) var(--ease-out)' } },
+
+        /* header */
+        h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+          h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--diamond-400)' } },
+            h('span', { style: { width: 7, height: 7, borderRadius: '50%', background: 'var(--success)', boxShadow: '0 0 8px var(--success)', animation: 'aos-blink 1.6s infinite' } }),
+            'Appel audio · live'),
+          h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-body)' } }, mmss),
+          h('button', { onClick: onClose, title: 'Fermer', style: { width: 34, height: 34, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', color: 'var(--text-muted)', cursor: 'pointer' } },
+            h(Icon, { name: 'close', size: 16 }))),
+
+        /* speaking agent */
+        h('div', { style: { marginTop: 22, display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+          h('div', { style: { position: 'relative', display: 'inline-flex' } },
+            [0, 1].map(k => h('span', { key: k, style: { position: 'absolute', inset: 0, borderRadius: '50%', border: `2px solid ${speaker_.color}`, animation: `aos-ring-out 2.4s var(--ease-out) ${k * 1.2}s infinite` } })),
+            h(AgentPortrait, { cfg: speaker_.portrait, color: speaker_.color, status: 'active', size: 132 })),
+          h('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 24, color: 'var(--text-strong)', marginTop: 18 } }, speaker_.name),
+          h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: speaker_.color, marginTop: 4 } }, speaker_.role),
+          h('div', { style: { marginTop: 6, fontSize: 12.5, color: 'var(--text-muted)' } }, speaker ? `${speaker_.name} parle…` : 'Haut-parleur coupé')),
+
+        /* waveform */
+        h('div', { style: { marginTop: 16 } }, h(Waveform, { color: speaker_.color, active: speaker })),
+
+        /* participants */
+        h('div', { style: { marginTop: 14, paddingTop: 16, borderTop: '1px solid var(--border-hairline)' } },
+          h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 12, textAlign: 'left' } },
+            `Dans l'appel · ${inCall.length} · touchez pour inviter les autres`),
+          h('div', { className: 'aos-scroll', style: { display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 6 } },
+            all.map(a => {
+              const on = inCall.includes(a.id);
+              const isSpk = on && a.id === speakingId;
+              return h('button', { key: a.id, onClick: () => toggle(a.id), title: on ? a.name : `Inviter ${a.name}`, style: {
+                position: 'relative', flexShrink: 0, width: 60, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                background: 'none', border: 'none', cursor: 'pointer', opacity: on ? 1 : 0.5, transition: 'opacity var(--dur-fast)' } },
+                h('span', { style: { position: 'relative' } },
+                  h(AgentPortrait, { cfg: a.portrait, color: a.color, status: isSpk ? 'active' : 'idle', size: 44, ring: on }),
+                  !on && h('span', { style: { position: 'absolute', right: -2, bottom: -2, width: 18, height: 18, borderRadius: '50%', background: 'var(--diamond-500)', border: '2px solid var(--surface-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+                    h(Icon, { name: 'plus', size: 11, color: '#fff', stroke: 2.4 })),
+                  on && a.id !== primary.id && h('span', { style: { position: 'absolute', right: -2, bottom: -2, width: 16, height: 16, borderRadius: '50%', background: 'var(--success)', border: '2px solid var(--surface-card)' } })),
+                h('span', { style: { fontSize: 10.5, fontWeight: 600, color: on ? 'var(--text-body)' : 'var(--text-faint)', whiteSpace: 'nowrap' } }, a.name)); }))),
+
+        /* controls */
+        h('div', { style: { marginTop: 20, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', gap: 22 } },
+          h(CtrlButton, { icon: mic ? 'mic' : 'micOff', label: mic ? 'Micro' : 'Coupé', on: mic, onClick: () => setMic(m => !m) }),
+          h(CtrlButton, { icon: 'volume', label: speaker ? 'Son' : 'Muet', on: speaker, onClick: () => setSpeaker(s => !s) }),
+          h(CtrlButton, { icon: 'phone', label: 'Raccrocher', danger: true, rotate: 135, onClick: onClose }))));
+  }
+
+  window.AudioCall = AudioCall;
+})();

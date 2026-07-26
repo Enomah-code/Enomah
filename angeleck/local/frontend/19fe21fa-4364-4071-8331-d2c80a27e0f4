@@ -1,0 +1,50 @@
+/* Angeleck OS — agent roster & market data (shared, plain JS) */
+window.AOS_AGENTS = [
+  { id:'raphael', name:'Raphaël', role:'Orchestrateur Central', domain:'Coordination',  color:'#E7CD93', elite:true,  tasks:128, blurb:"Comprend, planifie, délègue et synthétise. L'intelligence centrale d'Angeleck.",
+    portrait:{ id:'raphael', elite:true, skin:'light', hair:'side', hairColor:'#2C2118', beard:'stubble', top:'#0E2A4E', topShade:'#08172E', smile:false } },
+  { id:'sofia',   name:'Sofia',   role:'Business & Stratégie',  domain:'Business',      color:'#4DA3FF', tasks:42,  blurb:"Business models qui passent de 0 à 100M€, positionnement et go-to-market.",
+    portrait:{ id:'sofia', skin:'light', hair:'bob', hairColor:'#3A2A1E', top:'#13325C', topShade:'#0B1F3C', smile:true } },
+  { id:'maya',    name:'Maya',    role:'Marketing & Ads',       domain:'Marketing',     color:'#FF6FA5', tasks:37,  blurb:"Campagnes Meta / Google / TikTok orchestrées pour un ROAS supérieur à 5×.",
+    portrait:{ id:'maya', skin:'tan', hair:'wavy', hairColor:'#241712', top:'#5C1A3A', topShade:'#3A0F25', smile:true } },
+  { id:'nathan',  name:'Nathan',  role:'Copywriting',           domain:'Copy',          color:'#3DDC97', tasks:51,  blurb:"Copywriting qui convertit, scripts cinématographiques, tunnels de vente.",
+    portrait:{ id:'nathan', skin:'light', hair:'crop', hairColor:'#1F1813', glasses:'thin', top:'#124A38', topShade:'#0A2C22', smile:false } },
+  { id:'elena',   name:'Elena',   role:'Création Visuelle',     domain:'Création',      color:'#C9A2FF', tasks:29,  blurb:"Direction artistique, identités et visuels de qualité production.",
+    portrait:{ id:'elena', skin:'porcelain', hair:'bun', hairColor:'#241019', lips:'#C2466F', top:'#3E2A5E', topShade:'#271942', smile:true } },
+  { id:'lucas',   name:'Lucas',   role:'E-commerce',            domain:'E-commerce',    color:'#2FD6C3', tasks:24,  blurb:"Boutiques Shopify / Woo optimisées, conversion et logistique.",
+    portrait:{ id:'lucas', skin:'tan', hair:'crop', hairColor:'#15110D', top:'#0E4A45', topShade:'#072E2B', smile:true } },
+  { id:'gabriel', name:'Gabriel', role:'Technologie',           domain:'Tech',          color:'#5B8CFF', tasks:33,  blurb:"Architecture, intégrations et automatisations à l'échelle.",
+    portrait:{ id:'gabriel', skin:'warm', hair:'crop', hairColor:'#100C09', headset:true, top:'#16315E', topShade:'#0C1E3C', smile:false } },
+  { id:'emma',    name:'Emma',    role:'Data & Analyse',        domain:'Data',          color:'#57E6E0', tasks:46,  blurb:"Insights actionnables, forecasting et business intelligence.",
+    portrait:{ id:'emma', skin:'light', hair:'ponytail', hairColor:'#2E1D12', glasses:'bold', top:'#0E4A4E', topShade:'#082E30', smile:true } },
+  { id:'adam',    name:'Adam',    role:'Finance & Trading',     domain:'Finance',       color:'#E7CD93', tasks:39,  blurb:"Analyse technique & fondamentale, gestion du risque, allocation.",
+    portrait:{ id:'adam', skin:'light', hair:'side', hairColor:'#0E0A07', beard:'full', top:'#3E3417', topShade:'#26200E', smile:false } },
+  { id:'noah',    name:'Noah',    role:'Média & Production',    domain:'Média',         color:'#FF9E5C', tasks:21,  blurb:"Production image & vidéo cinématique, storytelling de marque.",
+    portrait:{ id:'noah', skin:'deep', hair:'curly', hairColor:'#120B07', top:'#5C3318', topShade:'#3A200E', smile:true } },
+  { id:'lea',     name:'Léa',     role:'Sécurité & Risques',    domain:'Sécurité',      color:'#FF6B81', tasks:18,  blurb:"Protection des actifs, conformité, audit et veille des menaces.",
+    portrait:{ id:'lea', skin:'espresso', hair:'pixie', hairColor:'#0C0806', lips:'#B84A5C', top:'#5C1E2A', topShade:'#3A121A', smile:false } },
+];
+
+window.AOS_TICKER = [
+  { s:'BTC/USDT', p:'$67,420', c:2.34 }, { s:'ETH/USDT', p:'$3,521', c:1.87 },
+  { s:'SOL/USDT', p:'$168.4', c:-0.92 }, { s:'BRVM-C', p:'217.45', c:0.38 },
+  { s:'SNTS', p:'17 000 F', c:0.59 }, { s:'ORAC', p:'12 600 F', c:2.10 },
+  { s:'NVDA', p:'$1,024', c:1.12 }, { s:'BNB/USDT', p:'$578', c:0.43 },
+];
+
+window.AOS_NOTIFICATIONS = [
+  { id:1, agent:'Maya',    color:'#FF6FA5', icon:'sparkles', title:'Campagne Meta — ROAS 5.2× atteint',           body:'3 audiences gagnantes identifiées. Budget réalloué.', time:'il y a 4 min',  read:false },
+  { id:2, agent:'Adam',    color:'#E7CD93', icon:'chart',    title:'Alerte marché — BTC +2.3% sur 1 h',            body:'Seuil de volatilité franchi sur votre watchlist.',    time:'il y a 12 min', read:false },
+  { id:3, agent:'Sofia',   color:'#4DA3FF', icon:'check',    title:'Plan stratégique Q3 prêt à valider',           body:'Go-to-market et projections en attente de revue.',     time:'il y a 28 min', read:false },
+  { id:4, agent:'Léa',     color:'#FF6B81', icon:'shield',   title:'Audit sécurité — aucune menace détectée',      body:'Analyse de conformité RGPD terminée.',                 time:'il y a 1 h',    read:true  },
+  { id:5, agent:'Emma',    color:'#57E6E0', icon:'chart',    title:'Forecast 12 mois actualisé',                   body:'Nouvelles données intégrées au modèle.',               time:'il y a 2 h',    read:true  },
+  { id:6, agent:'Raphaël', color:'#E7CD93', icon:'sparkles', title:'2 nouveaux agents suggérés pour votre réseau', body:'Recommandation basée sur votre activité récente.',     time:'il y a 3 h',    read:true  },
+];
+
+window.AOS_MEMORIES = [
+  { tag:'Business', agent:'Sofia',  color:'#4DA3FF', title:'Stratégie de lancement — SaaS B2B', meta:'il y a 2 h · 14 nœuds liés' },
+  { tag:'Finance',  agent:'Adam',   color:'#E7CD93', title:'Allocation portefeuille Q3 — profil dynamique', meta:'il y a 5 h · 8 nœuds liés' },
+  { tag:'Marketing',agent:'Maya',   color:'#FF6FA5', title:'Campagne Meta — audiences & créatifs gagnants', meta:'hier · 21 nœuds liés' },
+  { tag:'Data',     agent:'Emma',   color:'#57E6E0', title:'Forecast de revenus — modèle 12 mois', meta:'hier · 11 nœuds liés' },
+  { tag:'Création', agent:'Elena',  color:'#C9A2FF', title:'Système visuel — refonte identité', meta:'il y a 2 j · 6 nœuds liés' },
+  { tag:'Sécurité', agent:'Léa',    color:'#FF6B81', title:'Audit conformité RGPD — checklist', meta:'il y a 3 j · 9 nœuds liés' },
+];

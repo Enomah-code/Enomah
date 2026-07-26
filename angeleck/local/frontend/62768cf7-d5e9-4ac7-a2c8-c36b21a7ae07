@@ -1,0 +1,267 @@
+/* global React, Icon, AgentPortrait */
+/* Angeleck OS — Settings drawer. Thème & accent are functional
+   (drive the whole shell); the rest are product-realistic toggles. */
+(function () {
+  const h = React.createElement;
+
+  function Segmented({ value, options, onChange }) {
+    return h('div', { style: { display: 'flex', gap: 4, padding: 4, background: 'var(--glass-fill)', border: '1px solid var(--border-hairline)', borderRadius: 12 } },
+      options.map(o => {
+        const on = value === o.id;
+        return h('button', { key: o.id, onClick: () => onChange(o.id), style: {
+          flex: 1, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, cursor: 'pointer',
+          borderRadius: 9, border: '1px solid ' + (on ? 'var(--border-accent)' : 'transparent'),
+          background: on ? 'var(--glass-fill-bright)' : 'transparent', color: on ? 'var(--text-strong)' : 'var(--text-muted)',
+          fontFamily: 'var(--font-sans)', fontSize: 12.5, fontWeight: 600, boxShadow: on ? 'var(--shadow-sm)' : 'none',
+          transition: 'all var(--dur-fast) var(--ease-out)' } },
+          o.icon && h(Icon, { name: o.icon, size: 15, color: on ? 'var(--diamond-400)' : 'var(--text-faint)' }), o.label); }));
+  }
+
+  function Toggle({ on, onChange }) {
+    return h('button', { onClick: () => onChange(!on), style: {
+      width: 44, height: 26, borderRadius: 999, position: 'relative', cursor: 'pointer', flexShrink: 0,
+      background: on ? 'var(--grad-diamond)' : 'var(--glass-fill-strong)', border: '1px solid ' + (on ? 'var(--border-accent)' : 'var(--border-soft)'),
+      boxShadow: on ? 'var(--glow-diamond)' : 'none', transition: 'background var(--dur-med), box-shadow var(--dur-med)' } },
+      h('span', { style: { position: 'absolute', top: 2, left: on ? 20 : 2, width: 20, height: 20, borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.3)', transition: 'left var(--dur-med) var(--ease-out)' } }));
+  }
+
+  function Row({ title, desc, control, last }) {
+    return h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '13px 0', borderBottom: last ? 'none' : '1px solid var(--border-hairline)' } },
+      h('div', { style: { minWidth: 0 } },
+        h('div', { style: { fontSize: 13.5, fontWeight: 600, color: 'var(--text-strong)' } }, title),
+        desc && h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2, lineHeight: 1.4 } }, desc)),
+      h('div', { style: { flexShrink: 0 } }, control));
+  }
+
+  function Group({ icon, label, children }) {
+    return h('div', { style: { marginBottom: 26 } },
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: 9, marginBottom: 6 } },
+        h('span', { style: { width: 30, height: 30, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--info-soft)', border: '1px solid var(--border-accent)', color: 'var(--diamond-400)' } },
+          h(Icon, { name: icon, size: 15 })),
+        h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--text-muted)' } }, label)),
+      h('div', { style: { padding: '0 2px' } }, children));
+  }
+
+  const INTG_FIELDS = {
+    tiktok: [
+      { k: 'account', label: 'Nom du compte', ph: 'Mon compte TikTok Ads' },
+      { k: 'advertiser', label: 'Advertiser ID', ph: '69xxxxxxxxxxxxxxxx' },
+      { k: 'appid', label: 'App ID', ph: '7xxxxxxxxxxxxxxxxx' },
+      { k: 'secret', label: 'App Secret', ph: '••••••••••••', secret: true },
+      { k: 'token', label: 'Access Token', ph: '••••••••••••', secret: true },
+    ],
+    meta: [
+      { k: 'account', label: 'Nom du compte', ph: 'Mon Business Manager' },
+      { k: 'adacct', label: 'Ad Account ID', ph: 'act_1234567890' },
+      { k: 'appid', label: 'App ID', ph: '1234567890' },
+      { k: 'secret', label: 'App Secret', ph: '••••••••••••', secret: true },
+      { k: 'token', label: 'Access Token', ph: 'EAAB••••••••', secret: true },
+    ],
+    google: [
+      { k: 'account', label: 'Nom du compte', ph: 'Mon compte Google Ads' },
+      { k: 'customer', label: 'Customer ID', ph: '123-456-7890' },
+      { k: 'devtoken', label: 'Developer Token', ph: '••••••••••••', secret: true },
+      { k: 'clientid', label: 'OAuth Client ID', ph: 'xxxx.apps.googleusercontent.com' },
+      { k: 'clientsecret', label: 'Client Secret', ph: '••••••••••••', secret: true },
+    ],
+    markets: [
+      { k: 'account', label: 'Nom du flux', ph: 'Flux marchés' },
+      { k: 'provider', label: 'Fournisseur', ph: 'Alpha Vantage · Polygon · Binance' },
+      { k: 'apikey', label: 'Clé API', ph: '••••••••••••', secret: true },
+    ],
+    shopify: [
+      { k: 'shop', label: 'Domaine de la boutique', ph: 'ma-boutique.myshopify.com' },
+      { k: 'apikey', label: 'API Key', ph: '••••••••••••', secret: true },
+      { k: 'apisecret', label: 'API Secret', ph: '••••••••••••', secret: true },
+      { k: 'token', label: 'Admin API Access Token', ph: 'shpat_••••••', secret: true },
+    ],
+    analytics: [
+      { k: 'account', label: 'Compte', ph: 'Mon compte Analytics' },
+      { k: 'property', label: 'Property ID (GA4)', ph: 'properties/123456789' },
+      { k: 'service', label: 'Clé de compte de service (JSON)', ph: 'Collez le contenu du fichier JSON…', area: true, secret: true },
+    ],
+  };
+  function intgFields(t) {
+    return INTG_FIELDS[t.id] || [
+      { k: 'account', label: 'Nom du service', ph: t.name },
+      { k: 'baseurl', label: 'URL de base de l\u2019API', ph: 'https://api.exemple.com/v1' },
+      { k: 'apikey', label: 'Clé API / Token', ph: '••••••••••••', secret: true },
+    ];
+  }
+  const INPUT_ST = { width: '100%', boxSizing: 'border-box', height: 40, padding: '0 14px', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', borderRadius: 'var(--r-md)', color: 'var(--text-strong)', fontFamily: 'var(--font-sans)', fontSize: 13, outline: 'none' };
+
+  function Integrations() {
+    const DEFAULTS = [
+      { id: 'tiktok', name: 'TikTok Ads', cat: 'Publicité', icon: 'sparkles', color: '#FF4D67', on: true },
+      { id: 'meta', name: 'Meta Ads', cat: 'Publicité', icon: 'network', color: '#4D8BFF', on: true },
+      { id: 'google', name: 'Google Ads', cat: 'Publicité', icon: 'search', color: '#E7CD93', on: false },
+      { id: 'markets', name: 'Marchés boursiers', cat: 'Trading & Finance', icon: 'chart', color: '#3DDC97', on: true },
+      { id: 'shopify', name: 'Shopify', cat: 'E-commerce', icon: 'bolt', color: '#2FD6C3', on: false },
+      { id: 'analytics', name: 'Google Analytics', cat: 'Data', icon: 'chart', color: '#57E6E0', on: false },
+    ];
+    const [list, setList] = React.useState(DEFAULTS);
+    const [draft, setDraft] = React.useState('');
+    const [building, setBuilding] = React.useState(null);
+    const [active, setActive] = React.useState(null);  // integration being connected / managed
+    const [form, setForm] = React.useState({});
+    const [reveal, setReveal] = React.useState({});
+
+    const open = (t) => { setActive(t); setForm({}); setReveal({}); };
+    const close = () => setActive(null);
+    function submit() { if (!active) return; const id = active.id; setList(l => l.map(x => x.id === id ? { ...x, on: true } : x)); setActive(null); }
+    function disconnect() { if (!active) return; const id = active.id; setList(l => l.map(x => x.id === id ? { ...x, on: false } : x)); setActive(null); }
+    function requestRaphael() {
+      const t = draft.trim(); if (!t || building) return;
+      setBuilding(t);
+      setTimeout(() => {
+        const item = { id: 'custom-' + Date.now(), name: t.length > 26 ? t.slice(0, 26) + '\u2026' : t, cat: 'Conçu par Raphaël', icon: 'genesis', color: '#C9A2FF', on: false, custom: true };
+        setList(l => [item, ...l]);
+        setBuilding(null); setDraft('');
+        setActive(item); setForm({}); setReveal({});   // open connect panel to finish
+      }, 2200);
+    }
+
+    const reqKey = active ? intgFields(active)[0].k : null;
+    const canSubmit = active && (form[reqKey] || '').trim().length > 0;
+
+    return h('div', null,
+      h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)', marginBottom: 12, lineHeight: 1.45 } }, 'Connectez Raphaël et ses agents à vos outils externes pour qu\u2019ils agissent directement sur vos plateformes.'),
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+        list.map(t => h('div', { key: t.id, style: { display: 'flex', alignItems: 'center', gap: 11, padding: '10px 12px', borderRadius: 'var(--r-md)', background: 'var(--glass-fill)', border: '1px solid ' + (t.on ? 'var(--border-accent)' : 'var(--border-hairline)') } },
+          h('span', { style: { width: 34, height: 34, flexShrink: 0, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `color-mix(in srgb, ${t.color} 16%, transparent)`, border: `1px solid color-mix(in srgb, ${t.color} 40%, transparent)`, color: t.color } }, h(Icon, { name: t.icon, size: 16 })),
+          h('div', { style: { flex: 1, minWidth: 0 } },
+            h('div', { style: { fontSize: 13, fontWeight: 600, color: 'var(--text-strong)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, t.name),
+            h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-faint)', marginTop: 1 } }, t.cat)),
+          h('button', { onClick: () => open(t), style: { height: 28, padding: '0 12px', borderRadius: 999, cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0,
+            background: t.on ? 'color-mix(in srgb, var(--success) 16%, transparent)' : 'var(--glass-fill-strong)',
+            border: '1px solid ' + (t.on ? 'rgba(61,220,151,0.45)' : 'var(--border-soft)'),
+            color: t.on ? 'var(--success)' : 'var(--text-muted)' } }, t.on ? 'Connecté' : 'Connecter')))),
+      h('div', { style: { marginTop: 14, padding: 14, borderRadius: 'var(--r-lg)', background: 'var(--info-soft)', border: '1px solid var(--border-accent)' } },
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 } },
+          h('span', { style: { width: 24, height: 24, flexShrink: 0, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--grad-diamond)', boxShadow: 'var(--glow-diamond)' } }, h(Icon, { name: 'genesis', size: 13, color: '#fff' })),
+          h('div', { style: { fontSize: 12.5, fontWeight: 700, color: 'var(--text-strong)' } }, 'Nouvelle intégration via Raphaël')),
+        h('div', { style: { fontSize: 11, color: 'var(--text-muted)', marginBottom: 9, lineHeight: 1.45 } }, 'Un outil n\u2019est pas listé ? Décrivez-le : Raphaël conçoit l\u2019intégration, puis vous renseignez vos accès.'),
+        h('div', { style: { display: 'flex', gap: 7 } },
+          h('input', { value: draft, onChange: e => setDraft(e.target.value), disabled: !!building,
+            onKeyDown: e => { if (e.key === 'Enter') requestRaphael(); },
+            placeholder: 'ex. Stripe, Klaviyo, Binance API\u2026',
+            style: { flex: 1, boxSizing: 'border-box', height: 38, padding: '0 12px', background: 'var(--surface-card)', border: '1px solid var(--border-soft)', borderRadius: 'var(--r-md)', color: 'var(--text-strong)', fontFamily: 'var(--font-sans)', fontSize: 12.5, outline: 'none' } }),
+          h('button', { onClick: requestRaphael, disabled: !draft.trim() || !!building, style: { height: 38, padding: '0 14px', borderRadius: 'var(--r-md)', cursor: (!draft.trim() || building) ? 'not-allowed' : 'pointer', opacity: (!draft.trim() || building) ? 0.55 : 1, background: 'var(--grad-diamond)', color: '#fff', border: '1px solid var(--border-accent)', fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' } }, 'Demander')),
+        building && h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--diamond-400)' } },
+          h('span', { style: { width: 12, height: 12, flexShrink: 0, borderRadius: '50%', border: '2px solid currentColor', borderRightColor: 'transparent', display: 'inline-block', animation: 'aos-spin 0.8s linear infinite' } }),
+          'Raphaël conçoit l\u2019intégration \u00ab ' + building + ' \u00bb\u2026')),
+
+      /* ---- connection panel ---- */
+      active && h('div', { className: 'aos-overlay', style: { background: 'color-mix(in srgb, var(--bg-void) 62%, transparent)', zIndex: 80, padding: 16 }, onClick: e => { if (e.target === e.currentTarget) close(); } },
+        h('div', { className: 'aos-scroll', style: { width: 'min(440px, 96vw)', maxHeight: '90vh', background: 'var(--surface-card)', border: '1px solid var(--border-soft)', borderRadius: 'var(--r-lg)', boxShadow: 'var(--shadow-xl)', padding: '22px 22px 24px', animation: 'aos-rise var(--dur-med) var(--ease-out)' } },
+          h('div', { style: { display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 } },
+            h('span', { style: { width: 42, height: 42, flexShrink: 0, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: `color-mix(in srgb, ${active.color} 18%, transparent)`, border: `1px solid color-mix(in srgb, ${active.color} 45%, transparent)`, color: active.color } }, h(Icon, { name: active.icon, size: 20 })),
+            h('div', { style: { flex: 1, minWidth: 0 } },
+              h('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, color: 'var(--text-strong)' } }, (active.on ? 'Gérer ' : 'Connecter ') + active.name),
+              h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text-faint)', marginTop: 2 } }, active.cat)),
+            h('button', { onClick: close, title: 'Fermer', style: { width: 32, height: 32, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', color: 'var(--text-muted)', cursor: 'pointer' } }, h(Icon, { name: 'close', size: 15 }))),
+
+          active.on
+            ? h('div', null,
+                h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0 16px', padding: '10px 12px', borderRadius: 'var(--r-md)', background: 'color-mix(in srgb, var(--success) 12%, transparent)', border: '1px solid rgba(61,220,151,0.4)' } },
+                  h(Icon, { name: 'check', size: 16, color: 'var(--success)' }),
+                  h('span', { style: { fontSize: 12.5, fontWeight: 600, color: 'var(--success)' } }, 'Connecté · clés chiffrées dans le coffre Angeleck')),
+                h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 4 } }, 'Raphaël et les agents concernés peuvent agir sur ' + active.name + '. Déconnectez à tout moment pour révoquer l\u2019accès.'))
+            : h('div', null,
+                h('p', { style: { margin: '6px 0 16px', fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5 } }, 'Renseignez les informations requises par ' + active.name + '. Angeleck chiffre et stocke vos clés de façon sécurisée — elles ne quittent jamais votre coffre.'),
+                h('div', { style: { display: 'flex', flexDirection: 'column', gap: 13 } },
+                  intgFields(active).map(f => h('div', { key: f.k },
+                    h('label', { style: { display: 'block', fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 6 } }, f.label),
+                    f.area
+                      ? h('textarea', { value: form[f.k] || '', onChange: e => setForm(s => ({ ...s, [f.k]: e.target.value })), placeholder: f.ph, rows: 3, style: { ...INPUT_ST, height: 'auto', minHeight: 70, padding: '10px 14px', resize: 'vertical', fontFamily: 'var(--font-mono)', fontSize: 11.5, lineHeight: 1.5 } })
+                      : h('div', { style: { position: 'relative' } },
+                          h('input', { type: f.secret && !reveal[f.k] ? 'password' : 'text', value: form[f.k] || '', onChange: e => setForm(s => ({ ...s, [f.k]: e.target.value })), placeholder: f.ph, style: { ...INPUT_ST, paddingRight: f.secret ? 42 : 14 } }),
+                          f.secret && h('button', { type: 'button', onClick: () => setReveal(r => ({ ...r, [f.k]: !r[f.k] })), title: 'Afficher / masquer', style: { position: 'absolute', right: 7, top: '50%', transform: 'translateY(-50%)', width: 28, height: 28, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--text-faint)', cursor: 'pointer' } }, h(Icon, { name: reveal[f.k] ? 'eyeOff' : 'eye', size: 15 }))))))),
+
+          h('div', { style: { display: 'flex', gap: 10, marginTop: 20 } },
+            active.on
+              ? h('button', { onClick: disconnect, style: { flex: 1, height: 42, borderRadius: 'var(--r-md)', cursor: 'pointer', background: 'var(--danger-soft)', color: 'var(--danger)', border: '1px solid rgba(255,107,129,0.4)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600 } }, 'Déconnecter')
+              : h('button', { onClick: submit, disabled: !canSubmit, style: { flex: 1, height: 42, borderRadius: 'var(--r-md)', cursor: canSubmit ? 'pointer' : 'not-allowed', opacity: canSubmit ? 1 : 0.5, background: 'var(--grad-diamond)', color: '#fff', border: '1px solid var(--border-accent)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600, boxShadow: canSubmit ? 'var(--glow-diamond)' : 'none' } }, 'Connecter ' + active.name),
+            h('button', { onClick: close, style: { height: 42, padding: '0 18px', borderRadius: 'var(--r-md)', cursor: 'pointer', background: 'var(--glass-fill)', color: 'var(--text-body)', border: '1px solid var(--border-soft)', fontFamily: 'var(--font-sans)', fontSize: 13.5, fontWeight: 600 } }, active.on ? 'Fermer' : 'Annuler')))));
+  }
+
+  const ACCENTS = [
+    { id: '#4DA3FF', name: 'Diamant' },
+    { id: '#1FA6B8', name: 'Aqua' },
+    { id: '#7C5CFF', name: 'Améthyste' },
+    { id: '#1FA968', name: 'Émeraude' },
+    { id: '#C79A3C', name: 'Or' },
+  ];
+
+  function Settings({ open, onClose, theme, setTheme, accent, setAccent }) {
+    const [autonomy, setAutonomy] = React.useState('balanced');
+    const [reduceMotion, setReduceMotion] = React.useState(false);
+    const [notify, setNotify] = React.useState(true);
+    const [evolve, setEvolve] = React.useState(true);
+    const [memory, setMemory] = React.useState(true);
+    const [journal, setJournal] = React.useState(true);
+
+    React.useEffect(() => {
+      const onKey = e => { if (e.key === 'Escape') onClose && onClose(); };
+      if (open) window.addEventListener('keydown', onKey);
+      return () => window.removeEventListener('keydown', onKey);
+    }, [open, onClose]);
+    if (!open) return null;
+
+    return h('div', { className: 'aos-overlay', style: { justifyContent: 'flex-end', background: 'color-mix(in srgb, var(--bg-void) 55%, transparent)' }, onClick: e => { if (e.target === e.currentTarget) onClose && onClose(); } },
+      h('div', { className: 'aos-scroll', style: {
+        width: 'min(420px, 96vw)', height: '100%', padding: '22px 24px 30px',
+        background: 'var(--surface-card)', borderLeft: '1px solid var(--border-soft)', boxShadow: 'var(--shadow-xl)',
+        animation: 'aos-drawer-in var(--dur-slow) var(--ease-out)' } },
+
+        /* header */
+        h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 } },
+          h('div', null,
+            h('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--text-faint)' } }, 'Angeleck OS'),
+            h('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 20, color: 'var(--text-strong)', marginTop: 3 } }, 'Paramètres')),
+          h('button', { onClick: onClose, title: 'Fermer', style: { width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', color: 'var(--text-muted)', cursor: 'pointer' } },
+            h(Icon, { name: 'close', size: 17 }))),
+
+        /* Apparence */
+        h(Group, { icon: 'sparkles', label: 'Apparence' },
+          h('div', { style: { marginBottom: 14 } },
+            h('div', { style: { fontSize: 13.5, fontWeight: 600, color: 'var(--text-strong)', marginBottom: 9 } }, 'Thème'),
+            h(Segmented, { value: theme, onChange: setTheme, options: [{ id: 'dark', label: 'Sombre', icon: 'moon' }, { id: 'light', label: 'Clair', icon: 'sun' }] })),
+          h('div', { style: { marginBottom: 4 } },
+            h('div', { style: { fontSize: 13.5, fontWeight: 600, color: 'var(--text-strong)', marginBottom: 10 } }, 'Couleur d\u2019accent'),
+            h('div', { style: { display: 'flex', gap: 12 } },
+              ACCENTS.map(a => { const on = accent === a.id; return h('button', { key: a.id, onClick: () => setAccent(a.id), title: a.name, style: {
+                width: 34, height: 34, borderRadius: '50%', cursor: 'pointer', background: a.id,
+                border: on ? '2px solid var(--text-strong)' : '2px solid transparent',
+                boxShadow: on ? `0 0 0 2px ${a.id}, 0 0 16px ${a.id}` : `0 0 10px -2px ${a.id}`, transition: 'all var(--dur-fast)' } }); }))),
+          h(Row, { title: 'Réduire les animations', desc: 'Désactive orbites & halos animés', last: true, control: h(Toggle, { on: reduceMotion, onChange: setReduceMotion }) })),
+
+        /* Réseau & agents */
+        h(Group, { icon: 'network', label: 'Réseau & agents' },
+          h('div', { style: { marginBottom: 8 } },
+            h('div', { style: { fontSize: 13.5, fontWeight: 600, color: 'var(--text-strong)', marginBottom: 4 } }, 'Niveau d\u2019autonomie'),
+            h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)', marginBottom: 9, lineHeight: 1.4 } }, 'Jusqu\u2019où Raphaël agit sans votre validation'),
+            h(Segmented, { value: autonomy, onChange: setAutonomy, options: [{ id: 'supervised', label: 'Supervisé' }, { id: 'balanced', label: 'Équilibré' }, { id: 'autonomous', label: 'Autonome' }] })),
+          h(Row, { title: 'Notifications', desc: 'Alertes des agents en temps réel', control: h(Toggle, { on: notify, onChange: setNotify }) }),
+          h(Row, { title: 'Auto-évolution', desc: 'Les agents affinent leurs compétences', last: true, control: h(Toggle, { on: evolve, onChange: setEvolve }) })),
+
+        /* Intégrations & API */
+        h(Group, { icon: 'bolt', label: 'Intégrations & API' }, h(Integrations, null)),
+
+        /* Confidentialité */
+        h(Group, { icon: 'lock', label: 'Confidentialité' },
+          h(Row, { title: 'Mémoire Akasha', desc: 'Mémorise le contexte entre missions', control: h(Toggle, { on: memory, onChange: setMemory }) }),
+          h(Row, { title: 'Journal d\u2019activité', desc: 'Trace chaque action des agents', last: true, control: h(Toggle, { on: journal, onChange: setJournal }) })),
+
+        /* Compte */
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 14px', borderRadius: 'var(--r-lg)', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)' } },
+          h(AgentPortrait, { cfg: { id: 'me', skin: 'light', hair: 'crop', hairColor: '#2A1E14', top: '#1A2740' }, color: 'var(--diamond-500)', size: 42 }),
+          h('div', { style: { flex: 1, minWidth: 0 } },
+            h('div', { style: { fontSize: 14, fontWeight: 700, color: 'var(--text-strong)' } }, 'Votre organisation'),
+            h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)' } }, 'Plan Blue Diamond · Élite')),
+          h('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.1em', color: 'var(--gold-400)', textTransform: 'uppercase' } }, 'EMK')),
+        h('div', { style: { textAlign: 'center', marginTop: 16, fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '.08em', color: 'var(--text-faint)' } }, 'Angeleck OS · v1.0 · Powered by EMK Blue Diamond')));
+  }
+
+  window.Settings = Settings;
+})();

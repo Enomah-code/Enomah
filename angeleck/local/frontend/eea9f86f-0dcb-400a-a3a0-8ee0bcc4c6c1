@@ -1,0 +1,62 @@
+/* global React, Icon, Avatar, Badge, Button, GlassCard, Eyebrow, SectionLabel, AOS_MEMORIES, aosInk */
+function Akasha() {
+  // memory constellation nodes
+  const nodes = React.useMemo(() => {
+    const seeds = [[18, 30], [32, 62], [46, 26], [58, 54], [70, 34], [80, 66], [26, 80], [62, 80], [40, 44], [52, 70], [74, 18], [88, 44], [12, 56], [34, 18]];
+    return seeds.map(([x, y], i) => ({ x, y, r: 1.2 + (i % 3) * 0.7, c: ['#4DA3FF', '#57E6E0', '#C9A2FF', '#E7CD93', '#FF6FA5'][i % 5] }));
+  }, []);
+  const links = [[0, 8], [8, 2], [2, 4], [4, 10], [8, 3], [3, 5], [3, 9], [1, 8], [1, 6], [9, 7], [4, 11], [5, 11], [0, 12], [12, 1], [10, 4]];
+
+  return React.createElement('div', { className: 'aos-akasha', style: { display: 'flex', width: '100%', height: '100%' } },
+    React.createElement('div', { className: 'aos-scroll', style: { flex: 1, padding: '26px 30px' } },
+      React.createElement('div', { className: 'aos-rise', style: { marginBottom: 18 } },
+        React.createElement(Eyebrow, null, 'Mémoire vivante du système'),
+        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 16, margin: '10px 0 0', flexWrap: 'wrap' } },
+          React.createElement('span', { style: { width: 54, height: 54, flexShrink: 0, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(150deg, #0B1A3A 0%, #081024 100%)', border: '1px solid var(--border-accent)', boxShadow: 'var(--glow-diamond), inset 0 1px 0 rgba(120,170,255,0.28)' } },
+            React.createElement(Icon, { name: 'akasha', size: 28, color: 'var(--diamond-400)', stroke: 1.6 })),
+          React.createElement('h1', { className: 'aos-h-view', style: { margin: 0, fontSize: 50, letterSpacing: '-0.03em', lineHeight: 1, background: 'linear-gradient(120deg, var(--diamond-400) 0%, #9FC9FF 55%, var(--gold-300) 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', paddingRight: 4 } }, 'Akasha'),
+          React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '.2em', textTransform: 'uppercase', color: 'var(--text-faint)', alignSelf: 'flex-end', paddingBottom: 8 } }, 'Memory Engine')),
+        React.createElement('p', { style: { margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 14 } }, 'Chaque mission enrichit une mémoire vectorielle partagée. Le réseau apprend et se souvient.')),
+
+      /* constellation — always a deep night-sky surface, in both themes */
+      React.createElement(GlassCard, { padding: 0, style: { position: 'relative', height: 320, overflow: 'hidden', marginBottom: 20, background: 'linear-gradient(165deg, #0A1126 0%, #0B1A3A 55%, #081024 100%)', border: '1px solid var(--border-accent)', boxShadow: 'inset 0 1px 0 rgba(120,170,255,0.18), 0 18px 50px -22px rgba(8,18,46,0.7)' } },
+        React.createElement('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', style: { position: 'absolute', inset: 0, width: '100%', height: '100%' } },
+          links.map(([a, b], i) => React.createElement('line', { key: i, x1: nodes[a].x, y1: nodes[a].y, x2: nodes[b].x, y2: nodes[b].y, stroke: 'rgba(120,160,220,0.22)', strokeWidth: 0.25, strokeDasharray: '1.2 2', style: { animation: `aos-dash ${12 + i}s linear infinite` } })),
+          nodes.map((n, i) => React.createElement('circle', { key: i, cx: n.x, cy: n.y, r: n.r, fill: n.c, style: { filter: 'drop-shadow(0 0 3px ' + n.c + ')', animation: `aos-breathe ${3 + (i % 4)}s ease-in-out ${i * 0.2}s infinite` } }))),
+        React.createElement('div', { style: { position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 50%, transparent 40%, rgba(6,10,21,0.6) 100%)' } }),
+        React.createElement('div', { style: { position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', width: '70%', maxWidth: 460, textAlign: 'center' } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: 'rgba(9,15,31,0.7)', backdropFilter: 'blur(12px)', border: '1px solid var(--border-accent)', borderRadius: 'var(--r-pill)', boxShadow: 'var(--glow-diamond)' } },
+            React.createElement(Icon, { name: 'search', size: 17, color: 'var(--diamond-400)' }),
+            React.createElement('input', { placeholder: 'Interroger la mémoire d\'Angeleck…', style: { flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#EAF3FF', fontFamily: 'var(--font-sans)', fontSize: 14 } }),
+            React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)' } }, '⏎')))),
+
+      /* memory stream */
+      React.createElement(SectionLabel, null, 'Souvenirs récents'),
+      React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 14 } },
+        AOS_MEMORIES.map((m, i) => React.createElement(GlassCard, { key: i, interactive: true, padding: 16, style: { animation: `aos-rise var(--dur-slow) var(--ease-out) ${i * 0.05}s both` } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 } },
+            React.createElement('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 7, fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '.08em', textTransform: 'uppercase', color: aosInk(m.color) } },
+              React.createElement('span', { style: { width: 7, height: 7, borderRadius: '2px', background: m.color, boxShadow: `0 0 6px ${m.color}` } }), m.tag),
+            React.createElement('span', { style: { fontSize: 11, fontWeight: 700, color: aosInk(m.color) } }, m.agent)),
+          React.createElement('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15, color: 'var(--text-strong)', lineHeight: 1.35 } }, m.title),
+          React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-faint)', marginTop: 10 } }, m.meta))))
+    ),
+
+    /* right rail */
+    React.createElement('div', { className: 'aos-scroll', style: { width: 290, flexShrink: 0, borderLeft: '1px solid var(--border-hairline)', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18, background: 'var(--panel-tint)' } },
+      React.createElement('div', null,
+        React.createElement(SectionLabel, null, 'Volume de mémoire'),
+        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 10 } },
+          [['12 480', 'nœuds mémorisés', '#4DA3FF'], ['38 210', 'connexions', '#57E6E0'], ['1 942', 'rappels ce mois', '#C9A2FF']].map((s, i) => React.createElement(GlassCard, { key: i, padding: 14 },
+            React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 600, color: aosInk(s[2]) } }, s[0]),
+            React.createElement('div', { style: { fontSize: 11, color: 'var(--text-muted)', marginTop: 2 } }, s[1]))))),
+      React.createElement('div', null,
+        React.createElement(SectionLabel, null, 'Domaines les plus actifs'),
+        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 12 } },
+          [['Marketing', 86, '#FF6FA5'], ['Business', 72, '#4DA3FF'], ['Finance', 64, '#E7CD93'], ['Data', 51, '#57E6E0'], ['Création', 33, '#C9A2FF']].map((d, i) => React.createElement('div', { key: i },
+            React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-body)', marginBottom: 5 } }, React.createElement('span', null, d[0]), React.createElement('span', { style: { fontFamily: 'var(--font-mono)', color: 'var(--text-faint)' } }, d[1] + '%')),
+            React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' } }, React.createElement('div', { style: { height: '100%', width: d[1] + '%', borderRadius: 4, background: d[2], boxShadow: `0 0 8px ${d[2]}` } }))))))
+    )
+  );
+}
+window.Akasha = Akasha;

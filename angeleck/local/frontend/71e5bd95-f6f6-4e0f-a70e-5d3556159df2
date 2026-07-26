@@ -1,0 +1,39 @@
+/* global React, Icon, Avatar, AgentPortrait, Badge, Button, GlassCard, Eyebrow, SectionLabel, AOS_AGENTS */
+function AgentsCenter({ onTalk, onCall, onCreate }) {
+  const all = AOS_AGENTS.filter(a => !a.elite);
+  const [q, setQ] = React.useState('');
+  const statuses = ['active', 'idle', 'idle', 'active', 'idle', 'idle', 'active', 'idle', 'idle', 'idle'];
+  const list = all.filter(a => (a.name + a.role + a.domain).toLowerCase().includes(q.toLowerCase()));
+
+  return React.createElement('div', { className: 'aos-scroll', style: { flex: 1, padding: '26px 30px', width: '100%' } },
+    React.createElement('div', { className: 'aos-rise', style: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, marginBottom: 22 } },
+      React.createElement('div', null,
+        React.createElement(Eyebrow, null, 'Centre des agents'),
+        React.createElement('h1', { className: 'aos-h-view', style: { margin: '8px 0 0' } }, 'Le réseau d\'experts'),
+        React.createElement('p', { style: { margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 14 } }, '10 spécialistes autonomes, coordonnés par Raphaël.')),
+      React.createElement('div', { style: { display: 'flex', gap: 10, alignItems: 'center' } },
+        React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 8, height: 40, padding: '0 14px', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', borderRadius: 'var(--r-md)' } },
+          React.createElement(Icon, { name: 'search', size: 16, color: 'var(--text-muted)' }),
+          React.createElement('input', { value: q, onChange: e => setQ(e.target.value), placeholder: 'Rechercher un agent…', style: { background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-strong)', fontFamily: 'var(--font-sans)', fontSize: 13, width: 150 } })),
+        React.createElement(Button, { variant: 'elite', iconLeft: React.createElement(Icon, { name: 'userPlus', size: 16, color: '#2A1E05' }), onClick: () => onCreate && onCreate() }, 'Créer un agent'))),
+
+    React.createElement('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 } },
+      list.map((a, i) => React.createElement(GlassCard, { key: a.id, interactive: true, padding: 18, style: { animation: `aos-rise var(--dur-slow) var(--ease-out) ${i * 0.04}s both` } },
+        React.createElement('div', { style: { display: 'flex', gap: 14, alignItems: 'flex-start' } },
+          React.createElement(AgentPortrait, { cfg: a.portrait, color: a.color, status: statuses[i], size: 58 }),
+          React.createElement('div', { style: { flex: 1, minWidth: 0 } },
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 } },
+              React.createElement('span', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 17, color: 'var(--text-strong)' } }, a.name),
+              React.createElement('span', { style: { display: 'inline-flex', alignItems: 'center', gap: 5 } },
+                React.createElement('span', { style: { width: 6, height: 6, borderRadius: '50%', background: statuses[i] === 'active' ? a.color : 'var(--text-faint)', boxShadow: statuses[i] === 'active' ? `0 0 6px ${a.color}` : 'none' } }),
+                React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, color: statuses[i] === 'active' ? a.color : 'var(--text-faint)' } }, statuses[i] === 'active' ? 'ACTIF' : 'VEILLE'))),
+            React.createElement('div', { style: { fontSize: 12, color: a.color, fontWeight: 600, marginTop: 1 } }, a.role))),
+        React.createElement('p', { style: { margin: '14px 0 0', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, minHeight: 38 } }, a.blurb),
+        React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border-hairline)' } },
+          React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-faint)' } }, a.tasks + ' tâches · ' + a.domain),
+          React.createElement('div', { style: { display: 'flex', gap: 6 } },
+            React.createElement(Button, { variant: 'ghost', size: 'sm', onClick: () => onCall && onCall(a), iconLeft: React.createElement(Icon, { name: 'phone', size: 15, color: 'var(--text-muted)' }), style: { color: 'var(--text-muted)', padding: '0 10px' }, title: 'Appel audio' }),
+            React.createElement(Button, { variant: 'ghost', size: 'sm', onClick: () => onTalk && onTalk(a), iconLeft: React.createElement(Icon, { name: 'message', size: 15, color: 'var(--diamond-400)' }), style: { color: 'var(--diamond-400)' } }, 'Parler'))))))
+  );
+}
+window.AgentsCenter = AgentsCenter;

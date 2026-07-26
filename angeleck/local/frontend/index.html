@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Angeleck OS — Command Center</title>
+  
+  <style>/* ============================================================
+   ANGELECK OS — Design System
+   Powered by EMK Blue Diamond
+   ------------------------------------------------------------
+   Global entry point. Consumers link THIS one file.
+   Keep this as a list of @import lines only.
+   ============================================================ */
+/* ============================================================
+   ANGELECK OS — Webfonts
+   Display:  Space Grotesk  (technological, faceted, distinctive)
+   UI/Body:  Manrope        (premium neutral — NOT Inter)
+   Mono:     JetBrains Mono (data, tickers, system readouts)
+   Loaded via Google Fonts. To self-host, replace this @import
+   with @font-face rules pointing at /fonts/*.woff2.
+   ============================================================ */
+/* cyrillic-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("11995af4-8e0c-414f-b5e3-21bd6a58a439") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("c9bf8024-cc6a-49d3-acfb-5b999293ce50") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("da425762-994f-459f-96aa-f1445ef59ec3") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("cf57675f-e5ec-4ea9-ab26-7b5ec04a3ba8") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("f6e341e7-65aa-4b81-87ac-a57badf2e40c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("25ff9159-f72d-453b-8ba2-438c7cf485d9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("11995af4-8e0c-414f-b5e3-21bd6a58a439") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("c9bf8024-cc6a-49d3-acfb-5b999293ce50") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("da425762-994f-459f-96aa-f1445ef59ec3") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("cf57675f-e5ec-4ea9-ab26-7b5ec04a3ba8") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("f6e341e7-65aa-4b81-87ac-a57badf2e40c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("25ff9159-f72d-453b-8ba2-438c7cf485d9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("11995af4-8e0c-414f-b5e3-21bd6a58a439") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("c9bf8024-cc6a-49d3-acfb-5b999293ce50") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("da425762-994f-459f-96aa-f1445ef59ec3") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("cf57675f-e5ec-4ea9-ab26-7b5ec04a3ba8") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("f6e341e7-65aa-4b81-87ac-a57badf2e40c") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("25ff9159-f72d-453b-8ba2-438c7cf485d9") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("6b03dca8-60c7-4843-a19d-0bfd8e62498a") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("30ed1f2b-f28f-4757-aaf2-eb7b05eaae3c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("be39c351-5190-416c-9100-d167c305db01") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("dbda45de-a99d-42b4-a076-84720ef15108") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("5d22de35-2481-4df1-b5ac-7f2ea1fd6067") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("d0a04541-880d-4a79-9719-ed2277d7f8fb") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("6b03dca8-60c7-4843-a19d-0bfd8e62498a") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("30ed1f2b-f28f-4757-aaf2-eb7b05eaae3c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("be39c351-5190-416c-9100-d167c305db01") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("dbda45de-a99d-42b4-a076-84720ef15108") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("5d22de35-2481-4df1-b5ac-7f2ea1fd6067") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("d0a04541-880d-4a79-9719-ed2277d7f8fb") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("6b03dca8-60c7-4843-a19d-0bfd8e62498a") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("30ed1f2b-f28f-4757-aaf2-eb7b05eaae3c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("be39c351-5190-416c-9100-d167c305db01") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("dbda45de-a99d-42b4-a076-84720ef15108") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("5d22de35-2481-4df1-b5ac-7f2ea1fd6067") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("d0a04541-880d-4a79-9719-ed2277d7f8fb") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("6b03dca8-60c7-4843-a19d-0bfd8e62498a") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("30ed1f2b-f28f-4757-aaf2-eb7b05eaae3c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("be39c351-5190-416c-9100-d167c305db01") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("dbda45de-a99d-42b4-a076-84720ef15108") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("5d22de35-2481-4df1-b5ac-7f2ea1fd6067") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("d0a04541-880d-4a79-9719-ed2277d7f8fb") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("6b03dca8-60c7-4843-a19d-0bfd8e62498a") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("30ed1f2b-f28f-4757-aaf2-eb7b05eaae3c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("be39c351-5190-416c-9100-d167c305db01") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("dbda45de-a99d-42b4-a076-84720ef15108") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("5d22de35-2481-4df1-b5ac-7f2ea1fd6067") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("d0a04541-880d-4a79-9719-ed2277d7f8fb") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("6b03dca8-60c7-4843-a19d-0bfd8e62498a") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("30ed1f2b-f28f-4757-aaf2-eb7b05eaae3c") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("be39c351-5190-416c-9100-d167c305db01") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("dbda45de-a99d-42b4-a076-84720ef15108") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("5d22de35-2481-4df1-b5ac-7f2ea1fd6067") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("d0a04541-880d-4a79-9719-ed2277d7f8fb") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("b14730c0-09fc-4b29-92ea-4da8bc7e20cd") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("02a061f0-a97d-4067-a889-94b866b5493d") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("0234247d-8486-44a8-aa3e-84c27ba9c581") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("b14730c0-09fc-4b29-92ea-4da8bc7e20cd") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("02a061f0-a97d-4067-a889-94b866b5493d") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("0234247d-8486-44a8-aa3e-84c27ba9c581") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("b14730c0-09fc-4b29-92ea-4da8bc7e20cd") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("02a061f0-a97d-4067-a889-94b866b5493d") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("0234247d-8486-44a8-aa3e-84c27ba9c581") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("b14730c0-09fc-4b29-92ea-4da8bc7e20cd") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("02a061f0-a97d-4067-a889-94b866b5493d") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("0234247d-8486-44a8-aa3e-84c27ba9c581") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+/* ============================================================
+   ANGELECK OS — Color System
+   "Un diamant numérique intelligent."
+   Premium black · deep sapphire · diamond blue · crystal · gold
+   ============================================================ */
+:root {
+  /* ---- Premium blacks & surfaces (the obsidian stage) ---- */
+  --ink-1000: #03050C;   /* deepest void */
+  --ink-900:  #060A15;   /* app background */
+  --ink-850:  #090F1F;   /* sunken panels */
+  --ink-800:  #0D1426;   /* raised surface */
+  --ink-750:  #111A30;   /* hover surface */
+  --ink-700:  #16213B;   /* hairline / divider base */
+
+  /* ---- Deep sapphire (EMK Blue Diamond depth) ---- */
+  --sapphire-800: #08193A;
+  --sapphire-700: #0B2150;
+  --sapphire-600: #123069;
+  --sapphire-500: #1B4488;
+
+  /* ---- Diamond blue — the signature accent ramp ---- */
+  --diamond-700: #1E63C4;
+  --diamond-600: #2E7BE0;
+  --diamond-500: #4DA3FF;   /* PRIMARY brand blue */
+  --diamond-400: #74BBFF;
+  --diamond-300: #9FD2FF;
+  --ice-200:     #CDE7FF;
+  --ice-100:     #E6F2FF;
+
+  /* ---- Crystal / platinum (text on dark) ---- */
+  --crystal-50:   #EAF3FF;  /* primary headline */
+  --platinum-100: #D4E1F4;
+  --platinum-200: #AFC0DC;  /* secondary text */
+  --platinum-300: #7E91B2;  /* muted text */
+  --platinum-400: #546484;  /* faint / disabled */
+  --platinum-500: #364663;  /* hairline on dark */
+
+  /* ---- Champagne gold (elite / orchestrator accent) ---- */
+  --gold-300: #F2DDA8;
+  --gold-400: #E7CD93;
+  --gold-500: #D4B36A;
+
+  /* ---- Discreet holographic spectrum (gradients only) ---- */
+  --holo-blue: #4DA3FF;
+  --holo-aqua: #57E6E0;
+  --holo-peri: #8FA0FF;
+
+  /* ---- Semantic ---- */
+  --success: #3DDC97;
+  --success-soft: rgba(61,220,151,0.14);
+  --danger:  #FF6B81;
+  --danger-soft: rgba(255,107,129,0.14);
+  --warning: #E7CD93;
+  --warning-soft: rgba(231,205,147,0.14);
+  --info:    #4DA3FF;
+  --info-soft: rgba(77,163,255,0.14);
+
+  /* ---- Agent identity colors (holographic constellation) ---- */
+  --agent-raphael: #E7CD93;  /* central — gold halo */
+  --agent-sofia:   #4DA3FF;  /* Business    — diamond blue */
+  --agent-maya:    #FF6FA5;  /* Marketing   — rose */
+  --agent-nathan:  #3DDC97;  /* Copywriting — emerald */
+  --agent-elena:   #C9A2FF;  /* Création    — soft violet */
+  --agent-lucas:   #2FD6C3;  /* E-commerce  — teal */
+  --agent-gabriel: #5B8CFF;  /* Technologie — indigo */
+  --agent-emma:    #57E6E0;  /* Data        — aqua */
+  --agent-adam:    #E7CD93;  /* Finance     — gold */
+  --agent-noah:    #FF9E5C;  /* Média       — amber */
+  --agent-lea:     #FF6B81;  /* Sécurité    — red */
+
+  /* ======================================================
+     SEMANTIC ALIASES — use these in product UI
+     ====================================================== */
+  --bg-app:         var(--ink-900);
+  --bg-void:        var(--ink-1000);
+  --surface-sunken: var(--ink-850);
+  --surface-card:   var(--ink-800);
+  --surface-raised: var(--ink-750);
+
+  --text-strong:  var(--crystal-50);
+  --text-body:    var(--platinum-100);
+  --text-muted:   var(--platinum-300);
+  --text-faint:   var(--platinum-400);
+  --text-accent:  var(--diamond-400);
+
+  --border-hairline: rgba(150,190,255,0.10);
+  --border-soft:     rgba(150,190,255,0.16);
+  --border-strong:   rgba(150,190,255,0.28);
+  --border-accent:   rgba(77,163,255,0.45);
+
+  --accent:       var(--diamond-500);
+  --accent-hover: var(--diamond-400);
+  --accent-press: var(--diamond-600);
+  --accent-elite: var(--gold-400);
+
+  /* glass fills (paired with backdrop-blur in effects.css) */
+  --glass-fill:        rgba(180,210,255,0.04);
+  --glass-fill-strong: rgba(180,210,255,0.07);
+  --glass-fill-bright: rgba(180,210,255,0.10);
+}
+
+/* ============================================================
+   ANGELECK OS — Typography
+   Space Grotesk (display) · Manrope (UI/body) · JetBrains Mono (data)
+   ============================================================ */
+:root {
+  /* ---- Families ---- */
+  --font-display: 'Space Grotesk', 'Manrope', system-ui, sans-serif;
+  --font-sans:    'Manrope', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ---- Weights ---- */
+  --fw-light:    300; /* @kind font */
+  --fw-regular:  400; /* @kind font */
+  --fw-medium:   500; /* @kind font */
+  --fw-semibold: 600; /* @kind font */
+  --fw-bold:     700; /* @kind font */
+  --fw-black:    800; /* @kind font */
+
+  /* ---- Type scale (display = Space Grotesk) ---- */
+  --text-display-xl: 64px;  /* hero product launch */
+  --text-display-l:  48px;
+  --text-display-m:  36px;
+  --text-h1: 28px;
+  --text-h2: 22px;
+  --text-h3: 18px;
+  --text-body-lg: 16px;
+  --text-body:    14px;
+  --text-sm:      13px;
+  --text-xs:      11px;
+  --text-2xs:     9px;     /* micro labels / system readouts */
+
+  /* ---- Line heights ---- */
+  --lh-tight:   1.08; /* @kind font */
+  --lh-snug:    1.25; /* @kind font */
+  --lh-normal:  1.5; /* @kind font */
+  --lh-relaxed: 1.65; /* @kind font */
+
+  /* ---- Tracking ---- */
+  --ls-tight:  -0.02em; /* @kind font */
+  --ls-normal: 0; /* @kind font */
+  --ls-wide:   0.06em; /* @kind font */
+  --ls-eyebrow: 0.18em; /* @kind font */
+}
+
+/* ---- Optional utility classes (semantic helpers) ---- */
+.aos-display { font-family: var(--font-display); font-weight: var(--fw-bold); letter-spacing: var(--ls-tight); line-height: var(--lh-tight); color: var(--text-strong); }
+.aos-eyebrow { font-family: var(--font-mono); font-size: var(--text-2xs); letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--text-muted); }
+.aos-mono    { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   ANGELECK OS — Spacing, sizing & radii
+   4px base grid. Generous, calm, control-center density.
+   ============================================================ */
+:root {
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 112px;
+
+  /* ---- Radii (crystalline, softly faceted) ---- */
+  --r-xs:   6px;
+  --r-sm:   10px;
+  --r-md:   14px;
+  --r-lg:   18px;
+  --r-xl:   24px;
+  --r-2xl:  32px;
+  --r-pill: 999px;
+
+  /* ---- Control sizing ---- */
+  --control-sm: 32px;
+  --control-md: 40px;
+  --control-lg: 48px;
+
+  /* ---- Layout ---- */
+  --topbar-h:     56px;
+  --sidebar-w:    248px;
+  --rail-w:       72px;
+  --container-max: 1400px;
+}
+
+/* ============================================================
+   ANGELECK OS — Effects: glass, glow, shadow, motion
+   The crystalline / holographic depth lives here.
+   ============================================================ */
+:root {
+  /* ---- Elevation shadows (deep, soft, on black) ---- */
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.45);
+  --shadow-md:   0 8px 24px rgba(0,0,0,0.50);
+  --shadow-lg:   0 24px 60px -20px rgba(0,0,0,0.75);
+  --shadow-xl:   0 40px 100px -30px rgba(0,0,0,0.85);
+
+  /* ---- Diamond glow (accent halos) ---- */
+  --glow-diamond:    0 0 24px rgba(77,163,255,0.35);
+  --glow-diamond-lg: 0 0 48px rgba(77,163,255,0.45), 0 0 90px rgba(77,163,255,0.18);
+  --glow-gold:       0 0 28px rgba(231,205,147,0.40);
+  --glow-soft:       0 0 0 1px rgba(150,190,255,0.10), 0 10px 40px -12px rgba(13,40,100,0.6);
+
+  /* ---- Inner crystal highlight (top edge sheen) ---- */
+  --sheen-top: inset 0 1px 0 rgba(255,255,255,0.06); /* @kind shadow */
+  --sheen-card: inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 24px rgba(77,163,255,0.04); /* @kind shadow */
+
+  /* ---- Glass blur ---- */
+  --blur-sm: 10px; /* @kind other */
+  --blur-md: 18px; /* @kind other */
+  --blur-lg: 28px; /* @kind other */
+
+  /* ---- Composed glass surface (use as a set) ---- */
+  --glass-border: 1px solid var(--border-soft);
+
+  /* ---- Gradients ---- */
+  --grad-diamond:  linear-gradient(135deg, #4DA3FF 0%, #2E7BE0 100%); /* @kind color */
+  --grad-diamond-soft: linear-gradient(135deg, rgba(77,163,255,0.22), rgba(46,123,224,0.10)); /* @kind color */
+  --grad-holo:     linear-gradient(120deg, #4DA3FF 0%, #57E6E0 45%, #8FA0FF 100%); /* @kind color */
+  --grad-elite:    linear-gradient(135deg, #F2DDA8 0%, #D4B36A 100%); /* @kind color */
+  --grad-stage:    radial-gradient(1200px 700px at 50% -10%, rgba(27,68,136,0.35), transparent 60%), radial-gradient(900px 600px at 100% 110%, rgba(46,123,224,0.16), transparent 55%); /* @kind color */
+  --grad-facet:    conic-gradient(from 210deg at 50% 50%, #2E7BE0, #4DA3FF, #9FD2FF, #4DA3FF, #2E7BE0); /* @kind color */
+
+  /* ---- Motion ---- */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+  --dur-fast:   140ms; /* @kind other */
+  --dur-med:    240ms; /* @kind other */
+  --dur-slow:   420ms; /* @kind other */
+}
+
+/* ---- Reusable glass surface helper ---- */
+.aos-glass {
+  background: var(--glass-fill);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--sheen-card);
+}
+.aos-glass-strong {
+  background: var(--glass-fill-strong);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--sheen-card), var(--shadow-md);
+}
+
+/* ============================================================
+   ANGELECK OS — Base reset & document defaults
+   ============================================================ */
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-normal);
+  color: var(--text-body);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+  color: var(--text-strong);
+  margin: 0;
+}
+
+::selection { background: rgba(77,163,255,0.30); color: var(--crystal-50); }
+
+/* Thin crystalline scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(120,160,220,0.18); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(120,160,220,0.30); }
+::-webkit-scrollbar-track { background: transparent; }
+
+a { color: var(--diamond-400); text-decoration: none; }
+
+</style>
+  <style>/* ============================================================
+   Angeleck OS — UI Kit layout & motion
+   Composes the design-system tokens (styles.css). Only
+   kit-specific layout / animation lives here.
+   ============================================================ */
+
+:root { --panel-tint: rgba(6,10,21,0.40); --rail-bg: rgba(6,10,21,0.60); --top-bg: rgba(6,10,21,0.82); }
+
+.aos-app {
+  position: fixed; inset: 0;
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-areas: "top top" "rail main";
+  background: var(--bg-void);
+  overflow: hidden;
+}
+.aos-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.aos-bg-aurora { position: absolute; inset: 0;
+  background:
+    radial-gradient(900px 520px at 18% -8%, rgba(77,163,255,0.22), transparent 60%),
+    radial-gradient(760px 460px at 96% 116%, rgba(46,123,224,0.16), transparent 55%),
+    radial-gradient(560px 420px at 60% 50%, rgba(87,230,224,0.06), transparent 60%);
+}
+.aos-bg-grid { position: absolute; inset: 0; opacity: 0.6;
+  background-image:
+    linear-gradient(rgba(120,160,220,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,160,220,0.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(circle at 50% 30%, #000 25%, transparent 78%);
+}
+
+/* ---- Topbar ---- */
+.aos-top { grid-area: top; z-index: 50;
+  display: flex; align-items: center; gap: 16px; padding: 0 18px;
+  background: var(--top-bg); backdrop-filter: blur(22px);
+  border-bottom: 1px solid var(--border-hairline); }
+
+/* ---- Left rail ---- */
+.aos-rail { grid-area: rail; z-index: 40;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 16px 0; background: var(--rail-bg); backdrop-filter: blur(18px);
+  border-right: 1px solid var(--border-hairline); }
+
+/* ---- Rail create-agent button (Genesis) ---- */
+.aos-rail-create { position: relative; width: 46px; height: 46px; border-radius: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  background: var(--grad-diamond); border: 1px solid rgba(140,190,255,0.6);
+  box-shadow: 0 6px 18px -6px rgba(46,123,224,0.7), var(--glow-diamond), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-med) var(--ease-out); }
+.aos-rail-create::after { content: ""; position: absolute; inset: -4px; border-radius: 18px; pointer-events: none;
+  background: radial-gradient(circle, rgba(77,163,255,0.35), transparent 70%); opacity: 0; transition: opacity var(--dur-med); }
+.aos-rail-create:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -6px rgba(46,123,224,0.85), var(--glow-diamond-lg); }
+.aos-rail-create:hover::after { opacity: 1; }
+.aos-rail-create.active { box-shadow: 0 0 0 2px var(--diamond-400), 0 10px 26px -6px rgba(46,123,224,0.85), var(--glow-diamond-lg); }
+.aos-rail-create .spark { position: absolute; top: 6px; right: 6px; width: 5px; height: 5px; }
+.aos-rail-tip { position: absolute; left: 60px; top: 50%; transform: translateY(-50%) translateX(-6px);
+  white-space: nowrap; padding: 5px 10px; border-radius: 8px; font-family: var(--font-sans); font-size: 11.5px; font-weight: 600;
+  background: var(--surface-raised); color: var(--text-strong); border: 1px solid var(--border-soft); box-shadow: var(--shadow-md);
+  opacity: 0; pointer-events: none; transition: opacity var(--dur-fast), transform var(--dur-fast); z-index: 60; }
+.aos-rail-create:hover .aos-rail-tip { opacity: 1; transform: translateY(-50%) translateX(0); }
+.aos-rail-btn { position: relative; width: 44px; height: 44px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  color: var(--text-muted); border: 1px solid transparent; background: transparent;
+  transition: all var(--dur-fast) var(--ease-out); }
+.aos-rail-btn:hover { color: var(--text-strong); background: var(--glass-fill); }
+.aos-rail-btn.active { color: var(--diamond-400); background: var(--glass-fill-strong);
+  border-color: var(--border-accent); box-shadow: var(--glow-diamond); }
+.aos-rail-btn.active::before { content: ""; position: absolute; left: -16px; top: 12px; bottom: 12px;
+  width: 3px; border-radius: 3px; background: var(--grad-diamond); box-shadow: var(--glow-diamond); }
+
+/* ---- Main scroll area ---- */
+.aos-main { grid-area: main; z-index: 10; position: relative; overflow: hidden; display: flex; }
+
+/* ---- Ticker ---- */
+.aos-ticker { flex: 1; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.aos-ticker-inner { display: inline-flex; gap: 28px; white-space: nowrap; animation: aos-ticker 38s linear infinite; }
+@keyframes aos-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ---- Orbit (dashboard) ---- */
+@keyframes aos-orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes aos-orbit-rev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+@keyframes aos-spin { to { transform: rotate(360deg); } }
+@keyframes aos-pulse { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(1.6); opacity: 0; } }
+@keyframes aos-breathe { 0%,100% { opacity: .55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+@keyframes aos-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes aos-blink { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes aos-dash { to { stroke-dashoffset: -1000; } }
+
+.aos-rise { animation: aos-rise var(--dur-slow) var(--ease-out) both; }
+
+/* ---- Scroll regions ---- */
+.aos-scroll { overflow-y: auto; overflow-x: hidden; }
+.aos-scroll::-webkit-scrollbar { width: 7px; }
+.aos-scroll::-webkit-scrollbar-thumb { background: rgba(120,160,220,0.18); border-radius: 999px; }
+
+/* ---- Typing dots ---- */
+.aos-typing span { display:inline-block; width:6px; height:6px; border-radius:50%; background: var(--diamond-400); animation: aos-td 1.2s infinite; }
+.aos-typing span:nth-child(2){ animation-delay:.18s } .aos-typing span:nth-child(3){ animation-delay:.36s }
+@keyframes aos-td { 0%,80%,100%{ transform:scale(.6); opacity:.4 } 40%{ transform:scale(1); opacity:1 } }
+
+/* ---- Audio call ---- */
+@keyframes aos-wave { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+@keyframes aos-ring-out { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(1.9); opacity: 0; } }
+@keyframes aos-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes aos-pop-in { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes aos-drawer-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+.aos-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--bg-void) 72%, transparent); backdrop-filter: blur(10px); animation: aos-overlay-in var(--dur-med) var(--ease-out); }
+.aos-wavebar { width: 4px; border-radius: 4px; transform-origin: center; animation: aos-wave 0.9s var(--ease-inout) infinite; }
+
+.aos-eyebrow { font-family: var(--font-mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); }
+.aos-h-view { font-family: var(--font-display); font-weight: 700; font-size: 24px; letter-spacing: -.015em; color: var(--text-strong); }
+</style>
+  <style>/* ============================================================
+   ANGELECK OS — Light theme ("blanc sale" premium)
+   Activated via <html data-theme="light">. Overrides the
+   semantic token layer + kit surfaces. Keeps diamond blue &
+   gold accents; portraits keep their own dark vignette.
+   ============================================================ */
+[data-theme="light"] {
+  /* warm off-white stage — softened so large surfaces don't glare */
+  --ink-1000: #DAD3C5;
+  --ink-900:  #E7E1D5;
+  --ink-850:  #EEE9DE;
+  --ink-800:  #F6F2EA;
+  --ink-750:  #F1ECE1;
+  --ink-700:  #E3DCCE;
+
+  --bg-app:         #E7E1D5;
+  --bg-void:        #E1DACC;
+  --surface-sunken: #EDE8DD;
+  --surface-card:   #F6F2EA;
+  --surface-raised: #FAF7F0;
+
+  /* ink-on-paper text — deep sapphire family */
+  --crystal-50:   #11203A;
+  --platinum-100: #1E2E45;
+  --platinum-200: #3A4A63;
+  --platinum-300: #5C6A80;
+  --platinum-400: #707C90;
+  --platinum-500: #B7BEC8;
+
+  --text-strong:  #11203A;
+  --text-body:    #24344B;
+  --text-muted:   #5C6A80;
+  --text-faint:   #707C90;
+  --text-accent:  #2E7BE0;
+
+  /* slightly darker accents so they hold on white */
+  --diamond-500: #2E7BE0;
+  --diamond-400: #4DA3FF;
+  --diamond-300: #2E7BE0;
+
+  /* gold needs to darken to read on paper */
+  --gold-300: #C79A3C;
+  --gold-400: #B0862E;
+  --gold-500: #997322;
+
+  --border-hairline: rgba(24,44,82,0.09);
+  --border-soft:     rgba(24,44,82,0.14);
+  --border-strong:   rgba(24,44,82,0.24);
+  --border-accent:   rgba(46,123,224,0.42);
+
+  --accent:       #2E7BE0;
+  --accent-hover: #4DA3FF;
+  --accent-press: #1E63C4;
+
+  /* frosted off-white glass on paper — never pure #FFF (cuts glare) */
+  --glass-fill:        rgba(252,250,244,0.55);
+  --glass-fill-strong: rgba(250,247,239,0.72);
+  --glass-fill-bright: rgba(249,246,238,0.88);
+
+  /* soft, cool, low shadows */
+  --shadow-sm:   0 1px 4px rgba(30,52,96,0.07);
+  --shadow-md:   0 8px 24px -10px rgba(30,52,96,0.16);
+  --shadow-lg:   0 24px 50px -22px rgba(30,52,96,0.24);
+  --shadow-xl:   0 40px 90px -34px rgba(30,52,96,0.30);
+
+  --glow-diamond:    0 0 20px rgba(77,163,255,0.22);
+  --glow-diamond-lg: 0 0 36px rgba(77,163,255,0.28), 0 0 70px rgba(77,163,255,0.12);
+  --glow-gold:       0 0 22px rgba(212,179,106,0.30);
+  --glow-soft:       0 0 0 1px rgba(24,44,82,0.06), 0 12px 36px -16px rgba(30,52,96,0.30);
+
+  --sheen-top:  inset 0 1px 0 rgba(255,255,255,0.55);
+  --sheen-card: inset 0 1px 0 rgba(255,255,255,0.45);
+
+  /* kit surface tints */
+  --panel-tint: rgba(250,247,239,0.50);
+  --rail-bg:    rgba(244,240,232,0.78);
+  --top-bg:     rgba(244,240,232,0.85);
+}
+
+/* Aurora & grid: quiet on paper */
+[data-theme="light"] .aos-bg-aurora {
+  background:
+    radial-gradient(900px 520px at 16% -10%, rgba(77,163,255,0.12), transparent 60%),
+    radial-gradient(760px 460px at 98% 116%, rgba(46,123,224,0.08), transparent 55%),
+    radial-gradient(620px 460px at 64% 44%, rgba(212,179,106,0.06), transparent 62%);
+}
+[data-theme="light"] .aos-bg-grid {
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(40,70,120,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40,70,120,0.05) 1px, transparent 1px);
+}
+[data-theme="light"] .aos-scroll::-webkit-scrollbar-thumb { background: rgba(40,70,120,0.18); }
+
+/* progress-track + faint fills authored as white-on-dark → flip to ink-on-light */
+[data-theme="light"] [style*="rgba(255,255,255,0.06)"] { background: rgba(24,44,82,0.08) !important; }
+
+/* Akasha in light theme: tame the neon glow on the white memory cards / bars
+   so they don't glare. The constellation card is a dark night-sky (inline) and
+   keeps its glow by design. */
+[data-theme="light"] .aos-akasha [style*="0 0 6px"],
+[data-theme="light"] .aos-akasha [style*="0 0 8px"] { box-shadow: none !important; }
+</style>
+  <style>
+    html, body { margin: 0; height: 100%; background: var(--ink-1000); }
+    #root { height: 100%; }
+    .aos-logo { display: flex; align-items: center; gap: 11px; }
+    .aos-logo svg { width: 30px; height: 30px; filter: drop-shadow(0 0 8px rgba(77,163,255,0.5)); }
+    .aos-logo .wm { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: -.01em; color: var(--text-strong); line-height: 1; }
+    .aos-logo .sig { font-family: var(--font-mono); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-400); margin-top: 3px; }
+  </style>
+</head>
+<body>
+  
+  <div id="root"></div>
+
+  <script>/* assets deballes : carte des ressources nominatives */window.__resources = { brandIcon: "48e8a430-ee50-4259-8265-7ff1c8461cfd" };</script>
+  <script src="8916a0a5-bc70-4bf7-88d7-99443f90ddca" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="c244f616-c9d2-40cc-adde-0ee97ef4c5c9" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="a77db246-e330-4a3a-8602-8941f0319b7f" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="19fe21fa-4364-4071-8331-d2c80a27e0f4"></script>
+  <script type="text/babel" src="d80585e9-a6cf-4dab-8115-13cb9c128e8d"></script>
+  <script type="text/babel" src="d9a8f6de-ce03-4520-9803-f87e36243a78"></script>
+  <script type="text/babel" src="e07488e3-9bac-403e-b439-71a8d212080e"></script>
+  <script type="text/babel" src="71e5bd95-f6f6-4e0f-a70e-5d3556159df2"></script>
+  <script type="text/babel" src="eea9f86f-0dcb-400a-a3a0-8ee0bcc4c6c1"></script>
+  <script type="text/babel" src="bd3e205b-6208-4c8f-982c-f39833f97530"></script>
+  <script type="text/babel" src="d44f4c9b-e766-4d52-aec1-a4afab7a075f"></script>
+  <script type="text/babel" src="62768cf7-d5e9-4ac7-a2c8-c36b21a7ae07"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+    const NAV = [
+      { id: 'dashboard', icon: 'command', label: 'Commandement' },
+      { id: 'conversation', icon: 'message', label: 'Raphaël' },
+      { id: 'agents', icon: 'network', label: 'Agents' },
+      { id: 'akasha', icon: 'akasha', label: 'Akasha' },
+    ];
+
+    /* ---- accent remap helpers ---- */
+    function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
+    function shade(hex, amt) {
+      const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return hex;
+      const n = parseInt(m[1], 16); let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+      if (amt >= 0) { r += (255 - r) * amt; g += (255 - g) * amt; b += (255 - b) * amt; }
+      else { r *= (1 + amt); g *= (1 + amt); b *= (1 + amt); }
+      return '#' + [r, g, b].map(v => clamp(v).toString(16).padStart(2, '0')).join('');
+    }
+    function applyAccent(hex) {
+      const root = document.documentElement.style;
+      if (!hex) { ['--diamond-500','--diamond-400','--diamond-600','--diamond-700','--accent','--border-accent','--info-soft','--glow-diamond','--grad-diamond'].forEach(p => root.removeProperty(p)); return; }
+      const lt = shade(hex, 0.30), dk = shade(hex, -0.22), dk2 = shade(hex, -0.38);
+      root.setProperty('--diamond-500', hex);
+      root.setProperty('--diamond-400', lt);
+      root.setProperty('--diamond-600', dk);
+      root.setProperty('--diamond-700', dk2);
+      root.setProperty('--accent', hex);
+      root.setProperty('--text-accent', lt);
+      root.setProperty('--border-accent', hex + '73');
+      root.setProperty('--info-soft', hex + '24');
+      root.setProperty('--glow-diamond', '0 0 24px ' + hex + '5a');
+      root.setProperty('--grad-diamond', 'linear-gradient(135deg, ' + lt + ' 0%, ' + dk + ' 100%)');
+    }
+
+    const LS = window.localStorage;
+    function App() {
+      const [view, setView] = useState('dashboard');
+      const [seed, setSeed] = useState(null);
+      const [callAgent, setCallAgent] = useState(null);
+      const [settingsOpen, setSettingsOpen] = useState(false);
+      const [notifOpen, setNotifOpen] = useState(false);
+      const [notifs, setNotifs] = useState(() => (window.AOS_NOTIFICATIONS || []).map(n => ({ ...n })));
+      const unread = notifs.filter(n => !n.read).length;
+      const [theme, setThemeState] = useState(() => LS.getItem('aos-theme') || 'dark');
+      const [accent, setAccentState] = useState(() => LS.getItem('aos-accent') || '#4DA3FF');
+      window.__aosTheme = theme; /* sync, before children render → aosInk reads fresh value */
+
+      React.useEffect(() => { document.documentElement.setAttribute('data-theme', theme); LS.setItem('aos-theme', theme); }, [theme]);
+      React.useEffect(() => { applyAccent(accent); LS.setItem('aos-accent', accent || ''); }, [accent]);
+
+      const talk = (agent) => { setSeed(agent || null); setView('conversation'); };
+      const call = (agent) => setCallAgent(agent || (window.AOS_AGENTS.find(a => a.elite)));
+
+      const main = view === 'dashboard' ? React.createElement(Dashboard, { onTalk: talk, onCall: call })
+        : view === 'conversation' ? React.createElement(Conversation, { seedAgent: seed, onCall: call })
+        : view === 'agents' ? React.createElement(AgentsCenter, { onTalk: talk, onCall: call, onCreate: () => setView('genesis') })
+        : view === 'genesis' ? React.createElement(Genesis, { onTalk: talk })
+        : React.createElement(Akasha, null);
+
+      return React.createElement('div', { className: 'aos-app' },
+        React.createElement('div', { className: 'aos-bg' },
+          React.createElement('div', { className: 'aos-bg-aurora' }),
+          React.createElement('div', { className: 'aos-bg-grid' })),
+
+        /* topbar */
+        React.createElement('div', { className: 'aos-top' },
+          React.createElement('div', { className: 'aos-logo' },
+            React.createElement('img', { src: window.__resources.brandIcon, alt: '', style: { width: 30, height: 30, filter: 'drop-shadow(0 0 8px rgba(77,163,255,0.5))' } }),
+            React.createElement('div', null,
+              React.createElement('div', { className: 'wm' }, 'ANGELECK\u2009OS'),
+              React.createElement('div', { className: 'sig' }, 'Powered by EMK Blue Diamond'))),
+          React.createElement('div', { className: 'aos-ticker' },
+            React.createElement('div', { className: 'aos-ticker-inner' },
+              [...window.AOS_TICKER, ...window.AOS_TICKER].map((t, i) =>
+                React.createElement('span', { key: i, style: { fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)' } },
+                  t.s + '  ',
+                  React.createElement('span', { style: { color: 'var(--text-body)' } }, t.p + ' '),
+                  React.createElement('span', { style: { color: t.c >= 0 ? 'var(--success)' : 'var(--danger)' } }, (t.c >= 0 ? '+' : '') + t.c + '%'))))),
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+            React.createElement(TopBtn, { name: 'phone', label: 'Appel audio', onClick: () => call(), accent: true }),
+            React.createElement(TopBtn, { name: theme === 'dark' ? 'sun' : 'moon', label: 'Th\u00e8me', onClick: () => setThemeState(t => t === 'dark' ? 'light' : 'dark') }),
+            React.createElement(TopBtn, { name: 'bell', label: 'Notifications', badge: unread, onClick: () => setNotifOpen(o => !o) }),
+            React.createElement(TopBtn, { name: 'settings', label: 'R\u00e9glages', onClick: () => setSettingsOpen(true) }),
+            React.createElement(AgentPortrait, { cfg: { id: 'me', skin: 'light', hair: 'crop', hairColor: '#2A1E14', top: '#1A2740' }, color: 'var(--diamond-500)', size: 36 }))),
+
+        /* left rail */
+        React.createElement('div', { className: 'aos-rail' },
+          NAV.map(n => React.createElement('button', {
+            key: n.id, title: n.label, onClick: () => setView(n.id),
+            className: 'aos-rail-btn' + (view === n.id ? ' active' : '') },
+            React.createElement(Icon, { name: n.icon, size: 20 }))),
+          React.createElement('div', { style: { flex: 1 } }),
+          React.createElement('button', { onClick: () => setView('genesis'),
+            className: 'aos-rail-create' + (view === 'genesis' ? ' active' : '') },
+            React.createElement(Icon, { name: 'userPlus', size: 21, color: '#fff' }),
+            React.createElement('svg', { className: 'spark', viewBox: '0 0 12 12', fill: '#fff' }, React.createElement('path', { d: 'M6 0l1 4 4 1-4 1-1 4-1-4-4-1 4-1z' })),
+            React.createElement('span', { className: 'aos-rail-tip' }, 'Cr\u00e9er un agent'))),
+
+        /* main */
+        React.createElement('div', { className: 'aos-main' }, main),
+
+        /* overlays */
+        callAgent && React.createElement(AudioCall, { agent: callAgent, onClose: () => setCallAgent(null) }),
+        notifOpen && React.createElement(NotificationsPanel, { notifs, unread, onClose: () => setNotifOpen(false), onMarkAll: () => setNotifs(ns => ns.map(n => ({ ...n, read: true }))), onRead: (id) => setNotifs(ns => ns.map(n => n.id === id ? { ...n, read: true } : n)) }),
+        React.createElement(Settings, { open: settingsOpen, onClose: () => setSettingsOpen(false), theme, setTheme: setThemeState, accent, setAccent: setAccentState }));
+    }
+
+    function NotificationsPanel({ notifs, unread, onClose, onMarkAll, onRead }) {
+      const [tab, setTab] = useState('all');
+      React.useEffect(() => {
+        const onKey = e => { if (e.key === 'Escape') onClose && onClose(); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+      }, [onClose]);
+      const items = tab === 'unread' ? notifs.filter(n => !n.read) : notifs;
+      return React.createElement('div', { style: { position: 'fixed', inset: 0, zIndex: 70 }, onClick: onClose },
+        React.createElement('div', { onClick: e => e.stopPropagation(), className: 'aos-scroll', style: { position: 'absolute', top: 62, right: 14, width: 'min(382px, 94vw)', maxHeight: 'min(560px, 80vh)', background: 'var(--surface-card)', border: '1px solid var(--border-soft)', borderRadius: 'var(--r-lg)', boxShadow: 'var(--shadow-xl)', padding: '16px 16px 12px', animation: 'aos-rise var(--dur-med) var(--ease-out)' } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 } },
+            React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 9 } },
+              React.createElement('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--text-strong)' } }, 'Notifications'),
+              unread > 0 && React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700, color: '#fff', background: 'var(--danger)', borderRadius: 999, padding: '2px 7px' } }, unread)),
+            React.createElement('button', { onClick: onClose, title: 'Fermer', style: { width: 30, height: 30, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', color: 'var(--text-muted)', cursor: 'pointer' } }, React.createElement(Icon, { name: 'close', size: 15 }))),
+          React.createElement('div', { style: { display: 'flex', gap: 4, padding: 4, background: 'var(--glass-fill)', border: '1px solid var(--border-hairline)', borderRadius: 10, marginBottom: 12 } },
+            [['all', 'Toutes'], ['unread', 'Non lues']].map(([id, lbl]) => { const on = tab === id; return React.createElement('button', { key: id, onClick: () => setTab(id), style: { flex: 1, height: 30, borderRadius: 7, cursor: 'pointer', border: '1px solid ' + (on ? 'var(--border-accent)' : 'transparent'), background: on ? 'var(--glass-fill-bright)' : 'transparent', color: on ? 'var(--text-strong)' : 'var(--text-muted)', fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 600 } }, lbl + (id === 'unread' && unread > 0 ? ' \u00b7 ' + unread : '')); })),
+          React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 7 } },
+            items.length === 0
+              ? React.createElement('div', { style: { textAlign: 'center', padding: '30px 0', color: 'var(--text-faint)', fontSize: 12.5 } }, 'Aucune notification')
+              : items.map(n => React.createElement('button', { key: n.id, onClick: () => onRead(n.id), style: { display: 'flex', gap: 11, textAlign: 'left', padding: '11px 12px', borderRadius: 'var(--r-md)', cursor: 'pointer', background: n.read ? 'transparent' : 'color-mix(in srgb, ' + n.color + ' 9%, transparent)', border: '1px solid ' + (n.read ? 'var(--border-hairline)' : 'color-mix(in srgb, ' + n.color + ' 35%, transparent)') } },
+                  React.createElement('span', { style: { position: 'relative', width: 34, height: 34, flexShrink: 0, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'color-mix(in srgb, ' + n.color + ' 16%, transparent)', border: '1px solid color-mix(in srgb, ' + n.color + ' 40%, transparent)', color: n.color } },
+                    React.createElement(Icon, { name: n.icon, size: 16 }),
+                    !n.read && React.createElement('span', { style: { position: 'absolute', top: -3, right: -3, width: 9, height: 9, borderRadius: '50%', background: n.color, boxShadow: '0 0 6px ' + n.color, border: '1.5px solid var(--surface-card)' } })),
+                  React.createElement('div', { style: { flex: 1, minWidth: 0 } },
+                    React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'baseline' } },
+                      React.createElement('span', { style: { fontSize: 11, fontWeight: 700, color: aosInk(n.color) } }, n.agent),
+                      React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--text-faint)', whiteSpace: 'nowrap' } }, n.time)),
+                    React.createElement('div', { style: { fontSize: 12.5, fontWeight: 600, color: 'var(--text-strong)', marginTop: 2, lineHeight: 1.3 } }, n.title),
+                    React.createElement('div', { style: { fontSize: 11, color: 'var(--text-muted)', marginTop: 2, lineHeight: 1.4 } }, n.body))))),
+          React.createElement('div', { style: { display: 'flex', justifyContent: 'flex-end', marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border-hairline)' } },
+            React.createElement('button', { onClick: onMarkAll, disabled: unread === 0, style: { height: 32, padding: '0 12px', borderRadius: 'var(--r-md)', cursor: unread === 0 ? 'not-allowed' : 'pointer', opacity: unread === 0 ? 0.5 : 1, background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', color: 'var(--text-body)', fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 600 } }, 'Tout marquer comme lu'))));
+    }
+
+    function TopBtn({ name, label, onClick, accent, badge }) {
+      return React.createElement('button', { title: label, onClick, style: { position: 'relative', width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--r-md)', background: accent ? 'var(--info-soft)' : 'var(--glass-fill)', border: '1px solid ' + (accent ? 'var(--border-accent)' : 'var(--border-soft)'), color: accent ? 'var(--diamond-400)' : 'var(--text-muted)', cursor: 'pointer', transition: 'all var(--dur-fast)' },
+        onMouseEnter: e => { e.currentTarget.style.color = 'var(--text-strong)'; e.currentTarget.style.background = 'var(--glass-fill-strong)'; },
+        onMouseLeave: e => { e.currentTarget.style.color = accent ? 'var(--diamond-400)' : 'var(--text-muted)'; e.currentTarget.style.background = accent ? 'var(--info-soft)' : 'var(--glass-fill)'; } },
+        React.createElement(Icon, { name, size: 17, color: accent ? 'var(--diamond-400)' : 'currentColor' }),
+        badge > 0 && React.createElement('span', { style: { position: 'absolute', top: -3, right: -3, minWidth: 16, height: 16, padding: '0 4px', boxSizing: 'border-box', borderRadius: 999, background: 'var(--danger)', color: '#fff', fontFamily: 'var(--font-mono)', fontSize: 9.5, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--top-bg, var(--surface-card))', boxShadow: '0 0 8px rgba(255,107,129,0.6)' } }, badge > 9 ? '9+' : badge));
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+  </script>
+
+
+</body></html>

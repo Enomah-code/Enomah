@@ -1,0 +1,85 @@
+<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Angeleck OS">
+  <defs>
+    <radialGradient id="aosCore" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF"></stop>
+      <stop offset="0.28" stop-color="#CFEBFF"></stop>
+      <stop offset="0.6" stop-color="#48B4FF" stop-opacity="0.55"></stop>
+      <stop offset="1" stop-color="#48B4FF" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="aosAmbient" cx="0.5" cy="0.46" r="0.62">
+      <stop offset="0" stop-color="#4FB0FF" stop-opacity="0.42"></stop>
+      <stop offset="1" stop-color="#4FB0FF" stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id="aosBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BFE6FF" stop-opacity="0.16"></stop>
+      <stop offset="1" stop-color="#1E63C4" stop-opacity="0.05"></stop>
+    </linearGradient>
+    <filter id="aosBlur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.2"></feGaussianBlur>
+    </filter>
+    <filter id="aosBlurSoft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.4"></feGaussianBlur>
+    </filter>
+
+    
+    <g id="aosWire" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M31 33 H89"></path>
+      <path d="M31 33 L19 46 L13 53"></path>
+      <path d="M89 33 L101 46 L107 53"></path>
+      <path d="M13 53 L37 54 L60 55 L83 54 L107 53"></path>
+      <path d="M13 53 L60 114 L107 53"></path>
+      <path d="M31 33 L37 54"></path>
+      <path d="M45.5 33 L37 54"></path>
+      <path d="M45.5 33 L60 55"></path>
+      <path d="M60 33 L60 55"></path>
+      <path d="M74.5 33 L60 55"></path>
+      <path d="M74.5 33 L83 54"></path>
+      <path d="M89 33 L83 54"></path>
+      <path d="M19 46 L37 54"></path>
+      <path d="M101 46 L83 54"></path>
+      <path d="M37 54 L60 114"></path>
+      <path d="M60 55 L60 114"></path>
+      <path d="M83 54 L60 114"></path>
+      <path d="M36 82 L84 82"></path>
+      <path d="M60 55 L36 82"></path>
+      <path d="M60 55 L84 82"></path>
+    </g>
+    <g id="aosNodes">
+      <circle cx="31" cy="33" r="2"></circle>
+      <circle cx="45.5" cy="33" r="1.7"></circle>
+      <circle cx="60" cy="33" r="2.1"></circle>
+      <circle cx="74.5" cy="33" r="1.7"></circle>
+      <circle cx="89" cy="33" r="2"></circle>
+      <circle cx="19" cy="46" r="1.6"></circle>
+      <circle cx="101" cy="46" r="1.6"></circle>
+      <circle cx="13" cy="53" r="2"></circle>
+      <circle cx="37" cy="54" r="1.8"></circle>
+      <circle cx="83" cy="54" r="1.8"></circle>
+      <circle cx="107" cy="53" r="2"></circle>
+      <circle cx="36" cy="82" r="1.5"></circle>
+      <circle cx="60" cy="82" r="1.6"></circle>
+      <circle cx="84" cy="82" r="1.5"></circle>
+      <circle cx="60" cy="114" r="2.2"></circle>
+    </g>
+  </defs>
+
+  
+  <ellipse cx="60" cy="60" rx="56" ry="58" fill="url(#aosAmbient)"></ellipse>
+  
+  <path d="M31 33 H89 L101 46 L107 53 L60 114 L13 53 L19 46 Z" fill="url(#aosBody)"></path>
+
+  
+  <use href="#aosWire" stroke="#2E9BFF" stroke-width="3.2" opacity="0.9" filter="url(#aosBlur)"></use>
+  <use href="#aosNodes" fill="#5BC4FF" filter="url(#aosBlur)"></use>
+
+  
+  <circle cx="60" cy="60" r="22" fill="url(#aosCore)"></circle>
+
+  
+  <use href="#aosWire" stroke="#BFE6FF" stroke-width="1.1" opacity="0.95"></use>
+  <use href="#aosNodes" fill="#EAF6FF"></use>
+
+  
+  <circle cx="60" cy="60" r="6.5" fill="url(#aosCore)" filter="url(#aosBlurSoft)"></circle>
+  <circle cx="60" cy="60" r="2.6" fill="#FFFFFF"></circle>
+</svg>

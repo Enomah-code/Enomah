@@ -1,0 +1,112 @@
+/* global React, Icon, Avatar, AgentPortrait, Badge, Button, GlassCard, Eyebrow, SectionLabel, AOS_AGENTS, AOS_TICKER, aosInk */
+function Dashboard({ onTalk, onCall }) {
+  const agents = AOS_AGENTS.filter(a => !a.elite);
+  const raphael = AOS_AGENTS.find(a => a.elite);
+  const [sel, setSel] = React.useState(null);
+  const COLX = [10, 30, 50, 70, 90];
+  const pts = agents.map((a, i) => {
+    const row = i < 5 ? 0 : 1;
+    const col = i % 5;
+    const baseY = row === 0 ? 50 : 81;
+    const zig = (col % 2 === 1) ? (row === 0 ? 7 : -7) : 0;
+    return { a, x: COLX[col], y: baseY + zig };
+  });
+  const activity = [
+    { agent: 'Sofia', color: '#4DA3FF', action: 'Analyse de marché finalisée', t: '14:32' },
+    { agent: 'Maya', color: '#FF6FA5', action: 'Campagne Meta générée — 3 audiences', t: '14:28' },
+    { agent: 'Emma', color: '#57E6E0', action: 'Forecast 12 mois actualisé', t: '14:21' },
+    { agent: 'Adam', color: '#E7CD93', action: 'Rééquilibrage portefeuille proposé', t: '14:09' },
+  ];
+
+  return React.createElement('div', { style: { display: 'flex', width: '100%', height: '100%' } },
+    /* ---- CENTER STAGE ---- */
+    React.createElement('div', { className: 'aos-scroll', style: { flex: 1, padding: '26px 30px', display: 'flex', flexDirection: 'column', minWidth: 0 } },
+      React.createElement('div', { className: 'aos-rise', style: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 } },
+        React.createElement('div', { style: { flex: 1, minWidth: 0 } },
+          React.createElement(Eyebrow, null, 'Centre de commandement'),
+          React.createElement('h1', { className: 'aos-h-view', style: { margin: '8px 0 0' } }, 'Votre organisation intelligente'),
+          React.createElement('p', { style: { margin: '6px 0 0', color: 'var(--text-muted)', fontSize: 14 } }, 'Raphaël coordonne 10 agents spécialisés en temps réel.')),
+        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12 } },
+          React.createElement(Button, { variant: 'primary', iconLeft: React.createElement(Icon, { name: 'phone', size: 16, color: '#fff' }), onClick: () => onCall && onCall(raphael) }, 'Appeler Raphaël'),
+          React.createElement('div', { style: { display: 'flex', gap: 10 } },
+            React.createElement(Badge, { tone: 'success', dot: true }, 'Réseau opérationnel'),
+            React.createElement(Badge, { tone: 'elite', variant: 'outline' }, 'Auto-évolution active')))),
+
+      /* org tree — Raphaël on top, agents staggered below */
+      React.createElement('div', { style: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 480, position: 'relative' } },
+        React.createElement('div', { style: { position: 'relative', width: 'min(100%, 880px)', height: 'min(56vh, 500px)', minHeight: 400 } },
+          /* connector lines (tree) */
+          React.createElement('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' } },
+            pts.map((p, i) => { const on = sel && sel.id === p.a.id; const my = 14 + (p.y - 14) * 0.46; return React.createElement('path', { key: i,
+              d: `M50 14 C50 ${my.toFixed(1)}, ${p.x} ${my.toFixed(1)}, ${p.x} ${p.y}`,
+              fill: 'none', stroke: on ? p.a.color : 'rgba(120,160,220,0.18)', strokeWidth: on ? 0.7 : 0.4,
+              strokeDasharray: '1.4 2.2', style: { animation: `aos-dash ${16 + i}s linear infinite` } }); })),
+          /* Raphaël on top */
+          React.createElement('div', { style: { position: 'absolute', left: '50%', top: '14%', transform: 'translate(-50%,-50%)', textAlign: 'center', zIndex: 3 } },
+            React.createElement('div', { style: { position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' } },
+              React.createElement('div', { style: { position: 'absolute', inset: -24, borderRadius: '50%', background: 'radial-gradient(circle, rgba(231,205,147,0.22), transparent 70%)', animation: 'aos-breathe 4s ease-in-out infinite' } }),
+              React.createElement(AgentPortrait, { cfg: raphael.portrait, color: raphael.color, status: 'active', size: 92 }),
+              React.createElement('div', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: 'var(--text-strong)', marginTop: 12 } }, 'Raphaël'),
+              React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '.14em', textTransform: 'uppercase', color: aosInk(raphael.color), fontWeight: 600 } }, 'Intelligence centrale'))),
+          /* agents staggered */
+          pts.map((p) => { const on = sel && sel.id === p.a.id; return React.createElement('button', { key: p.a.id,
+            onClick: () => setSel(s => s && s.id === p.a.id ? null : p.a),
+            style: { position: 'absolute', left: `${p.x}%`, top: `${p.y}%`, transform: 'translate(-50%,-50%)', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, width: 92 } },
+            React.createElement(AgentPortrait, { cfg: p.a.portrait, color: p.a.color, status: on ? 'active' : 'idle', size: 52 }),
+            React.createElement('span', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 12.5, color: on ? aosInk(p.a.color) : 'var(--text-strong)' } }, p.a.name),
+            React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 8.5, letterSpacing: '.06em', textTransform: 'uppercase', color: aosInk(p.a.color), fontWeight: 600 } }, p.a.domain)); })
+        )
+      ),
+
+      /* selected agent detail */
+      sel && React.createElement(GlassCard, { accent: true, padding: 18, style: { marginTop: 8, display: 'flex', alignItems: 'center', gap: 16 } },
+        React.createElement(AgentPortrait, { cfg: sel.portrait, color: sel.color, status: 'active', size: 52 }),
+        React.createElement('div', { style: { flex: 1 } },
+          React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+            React.createElement('span', { style: { fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, color: 'var(--text-strong)' } }, sel.name),
+            React.createElement(Badge, { tone: 'diamond' }, sel.role)),
+          React.createElement('p', { style: { margin: '4px 0 0', fontSize: 13, color: 'var(--text-muted)', maxWidth: 520 } }, sel.blurb)),
+        React.createElement('div', { style: { display: 'flex', gap: 10, flexShrink: 0 } },
+          React.createElement(Button, { variant: 'secondary', iconLeft: React.createElement(Icon, { name: 'phone', size: 16, color: 'var(--diamond-400)' }), onClick: () => onCall && onCall(sel), style: { width: 44, padding: 0 }, title: 'Appel audio' }),
+          React.createElement(Button, { variant: 'primary', iconLeft: React.createElement(Icon, { name: 'message', size: 16, color: '#fff' }), onClick: () => onTalk && onTalk(sel) }, `Parler à ${sel.name}`)))
+    ),
+
+    /* ---- RIGHT PANEL ---- */
+    React.createElement('div', { className: 'aos-scroll', style: { width: 312, flexShrink: 0, borderLeft: '1px solid var(--border-hairline)', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 18, background: 'var(--panel-tint)' } },
+      React.createElement('div', null,
+        React.createElement(SectionLabel, null, 'Santé du réseau'),
+        React.createElement(GlassCard, { padding: 16, glow: true },
+          React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' } },
+            React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 30, fontWeight: 600, color: 'var(--text-strong)' } }, '98.6%'),
+            React.createElement(Badge, { tone: 'success' }, '+1.2%')),
+          React.createElement('div', { style: { height: 4, borderRadius: 4, background: 'rgba(255,255,255,0.06)', marginTop: 12, overflow: 'hidden' } },
+            React.createElement('div', { style: { height: '100%', width: '98.6%', borderRadius: 4, background: 'var(--grad-diamond)', boxShadow: 'var(--glow-diamond)' } })),
+          React.createElement('div', { style: { display: 'flex', gap: 18, marginTop: 14 } },
+            ['10 agents', '1 284 tâches', '6 h cycle'].map((t, i) => React.createElement('div', { key: i },
+              React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: 'var(--text-body)' } }, t.split(' ')[0]),
+              React.createElement('div', { style: { fontSize: 10, color: 'var(--text-faint)' } }, t.split(' ').slice(1).join(' ')))))),
+
+      React.createElement('div', null,
+        React.createElement(SectionLabel, null, 'Marchés en direct'),
+        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+          AOS_TICKER.slice(0, 4).map((t, i) => React.createElement(GlassCard, { key: i, padding: 12 },
+            React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+              React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-body)' } }, t.s),
+              React.createElement('div', { style: { textAlign: 'right' } },
+                React.createElement('div', { style: { fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, color: 'var(--text-strong)' } }, t.p),
+                React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 600, color: t.c >= 0 ? 'var(--success)' : 'var(--danger)' } }, (t.c >= 0 ? '+' : '') + t.c + '%')))))))),
+
+      React.createElement('div', null,
+        React.createElement(SectionLabel, null, 'Activité récente'),
+        React.createElement('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+          activity.map((l, i) => React.createElement('div', { key: i, style: { display: 'flex', gap: 10, padding: '9px 11px', borderRadius: 'var(--r-sm)', background: 'var(--glass-fill)', border: '1px solid var(--border-hairline)' } },
+            React.createElement('span', { style: { width: 6, height: 6, borderRadius: '50%', background: l.color, marginTop: 5, flexShrink: 0, boxShadow: `0 0 6px ${l.color}` } }),
+            React.createElement('div', { style: { minWidth: 0, flex: 1 } },
+              React.createElement('div', { style: { display: 'flex', justifyContent: 'space-between', gap: 8 } },
+                React.createElement('span', { style: { fontSize: 11, fontWeight: 700, color: aosInk(l.color) } }, l.agent),
+                React.createElement('span', { style: { fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--text-faint)' } }, l.t)),
+              React.createElement('div', { style: { fontSize: 11, color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, l.action))))))
+    )
+  );
+}
+window.Dashboard = Dashboard;
