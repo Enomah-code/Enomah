@@ -88,6 +88,16 @@
       { k: 'apikey', label: 'Clé API / Token', ph: '••••••••••••', secret: true },
     ];
   }
+  // Ou trouver concretement chaque identifiant demande. La plupart des utilisateurs
+  // ne savent pas ou chercher ; ce texte l'explique en clair, avec le chemin exact.
+  const INTG_HELP = {
+    shopify: "Dans ton admin Shopify : Parametres -> Applications et canaux de vente -> Developper des applications -> Creer une application -> onglet « Configuration de l'API Admin » (coche les permissions necessaires) -> Installer l'application -> onglet « Identifiants API » -> « Reveler le jeton une fois » (commence par shpat_). Le domaine est celui de ton admin (ex. ma-boutique.myshopify.com).",
+    meta: "Business Manager Meta -> Outils de l'entreprise -> Explorateur d'API Graph (ou Meta for Developers -> ton app -> Outils -> Explorateur d'API Graph) -> selectionne ton app -> genere un token avec la permission « ads_read » ou « ads_management ».",
+    tiktok: "TikTok for Business -> business-api.tiktok.com -> cree une app developpeur -> onglet « Mes applications » pour l'App ID/Secret -> une fois l'app approuvee, genere l'Access Token dans « Authorization ».",
+    google: "Necessite un compte Google Ads API Center (developers.google.com/google-ads/api) ou tu dois DEMANDER un Developer Token — validation manuelle par Google, peut prendre plusieurs jours. Sans ce jeton, la connexion ne peut pas aboutir : ce n'est pas un identifiant qu'Angeleck peut obtenir a ta place.",
+    markets: "Pour CoinGecko ou Binance (marches crypto), ecris simplement « coingecko » ou « binance » dans le champ Fournisseur — aucune cle API n'est necessaire, la verification se fait immediatement.",
+    analytics: "Google Cloud Console -> APIs & Services -> Identifiants -> cree un compte de service -> onglet « Cles » -> Ajouter une cle (JSON) -> colle le contenu du fichier telecharge ci-dessous.",
+  };
   const INPUT_ST = { width: '100%', boxSizing: 'border-box', height: 40, padding: '0 14px', background: 'var(--glass-fill)', border: '1px solid var(--border-soft)', borderRadius: 'var(--r-md)', color: 'var(--text-strong)', fontFamily: 'var(--font-sans)', fontSize: 13, outline: 'none' };
 
   function Integrations() {
@@ -212,7 +222,10 @@
                   h('span', { style: { fontSize: 12.5, fontWeight: 600, color: 'var(--success)' } }, 'Connecté · clés chiffrées dans le coffre Angeleck')),
                 h('div', { style: { fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 4 } }, 'Raphaël et les agents concernés peuvent agir sur ' + active.name + '. Déconnectez à tout moment pour révoquer l\u2019accès.'))
             : h('div', null,
-                h('p', { style: { margin: '6px 0 16px', fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5 } }, 'Renseignez les informations requises par ' + active.name + '. Angeleck chiffre vos clés et les stocke localement ; une vraie tentative de connexion est effectuée pour vérifier qu\u2019elles fonctionnent.'),
+                h('p', { style: { margin: '6px 0 12px', fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5 } }, 'Renseignez les informations requises par ' + active.name + '. Angeleck chiffre vos clés et les stocke localement ; une vraie tentative de connexion est effectuée pour vérifier qu\u2019elles fonctionnent.'),
+                INTG_HELP[active.category || active.id] && h('div', { style: { display: 'flex', gap: 8, alignItems: 'flex-start', margin: '0 0 16px', padding: '10px 12px', borderRadius: 'var(--r-md)', background: 'var(--info-soft)', border: '1px solid var(--border-accent)' } },
+                  h(Icon, { name: 'sparkles', size: 14, color: 'var(--diamond-400)', style: { flexShrink: 0, marginTop: 1 } }),
+                  h('span', { style: { fontSize: 11, color: 'var(--text-body)', lineHeight: 1.5 } }, h('strong', null, 'Où trouver ça : '), INTG_HELP[active.category || active.id])),
                 h('div', { style: { display: 'flex', flexDirection: 'column', gap: 13 } },
                   intgFields(active).map(f => h('div', { key: f.k },
                     h('label', { style: { display: 'block', fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-faint)', marginBottom: 6 } }, f.label),

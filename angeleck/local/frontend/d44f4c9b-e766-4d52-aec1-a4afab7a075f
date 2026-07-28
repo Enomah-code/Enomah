@@ -58,6 +58,11 @@
     const recogRef = React.useRef(null);
     const micRef = React.useRef(mic);
     micRef.current = mic;
+    // Verrou de phase FIABLE (ref, jamais "stale" contrairement a un state dans une closure).
+    // idle -> listening -> thinking -> speaking -> idle -> ...
+    // Ecouter n'est JAMAIS autorise pendant 'thinking' ou 'speaking', ce qui empeche
+    // le micro de capter la propre voix de Raphael (bug de boucle/echo corrige ici).
+    const phaseRef = React.useRef('idle');
 
     const SpeechRecognitionCtor = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
     const supported = !!SpeechRecognitionCtor && typeof window !== 'undefined' && !!window.speechSynthesis;
@@ -69,7 +74,11 @@
     }, [onClose]);
 
     function speak(text) {
-      if (!supported || !speaker || !text) return;
+      if (!supported || !speaker || !text) {
+        phaseRef.current = 'idle';
+        if (micRef.current) startListening();
+        return;
+      }
       try {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
@@ -77,18 +86,20 @@
         const voices = window.speechSynthesis.getVoices();
         const fr = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
         if (fr) u.voice = fr;
+        phaseRef.current = 'speaking';
         u.onstart = () => setTtsSpeaking(true);
-        u.onend = () => { setTtsSpeaking(false); if (micRef.current) startListening(); };
-        u.onerror = () => { setTtsSpeaking(false); if (micRef.current) startListening(); };
+        u.onend = () => { setTtsSpeaking(false); phaseRef.current = 'idle'; if (micRef.current) startListening(); };
+        u.onerror = () => { setTtsSpeaking(false); phaseRef.current = 'idle'; if (micRef.current) startListening(); };
         window.speechSynthesis.speak(u);
-      } catch (e) { setTtsSpeaking(false); }
+      } catch (e) { setTtsSpeaking(false); phaseRef.current = 'idle'; if (micRef.current) startListening(); }
     }
 
     function sendToAngeleck(text) {
       const q = (text || '').trim();
-      if (!q) { if (micRef.current) startListening(); return; }
+      if (!q) { phaseRef.current = 'idle'; if (micRef.current) startListening(); return; }
       setTranscript(q);
       setThinking(true);
+      phaseRef.current = 'thinking'; // bloque toute reecoute tant que la reponse n'est pas prete
       fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: q, conversation_id: convRef.current }),
@@ -101,9 +112,10 @@
         setInCall(c => (found && !c.includes(found.id)) ? [...c, found.id] : c);
         const clean = (d && d.answer ? d.answer : '').replace(/[#*`_>]/g, '').replace(/\s+/g, ' ').trim();
         setReplyText(clean);
-        speak(clean);
+        speak(clean); // passe la phase a 'speaking', puis relance l'ecoute a la fin
       }).catch(() => {
         setThinking(false);
+        phaseRef.current = 'idle';
         setVoiceError("Impossible de joindre le cerveau Angeleck.");
         if (micRef.current) startListening();
       });
@@ -111,28 +123,37 @@
 
     function startListening() {
       if (!supported) { setVoiceError("Reconnaissance vocale non supportee par ce navigateur (utilisez Chrome ou Edge)."); return; }
+      // Verrou : jamais d'ecoute pendant que Raphael reflechit ou parle (evite l'effet larsen/echo).
+      if (phaseRef.current === 'thinking' || phaseRef.current === 'speaking') return;
       if (recogRef.current) { try { recogRef.current.abort(); } catch (e) {} }
       const r = new SpeechRecognitionCtor();
       r.lang = 'fr-FR'; r.continuous = false; r.interimResults = false; r.maxAlternatives = 1;
-      r.onstart = () => { setListening(true); setVoiceError(null); };
+      r.onstart = () => { phaseRef.current = 'listening'; setListening(true); setVoiceError(null); };
       r.onresult = (ev) => {
         const text = ev.results[0][0].transcript;
         setListening(false);
-        sendToAngeleck(text);
+        sendToAngeleck(text); // passe immediatement la phase a 'thinking'
       };
       r.onerror = (ev) => {
         setListening(false);
         if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+          phaseRef.current = 'idle';
           setVoiceError("Acces au microphone refuse — autorisez-le dans les parametres du navigateur.");
           setMic(false);
         } else if (ev.error !== 'no-speech' && ev.error !== 'aborted') {
+          phaseRef.current = 'idle';
           setVoiceError("Erreur de reconnaissance vocale : " + ev.error);
         }
       };
       r.onend = () => {
         setListening(false);
-        // Boucle d'ecoute continue tant que le micro est actif et qu'on n'est pas en train de repondre/parler.
-        if (micRef.current) setTimeout(() => { if (micRef.current && !ttsSpeaking) startListening(); }, 400);
+        // Ne relancer l'ecoute QUE si on est encore en phase d'ecoute pure (pas de
+        // resultat obtenu, pas de reponse en cours) : sinon sendToAngeleck()/speak()
+        // pilotent deja la reprise d'ecoute au bon moment.
+        if (phaseRef.current === 'listening') {
+          phaseRef.current = 'idle';
+          if (micRef.current) setTimeout(() => { if (micRef.current && phaseRef.current === 'idle') startListening(); }, 400);
+        }
       };
       recogRef.current = r;
       try { r.start(); } catch (e) {}
