@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /home/user/Enomah/.claude/install-skills.sh && python3 /home/user/Enomah/.claude/suggest-skills.py 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
