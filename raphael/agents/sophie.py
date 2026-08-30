@@ -1,5 +1,6 @@
 from .base import BaseAgent
 from raphael.tools.web_search import web_search, scrape_url
+from raphael.tools.google_ai_studio import ask_gemini
 
 
 class Sophie(BaseAgent):
@@ -58,6 +59,20 @@ Tu réponds toujours en français sauf demande contraire. Sois exhaustive et pr�
                     "required": ["url"],
                 },
             },
+            {
+                "name": "ask_gemini",
+                "description": (
+                    "Interroge Google AI Studio (Gemini) avec grounding Google Search en temps réel. "
+                    "Utile pour vérifier des faits récents ou obtenir des sources actualisées."
+                ),
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "prompt": {"type": "string", "description": "La question ou requête à poser à Gemini"},
+                    },
+                    "required": ["prompt"],
+                },
+            },
         ]
 
     async def _call_tool(self, tool_name: str, tool_input: dict):
@@ -65,4 +80,6 @@ Tu réponds toujours en français sauf demande contraire. Sois exhaustive et pr�
             return await web_search(tool_input["query"], tool_input.get("num_results", 10))
         if tool_name == "scrape_url":
             return await scrape_url(tool_input["url"])
+        if tool_name == "ask_gemini":
+            return await ask_gemini(tool_input["prompt"], use_search_grounding=True)
         return await super()._call_tool(tool_name, tool_input)

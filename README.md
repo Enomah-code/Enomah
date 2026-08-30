@@ -117,6 +117,7 @@ Le réseau évolue de façon autonome:
 - Images: `STABILITY_AI_API_KEY` ou `OPENAI_API_KEY`
 - Vidéos: `RUNWAYML_API_KEY`
 - Recherche: `SERPER_API_KEY` ou `BRAVE_SEARCH_API_KEY`
+- Recherche avec grounding Google Search + contexte long: `GOOGLE_AI_STUDIO_API_KEY` (clé sur [aistudio.google.com/apikey](https://aistudio.google.com/apikey), utilisée par Sophie via l'outil `ask_gemini`)
 - Trading: `BINANCE_API_KEY` / `ALPACA_API_KEY`
 - Ads: `META_ACCESS_TOKEN`, `GOOGLE_ADS_DEVELOPER_TOKEN`
 
