@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     google_ai_studio_api_key: str = ""
     google_ai_studio_project_name: str = ""
     google_ai_studio_project_number: str = ""
-    google_ai_studio_model: str = "gemini-2.5-flash"
+    google_ai_studio_model: str = "gemini-3.6-flash"
 
     # Image generation
     stability_ai_api_key: str = ""
