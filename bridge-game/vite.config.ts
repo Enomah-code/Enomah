@@ -1,11 +1,15 @@
 import { defineConfig } from "vite";
 
-// Servi en tant que "project site" GitHub Pages sous /enomah/bridge-game/.
-// GITHUB_PAGES_BASE peut être surchargé par le workflow de déploiement.
+// Deux cibles de build :
+// - GitHub Pages (par défaut) : "project site" servi sous /enomah/bridge-game/.
+// - App native (Capacitor) : assets embarqués localement, donc base "/".
+//   Déclenché via `npm run build:capacitor` (voir package.json).
+const isCapacitorBuild = process.env.CAPACITOR_BUILD === "1";
+
 export default defineConfig({
-  base: process.env.GITHUB_PAGES_BASE ?? "/enomah/bridge-game/",
+  base: isCapacitorBuild ? "/" : (process.env.GITHUB_PAGES_BASE ?? "/enomah/bridge-game/"),
   build: {
-    outDir: "dist",
+    outDir: isCapacitorBuild ? "dist-capacitor" : "dist",
     sourcemap: true,
   },
 });

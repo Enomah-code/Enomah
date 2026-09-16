@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2732 2732">
+  <rect width="2732" height="2732" fill="#10151c"/>
+  <g transform="translate(866,1066)">
+    <rect x="0" y="480" width="480" height="480" fill="#3a4658"/>
+    <rect x="1520" y="480" width="480" height="480" fill="#3a4658"/>
+    <rect x="0" y="450" width="480" height="40" fill="#5c8a4a"/>
+    <rect x="1520" y="450" width="480" height="40" fill="#5c8a4a"/>
+    <path d="M 240 500 Q 1000 60 1760 500" stroke="#d8c98a" stroke-width="34" fill="none" stroke-linecap="round"/>
+    <rect x="190" y="500" width="1620" height="70" rx="16" fill="#ffb347"/>
+    <g stroke="#8b95a1" stroke-width="24" stroke-linecap="round">
+      <line x1="420" y1="570" x2="520" y2="470" />
+      <line x1="700" y1="570" x2="650" y2="440" />
+      <line x1="900" y1="570" x2="950" y2="440" />
+      <line x1="1180" y1="570" x2="1080" y2="470" />
+    </g>
+  </g>
+  <text x="1366" y="1900" font-family="Segoe UI, system-ui, sans-serif" font-size="90" font-weight="800" fill="#ffb347" text-anchor="middle">Architecte de Ponts</text>
+</svg>

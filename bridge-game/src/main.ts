@@ -58,10 +58,26 @@ class App {
 
   constructor() {
     window.addEventListener("resize", () => this.handleResize());
+    window.addEventListener("orientationchange", () => this.handleResize());
     this.handleResize();
     this.setupPointerEvents();
     this.showMenu();
     requestAnimationFrame((t) => this.loop(t));
+  }
+
+  // ---------- Orientation (bridges play best in landscape) ----------
+
+  private tryLockLandscape(): void {
+    const orientation = screen.orientation as (ScreenOrientation & { lock?: (o: string) => Promise<void> }) | undefined;
+    orientation?.lock?.("landscape")?.catch(() => {
+      // Orientation lock only works in installed PWAs / native shells; ignore in a plain browser tab.
+    });
+  }
+
+  private updateOrientationGate(): void {
+    const gameplayScreen = this.screen === "build" || this.screen === "simulate";
+    const portrait = window.innerWidth < window.innerHeight;
+    document.body.classList.toggle("force-landscape", gameplayScreen && portrait);
   }
 
   // ---------- Screens ----------
@@ -71,6 +87,7 @@ class App {
     this.editor = null;
     this.simulation = null;
     renderMenu(this.uiRoot, { onPlay: () => this.showLevelSelect() });
+    this.updateOrientationGate();
   }
 
   showLevelSelect(): void {
@@ -81,11 +98,13 @@ class App {
       onSelect: (id) => this.startLevel(id),
       onBack: () => this.showMenu(),
     });
+    this.updateOrientationGate();
   }
 
   startLevel(id: number): void {
     const level = getLevel(id);
     if (!level) return;
+    this.tryLockLandscape();
     this.currentLevel = level;
     this.worldGeom = computeWorldGeometry(level);
     this.camera.fit(this.worldGeom, this.cssWidth, this.cssHeight);
@@ -102,6 +121,7 @@ class App {
     });
     this.setTool("road");
     this.updateBuildHud();
+    this.updateOrientationGate();
   }
 
   resetBuild(): void {
@@ -135,6 +155,7 @@ class App {
       onMenu: () => this.showLevelSelect(),
       onStop: () => this.backToBuild(),
     });
+    this.updateOrientationGate();
   }
 
   backToBuild(): void {
@@ -150,6 +171,7 @@ class App {
     });
     this.setTool(this.activeTool);
     this.updateBuildHud();
+    this.updateOrientationGate();
   }
 
   finishSimulation(result: SimResult): void {
@@ -172,6 +194,7 @@ class App {
         onLevels: () => this.showLevelSelect(),
       },
     );
+    this.updateOrientationGate();
   }
 
   flashBanner(text: string): void {
@@ -315,6 +338,7 @@ class App {
     if (this.screen === "build" || this.screen === "simulate") {
       this.camera.fit(this.worldGeom, this.cssWidth, this.cssHeight);
     }
+    this.updateOrientationGate();
   }
 
   loop(timestamp: number): void {

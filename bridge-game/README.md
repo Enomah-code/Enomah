@@ -35,8 +35,70 @@ npm run preview   # prévisualiser le build de production
   et les véhicules (châssis + roues motorisées).
 - Progression et scores sauvegardés via `localStorage`, aucun backend requis.
 
-## Déploiement
+## Déploiement web
 
 Le jeu est déployé automatiquement sur **GitHub Pages** via
 `.github/workflows/deploy-bridge-game.yml` à chaque push sur `main` touchant `bridge-game/`
 (ou manuellement via "Run workflow"). Voir ce fichier pour le pipeline complet.
+
+## Application mobile native (Android / iOS)
+
+Le jeu est aussi emballé en application native avec [Capacitor](https://capacitorjs.com/) : le
+même code web tourne dans une coque native, verrouillée en **paysage** (le pont se joue mieux en
+largeur). Config : `capacitor.config.ts`. Projets natifs générés : `android/` et `ios/`.
+
+### Android — testable dès maintenant
+
+```bash
+npm run android:build-debug   # build web (base "/") + sync Capacitor + gradlew assembleDebug
+```
+
+Produit un APK debug installable directement (sideload) :
+`android/app/build/outputs/apk/debug/app-debug.apk`. Transférez-le sur un téléphone Android et
+ouvrez-le (autoriser "sources inconnues" si demandé) — aucun compte développeur requis pour ce
+test.
+
+Pour ouvrir le projet dans Android Studio à la place : `npx cap open android`.
+
+### iOS — nécessite un Mac
+
+La compilation iOS nécessite **Xcode**, qui ne tourne que sur macOS. Le projet `ios/App` est prêt
+(icônes, splash screen, orientation paysage déjà configurés) ; sur un Mac avec Xcode installé :
+
+```bash
+npm run build:capacitor && npx cap sync ios
+npx cap open ios   # ouvre Xcode ; Run sur un simulateur ou un appareil connecté
+```
+
+### Régénérer les icônes / splash screens
+
+Sources vectorielles dans `resources/` (`icon-foreground.svg`, `icon-background.svg`,
+`icon.svg`, `splash.svg`). `@capacitor/assets` prend des PNG en entrée : après avoir modifié un
+`.svg`, reconvertissez-le en PNG à la bonne taille (1024×1024 pour les icônes, 2732×2732 pour le
+splash — n'importe quel outil SVG→PNG convient : Inkscape, `rsvg-convert`, ou une capture d'écran
+du SVG dans un navigateur) en écrasant le fichier `.png` correspondant dans `resources/`, puis
+relancez la génération d'assets :
+
+```bash
+npx capacitor-assets generate --ios --android
+```
+
+### Publication sur les stores (à faire par vous)
+
+Cette partie exige vos propres comptes et votre propre signature — impossible à faire à votre
+place :
+
+**Google Play**
+1. Compte [Play Console](https://play.google.com/console) (frais unique ~25 $).
+2. Générer un **App Bundle signé** : `cd android && ./gradlew bundleRelease`, avec un keystore de
+   release que vous créez et conservez précieusement (`keytool -genkeypair ...` — sa perte empêche
+   toute mise à jour future de l'app).
+3. Créer la fiche Play Console (captures d'écran, description, classification de contenu) et
+   soumettre le `.aab` à la revue.
+
+**Apple App Store**
+1. Compte [Apple Developer Program](https://developer.apple.com/programs/) (99 $/an).
+2. Dans Xcode (`npx cap open ios`) : configurer l'équipe de signature, archiver
+   (*Product → Archive*), puis distribuer via App Store Connect.
+3. Créer la fiche App Store Connect (captures d'écran, description, classification) et soumettre à
+   la revue.
