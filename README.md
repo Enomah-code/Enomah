@@ -2,6 +2,10 @@
 
 **Raphaël** est un réseau d'agents IA de niveau Dieu, orchestré par un agent central qui comprend, délègue, coordonne et synthétise — comme un médecin généraliste qui réfère ses patients aux meilleurs spécialistes.
 
+> Ce dépôt contient aussi [`bridge-game/`](./bridge-game), un jeu de stratégie d'architecte de
+> ponts (TypeScript + Matter.js) indépendant de Raphaël — voir son propre README pour le jouer,
+> le développer ou le déployer.
+
 ## Architecture
 
 ```

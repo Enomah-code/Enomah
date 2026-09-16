@@ -1,0 +1,21 @@
+{
+  "name": "bridge-architect",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Jeu de stratégie d'architecte de ponts — construisez, testez, survivez à des charges toujours plus lourdes.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "matter-js": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/matter-js": "^0.19.7",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
