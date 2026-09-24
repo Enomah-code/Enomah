@@ -49,6 +49,17 @@ HIDE = {
 SFX = {
     "c01": [(0.0, "impact-bass-1", 0.55), (4.3, "whoosh-short", 0.5), (5.62, "pop", 0.6),
             (6.2, "notification", 0.7), (8.45, "impact-bass-2", 0.45), (10.8, "whoosh-cinematic", 0.55)],
+    "c02": [(0.05, "whoosh", 0.45), (0.6, "whoosh-short", 0.5), (0.85, "sparkle", 0.4), (2.12, "pop", 0.45),
+            (3.45, "pop", 0.45), (3.95, "whoosh-short", 0.4), (4.4, "whoosh", 0.45), (5.5, "whoosh-short", 0.5),
+            (5.9, "sparkle", 0.4), (6.7, "pop", 0.45), (8.3, "pop", 0.45), (9.55, "chime", 0.45)],
+    "c03": [(9.45, 10.6)],
+    "c05": [(5.0, 7.3)],
+    "c10": [(0.0, 0.75)],
+}
+# Bruitages : (temps local, fichier, volume)
+SFX = {
+    "c01": [(0.0, "impact-bass-1", 0.55), (4.3, "whoosh-short", 0.5), (5.62, "pop", 0.6),
+            (6.2, "notification", 0.7), (8.45, "impact-bass-2", 0.45), (10.8, "whoosh-cinematic", 0.55)],
     "c02": [(0.45, "whoosh-short", 0.45), (0.8, "sparkle", 0.4), (3.35, "pop", 0.4), (4.55, "whoosh", 0.4),
             (5.55, "whoosh-short", 0.45), (6.0, "sparkle", 0.4), (8.3, "pop", 0.4), (9.5, "chime", 0.45)],
     "c03": [(9.45, 10.6)],
@@ -202,8 +213,10 @@ def main():
         media.append(
             f'      <video id="v-{cid}" class="clip aroll" src="assets/aroll/{cid}.mp4" '
             f'data-start="{s}" data-duration="{d}" data-track-index="0" muted playsinline></video>')
+        # piste voix retravaillée (ex. effet talkie-walkie) si elle existe
+        asrc = f"assets/aroll/{cid}-audio.m4a" if os.path.exists(os.path.join(AROLL, f"{cid}-audio.m4a")) else f"assets/aroll/{cid}.mp4"
         media.append(
-            f'    <audio id="a-{cid}" src="assets/aroll/{cid}.mp4" data-start="{s}" '
+            f'    <audio id="a-{cid}" src="{asrc}" data-start="{s}" '
             f'data-duration="{d}" data-track-index="{10 + len(media) // 2 % 2}" data-volume="1"></audio>')
         if os.path.exists(os.path.join(ROOT, "compositions", f"ov-{cid}.html")):
             hosts.append(
@@ -241,6 +254,10 @@ def main():
             k += 1
     cam_js = ",\n        ".join(f"[{s}, {d}, {b}]" for s, d, b in cam)
 
+    # Musique de fond (version « avec musique ») : piste déjà mixée/duckée par scripts/make_bgm.py
+    if os.environ.get("MUSIC"):
+        sfx_tags.append(f'    <audio id="bgm" src="assets/audio/bgm-ducked.m4a" data-start="0" '
+                        f'data-duration="{total}" data-track-index="30" data-volume="1"></audio>')
     page = INDEX.format(
         total=total, media_video="\n".join(m for m in media if "<video" in m),
         media_audio="\n".join(m for m in media if "<audio" in m), hosts="\n".join(hosts),

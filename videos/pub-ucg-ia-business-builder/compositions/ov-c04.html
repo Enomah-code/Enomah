@@ -17,6 +17,7 @@
           background: linear-gradient(90deg, rgba(255,247,232,0) 0%, rgba(255,247,232,.45) 50%, rgba(255,247,232,0) 100%); }
         #c04-quote { position: absolute; left: 0; right: 0; top: 170px; display: flex; justify-content: center; }
         #c04-quote .pill { font-size: 50px; }
+        #c04-quote .pill #c04-waves { width: 34px; height: 34px; margin-left: -10px; }
       </style>
       <div id="ov-c04" data-composition-id="ov-c04" data-width="1080" data-height="1920" data-duration="6.3">
         <div id="c04-top">
@@ -34,7 +35,7 @@
           <div id="c04-shine"></div>
         </div>
         <div id="c04-quote">
-          <div class="pill dark"><svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M4 18v-5.5C4 8.4 6.2 6 9.5 5.5l.6 2c-1.8.6-2.8 1.9-2.8 3.8H10V18zm10 0v-5.5c0-4.1 2.2-6.5 5.5-7l.6 2c-1.8.6-2.8 1.9-2.8 3.8H20V18z" /></svg>Ce n'est pas moi qui le dis</div>
+          <div class="pill dark"><svg id="c04-walkie" viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v5" /><rect x="6" y="7" width="12" height="15" rx="2.5" /><path d="M9 11h6M9 14h6M9 17h6" /></svg><svg id="c04-waves" viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2" stroke-linecap="round"><path d="M4 8a6 6 0 0 1 0 8" /><path d="M8 5a10 10 0 0 1 0 14" /></svg>Ce n'est pas moi qui le dis</div>
         </div>
       </div>
       <script>
@@ -46,7 +47,11 @@
           tl.fromTo("#c04-badge .cup", { rotation: -30, scale: 0.4 }, { rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, 3.9);
           tl.fromTo("#c04-shine", { x: -260, skewX: -18 }, { x: 1100, skewX: -18, duration: 0.7, ease: "power2.inOut" }, 4.3);
           tl.fromTo("#c04-badge", { scale: 1 }, { scale: 1.04, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 4.2);
-          tl.fromTo("#c04-quote .pill", { autoAlpha: 0, y: -60 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "back.out(1.8)" }, 5.25);
+          tl.fromTo("#c04-quote .pill", { autoAlpha: 0, y: -60 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "back.out(1.8)" }, 5.1);
+          // effet talkie-walkie : l'icône grésille, les ondes clignotent
+          tl.fromTo("#c04-walkie", { rotation: -8 }, { rotation: 8, duration: 0.06, ease: "none", yoyo: true, repeat: 15, immediateRender: false }, 5.15);
+          tl.fromTo("#c04-waves", { autoAlpha: 0.2 }, { autoAlpha: 1, duration: 0.12, ease: "steps(1)", yoyo: true, repeat: 7 }, 5.15);
+          tl.fromTo("#c04-quote .pill", { x: 0 }, { x: 4, duration: 0.04, ease: "none", yoyo: true, repeat: 5, immediateRender: false }, 5.15);
           window.__timelines["ov-c04"] = tl;
         })();
       </script>
