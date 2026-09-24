@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c14 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c14-ghost { top: 1480px; }
+        #c14-head { position: absolute; left: 40px; right: 40px; top: 170px; text-align: center; }
+        #c14-head .kicker { font-size: 38px; }
+        #c14-now { position: absolute; left: 90px; right: 90px; top: 290px; height: 470px; border-radius: 44px;
+          background: linear-gradient(160deg, #1c2a63 0%, #0a1230 100%); border: 5px solid #f2b33d;
+          display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 40px 100px rgba(0,0,0,.55); }
+        #c14-now .lb { font-weight: 900; font-size: 40px; letter-spacing: .1em; color: #ffd98a; text-transform: uppercase; }
+        #c14-now .pr { font-family: "League Gothic", sans-serif; font-size: 280px; line-height: .95; color: #f2b33d; }
+        #c14-now .pr small { font-size: 120px; color: #fff7e8; margin-left: 12px; }
+        #c14-off { position: absolute; right: 26px; top: 205px; width: 200px; height: 200px; border-radius: 50%; background: #25d366;
+          display: flex; flex-direction: column; align-items: center; justify-content: center; color: #062a14; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+        #c14-off .p { font-family: "League Gothic", sans-serif; font-size: 96px; line-height: .9; }
+        #c14-off .t { font-weight: 900; font-size: 22px; text-transform: uppercase; }
+        #c14-after { position: absolute; left: 90px; right: 90px; top: 830px; height: 300px; border-radius: 40px;
+          background: rgba(255,75,85,.12); border: 4px dashed #ff4b55; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+        #c14-after .lb { font-weight: 900; font-size: 36px; letter-spacing: .1em; color: #ff8a92; text-transform: uppercase; }
+        #c14-after .pr { font-family: "League Gothic", sans-serif; font-size: 170px; line-height: .95; color: #ffffff; }
+        #c14-top { position: absolute; left: 0; right: 0; top: 170px; display: flex; justify-content: center; }
+        #c14-top .pill { font-size: 54px; padding: 24px 42px; }
+        #c14-dead { position: absolute; left: 0; right: 0; top: 170px; display: flex; justify-content: center; }
+        #c14-dead .pill { font-size: 56px; padding: 24px 42px; }
+        #c14-btnwrap { position: absolute; left: 70px; right: 70px; top: 1000px; height: 170px; }
+        #c14-btn { position: absolute; inset: 0; border-radius: 999px; background: #f2b33d; color: #0b1026;
+          display: flex; align-items: center; justify-content: center; gap: 20px; font-weight: 900; font-size: 52px; text-transform: uppercase;
+          box-shadow: 0 0 0 10px rgba(242,179,61,.25), 0 30px 70px rgba(0,0,0,.55); }
+        #c14-btn svg { width: 56px; height: 56px; }
+        #c14-hand { position: absolute; left: 700px; top: 1080px; width: 170px; height: 170px; }
+        #c14-down { position: absolute; left: 480px; top: 1185px; width: 120px; height: 110px; }
+      </style>
+      <div id="ov-c14" data-composition-id="ov-c14" data-width="1080" data-height="1920" data-duration="14.0">
+        <div class="fs" id="c14-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c14-grid"></div>
+          <div class="fs-glow" id="c14-glow"></div>
+          <div class="ghost" id="c14-ghost">Offre · Offre · Offre</div>
+        </div>
+        <div id="c14-head"><div class="kicker">Offre de lancement</div></div>
+        <div id="c14-now">
+          <div class="lb">Jusqu'à dimanche</div>
+          <div class="pr">4 999<small>F</small></div>
+        </div>
+        <div id="c14-off"><div class="p">-86%</div><div class="t">aujourd'hui</div></div>
+        <div id="c14-after">
+          <div class="lb">Après dimanche · tarif normal</div>
+          <div class="pr">35 000 F</div>
+        </div>
+
+        <div id="c14-top"><div class="pill">Profite de l'offre</div></div>
+        <div id="c14-dead"><div class="pill red"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>Dimanche 23h59</div></div>
+
+        <div id="c14-btnwrap">
+          <div id="c14-btn">Je rejoins la formation<svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6" /></svg></div>
+        </div>
+        <svg id="c14-hand" viewBox="0 0 64 64">
+          <path d="M24 30V10a5 5 0 0 1 10 0v16l12 2.5c4 .8 6.5 4.5 5.8 8.5L50 50c-.7 4-4 7-8 7H32c-2.7 0-5.2-1.3-6.7-3.5L14 38a4.6 4.6 0 0 1 7-5.8z"
+            fill="#fff7e8" stroke="#0b1026" stroke-width="3" stroke-linejoin="round" />
+        </svg>
+        <svg id="c14-down" viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l6 6 6-6M6 12l6 6 6-6" /></svg>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          // Plein écran : le prix
+          tl.fromTo("#c14-panel", { clipPath: "circle(0% at 50% 40%)" }, { clipPath: "circle(150% at 50% 40%)", duration: 0.45, ease: "power3.out" }, 0.05);
+          tl.fromTo("#c14-grid", { y: 0 }, { y: 80, duration: 4.4, ease: "none" }, 0);
+          tl.fromTo("#c14-glow", { scale: 0.9 }, { scale: 1.2, duration: 4.4, ease: "sine.inOut" }, 0);
+          tl.fromTo("#c14-ghost", { x: 0 }, { x: -450, duration: 4.4, ease: "none" }, 0);
+          tl.fromTo("#c14-head", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.25);
+          tl.fromTo("#c14-now", { autoAlpha: 0, scale: 0.6, y: 80 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(1.6)" }, 0.75);
+          tl.fromTo("#c14-off", { autoAlpha: 0, scale: 0, rotation: -40 }, { autoAlpha: 1, scale: 1, rotation: 10, duration: 0.4, ease: "back.out(2.4)" }, 1.4);
+          tl.fromTo("#c14-after", { autoAlpha: 0, y: 120 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 2.9);
+          tl.fromTo("#c14-after .pr", { scale: 2.2, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.3, ease: "power4.out" }, 3.28);
+          tl.fromTo("#c14-after", { x: 0 }, { x: 12, duration: 0.05, ease: "none", yoyo: true, repeat: 3, immediateRender: false }, 3.35);
+          tl.to(["#c14-head", "#c14-now", "#c14-off", "#c14-after"], { autoAlpha: 0, scale: 0.85, duration: 0.3, ease: "power2.in" }, 4.05);
+          tl.to("#c14-panel", { clipPath: "circle(0% at 50% 40%)", duration: 0.4, ease: "power3.in" }, 4.1);
+          // Retour visage : l'offre + CTA
+          tl.fromTo("#c14-top .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 5.4);
+          tl.to("#c14-top", { autoAlpha: 0, y: -40, duration: 0.2 }, 11.0);
+          tl.fromTo("#c14-btnwrap", { autoAlpha: 0, y: 160, scale: 0.8 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 8.05);
+          tl.fromTo("#c14-hand", { autoAlpha: 0, x: 240, y: 260 }, { autoAlpha: 1, x: 0, y: 0, duration: 0.35, ease: "power3.out" }, 8.1);
+          tl.fromTo("#c14-hand", { scale: 1 }, { scale: 0.85, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1, immediateRender: false }, 8.45);
+          tl.fromTo("#c14-btn", { scale: 1 }, { scale: 0.94, duration: 0.08, ease: "power2.in", yoyo: true, repeat: 1, immediateRender: false }, 8.45);
+          tl.to("#c14-hand", { autoAlpha: 0, x: 200, y: 200, duration: 0.3, ease: "power2.in" }, 9.1);
+          tl.fromTo("#c14-down", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 9.4);
+          tl.fromTo("#c14-down", { y: 0 }, { y: 22, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 17, immediateRender: false }, 9.4);
+          tl.fromTo("#c14-btn", { scale: 1 }, { scale: 1.05, duration: 0.3, ease: "sine.inOut", yoyo: true, repeat: 7, immediateRender: false }, 9.6);
+          tl.fromTo("#c14-dead .pill", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "power4.out" }, 11.25);
+          tl.fromTo("#c14-dead .pill", { scale: 1 }, { scale: 1.12, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 12.42);
+          window.__timelines["ov-c14"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

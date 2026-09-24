@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c06 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c06-title { position: absolute; left: 40px; right: 40px; top: 150px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        #c06-una { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; }
+        #c06-ghost { top: 1480px; }
+        #c06-head { position: absolute; left: 60px; right: 60px; top: 150px; text-align: center; }
+        #c06-head .headline { font-size: 150px; }
+        #c06-head .sub { margin-top: 10px; font-weight: 700; font-size: 36px; color: #ffd98a; letter-spacing: .06em; }
+        #c06-list { position: absolute; left: 80px; right: 80px; top: 430px; display: flex; flex-direction: column; gap: 22px; }
+        .c06-row { position: relative; height: 136px; border-radius: 30px; background: rgba(22,33,74,.92); border: 3px solid rgba(242,179,61,.35);
+          display: flex; align-items: center; gap: 28px; padding: 0 30px; }
+        .c06-row .wk { width: 120px; flex: none; font-family: "League Gothic", sans-serif; font-size: 64px; color: #f2b33d; line-height: 1; }
+        .c06-row .ic { width: 84px; height: 84px; flex: none; border-radius: 22px; background: rgba(242,179,61,.14); display: flex; align-items: center; justify-content: center; }
+        .c06-row .ic svg { width: 54px; height: 54px; }
+        .c06-row .lb { font-weight: 900; font-size: 44px; color: #fff7e8; text-transform: uppercase; line-height: 1.05; }
+        #c06-r1 { border-color: #f2b33d; }
+        #c06-week { position: absolute; left: 60px; right: 60px; top: 170px; text-align: center; }
+        #c06-week .kicker { font-size: 40px; }
+        #c06-week .headline { font-size: 190px; margin-top: 34px; }
+        #c06-term { position: absolute; left: 70px; right: 70px; top: 640px; height: 400px; border-radius: 34px; background: #0d1433;
+          border: 3px solid rgba(242,179,61,.6); box-shadow: 0 30px 80px rgba(0,0,0,.5); overflow: hidden; }
+        #c06-term .bar { height: 64px; background: #16214a; display: flex; align-items: center; gap: 12px; padding: 0 26px; }
+        #c06-term .dot { width: 18px; height: 18px; border-radius: 50%; background: #ff4b55; }
+        #c06-term .dot.y { background: #f2b33d; } #c06-term .dot.g { background: #25d366; }
+        #c06-term .ttl { margin-left: 14px; font-weight: 700; font-size: 26px; color: #ffd98a; letter-spacing: .08em; }
+        #c06-prompt { padding: 26px 32px 0; font-family: "JetBrains Mono", monospace; font-size: 36px; line-height: 1.35; color: #fff7e8; min-height: 170px; }
+        #c06-prompt .gt { color: #f2b33d; }
+        #c06-caret { display: inline-block; width: 18px; height: 40px; background: #f2b33d; vertical-align: -6px; margin-left: 4px; }
+        #c06-ans { padding: 12px 32px; display: flex; flex-direction: column; gap: 16px; }
+        .c06-l { height: 22px; border-radius: 11px; background: rgba(255,217,138,.35); transform-origin: 0 50%; }
+        #c06-chip1, #c06-chip2 { position: absolute; left: 0; right: 0; top: 1100px; display: flex; justify-content: center; }
+        #c06-chip1 .pill, #c06-chip2 .pill { font-size: 44px; }
+      </style>
+      <div id="ov-c06" data-composition-id="ov-c06" data-width="1080" data-height="1920" data-duration="13.6">
+        <!-- Plan visage -->
+        <div id="c06-title">
+          <div class="top-title" id="c06-t1">Pourquoi tout le monde</div>
+          <div class="top-title" id="c06-t2"><span class="hl">en parle</span></div>
+        </div>
+        <div id="c06-una">
+          <div class="pill"><svg viewBox="0 0 24 24" fill="#0b1026"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>12 avis · 12 positifs</div>
+        </div>
+
+        <!-- Plein écran : le programme -->
+        <div class="fs" id="c06-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c06-grid"></div>
+          <div class="fs-glow" id="c06-glow"></div>
+          <div class="ghost" id="c06-ghost">Programme · Programme</div>
+        </div>
+        <div id="c06-head">
+          <div class="headline">Le <span class="gold">programme</span></div>
+          <div class="sub">Tout ce que tu vas apprendre, semaine après semaine</div>
+        </div>
+        <div id="c06-list">
+          <div class="c06-row" id="c06-r1"><div class="wk">SEM. 1</div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 5h16v11H9l-5 4z" /><path d="M12 8v5M9.5 10.5h5" /></svg></div><div class="lb">Prompt engineering</div></div>
+          <div class="c06-row" id="c06-r2"><div class="wk">SEM. 2</div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.2" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z" /></svg></div><div class="lb">Automatisations</div></div>
+          <div class="c06-row" id="c06-r3"><div class="wk">SEM. 3</div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M5 9h14v11H5z" /><path d="M12 4v5M9 13.5h.01M15 13.5h.01M9.5 17h5" /></svg></div><div class="lb">Agent IA WhatsApp</div></div>
+          <div class="c06-row" id="c06-r4"><div class="wk">SEM. 4</div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 2.5h10v19H7z" /><path d="M11 18h2" /></svg></div><div class="lb">Application mobile</div></div>
+          <div class="c06-row" id="c06-r5"><div class="wk">SEM. 5</div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M3 5h18v14H3z" /><path d="M3 9h18M6 7h.01M8.5 7h.01" /></svg></div><div class="lb">Site web complet</div></div>
+        </div>
+
+        <!-- Semaine 1 -->
+        <div id="c06-week">
+          <div class="kicker">Semaine 01</div>
+          <div class="headline">Prompt <span class="gold">engineering</span></div>
+        </div>
+        <div id="c06-term">
+          <div class="bar"><div class="dot"></div><div class="dot y"></div><div class="dot g"></div><div class="ttl">ASSISTANT IA</div></div>
+          <div id="c06-prompt"><span class="gt">&gt; </span><span id="c06-typed"></span><span id="c06-caret"></span></div>
+          <div id="c06-ans"><div class="c06-l" style="width: 92%"></div><div class="c06-l" style="width: 78%"></div><div class="c06-l" style="width: 85%"></div></div>
+        </div>
+        <div id="c06-chip1"><div class="pill dark"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>Compétence très recherchée</div></div>
+        <div id="c06-chip2"><div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M4 21V7l6-4v18M10 21h10V10l-10-3" /><path d="M14 13h2M14 17h2" /></svg>Les entreprises paient pour ça</div></div>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          // Plan visage
+          tl.fromTo("#c06-t1", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, 1.0);
+          tl.fromTo("#c06-t2", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, 2.3);
+          tl.fromTo("#c06-una .pill", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 3.85);
+          tl.to(["#c06-title", "#c06-una"], { autoAlpha: 0, duration: 0.2 }, 4.7);
+          // Plein écran : liste du programme
+          tl.fromTo("#c06-panel", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(150% at 50% 50%)", duration: 0.5, ease: "power3.out" }, 4.72);
+          tl.fromTo("#c06-grid", { y: 0 }, { y: 150, duration: 8.9, ease: "none" }, 4.7);
+          tl.fromTo("#c06-glow", { scale: 0.85 }, { scale: 1.2, duration: 4.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 4.7);
+          tl.fromTo("#c06-ghost", { x: 0 }, { x: -800, duration: 8.9, ease: "none" }, 4.7);
+          tl.fromTo("#c06-head", { autoAlpha: 0, y: -40 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power3.out" }, 4.95);
+          ["#c06-r1", "#c06-r2", "#c06-r3", "#c06-r4", "#c06-r5"].forEach((id, i) => {
+            tl.fromTo(id, { autoAlpha: 0, x: i % 2 ? 300 : -300 }, { autoAlpha: 1, x: 0, duration: 0.35, ease: "back.out(1.4)" }, 5.15 + i * 0.12);
+            if (i > 0) tl.to(id, { autoAlpha: 0.3, duration: 0.25 }, 6.7);
+          });
+          tl.fromTo("#c06-r1", { scale: 1 }, { scale: 1.06, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 6.7);
+          // Zoom sur la semaine 1
+          tl.to(["#c06-head", "#c06-list"], { autoAlpha: 0, scale: 1.3, duration: 0.35, ease: "power2.in" }, 7.5);
+          tl.fromTo("#c06-week .kicker", { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 7.75);
+          tl.fromTo("#c06-week .headline", { autoAlpha: 0, scale: 1.8 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "power4.out" }, 8.3);
+          tl.fromTo("#c06-term", { autoAlpha: 0, y: 160 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: "back.out(1.4)" }, 8.6);
+          const text = "Rédige une offre irrésistible pour mon service, ton persuasif, 3 arguments clés.";
+          const typed = document.getElementById("c06-typed");
+          const tp = { n: 0 };
+          tl.fromTo(tp, { n: 0 }, { n: text.length, duration: 1.6, ease: "none",
+            onUpdate: () => { typed.textContent = text.slice(0, Math.floor(tp.n)); } }, 9.0);
+          tl.fromTo("#c06-caret", { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.25, ease: "steps(1)", yoyo: true, repeat: 7 }, 8.6);
+          tl.fromTo(".c06-l", { scaleX: 0 }, { scaleX: 1, duration: 0.4, stagger: 0.18, ease: "power2.out" }, 10.7);
+          tl.fromTo("#c06-chip1 .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 9.7);
+          tl.to("#c06-chip1", { autoAlpha: 0, y: -30, duration: 0.2 }, 11.4);
+          tl.fromTo("#c06-chip2 .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 11.6);
+          tl.fromTo("#c06-chip2 .pill", { scale: 1 }, { scale: 1.08, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 12.42);
+          window.__timelines["ov-c06"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

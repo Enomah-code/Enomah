@@ -1,0 +1,5 @@
+# médias lourds (rushs convertis, rendus, captures de contrôle)
+assets/aroll/*.mp4
+renders/
+snapshots/
+.hyperframes/

@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c11 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c11-title { position: absolute; left: 40px; right: 40px; top: 150px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        #c11-row { position: absolute; left: 30px; right: 30px; top: 1040px; height: 150px; display: flex; align-items: center; justify-content: center; gap: 14px; }
+        #c11-row .pill { font-size: 38px; padding: 20px 28px; gap: 12px; }
+        #c11-row .pill svg { width: 40px; height: 40px; }
+        .c11-arr { width: 54px; height: 54px; flex: none; }
+        #c11-ghost { top: 1480px; }
+        #c11-ringwrap { position: absolute; left: 240px; top: 200px; width: 600px; height: 600px; }
+        #c11-ring { position: absolute; inset: 0; width: 600px; height: 600px; }
+        #c11-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #c11-num .n { font-family: "League Gothic", sans-serif; font-size: 250px; line-height: .9; color: #fff7e8; }
+        #c11-num .u { font-weight: 900; font-size: 44px; color: #f2b33d; letter-spacing: .08em; }
+        #c11-per { position: absolute; left: 0; right: 0; top: 850px; text-align: center; }
+        #c11-per .headline { font-size: 130px; }
+        #c11-code { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; }
+        #c11-review { left: 90px; top: 560px; width: 900px; }
+        #c11-review-k { position: absolute; left: 0; right: 0; top: 470px; display: flex; justify-content: center; }
+      </style>
+      <div id="ov-c11" data-composition-id="ov-c11" data-width="1080" data-height="1920" data-duration="12.2">
+        <div id="c11-title">
+          <div class="top-title" id="c11-t1">Ce qui change</div>
+          <div class="top-title" id="c11-t2"><span class="hl">tout</span></div>
+        </div>
+        <div id="c11-row">
+          <div class="pill dark" id="c11-a"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z" /></svg>Créer</div>
+          <svg class="c11-arr" id="c11-ar1" viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6" /></svg>
+          <div class="pill" id="c11-b"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h12v19l-3-2-3 2-3-2-3 2z" /><path d="M9 8h6M9 12h6" /></svg>Facturer</div>
+          <svg class="c11-arr" id="c11-ar2" viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6" /></svg>
+          <div class="pill green" id="c11-c"><svg viewBox="0 0 24 24" fill="none" stroke="#062a14" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M15 7h6v6" /></svg>Revenus</div>
+        </div>
+
+        <div class="fs" id="c11-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c11-grid"></div>
+          <div class="fs-glow" id="c11-glow"></div>
+          <div class="ghost" id="c11-ghost">10 min · 10 min · 10 min</div>
+        </div>
+        <div id="c11-ringwrap">
+          <svg id="c11-ring" viewBox="0 0 600 600">
+            <circle cx="300" cy="300" r="270" fill="none" stroke="rgba(255,217,138,.14)" stroke-width="26" />
+            <circle id="c11-arc" cx="300" cy="300" r="270" fill="none" stroke="#f2b33d" stroke-width="26" stroke-linecap="round"
+              stroke-dasharray="1696.5" stroke-dashoffset="1696.5" transform="rotate(-90 300 300)" />
+          </svg>
+          <div id="c11-num"><div class="n" id="c11-n">8–10</div><div class="u">minutes</div></div>
+        </div>
+        <div id="c11-per"><div class="headline">par <span class="gold">jour</span></div></div>
+        <div id="c11-code">
+          <div class="pill dark"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" /></svg>Zéro connaissance en code</div>
+        </div>
+        <div id="c11-review-k"><div class="kicker">L'avis d'Élie</div></div>
+        <div class="proof" id="c11-review"><img src="assets/img/avis-elie.png" alt="" /></div>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#c11-t1", { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, 0.45);
+          tl.fromTo("#c11-t2", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "power4.out" }, 0.8);
+          tl.fromTo("#c11-a", { autoAlpha: 0, y: 80 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "back.out(2)" }, 2.55);
+          tl.fromTo("#c11-ar1", { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.25 }, 3.4);
+          tl.fromTo("#c11-b", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.6)" }, 4.3);
+          tl.fromTo("#c11-a", { autoAlpha: 1 }, { autoAlpha: 0.55, duration: 0.3, immediateRender: false }, 4.4);
+          tl.fromTo("#c11-ar2", { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.25 }, 5.2);
+          tl.fromTo("#c11-c", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.6)" }, 6.55);
+          tl.fromTo("#c11-c", { scale: 1 }, { scale: 1.1, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 6.95);
+          // Plein écran : 8 à 10 minutes par jour
+          tl.fromTo("#c11-panel", { clipPath: "circle(0% at 50% 60%)" }, { clipPath: "circle(150% at 50% 60%)", duration: 0.45, ease: "power3.out" }, 7.25);
+          tl.fromTo("#c11-grid", { y: 0 }, { y: 100, duration: 4.95, ease: "none" }, 7.25);
+          tl.fromTo("#c11-glow", { scale: 0.9 }, { scale: 1.2, duration: 4.95, ease: "sine.inOut" }, 7.25);
+          tl.fromTo("#c11-ghost", { x: 0 }, { x: -500, duration: 4.95, ease: "none" }, 7.25);
+          tl.to(["#c11-title", "#c11-row"], { autoAlpha: 0, duration: 0.05 }, 7.65);
+          tl.fromTo("#c11-ringwrap", { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 7.4);
+          tl.fromTo("#c11-arc", { attr: { "stroke-dashoffset": 1696.5 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.0, ease: "power2.inOut" }, 7.5);
+          tl.fromTo("#c11-per", { autoAlpha: 0, y: 50 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 8.1);
+          tl.fromTo("#c11-code .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 10.05);
+          // "comme Élie"
+          tl.to(["#c11-ringwrap", "#c11-per", "#c11-code"], { autoAlpha: 0, y: -200, duration: 0.3, ease: "power2.in" }, 11.35);
+          tl.fromTo("#c11-review-k", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 11.55);
+          tl.fromTo("#c11-review", { autoAlpha: 0, y: 260 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "back.out(1.4)" }, 11.5);
+          window.__timelines["ov-c11"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

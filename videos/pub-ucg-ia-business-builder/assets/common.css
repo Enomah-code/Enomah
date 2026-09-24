@@ -1,0 +1,181 @@
+/* Design partagé — pub UGC "IA Business Building" (EMK Blue Diamond)
+   Palette : bleu nuit profond + or (reprend la vignette produit et le certificat). */
+:root {
+  --navy: #0a1230;
+  --navy-deep: #050a1d;
+  --navy-soft: #16214a;
+  --gold: #f2b33d;
+  --gold-light: #ffd98a;
+  --cream: #fff7e8;
+  --ink: #0b1026;
+  --green: #25d366;
+  --red: #ff4b55;
+  --display: "League Gothic", "Oswald", sans-serif;
+  --sans: "Montserrat", sans-serif;
+}
+
+/* Racine de chaque overlay : transparente, plein cadre */
+.ov-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: var(--sans);
+  color: var(--cream);
+}
+
+/* Panneau plein écran (scènes où le visage est masqué) */
+.fs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.fs-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% 18%, #1c2a63 0%, rgba(10, 18, 48, 0) 60%),
+    radial-gradient(90% 60% at 50% 110%, rgba(242, 179, 61, 0.22) 0%, rgba(10, 18, 48, 0) 60%),
+    var(--navy);
+}
+.fs-grid {
+  position: absolute;
+  inset: -200px;
+  background-image:
+    linear-gradient(rgba(255, 217, 138, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 217, 138, 0.06) 1px, transparent 1px);
+  background-size: 90px 90px;
+}
+.fs-glow {
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  left: 90px;
+  top: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 179, 61, 0.28) 0%, rgba(242, 179, 61, 0) 65%);
+}
+.ghost {
+  position: absolute;
+  left: 0;
+  width: 2400px;
+  font-family: var(--display);
+  font-size: 420px;
+  line-height: 1;
+  color: rgba(255, 217, 138, 0.045);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Titres / étiquettes */
+.kicker {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 34px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.headline {
+  font-family: var(--display);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.92;
+  color: var(--cream);
+  text-align: center;
+}
+.gold {
+  color: var(--gold);
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 38px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 900;
+  font-size: 48px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+}
+.pill.dark {
+  background: rgba(8, 13, 36, 0.92);
+  color: var(--cream);
+  border: 3px solid rgba(242, 179, 61, 0.9);
+}
+.pill.green {
+  background: var(--green);
+  color: #062a14;
+}
+.pill.red {
+  background: var(--red);
+  color: #fff;
+}
+.pill svg {
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
+
+/* Carte de preuve (captures) */
+.proof {
+  position: absolute;
+  border-radius: 34px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 4px rgba(242, 179, 61, 0.95),
+    0 30px 80px rgba(0, 0, 0, 0.55);
+  background: #111;
+}
+.proof img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Titre du haut sur les plans visage (zone mur, au-dessus de la tête) */
+.top-band {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.top-title {
+  font-family: var(--display);
+  font-size: 118px;
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 6px 0 rgba(5, 10, 29, 0.85),
+    0 14px 40px rgba(5, 10, 29, 0.7);
+}
+.top-title .hl {
+  display: inline-block;
+  padding: 0 18px;
+  background: var(--gold);
+  color: var(--ink);
+  text-shadow: none;
+}
+
+/* Zone torse (sous le visage, au-dessus des sous-titres) */
+.torso-band {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 990px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c03 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c03-tag { position: absolute; left: 60px; top: 1010px; display: flex; align-items: center; gap: 24px;
+          padding: 18px 40px 18px 18px; border-radius: 999px; background: rgba(5,10,29,.9); border: 3px solid #f2b33d; }
+        #c03-tag .av { width: 104px; height: 104px; border-radius: 50%; background: #f2b33d; color: #0b1026;
+          font-weight: 900; font-size: 50px; display: flex; align-items: center; justify-content: center; }
+        #c03-tag .nm { font-weight: 900; font-size: 46px; color: #fff7e8; }
+        #c03-tag .rl { font-weight: 700; font-size: 30px; color: #ffd98a; }
+        #c03-tickets { position: absolute; left: 40px; right: 40px; top: 985px; height: 290px; }
+        .c03-t { position: absolute; top: 20px; width: 300px; height: 250px; border-radius: 26px; background: #fff7e8;
+          color: #0b1026; padding: 26px; display: flex; flex-direction: column; gap: 10px;
+          box-shadow: 0 22px 50px rgba(0,0,0,.5); }
+        .c03-t .k { font-weight: 700; font-size: 24px; letter-spacing: .12em; color: #7a5a1a; }
+        .c03-t .n { font-family: "League Gothic", sans-serif; font-size: 76px; line-height: .95; text-transform: uppercase; }
+        .c03-t .p { font-weight: 900; font-size: 30px; color: #0b1026; }
+        .c03-t .x { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .c03-t .x svg { width: 210px; height: 210px; }
+        #c03-t1 { left: 0; } #c03-t2 { left: 350px; } #c03-t3 { left: 700px; }
+        #c03-proof { left: 60px; top: 150px; width: 960px; }
+        #c03-proof-k { position: absolute; left: 0; right: 0; top: 90px; display: flex; justify-content: center; }
+        #c03-proof-k .kicker { background: rgba(5,10,29,.85); padding: 10px 24px; border-radius: 999px; }
+        #c03-proud { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; }
+        #c03-why { position: absolute; inset: 0; background: rgba(5,10,29,.78); display: flex; align-items: center; justify-content: center; }
+        #c03-why .w { font-family: "League Gothic", sans-serif; font-size: 250px; line-height: .9; color: #f2b33d; text-transform: uppercase;
+          text-shadow: 0 20px 60px rgba(0,0,0,.6); }
+      </style>
+      <div id="ov-c03" data-composition-id="ov-c03" data-width="1080" data-height="1920" data-duration="10.6">
+        <div id="c03-tag">
+          <div class="av">É</div>
+          <div><div class="nm">M. Élie</div><div class="rl">Apprenant · pas novice en IA</div></div>
+        </div>
+
+        <div id="c03-tickets">
+          <div class="c03-t" id="c03-t1"><div class="k">FORMATION IA</div><div class="n">N°1</div><div class="p">PAYÉE</div>
+            <div class="x"><svg viewBox="0 0 24 24" fill="none" stroke="#ff4b55" stroke-width="3.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19" /></svg></div></div>
+          <div class="c03-t" id="c03-t2"><div class="k">FORMATION IA</div><div class="n">N°2</div><div class="p">PAYÉE</div>
+            <div class="x"><svg viewBox="0 0 24 24" fill="none" stroke="#ff4b55" stroke-width="3.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19" /></svg></div></div>
+          <div class="c03-t" id="c03-t3"><div class="k">FORMATION IA</div><div class="n">N°3</div><div class="p">PAYÉE</div>
+            <div class="x"><svg viewBox="0 0 24 24" fill="none" stroke="#ff4b55" stroke-width="3.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19" /></svg></div></div>
+        </div>
+
+        <div id="c03-proof-k"><div class="kicker">Ce qu'il nous a écrit</div></div>
+        <div class="proof" id="c03-proof"><img src="assets/img/wa-b3.png" alt="" /></div>
+
+        <div id="c03-proud">
+          <div class="pill green"><svg viewBox="0 0 24 24" fill="none" stroke="#062a14" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Aujourd'hui : très fier</div>
+        </div>
+
+        <div id="c03-why"><div class="w" id="c03-why-w">Pourquoi ?</div></div>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          // "Monsieur Élie"
+          tl.fromTo("#c03-tag", { autoAlpha: 0, x: -400 }, { autoAlpha: 1, x: 0, duration: 0.4, ease: "back.out(1.5)" }, 1.8);
+          tl.to("#c03-tag", { autoAlpha: 0, x: -400, duration: 0.25, ease: "power2.in" }, 2.55);
+          // "a déjà payé plusieurs formations" → 3 tickets
+          ["#c03-t1", "#c03-t2", "#c03-t3"].forEach((id, i) => {
+            tl.fromTo(id, { autoAlpha: 0, y: 220, rotation: (i - 1) * 14 }, { autoAlpha: 1, y: 0, rotation: (i - 1) * 4, duration: 0.4, ease: "back.out(1.6)" }, 2.7 + i * 0.16);
+            tl.fromTo(id + " .x", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.2, ease: "power4.out" }, 5.55 + i * 0.12);
+            tl.fromTo(id, { x: 0 }, { x: 10, duration: 0.05, ease: "none", yoyo: true, repeat: 3, immediateRender: false }, 5.6 + i * 0.12);
+          });
+          tl.to("#c03-tickets", { autoAlpha: 0, y: 120, duration: 0.3, ease: "power2.in" }, 6.75);
+          // La preuve : "On a payé des formations très chères qui nous ont pas convaincu"
+          tl.fromTo("#c03-proof-k", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 }, 6.1);
+          tl.fromTo("#c03-proof", { autoAlpha: 0, y: -80, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 6.15);
+          // "Aujourd'hui, il est très fier"
+          tl.fromTo("#c03-proud .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 7.75);
+          tl.to(["#c03-proof", "#c03-proof-k", "#c03-proud"], { autoAlpha: 0, duration: 0.25 }, 9.3);
+          // "Et tu veux savoir pourquoi ?"
+          tl.fromTo("#c03-why", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.2 }, 9.55);
+          tl.fromTo("#c03-why-w", { scale: 2.6, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: "power4.out" }, 9.9);
+          tl.fromTo("#c03-why-w", { rotation: 0 }, { rotation: -3, duration: 0.3, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, 10.0);
+          window.__timelines["ov-c03"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

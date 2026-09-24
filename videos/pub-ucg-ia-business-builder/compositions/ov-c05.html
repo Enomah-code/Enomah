@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c05 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c05-ghost { top: 1480px; }
+        #c05-k { position: absolute; left: 0; right: 0; top: 170px; display: flex; justify-content: center; }
+        #c05-stars { position: absolute; left: 0; right: 0; top: 250px; display: flex; justify-content: center; gap: 18px; }
+        #c05-stars svg { width: 84px; height: 84px; }
+        #c05-review { left: 70px; top: 380px; width: 940px; }
+        #c05-sat { position: absolute; left: 0; right: 0; top: 960px; display: flex; justify-content: center; }
+        #c05-ringwrap { position: absolute; left: 190px; top: 170px; width: 700px; height: 700px; }
+        #c05-ring { position: absolute; inset: 0; width: 700px; height: 700px; }
+        #c05-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+          font-family: "League Gothic", sans-serif; font-size: 330px; color: #f2b33d; line-height: 1; }
+        #c05-lbl { position: absolute; left: 40px; right: 40px; top: 885px; text-align: center;
+          font-family: "League Gothic", sans-serif; font-size: 130px; line-height: .95; text-transform: uppercase; color: #fff7e8; }
+        #c05-stats { left: 70px; top: 1040px; width: 940px; box-shadow: 0 0 0 4px rgba(242,179,61,.95), 0 30px 80px rgba(0,0,0,.55); }
+        #c05-burst { position: absolute; left: 540px; top: 520px; width: 0; height: 0; }
+        .c05-sp { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: #ffd98a; }
+      </style>
+      <div id="ov-c05" data-composition-id="ov-c05" data-width="1080" data-height="1920" data-duration="8.8">
+        <div class="fs" id="c05-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c05-grid"></div>
+          <div class="fs-glow" id="c05-glow"></div>
+          <div class="ghost" id="c05-ghost">100% · 100% · 100%</div>
+        </div>
+        <div id="c05-k"><div class="kicker">Avis vérifié · Chariow</div></div>
+        <div id="c05-stars">
+          <svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>
+          <svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>
+          <svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>
+          <svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>
+          <svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>
+        </div>
+        <div class="proof" id="c05-review"><img src="assets/img/avis-elie.png" alt="" /></div>
+        <div id="c05-sat">
+          <div class="pill green"><svg viewBox="0 0 24 24" fill="none" stroke="#062a14" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Apprenants très satisfaits</div>
+        </div>
+
+        <div id="c05-ringwrap">
+          <svg id="c05-ring" viewBox="0 0 700 700">
+            <circle cx="350" cy="350" r="320" fill="none" stroke="rgba(255,217,138,.14)" stroke-width="30" />
+            <circle id="c05-arc" cx="350" cy="350" r="320" fill="none" stroke="#f2b33d" stroke-width="30" stroke-linecap="round"
+              stroke-dasharray="2010.6" stroke-dashoffset="2010.6" transform="rotate(-90 350 350)" />
+          </svg>
+          <div id="c05-num">0%</div>
+        </div>
+        <div id="c05-burst"></div>
+        <div id="c05-lbl">d'avis <span class="gold">positifs</span></div>
+        <div class="proof" id="c05-stats"><img src="assets/img/chariow-100.png" alt="" /></div>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#c05-panel", { clipPath: "circle(0% at 50% 60%)" }, { clipPath: "circle(150% at 50% 60%)", duration: 0.5, ease: "power3.out" }, 0.3);
+          tl.fromTo("#c05-grid", { y: 0 }, { y: 160, duration: 8.8, ease: "none" }, 0);
+          tl.fromTo("#c05-glow", { scale: 0.85 }, { scale: 1.2, duration: 4.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+          tl.fromTo("#c05-ghost", { x: 0 }, { x: -700, duration: 8.8, ease: "none" }, 0);
+          // Avis d'Élie (Chariow)
+          tl.fromTo("#c05-k", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.55);
+          tl.fromTo("#c05-stars svg", { autoAlpha: 0, scale: 0, rotation: -60 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.3, stagger: 0.07, ease: "back.out(2.6)" }, 0.8);
+          tl.fromTo("#c05-review", { autoAlpha: 0, y: 160, rotation: 3 }, { autoAlpha: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, 0.65);
+          tl.fromTo("#c05-sat .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 3.7);
+          tl.to(["#c05-k", "#c05-stars", "#c05-review", "#c05-sat"], { autoAlpha: 0, y: -160, duration: 0.35, ease: "power2.in", stagger: 0.03 }, 4.7);
+          // 100 % d'avis positifs
+          const proxy = { v: 0 };
+          const num = document.getElementById("c05-num");
+          tl.fromTo("#c05-ringwrap", { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 5.0);
+          tl.fromTo(proxy, { v: 0 }, { v: 100, duration: 1.1, ease: "power2.inOut",
+            onUpdate: () => { num.textContent = Math.round(proxy.v) + "%"; } }, 5.12);
+          tl.fromTo("#c05-arc", { attr: { "stroke-dashoffset": 2010.6 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.1, ease: "power2.inOut" }, 5.12);
+          tl.fromTo("#c05-num", { scale: 0.7 }, { scale: 1, duration: 1.1, ease: "power2.inOut" }, 5.12);
+          tl.fromTo("#c05-ringwrap", { scale: 1 }, { scale: 1.08, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 6.22);
+          // étincelles déterministes
+          const burst = document.getElementById("c05-burst");
+          tl.fromTo(burst, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 6.21);
+          for (let i = 0; i < 14; i++) {
+            const d = document.createElement("div");
+            d.className = "c05-sp";
+            burst.appendChild(d);
+            const a = (i / 14) * Math.PI * 2;
+            const r = 380 + (i % 3) * 60;
+            tl.fromTo(d, { x: 0, y: 0, scale: 1.4, autoAlpha: 1 }, { x: Math.cos(a) * r, y: Math.sin(a) * r, scale: 0, autoAlpha: 0, duration: 0.8, ease: "power3.out" }, 6.22);
+          }
+          tl.fromTo("#c05-lbl", { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power3.out" }, 6.5);
+          tl.fromTo("#c05-stats", { autoAlpha: 0, y: 140 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: "back.out(1.5)" }, 7.0);
+          window.__timelines["ov-c05"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

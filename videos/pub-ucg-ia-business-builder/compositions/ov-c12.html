@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c12 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c12-ghost { top: 1480px; }
+        #c12-head { position: absolute; left: 40px; right: 40px; top: 140px; text-align: center; }
+        #c12-head .kicker { font-size: 38px; }
+        #c12-head .headline { font-size: 116px; margin-top: 26px; }
+        #c12-cert { position: absolute; left: 130px; top: 390px; width: 820px; height: 820px; border-radius: 18px; overflow: hidden;
+          box-shadow: 0 0 0 5px rgba(242,179,61,.95), 0 40px 120px rgba(0,0,0,.6); }
+        #c12-cert img { display: block; width: 100%; height: 100%; }
+        #c12-shine { position: absolute; top: -100px; bottom: -100px; left: 0; width: 220px;
+          background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 100%); }
+        #c12-stamp { position: absolute; right: 70px; top: 1090px; }
+        #c12-stamp .pill { font-size: 54px; }
+        #c12-title { position: absolute; left: 40px; right: 40px; top: 150px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        #c12-strikewrap { position: relative; display: inline-block; }
+        #c12-strike { position: absolute; left: -10px; right: -10px; top: 46%; height: 16px; background: #ff4b55; border-radius: 8px; transform-origin: 0 50%; }
+        #c12-chips { position: absolute; left: 0; right: 0; top: 990px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+        #c12-chips .pill { font-size: 44px; }
+      </style>
+      <div id="ov-c12" data-composition-id="ov-c12" data-width="1080" data-height="1920" data-duration="14.2">
+        <div class="fs" id="c12-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c12-grid"></div>
+          <div class="fs-glow" id="c12-glow"></div>
+          <div class="ghost" id="c12-ghost">Certifié · Certifié</div>
+        </div>
+        <div id="c12-head">
+          <div class="kicker">À la clé</div>
+          <div class="headline">AI Business Builder <span class="gold">certifié</span></div>
+        </div>
+        <div id="c12-cert"><img src="assets/img/certificat.png" alt="" /><div id="c12-shine"></div></div>
+        <div id="c12-stamp"><div class="pill red"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Certifié</div></div>
+
+        <div id="c12-title">
+          <div class="top-title" id="c12-t1">Pas juste des</div>
+          <div class="top-title" id="c12-t2"><span id="c12-strikewrap">connaissances<span id="c12-strike"></span></span></div>
+        </div>
+        <div id="c12-chips">
+          <div class="pill" id="c12-c1"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Compétences monétisables</div>
+          <div class="pill green" id="c12-c2"><svg viewBox="0 0 24 24" fill="none" stroke="#062a14" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Portfolio déjà construit</div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          // Plein écran : le certificat
+          tl.fromTo("#c12-panel", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(150% at 50% 45%)", duration: 0.5, ease: "power3.out" }, 0.3);
+          tl.fromTo("#c12-grid", { y: 0 }, { y: 100, duration: 6.8, ease: "none" }, 0);
+          tl.fromTo("#c12-glow", { scale: 0.85 }, { scale: 1.25, duration: 6.8, ease: "sine.inOut" }, 0);
+          tl.fromTo("#c12-ghost", { x: 0 }, { x: -700, duration: 6.8, ease: "none" }, 0);
+          tl.fromTo("#c12-head .kicker", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.45);
+          tl.fromTo("#c12-cert", { autoAlpha: 0, rotationY: 75, rotationX: 12, scale: 0.7, transformPerspective: 1600 },
+            { autoAlpha: 1, rotationY: 0, rotationX: 0, scale: 1, transformPerspective: 1600, duration: 0.9, ease: "power3.out" }, 1.4);
+          tl.fromTo("#c12-shine", { x: -300, skewX: -18 }, { x: 1100, skewX: -18, duration: 0.9, ease: "power2.inOut" }, 2.4);
+          tl.fromTo("#c12-head .headline", { autoAlpha: 0, scale: 1.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, 4.5);
+          tl.fromTo("#c12-stamp .pill", { autoAlpha: 0, scale: 2.8, rotation: -20 }, { autoAlpha: 1, scale: 1, rotation: -8, duration: 0.28, ease: "power4.out" }, 5.85);
+          tl.fromTo("#c12-cert", { scale: 1 }, { scale: 1.035, duration: 0.14, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 5.9);
+          tl.fromTo("#c12-shine", { x: -300, skewX: -18 }, { x: 1100, skewX: -18, duration: 0.8, ease: "power2.inOut", immediateRender: false }, 5.95);
+          // Retour visage
+          tl.to(["#c12-head", "#c12-cert", "#c12-stamp"], { autoAlpha: 0, scale: 0.8, duration: 0.3, ease: "power2.in" }, 6.6);
+          tl.to("#c12-panel", { clipPath: "circle(0% at 50% 45%)", duration: 0.4, ease: "power3.in" }, 6.7);
+          tl.fromTo("#c12-t1", { autoAlpha: 0, y: -40 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "back.out(1.8)" }, 7.3);
+          tl.fromTo("#c12-t2", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, 9.25);
+          tl.fromTo("#c12-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 9.9);
+          tl.fromTo("#c12-c1", { autoAlpha: 0, x: -300 }, { autoAlpha: 1, x: 0, duration: 0.35, ease: "back.out(1.8)" }, 11.45);
+          tl.fromTo("#c12-c2", { autoAlpha: 0, x: 300 }, { autoAlpha: 1, x: 0, duration: 0.35, ease: "back.out(1.8)" }, 12.85);
+          tl.fromTo("#c12-c2", { scale: 1 }, { scale: 1.08, duration: 0.15, ease: "power2.out", yoyo: true, repeat: 1, immediateRender: false }, 13.7);
+          window.__timelines["ov-c12"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

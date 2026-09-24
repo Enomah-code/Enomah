@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #outro { position: absolute; inset: 0; overflow: hidden; font-family: "Montserrat", sans-serif; }
+        #outro-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; padding: 0 70px; }
+        #outro-diamond { width: 190px; height: 190px; }
+        #outro-name { font-family: "League Gothic", sans-serif; font-size: 190px; line-height: 0.9; text-transform: uppercase; text-align: center; color: #fff7e8; }
+        #outro-name span { color: #f2b33d; }
+        #outro-by { font-weight: 700; font-size: 36px; letter-spacing: 0.22em; text-transform: uppercase; color: #ffd98a; }
+        #outro-cta { margin-top: 40px; }
+        #outro-cta .pill { font-size: 50px; }
+        #outro-deadline { font-weight: 700; font-size: 38px; color: #fff7e8; letter-spacing: 0.04em; }
+        #outro-deadline b { color: #f2b33d; font-weight: 900; }
+      </style>
+      <div id="outro" data-composition-id="outro" data-width="1080" data-height="1920" data-duration="2.2">
+        <div class="fs" id="outro-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="outro-grid"></div>
+          <div class="fs-glow" id="outro-glow"></div>
+        </div>
+        <div id="outro-wrap">
+          <svg id="outro-diamond" viewBox="0 0 100 100" fill="none" stroke="#f2b33d" stroke-width="3.5" stroke-linejoin="round">
+            <path d="M22 18h56l18 22-46 48L4 40z" />
+            <path d="M4 40h92M36 18l-8 22 22 48 22-48-8-22" />
+          </svg>
+          <div id="outro-name">IA Business <span>Building</span></div>
+          <div id="outro-by">par EMK Blue Diamond</div>
+          <div id="outro-cta">
+            <div class="pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M5 12l7 7 7-7" /></svg>
+              Lien sous la vidéo
+            </div>
+          </div>
+          <div id="outro-deadline">Offre valable jusqu'à <b>dimanche 23h59</b></div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#outro-panel", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(80% at 50% 50%)", duration: 0.45, ease: "power3.out" }, 0);
+          tl.fromTo("#outro-grid", { y: 0 }, { y: 90, duration: 2.2, ease: "none" }, 0);
+          tl.fromTo("#outro-glow", { scale: 0.8, opacity: 0.6 }, { scale: 1.15, opacity: 1, duration: 2.2, ease: "sine.inOut" }, 0);
+          tl.fromTo("#outro-diamond", { opacity: 0, scale: 0.2, rotation: -90 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(1.8)" }, 0.2);
+          tl.fromTo("#outro-name", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.35);
+          tl.fromTo("#outro-by", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.55);
+          tl.fromTo("#outro-cta .pill", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 0.75);
+          tl.fromTo("#outro-cta .pill", { y: 0 }, { y: 14, duration: 0.3, ease: "sine.inOut", yoyo: true, repeat: 3, immediateRender: false }, 1.1);
+          tl.fromTo("#outro-deadline", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.95);
+          window.__timelines["outro"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
