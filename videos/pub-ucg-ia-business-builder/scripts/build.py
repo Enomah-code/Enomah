@@ -49,6 +49,28 @@ HIDE = {
 SFX = {
     "c01": [(0.0, "impact-bass-1", 0.55), (4.3, "whoosh-short", 0.5), (5.62, "pop", 0.6),
             (6.2, "notification", 0.7), (8.45, "impact-bass-2", 0.45), (10.8, "whoosh-cinematic", 0.55)],
+    "c02": [(0.45, "whoosh-short", 0.45), (0.8, "sparkle", 0.4), (3.35, "pop", 0.4), (4.55, "whoosh", 0.4),
+            (5.55, "whoosh-short", 0.45), (6.0, "sparkle", 0.4), (8.3, "pop", 0.4), (9.5, "chime", 0.45)],
+    "c03": [(9.45, 10.6)],
+    "c05": [(5.0, 7.3)],
+    "c10": [(0.0, 0.75)],
+}
+# Bruitages : (temps local, fichier, volume)
+SFX = {
+    "c01": [(0.0, "impact-bass-1", 0.55), (4.3, "whoosh-short", 0.5), (5.62, "pop", 0.6),
+            (6.2, "notification", 0.7), (8.45, "impact-bass-2", 0.45), (10.8, "whoosh-cinematic", 0.55)],
+    "c02": [(0.45, "whoosh-short", 0.45), (0.75, "click-soft", 0.55), (1.72, "whoosh-short", 0.4), (2.08, "click-soft", 0.55),
+            (2.92, "whoosh-short", 0.4), (3.28, "click-soft", 0.55), (4.55, "whoosh", 0.4), (5.52, "whoosh-short", 0.4),
+            (6.08, "click-soft", 0.55), (7.82, "whoosh-short", 0.4), (8.23, "click-soft", 0.55), (9.12, "click-soft", 0.5),
+            (9.5, "sparkle", 0.45)],
+    "c03": [(9.45, 10.6)],
+    "c05": [(5.0, 7.3)],
+    "c10": [(0.0, 0.75)],
+}
+# Bruitages : (temps local, fichier, volume)
+SFX = {
+    "c01": [(0.0, "impact-bass-1", 0.55), (4.3, "whoosh-short", 0.5), (5.62, "pop", 0.6),
+            (6.2, "notification", 0.7), (8.45, "impact-bass-2", 0.45), (10.8, "whoosh-cinematic", 0.55)],
     "c02": [(0.62, "pop", 0.55), (2.14, "pop", 0.5), (3.4, "pop", 0.5), (4.1, "whoosh", 0.45),
             (5.9, "sparkle", 0.45), (6.6, "pop", 0.5), (8.3, "pop", 0.5), (9.55, "chime", 0.5)],
     "c03": [(1.8, "click-soft", 0.6), (2.6, "whoosh-short", 0.45), (5.6, "error", 0.45),
@@ -137,7 +159,10 @@ def main():
     wm = json.load(open(os.path.join(AROLL, "words_medium.json")))
     prep = json.load(open(os.path.join(AROLL, "words.json")))
     clips, t = [], 0.0
+    only = [c for c in os.environ.get("ONLY", "").split(",") if c]  # aperçu rapide : ONLY=c01,c02
     for cid in ORDER:
+        if only and cid not in only:
+            continue
         path = os.path.join(AROLL, f"{cid}.mp4")
         if not os.path.exists(path):
             continue
