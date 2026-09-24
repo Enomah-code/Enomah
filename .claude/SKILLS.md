@@ -25,10 +25,12 @@ automatiquement au démarrage de chaque session.
 
 ## Deux familles de skills
 
-1. **Le pack du repo (484 skills)** — persistant uniquement grâce à ce repo +
+1. **Le pack du repo (505 skills)** — persistant uniquement grâce à ce repo +
    le hook. Disponible dans toute session ouverte **sur ce repo**. Inclut le
-   pack généraliste d'origine et les **46 skills OmniRoute** (`cli-*`, `omni-*`)
-   pour piloter une passerelle multi-LLM (providers, routing, cache, budget…).
+   pack généraliste d'origine, les **46 skills OmniRoute** (`cli-*`, `omni-*`)
+   pour piloter une passerelle multi-LLM, et les **21 skills HyperFrames**
+   (`hyperframes*`, `slideshow`, `figma`, `motion-graphics`…) pour produire des
+   vidéos MP4 à partir de HTML/CSS (prérequis d'exécution : Node.js 22+ + FFmpeg).
 2. **Les skills installés via l'interface Claude Code** (`pdf`, `docx`, `pptx`,
    `xlsx`, `morning`, `skill-creator`, `frontend-design`, `ui-ux-pro-max`…) —
    gérés au niveau du **compte** et ré-provisionnés côté serveur à chaque
