@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+  <body>
+    <template>
+      <style>
+        #ov-c13 { position: absolute; inset: 0; overflow: hidden; pointer-events: none; font-family: "Montserrat", sans-serif; }
+        #c13-ghost { top: 1480px; }
+        #c13-q { position: absolute; left: 40px; right: 40px; top: 150px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        #c13-ecoute { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; }
+        #c13-price { position: absolute; left: 90px; right: 90px; top: 420px; height: 520px; border-radius: 44px;
+          background: linear-gradient(160deg, #1c2a63 0%, #0a1230 100%); border: 5px solid #f2b33d;
+          display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 40px 100px rgba(0,0,0,.55); }
+        #c13-price .lb { font-weight: 900; font-size: 40px; letter-spacing: .1em; color: #ffd98a; text-transform: uppercase; }
+        #c13-price .pr { font-family: "League Gothic", sans-serif; font-size: 300px; line-height: .95; color: #f2b33d; }
+        #c13-price .pr small { font-size: 130px; color: #fff7e8; margin-left: 12px; }
+        #c13-cal { position: absolute; left: 0; right: 0; top: 1000px; display: flex; justify-content: center; }
+        #c13-toasts { position: absolute; left: 60px; right: 60px; top: 140px; display: flex; flex-direction: column; gap: 16px; }
+        .c13-toast { height: 110px; border-radius: 30px; background: rgba(246,246,248,.97); display: flex; align-items: center; gap: 20px; padding: 0 24px;
+          box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+        .c13-toast .ic { width: 70px; height: 70px; border-radius: 18px; background: #25d366; flex: none; display: flex; align-items: center; justify-content: center; }
+        .c13-toast .ic svg { width: 44px; height: 44px; }
+        .c13-toast .tx { font-weight: 700; font-size: 32px; color: #16181d; }
+        #c13-geste { position: absolute; left: 0; right: 0; top: 1060px; display: flex; justify-content: center; }
+        #c13-stamp { position: absolute; left: 90px; right: 90px; top: 380px; height: 420px; border-radius: 44px; border: 8px solid #25d366;
+          display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(37,211,102,.08); }
+        #c13-stamp .a { font-family: "League Gothic", sans-serif; font-size: 170px; line-height: .9; color: #25d366; text-transform: uppercase; }
+        #c13-stamp .b { font-weight: 900; font-size: 50px; color: #fff7e8; text-transform: uppercase; }
+        #c13-after { position: absolute; left: 90px; right: 90px; top: 860px; height: 300px; border-radius: 40px;
+          background: rgba(255,75,85,.12); border: 4px dashed #ff4b55; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #c13-after .lb { font-weight: 900; font-size: 36px; letter-spacing: .1em; color: #ff8a92; text-transform: uppercase; }
+        #c13-after .pr { font-family: "League Gothic", sans-serif; font-size: 170px; line-height: .95; color: #ffffff; }
+      </style>
+      <div id="ov-c13" data-composition-id="ov-c13" data-width="1080" data-height="1920" data-duration="25">
+        <div id="c13-q"><div class="top-title">Tout ça,</div><div class="top-title"><span class="hl">à quel prix ?</span></div></div>
+        <div id="c13-ecoute"><div class="pill dark">Écoute-moi bien</div></div>
+
+        <div class="fs" id="c13-panel">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c13-grid"></div>
+          <div class="fs-glow" id="c13-glow"></div>
+          <div class="ghost" id="c13-ghost">4 999 F · 4 999 F</div>
+        </div>
+        <div id="c13-price"><div class="lb">Offre de lancement</div><div class="pr">4 999<small>F</small></div></div>
+        <div id="c13-cal"><div class="pill dark"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4" /></svg>Devait finir cette semaine</div></div>
+
+        <div id="c13-toasts">
+          <div class="c13-toast"><div class="ic"><svg viewBox="0 0 24 24" fill="#fff"><path d="M4 4h16v12H8l-4 4z" /></svg></div><div class="tx">Nouveau message</div></div>
+          <div class="c13-toast"><div class="ic"><svg viewBox="0 0 24 24" fill="#fff"><path d="M4 4h16v12H8l-4 4z" /></svg></div><div class="tx">Nouveau message</div></div>
+          <div class="c13-toast"><div class="ic"><svg viewBox="0 0 24 24" fill="#fff"><path d="M4 4h16v12H8l-4 4z" /></svg></div><div class="tx">Nouveau message</div></div>
+        </div>
+        <div id="c13-geste"><div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v4H3zM5 13v8h14v-8M12 9v12M12 9c-2-4-6-4-6-1.5S10 9 12 9zm0 0c2-4 6-4 6-1.5S14 9 12 9z" /></svg>Je fais un geste</div></div>
+
+        <div class="fs" id="c13-panel2">
+          <div class="fs-bg"></div>
+          <div class="fs-grid" id="c13-grid2"></div>
+          <div class="fs-glow" id="c13-glow2"></div>
+        </div>
+        <div id="c13-stamp"><div class="a">Prolongée</div><div class="b">jusqu'à dimanche 23h59</div></div>
+        <div id="c13-after"><div class="lb">Ensuite · définitivement</div><div class="pr">35 000 F</div></div>
+      </div>
+      <script>
+        (function () {
+          // Repères (temps local du rush S13) — À RECALER sur la transcription quand le rush arrive.
+          const T = { prix: 1.2, ecoute: 3.0, p4999: 5.2, fin: 9.5, panelOut: 11.0, engoue: 12.5, geste: 15.2, prolonge: 17.5, p35000: 21.5, end: 25 };
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#c13-q", { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(1.8)" }, T.prix);
+          tl.fromTo("#c13-ecoute .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, T.ecoute);
+          tl.to(["#c13-q", "#c13-ecoute"], { autoAlpha: 0, duration: 0.2 }, T.p4999 - 0.2);
+          // Plein écran 1 : 4 999 F
+          tl.fromTo("#c13-panel", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(150% at 50% 45%)", duration: 0.45, ease: "power3.out" }, T.p4999 - 0.2);
+          tl.fromTo("#c13-grid", { y: 0 }, { y: 80, duration: T.panelOut - T.p4999, ease: "none" }, T.p4999);
+          tl.fromTo("#c13-ghost", { x: 0 }, { x: -400, duration: T.panelOut - T.p4999, ease: "none" }, T.p4999);
+          tl.fromTo("#c13-price", { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, T.p4999);
+          tl.fromTo("#c13-cal .pill", { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "back.out(1.8)" }, T.fin);
+          tl.to(["#c13-price", "#c13-cal"], { autoAlpha: 0, scale: 0.85, duration: 0.3, ease: "power2.in" }, T.panelOut - 0.3);
+          tl.to("#c13-panel", { clipPath: "circle(0% at 50% 45%)", duration: 0.4, ease: "power3.in" }, T.panelOut - 0.2);
+          // Visage : engouement + geste
+          tl.fromTo(".c13-toast", { autoAlpha: 0, y: -120 }, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.35, ease: "back.out(1.6)" }, T.engoue);
+          tl.to("#c13-toasts", { autoAlpha: 0, y: -80, duration: 0.25 }, T.geste + 1.2);
+          tl.fromTo("#c13-geste .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, T.geste);
+          tl.to("#c13-geste", { autoAlpha: 0, duration: 0.2 }, T.prolonge - 0.25);
+          // Plein écran 2 : prolongation + 35 000 F
+          tl.fromTo("#c13-panel2", { clipPath: "circle(0% at 50% 45%)" }, { clipPath: "circle(150% at 50% 45%)", duration: 0.45, ease: "power3.out" }, T.prolonge - 0.2);
+          tl.fromTo("#c13-grid2", { y: 0 }, { y: 100, duration: T.end - T.prolonge, ease: "none" }, T.prolonge);
+          tl.fromTo("#c13-stamp", { autoAlpha: 0, scale: 2.2, rotation: -10 }, { autoAlpha: 1, scale: 1, rotation: -3, duration: 0.35, ease: "power4.out" }, T.prolonge);
+          tl.fromTo("#c13-after", { autoAlpha: 0, y: 120 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, T.p35000 - 0.3);
+          tl.fromTo("#c13-after .pr", { scale: 2.2, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.3, ease: "power4.out" }, T.p35000);
+          window.__timelines["ov-c13"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
