@@ -20,13 +20,13 @@ CLIPS = [
     ("c04", "IMG_9867"),  # S3 révélation 1
     ("c05", "IMG_9868"),  # S4 révélation 2 + 100 %
     ("c06", "IMG_9870"),  # S5 transition + semaine 1
-    ("c07", "IMG_S6"),    # S6 semaine 2        (rush à venir)
-    ("c08", "IMG_S7"),    # S7 semaine 3        (rush à venir)
-    ("c09", "IMG_S8"),    # S8 semaines 4 et 5  (rush à venir)
+    ("c07", "IMG_9877", 1.8, 16.7),    # S6 semaine 2 (un seul rush pour S6-S8)
+    ("c08", "IMG_9877", 16.75, 24.35), # S7 semaine 3
+    ("c09", "IMG_9877", 24.4, 35.1),   # S8 semaines 4 et 5
     ("c10", "IMG_9878"),  # S9 transition forte
     ("c11", "IMG_9880"),  # S10 différenciateur + S11 facilité
     ("c12", "IMG_9882"),  # S12 certification
-    ("c13", "IMG_S13"),   # S13 prix            (rush à venir)
+    ("c13", "IMG_9887"),  # S13 prix + prolongation
     ("c14", "IMG_9889"),  # S13 fin + S14 CTA
 ]
 PAD_IN, PAD_OUT, MIN_SIL = 0.06, 0.10, 0.25
@@ -79,13 +79,20 @@ def remap(t, segs):
 def main(tr_path, src_dir):
     tr = json.load(open(tr_path))
     words_out = {}
-    for cid, stem in CLIPS:
+    for cid, stem, *rng in CLIPS:
+        dst = os.path.join(OUT, f"{cid}.mp4")
+        if os.path.exists(dst) and "--force" not in sys.argv:
+            continue
         src = next((os.path.join(src_dir, f) for f in os.listdir(src_dir) if stem in f), None)
         if not src:
             print(f"-- {cid}: rush {stem} absent, ignoré")
             continue
         sil, dur = silences(src)
         segs = keep_segments(sil, dur)
+        if rng:
+            t0, t1 = rng
+            segs = [(round(max(a, t0), 3), round(min(b, t1), 3)) for a, b in segs if b > t0 and a < t1]
+            segs = [(a, b) for a, b in segs if b - a > 0.12]
         n = len(segs)
         fc = []
         for i, (a, b) in enumerate(segs):
@@ -96,16 +103,15 @@ def main(tr_path, src_dir):
         fc.append(f"[vc]{HDR2SDR},scale=1080:1920:flags=lanczos,fps=30,eq=saturation=1.08:contrast=1.03[vo]")
         fc.append("[ac]highpass=f=80,acompressor=threshold=-20dB:ratio=3:attack=5:release=80,"
                   "loudnorm=I=-14:TP=-1.5:LRA=7,aresample=48000[ao]")
-        dst = os.path.join(OUT, f"{cid}.mp4")
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", src, "-filter_complex", ";".join(fc),
                         "-map", "[vo]", "-map", "[ao]", "-c:v", "libx264", "-preset", "medium", "-crf", "17",
                         "-g", "15", "-pix_fmt", "yuv420p", "-color_primaries", "bt709", "-color_trc", "bt709",
                         "-colorspace", "bt709", "-c:a", "aac", "-b:a", "192k", "-ac", "2",
                         "-movflags", "+faststart", dst], check=True)
         new_dur = sum(b - a for a, b in segs)
-        key = next(k for k in tr if stem in k)
+        key = next((k for k in tr if stem in k), None)
         words = [{"w": w["w"].strip(), "s": round(remap(w["s"], segs), 3), "e": round(remap(w["e"], segs), 3)}
-                 for w in tr[key]["words"]]
+                 for w in (tr[key]["words"] if key else []) if not rng or rng[0] <= w["s"] < rng[1]]
         cuts = []
         acc = 0.0
         for a, b in segs[:-1]:
@@ -113,7 +119,10 @@ def main(tr_path, src_dir):
             cuts.append(round(acc, 3))
         words_out[cid] = {"src": os.path.basename(src), "duration": round(new_dur, 3), "cuts": cuts, "words": words}
         print(f"{cid} {stem}: {dur:.2f}s → {new_dur:.2f}s  ({n} segments)")
-    json.dump(words_out, open(os.path.join(OUT, "words.json"), "w"), ensure_ascii=False, indent=1)
+    path = os.path.join(OUT, "words.json")
+    merged = json.load(open(path)) if os.path.exists(path) else {}
+    merged.update(words_out)
+    json.dump(merged, open(path, "w"), ensure_ascii=False, indent=1)
 
 
 if __name__ == "__main__":

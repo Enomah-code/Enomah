@@ -25,7 +25,7 @@
         #c07-place { position: absolute; left: 0; right: 0; top: 1150px; display: flex; justify-content: center; }
         #c07-place .pill { font-size: 44px; }
       </style>
-      <div id="ov-c07" data-composition-id="ov-c07" data-width="1080" data-height="1920" data-duration="16">
+      <div id="ov-c07" data-composition-id="ov-c07" data-width="1080" data-height="1920" data-duration="14.34">
         <div class="fs" id="c07-panel">
           <div class="fs-bg"></div>
           <div class="fs-grid" id="c07-grid"></div>
@@ -48,16 +48,16 @@
       <script>
         (function () {
           // Repères (temps local du rush S6) — À RECALER sur la transcription quand le rush arrive.
-          const T = { week: 0.4, place: 3.2, posts: 5.2, mails: 7.4, clients: 8.8, devis: 10.4, more: 13.0, end: 16 };
+          const T = { week: 0.15, auto: 2.25, place: 3.45, posts: 5.3, mails: 8.05, clients: 9.2, devis: 10.6, more: 13.1, end: 14.34 };
           const tl = gsap.timeline({ paused: true });
           tl.fromTo("#c07-panel", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(150% at 50% 50%)", duration: 0.45, ease: "power3.out" }, 0);
           tl.fromTo("#c07-grid", { y: 0 }, { y: 180, duration: T.end, ease: "none" }, 0);
           tl.fromTo("#c07-glow", { scale: 0.85 }, { scale: 1.2, duration: T.end / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
           tl.fromTo("#c07-ghost", { x: 0 }, { x: -900, duration: T.end, ease: "none" }, 0);
           tl.fromTo("#c07-week .kicker", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, T.week);
-          tl.fromTo("#c07-week .headline", { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "power4.out" }, T.week + 0.5);
-          tl.fromTo("#c07-hub", { autoAlpha: 0, scale: 0, rotation: -90 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, T.week + 1.0);
-          tl.fromTo("#c07-hub", { scale: 1 }, { scale: 1.08, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: Math.max(0, Math.floor((T.end - T.week - 2) / 0.6) - 1), immediateRender: false }, T.week + 1.6);
+          tl.fromTo("#c07-week .headline", { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "power4.out" }, T.auto);
+          tl.fromTo("#c07-hub", { autoAlpha: 0, scale: 0, rotation: -90 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, T.auto + 0.45);
+          tl.fromTo("#c07-hub", { scale: 1 }, { scale: 1.08, duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: Math.max(0, Math.floor((T.end - T.auto - 1.2) / 0.6) - 1), immediateRender: false }, T.auto + 1.0);
           tl.fromTo("#c07-place .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, T.place);
           tl.to("#c07-place", { autoAlpha: 0, duration: 0.2 }, T.posts - 0.3);
           [["#c07-k1", "#c07-l1", T.posts], ["#c07-k2", "#c07-l2", T.mails], ["#c07-k3", "#c07-l3", T.clients], ["#c07-k4", "#c07-l4", T.devis]].forEach(([card, line, t], i) => {
