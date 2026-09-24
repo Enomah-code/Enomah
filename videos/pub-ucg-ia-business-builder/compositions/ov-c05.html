@@ -8,8 +8,10 @@
         #c05-k { position: absolute; left: 0; right: 0; top: 170px; display: flex; justify-content: center; }
         #c05-stars { position: absolute; left: 0; right: 0; top: 250px; display: flex; justify-content: center; gap: 18px; }
         #c05-stars svg { width: 84px; height: 84px; }
-        #c05-review { left: 70px; top: 380px; width: 940px; }
-        #c05-sat { position: absolute; left: 0; right: 0; top: 960px; display: flex; justify-content: center; }
+        #c05-review { left: 70px; top: 360px; width: 940px; }
+        #c05-rev2 { left: 70px; top: 470px; width: 940px; }
+        #c05-rev3 { left: 70px; top: 560px; width: 940px; }
+        #c05-sat { position: absolute; left: 0; right: 0; top: 1165px; display: flex; justify-content: center; }
         #c05-ringwrap { position: absolute; left: 190px; top: 170px; width: 700px; height: 700px; }
         #c05-ring { position: absolute; inset: 0; width: 700px; height: 700px; }
         #c05-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -36,6 +38,8 @@
           <svg viewBox="0 0 24 24" fill="#f2b33d"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>
         </div>
         <div class="proof" id="c05-review"><img src="assets/img/avis-elie.png" alt="" /></div>
+        <div class="proof" id="c05-rev2"><img src="assets/img/avis-md.png" alt="" /></div>
+        <div class="proof" id="c05-rev3"><img src="assets/img/avis-rick.png" alt="" /></div>
         <div id="c05-sat">
           <div class="pill green"><svg viewBox="0 0 24 24" fill="none" stroke="#062a14" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Apprenants très satisfaits</div>
         </div>
@@ -63,8 +67,12 @@
           tl.fromTo("#c05-k", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.3 }, 0.55);
           tl.fromTo("#c05-stars svg", { autoAlpha: 0, scale: 0, rotation: -60 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.3, stagger: 0.07, ease: "back.out(2.6)" }, 0.8);
           tl.fromTo("#c05-review", { autoAlpha: 0, y: 160, rotation: 3 }, { autoAlpha: 1, y: 0, rotation: 0, duration: 0.5, ease: "back.out(1.4)" }, 0.65);
+          tl.fromTo("#c05-review", { scale: 1 }, { scale: 0.94, y: -20, duration: 0.3, ease: "power2.out", immediateRender: false }, 1.75);
+          tl.fromTo("#c05-rev2", { autoAlpha: 0, y: 200, rotation: -3 }, { autoAlpha: 1, y: 0, rotation: -1.5, duration: 0.45, ease: "back.out(1.4)" }, 1.8);
+          tl.fromTo("#c05-rev2", { scale: 1 }, { scale: 0.96, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.75);
+          tl.fromTo("#c05-rev3", { autoAlpha: 0, y: 200, rotation: 3 }, { autoAlpha: 1, y: 0, rotation: 1, duration: 0.45, ease: "back.out(1.4)" }, 2.8);
           tl.fromTo("#c05-sat .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 3.7);
-          tl.to(["#c05-k", "#c05-stars", "#c05-review", "#c05-sat"], { autoAlpha: 0, y: -160, duration: 0.35, ease: "power2.in", stagger: 0.03 }, 4.7);
+          tl.to(["#c05-k", "#c05-stars", "#c05-review", "#c05-rev2", "#c05-rev3", "#c05-sat"], { autoAlpha: 0, y: -160, duration: 0.35, ease: "power2.in", stagger: 0.03 }, 4.7);
           // 100 % d'avis positifs
           const proxy = { v: 0 };
           const num = document.getElementById("c05-num");

@@ -25,7 +25,8 @@
           display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
         #c08-night svg { width: 80px; height: 80px; }
         #c08-night .h { font-family: "League Gothic", sans-serif; font-size: 58px; color: #fff7e8; line-height: 1; }
-        #c08-rick { position: absolute; left: 0; right: 0; top: 1150px; display: flex; justify-content: center; }
+        #c08-rick { position: absolute; left: 0; right: 0; top: 1160px; display: flex; justify-content: center; }
+        #c08-rev { left: 60px; top: 470px; width: 960px; }
       </style>
       <div id="ov-c08" data-composition-id="ov-c08" data-width="1080" data-height="1920" data-duration="8">
         <div class="fs" id="c08-panel">
@@ -52,7 +53,8 @@
           <div class="h">03:14</div>
         </div>
         <div id="c08-paid"><div class="pill green"><svg viewBox="0 0 24 24" fill="none" stroke="#062a14" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5" /></svg>Vente conclue pendant que tu dors</div></div>
-        <div id="c08-rick"><div class="pill"><svg viewBox="0 0 24 24" fill="#0b1026"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>Comme Rick, apprenant</div></div>
+        <div class="proof" id="c08-rev"><img src="assets/img/avis-rick.png" alt="" /></div>
+        <div id="c08-rick"><div class="pill"><svg viewBox="0 0 24 24" fill="#0b1026"><path d="M12 2.5l2.9 6.2 6.6.7-5 4.5 1.4 6.6L12 17.2l-5.9 3.3 1.4-6.6-5-4.5 6.6-.7z" /></svg>Rick l'a fait</div></div>
       </div>
       <script>
         (function () {
@@ -73,6 +75,8 @@
           tl.fromTo("#c08-night", { autoAlpha: 0, scale: 0, rotation: -60 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, T.dors);
           tl.fromTo("#c08-paid .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, T.dors + 0.3);
           tl.to("#c08-paid", { autoAlpha: 0, y: -30, duration: 0.2 }, T.rick - 0.25);
+          tl.to(["#c08-phone", "#c08-night"], { autoAlpha: 0, x: -300, duration: 0.3, ease: "power2.in" }, T.rick - 0.2);
+          tl.fromTo("#c08-rev", { autoAlpha: 0, x: 400, rotation: 3 }, { autoAlpha: 1, x: 0, rotation: 0, duration: 0.45, ease: "back.out(1.4)" }, T.rick - 0.05);
           tl.fromTo("#c08-rick .pill", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2.4)" }, T.rick);
           window.__timelines["ov-c08"] = tl;
         })();
