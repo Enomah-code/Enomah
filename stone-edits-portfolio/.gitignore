@@ -1,0 +1,14 @@
+# rendered outputs (delivered separately)
+livrables/
+*/renders/
+*/snapshots/
+*/.hyperframes/
+# copies synced from _shared by _shared/build.py
+*/assets/fonts/
+*/assets/sfx/
+*/assets/brand/
+*/assets/vendor/
+*/assets/shared/
+*/compositions/se-endcard.html
+_shared/*/assets/
+_shared/*/compositions/se-endcard.html
