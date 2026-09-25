@@ -1,0 +1,342 @@
+<!doctype html>
+<html
+  lang="fr"
+  data-composition-variables='[
+    {"id":"SIGNATURE_ENDCARD","type":"boolean","label":"Carte de fin Stone Edits","default":true},
+    {"id":"SIGNATURE_WATERMARK","type":"boolean","label":"Filigrane Stone Edits","default":true}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Kairo Air</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/shared/polish.js"></script>
+    <style>
+      @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 700; font-display: block; src: url('assets/fonts/space-grotesk-700.woff2') format('woff2'); }
+      @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: block; src: url('assets/fonts/jetbrains-mono-500.woff2') format('woff2'); }
+      :root { --bg: #07080a; --gr: #16181d; --mat: #2a2d34; --cy: #00e5ff; --mg: #ff2e88; --tx: #f2f5f8; --st: #8a93a0; }
+      body { margin: 0; background: var(--bg); }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+      #kairo { position: absolute; inset: 0; overflow: hidden; font-family: 'Space Grotesk', sans-serif; color: var(--tx); }
+      .sc { position: absolute; inset: 0; opacity: 0; }
+      .h { font-weight: 700; letter-spacing: -0.02em; }
+      .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+
+      /* S1 hook */
+      #wave { position: absolute; left: 0; top: 860px; width: 1080px; height: 200px; overflow: visible; }
+      #type { position: absolute; left: 60px; right: 140px; top: 1150px; text-align: center; font-size: 64px; }
+      #type span { opacity: 0; }
+
+      /* S2/S3 box */
+      #surface { position: absolute; inset: -60px; background: url('assets/img/surface.jpg') center / cover; filter: brightness(0.75); }
+      #boxrig { position: absolute; left: 540px; top: 1000px; width: 0; height: 0; }
+      #boxshadow { position: absolute; left: -420px; top: -380px; width: 840px; height: 860px; border-radius: 40px; background: rgba(0,0,0,0.85); filter: blur(40px); }
+      #boxbase, #boxlid { position: absolute; left: -370px; top: -385px; width: 740px; height: 770px; }
+      #boxbase img, #boxlid img { position: absolute; inset: 0; width: 740px; height: 770px; }
+      #interior { position: absolute; left: 34px; top: 34px; right: 34px; bottom: 34px; background: radial-gradient(ellipse at 50% 55%, #0f1216 0%, #050607 80%); box-shadow: inset 0 30px 60px rgba(0,0,0,0.9), inset 0 -10px 30px rgba(0,0,0,0.8); }
+      #glowin { position: absolute; left: 110px; top: 110px; width: 520px; height: 550px; border-radius: 50%; background: radial-gradient(circle, rgba(0,229,255,0.45) 0%, rgba(0,229,255,0.12) 40%, rgba(0,229,255,0) 70%); opacity: 0; }
+      .tissue { position: absolute; top: 34px; height: 702px; width: 336px; background: linear-gradient(135deg, rgba(40,44,52,0.95), rgba(22,24,29,0.98)); box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+      #t1 { left: 34px; transform-origin: 0 50%; clip-path: polygon(0 0, 100% 3%, 97% 100%, 0 100%); }
+      #t2 { right: 34px; transform-origin: 100% 50%; clip-path: polygon(0 3%, 100% 0, 100% 100%, 3% 97%); }
+      #emboss { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font-size: 76px; letter-spacing: 0.34em; padding-left: 0.34em; color: #16181c;
+        text-shadow: 0 -2px 0 rgba(0,0,0,0.85), 0 2px 1px rgba(255,255,255,0.14); }
+      #lidsheen { position: absolute; inset: 0; overflow: hidden; mix-blend-mode: screen; }
+      #lidsheen div { position: absolute; top: -200px; left: -500px; width: 260px; height: 1200px; transform: rotate(24deg); background: linear-gradient(90deg, rgba(0,229,255,0), rgba(190,245,255,0.35), rgba(0,229,255,0)); }
+      #beam { position: absolute; left: 140px; top: -200px; width: 800px; height: 1500px; background: linear-gradient(180deg, rgba(200,240,255,0.18), rgba(200,240,255,0)); clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); opacity: 0; }
+      .dust { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: rgba(210,245,255,0.9); box-shadow: 0 0 8px rgba(0,229,255,0.8); opacity: 0; }
+
+      /* S4 macros */
+      .macro { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+      .macro img { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+      #brushed { position: absolute; inset: 0; background: repeating-linear-gradient(100deg, rgba(255,255,255,0.05) 0 2px, rgba(0,0,0,0) 2px 7px); mix-blend-mode: screen; }
+      .mlabel { position: absolute; left: 60px; font-size: 38px; color: var(--tx); padding: 14px 22px; background: rgba(7,8,10,0.72); border: 1.5px solid rgba(0,229,255,0.6); }
+      .mlabel small { display: block; font-size: 22px; color: var(--cy); margin-bottom: 6px; }
+      .lead { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: visible; }
+      .lead path { fill: none; stroke: var(--cy); stroke-width: 2; }
+      .lead circle { fill: none; stroke: var(--cy); stroke-width: 2; }
+
+      /* S5+ hero */
+      #hero { position: absolute; left: 0; top: 0; width: 1620px; height: 2880px; transform-origin: 0 0; }
+      #hero img.p { position: absolute; left: 0; top: 0; width: 1620px; height: 2880px; }
+      #halo { position: absolute; left: 310px; top: 900px; width: 1000px; height: 1000px; border-radius: 50%; background: radial-gradient(circle, rgba(0,229,255,0.55) 0%, rgba(0,229,255,0.18) 35%, rgba(0,229,255,0) 68%); mix-blend-mode: screen; opacity: 0; }
+      .bud { position: absolute; transform-origin: 50% 50%; filter: drop-shadow(0 30px 40px rgba(0,0,0,0.75)); }
+      .led { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: radial-gradient(circle, rgba(170,250,255,1) 0 10%, rgba(0,229,255,0.7) 25%, rgba(0,229,255,0) 70%); mix-blend-mode: screen; opacity: 0; }
+      #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+      #title { position: absolute; left: 0; right: 0; top: 250px; text-align: center; font-size: 150px; line-height: 1; letter-spacing: 0.02em; perspective: 900px; }
+      #title span { display: inline-block; opacity: 0; }
+      #title-sub { position: absolute; left: 0; right: 0; top: 420px; text-align: center; font-size: 30px; color: var(--st); opacity: 0; }
+      .conv { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--cy); box-shadow: 0 0 12px var(--cy); opacity: 0; }
+
+      /* S6 test */
+      #charge { position: absolute; left: 60px; top: 1260px; width: 820px; height: 200px; border-radius: 28px; background: rgba(22,24,29,0.86); border: 1.5px solid rgba(0,229,255,0.35); opacity: 0; }
+      #charge svg { position: absolute; left: 34px; top: 30px; width: 140px; height: 140px; }
+      #pct { position: absolute; left: 210px; top: 40px; font-size: 96px; line-height: 1; font-feature-settings: "tnum" 1; }
+      #pct-l { position: absolute; left: 214px; top: 142px; font-size: 24px; color: var(--st); }
+      #rings { position: absolute; left: 540px; top: 1180px; width: 0; height: 0; }
+      .ring { position: absolute; left: -200px; top: -200px; width: 400px; height: 400px; border-radius: 50%; border: 3px solid var(--cy); opacity: 0; }
+      #notif { position: absolute; left: 60px; right: 140px; top: 240px; height: 150px; border-radius: 36px; background: rgba(28,31,37,0.94); box-shadow: 0 20px 60px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 26px; padding: 0 32px; opacity: 0; }
+      #notif .ic { width: 86px; height: 86px; border-radius: 22px; background: linear-gradient(145deg, #1f2229, #0c0d10); border: 1.5px solid rgba(0,229,255,0.5); display: grid; place-items: center; }
+      #notif .t1 { font-size: 40px; }
+      #notif .t2 { font-size: 26px; color: var(--cy); margin-top: 4px; }
+
+      /* S7 specs */
+      #specs { position: absolute; inset: 0; opacity: 0; }
+      .spec { position: absolute; left: 60px; right: 140px; top: 640px; opacity: 0; }
+      .spec .v { font-size: 250px; line-height: 0.9; letter-spacing: -0.04em; }
+      .spec .l { margin-top: 26px; font-size: 38px; color: var(--st); }
+      #viz { position: absolute; left: 0; top: 1300px; width: 1080px; height: 240px; opacity: 0.25; }
+
+      /* S8 end */
+      #logo { position: absolute; left: 0; right: 0; top: 330px; height: 150px; opacity: 0; }
+      #logo .lay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; }
+      #logo svg { width: 640px; height: 130px; overflow: visible; }
+      #sig { position: absolute; left: 0; right: 0; top: 520px; text-align: center; font-size: 56px; opacity: 0; }
+      #avail { position: absolute; left: 0; right: 0; top: 1440px; text-align: center; opacity: 0; }
+      #avail span { display: inline-block; padding: 22px 46px; border-radius: 60px; border: 2px solid var(--cy); font-size: 34px; color: var(--cy); box-shadow: 0 0 30px rgba(0,229,255,0.35); }
+      #watermark { position: absolute; right: 150px; bottom: 400px; width: 53px; height: 56px; opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="41.5" data-main-duration="40">
+      <section id="kairo" class="clip" data-start="0" data-duration="40" data-track-index="0">
+        <!-- S1 hook -->
+        <div class="sc" id="s1" style="opacity:1;">
+          <svg id="wave" viewBox="0 0 1080 200"><path id="wline" d="M140 100 L940 100" stroke="#00e5ff" stroke-width="4" fill="none" stroke-linecap="round" /><path id="wpath" d="" stroke="#00e5ff" stroke-width="4" fill="none" stroke-linecap="round" style="filter:drop-shadow(0 0 10px #00e5ff)" /></svg>
+          <div id="type" class="h"></div>
+        </div>
+        <!-- S2/S3 box -->
+        <div class="sc" id="s2">
+          <div id="surface"></div>
+          <div id="beam"></div>
+          <div id="boxrig">
+            <div id="boxshadow"></div>
+            <div id="boxbase"><img src="assets/img/box.webp" alt="" /><div id="interior"><div id="glowin"></div></div><div class="tissue" id="t1"></div><div class="tissue" id="t2"></div></div>
+            <div id="boxlid"><img src="assets/img/box.webp" alt="" /><div id="emboss" class="h">KAIR<span style="display:inline-block;width:0.78em;height:0.78em;border:0.1em solid #16181c;border-right-color:transparent;border-radius:50%;box-sizing:border-box;vertical-align:-0.05em;box-shadow:0 2px 1px rgba(255,255,255,0.12),inset 0 -2px 0 rgba(0,0,0,0.7);"></span></div><div id="lidsheen"><div></div></div></div>
+          </div>
+          <div id="dustf"></div>
+        </div>
+        <!-- S4 macros -->
+        <div class="macro" id="m1"><img src="assets/img/m-case.jpg" alt="" /><div id="brushed"></div>
+          <svg class="lead"><circle id="m1a" cx="720" cy="980" r="12" /><path id="m1l" d="M720 980 L520 760" /></svg>
+          <div class="mlabel mono" style="top:640px;"><small>01 · Matière</small>Aluminium anodisé</div></div>
+        <div class="macro" id="m2"><img src="assets/img/m-bud.jpg" alt="" />
+          <svg class="lead"><circle id="m2a" cx="560" cy="900" r="12" /><path id="m2l" d="M560 900 L420 640" /></svg>
+          <div class="mlabel mono" style="top:520px;"><small>02 · Toucher</small>Revêtement soft-touch</div></div>
+        <div class="macro" id="m3"><img src="assets/img/m-grille.jpg" alt="" />
+          <svg class="lead"><circle id="m3a" cx="610" cy="1040" r="12" /><path id="m3l" d="M610 1040 L470 800" /></svg>
+          <div class="mlabel mono" style="top:680px;"><small>03 · Acoustique</small>Grille acoustique 0,3 mm</div></div>
+        <!-- S5+ hero -->
+        <div class="sc" id="s5">
+          <div id="hero"><img class="p" src="assets/img/hero-empty.jpg" alt="" /><div id="halo"></div>
+            <img class="bud" id="bud1" src="assets/img/bud1.webp" alt="" style="left:469px;top:1431px;width:499px;height:430px;" />
+            <img class="bud" id="bud2" src="assets/img/bud2.webp" alt="" style="left:959px;top:1167px;width:461px;height:392px;" />
+            <div class="led" id="led1" style="left:811px;top:1697px;"></div><div class="led" id="led2" style="left:1290px;top:1387px;"></div>
+          </div>
+          <div id="convf"></div>
+          <div id="title" class="h"></div>
+          <div id="title-sub" class="mono">Réduction de bruit active</div>
+          <div id="rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
+          <div id="charge"><svg viewBox="-70 -70 140 140"><circle r="58" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="12" /><circle id="gauge" r="58" fill="none" stroke="#00e5ff" stroke-width="12" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="364.4" stroke-dashoffset="364.4" style="filter:drop-shadow(0 0 6px #00e5ff)" /><path d="M-8 -26 L-18 4 L-2 4 L-8 28 L18 -6 L2 -6 L10 -26 Z" fill="#00e5ff" /></svg>
+            <div id="pct" class="h">0 %</div><div id="pct-l" class="mono">Étui · recharge rapide</div></div>
+          <div id="notif"><div class="ic"><svg viewBox="0 0 40 40" width="46" height="46"><path d="M12 12 L28 26 L20 34 L20 6 L28 14 L12 28" stroke="#00e5ff" stroke-width="3.2" fill="none" stroke-linejoin="round" stroke-linecap="round" /></svg></div>
+            <div><div class="t1 h">Kairo Air</div><div class="t2 mono">Connecté · 100 %</div></div></div>
+          <div id="specs">
+            <svg id="viz" viewBox="0 0 1080 240"><path id="vizp" d="" stroke="#00e5ff" stroke-width="3" fill="none" /></svg>
+            <div class="spec" id="sp1"><div class="v h">40 H</div><div class="l mono">d’autonomie avec l’étui</div></div>
+            <div class="spec" id="sp2"><div class="v h" style="color:#ff2e88;">−42 dB</div><div class="l mono">de réduction de bruit</div></div>
+            <div class="spec" id="sp3"><div class="v h">BT 5.3</div><div class="l mono">connexion stable, faible latence</div></div>
+            <div class="spec" id="sp4"><div class="v h">IPX5</div><div class="l mono">résiste à la sueur et à la pluie</div></div>
+          </div>
+          <div id="logo">
+            <div class="lay" id="lg-r" style="opacity:0;"><svg viewBox="0 0 640 130"><g fill="#ff2e88"><text x="0" y="108" style="font:700 128px 'Space Grotesk';letter-spacing:34px;">KAIR</text><path d="M586 26 A 42 42 0 1 1 548 38" stroke="#ff2e88" stroke-width="18" fill="none" stroke-linecap="round" /></g></svg></div>
+            <div class="lay" id="lg-c" style="opacity:0;"><svg viewBox="0 0 640 130"><g fill="#00e5ff"><text x="0" y="108" style="font:700 128px 'Space Grotesk';letter-spacing:34px;">KAIR</text><path d="M586 26 A 42 42 0 1 1 548 38" stroke="#00e5ff" stroke-width="18" fill="none" stroke-linecap="round" /></g></svg></div>
+            <div class="lay" id="lg-w"><svg viewBox="0 0 640 130"><g fill="#f2f5f8"><text x="0" y="108" style="font:700 128px 'Space Grotesk';letter-spacing:34px;">KAIR</text><path d="M586 26 A 42 42 0 1 1 548 38" stroke="#f2f5f8" stroke-width="18" fill="none" stroke-linecap="round" /></g></svg></div>
+          </div>
+          <div id="sig" class="h">Le silence, redéfini.</div>
+          <div id="avail"><span class="mono">Disponible maintenant</span></div>
+        </div>
+        <div id="flash"></div>
+        <img id="watermark" src="assets/brand/stone-edits-logo-blanc.svg" alt="" />
+      </section>
+
+      <div id="se-opener" data-composition-id="se-opener" data-composition-src="compositions/se-opener.html"
+        data-start="0" data-duration="0.9" data-track-index="6" data-width="1080" data-height="1920"></div>
+      <div id="se-endcard" data-composition-id="se-endcard" data-composition-src="compositions/se-endcard.html"
+        data-start="40" data-duration="1.5" data-track-index="5" data-width="1080" data-height="1920"
+        data-variable-values='{"logoPct":22}'></div>
+
+      <!-- sound: Pixabay Content License + synthesised paper / sub-drop / UI / magnetic click -->
+      <audio id="a1" src="assets/sfx/key-press.mp3" data-start="1.0" data-duration="0.43" data-track-index="10" data-volume="0.4"></audio>
+      <audio id="a2" src="assets/sfx/typing.mp3" data-start="1.05" data-duration="0.9" data-track-index="11" data-volume="0.35"></audio>
+      <audio id="a3" src="assets/sfx/whoosh.mp3" data-start="1.9" data-duration="0.57" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="a4" src="assets/sfx/impact-bass-1.mp3" data-start="2.5" data-duration="1.2" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="a5" src="assets/sfx/sparkle.mp3" data-start="4.0" data-duration="1.4" data-track-index="14" data-volume="0.25"></audio>
+      <audio id="a6" src="assets/sfx/whoosh-short.mp3" data-start="5.95" data-duration="0.57" data-track-index="15" data-volume="0.45"></audio>
+      <audio id="a7" src="assets/fx/paper.wav" data-start="8.4" data-duration="1.6" data-track-index="16" data-volume="0.6"></audio>
+      <audio id="a8" src="assets/sfx/riser.mp3" data-start="8.0" data-duration="10.0" data-track-index="17" data-volume="0.22"></audio>
+      <audio id="a9" src="assets/sfx/click.mp3" data-start="12.0" data-duration="0.36" data-track-index="18" data-volume="0.5"></audio>
+      <audio id="a10" src="assets/sfx/click.mp3" data-start="14.0" data-duration="0.36" data-track-index="19" data-volume="0.5"></audio>
+      <audio id="a11" src="assets/sfx/click.mp3" data-start="16.0" data-duration="0.36" data-track-index="20" data-volume="0.5"></audio>
+      <audio id="a12" src="assets/fx/magclick.wav" data-start="17.95" data-duration="0.18" data-track-index="21" data-volume="0.8"></audio>
+      <audio id="a13" src="assets/fx/subdrop.wav" data-start="18.0" data-duration="1.6" data-track-index="22" data-volume="0.8"></audio>
+      <audio id="a14" src="assets/sfx/impact-bass-2.mp3" data-start="18.0" data-duration="2.5" data-track-index="23" data-volume="0.5"></audio>
+      <audio id="a15" src="assets/fx/magclick.wav" data-start="25.4" data-duration="0.18" data-track-index="24" data-volume="0.7"></audio>
+      <audio id="a16" src="assets/fx/uibeep.wav" data-start="28.9" data-duration="0.2" data-track-index="25" data-volume="0.6"></audio>
+      <audio id="a17" src="assets/sfx/notification.mp3" data-start="29.6" data-duration="2.2" data-track-index="26" data-volume="0.35"></audio>
+      <audio id="a18" src="assets/sfx/click.mp3" data-start="32.0" data-duration="0.36" data-track-index="27" data-volume="0.6"></audio>
+      <audio id="a19" src="assets/sfx/click.mp3" data-start="33.25" data-duration="0.36" data-track-index="28" data-volume="0.6"></audio>
+      <audio id="a20" src="assets/sfx/click.mp3" data-start="34.5" data-duration="0.36" data-track-index="29" data-volume="0.6"></audio>
+      <audio id="a21" src="assets/sfx/click.mp3" data-start="35.75" data-duration="0.36" data-track-index="30" data-volume="0.6"></audio>
+      <audio id="a22" src="assets/sfx/glitch-1.mp3" data-start="37.3" data-duration="0.5" data-track-index="31" data-volume="0.4"></audio>
+      <audio id="a23" src="assets/sfx/whoosh-cinematic.mp3" data-start="36.9" data-duration="2.5" data-track-index="32" data-volume="0.2"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const V = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+        const SIGNATURE_ENDCARD = V.SIGNATURE_ENDCARD !== false, SIGNATURE_WATERMARK = V.SIGNATURE_WATERMARK !== false;
+        if (!SIGNATURE_ENDCARD) { document.getElementById("se-endcard").setAttribute("data-hidden", ""); document.getElementById("se-opener").setAttribute("data-hidden", ""); }
+        const b = SE.beatGrid(120);  // 1 beat = 0.5 s, 1 bar = 2 s
+        const R = SE.prng(101);
+        const T = 40;
+        const tl = gsap.timeline({ paused: true });
+        const vis = (id, a, z) => { tl.set(id, { opacity: 1 }, a); if (z != null) tl.set(id, { opacity: 0 }, z); };
+
+        /* ============ S1 · 0 – 2 s · hook ============ */
+        tl.fromTo("#wline", { attr: { "stroke-dasharray": 800, "stroke-dashoffset": 800 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.3, ease: "expo.out" }, 0.9);
+        // the line explodes into a sound wave (amplitude is a pure function of time)
+        const wp = document.getElementById("wpath");
+        const waveAt = (amp, ph) => { let d = "M140 100"; for (let x = 0; x <= 800; x += 8) { const env = Math.sin(Math.PI * x / 800); d += " L" + (140 + x) + " " + (100 + Math.sin(x * 0.055 + ph) * Math.sin(x * 0.013 + ph * 0.5) * amp * env).toFixed(1); } return d; };
+        const txt = "Ce son va tout changer.";
+        const typeEl = document.getElementById("type");
+        for (const ch of txt) { const s = document.createElement("span"); s.textContent = ch === " " ? " " : ch; typeEl.appendChild(s); }
+        tl.to("#type span", { opacity: 1, duration: 0.01, stagger: 0.03, ease: "none" }, 1.05);
+        tl.to("#s1", { opacity: 0, duration: 0.15 }, 1.95);
+
+        /* ============ S2 · 2 – 6 s · closed box ============ */
+        vis("#s2", 1.95, 12.0);
+        tl.fromTo("#boxrig", { y: -1500, rotation: -10, scale: 1.08 }, { y: 0, rotation: 6, scale: 1, duration: 0.55, ease: "back.out(1.5)", immediateRender: false }, 2.0);
+        tl.fromTo("#boxshadow", { opacity: 0.1, scale: 1.25, filter: "blur(90px)" }, { opacity: 1, scale: 1, filter: "blur(38px)", duration: 0.55, ease: "power3.out", immediateRender: false }, 2.0);
+        tl.to("#boxrig", { rotation: -19, scale: 1.04, duration: 3.45, ease: "sine.inOut" }, 2.55);   // slow 25° turn
+        tl.fromTo("#lidsheen div", { x: 0 }, { x: 1400, duration: 0.8, ease: "power2.inOut", immediateRender: false }, 4.0);
+
+        /* ============ S3 · 6 – 12 s · opening (slow, ASMR) ============ */
+        tl.to("#boxrig", { scale: 1.35, duration: 0.25, ease: "expo.out" }, 6.0);
+        tl.fromTo("#s2", { filter: "blur(6px)" }, { filter: "blur(0px)", duration: 0.12, ease: "none", immediateRender: false }, 6.0);
+        tl.to("#boxlid", { y: -60, scale: 1.18, duration: 1.5, ease: "power4.in" }, 6.6);
+        tl.to("#boxlid", { y: -900, scale: 1.5, rotation: -12, opacity: 0, filter: "blur(14px)", duration: 0.6, ease: "power2.in" }, 8.1);
+        tl.fromTo("#beam", { opacity: 0 }, { opacity: 1, duration: 1.2, ease: "sine.inOut", immediateRender: false }, 7.6);
+        tl.fromTo("#t1", { rotationY: 0 }, { rotationY: -150, duration: 1.4, ease: "power2.inOut", transformPerspective: 1600, immediateRender: false }, 8.5);
+        tl.fromTo("#t2", { rotationY: 0 }, { rotationY: 150, duration: 1.4, ease: "power2.inOut", transformPerspective: 1600, immediateRender: false }, 8.8);
+        tl.fromTo("#glowin", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 2.2, ease: "sine.inOut", immediateRender: false }, 9.6);
+        tl.to("#boxrig", { scale: 1.55, duration: 2.0, ease: "sine.inOut" }, 9.9);
+        const dustf = document.getElementById("dustf");
+        for (let i = 0; i < 36; i++) {
+          const d = document.createElement("div"); d.className = "dust";
+          const x = 300 + R() * 480, y = 200 + R() * 1100;
+          d.style.left = x + "px"; d.style.top = y + "px"; dustf.appendChild(d);
+          tl.fromTo(d, { opacity: 0, x: 0, y: 0 }, { opacity: 0.2 + R() * 0.7, x: (R() - 0.5) * 60, y: 40 + R() * 120, duration: 3.5, ease: "sine.inOut", immediateRender: false }, 7.8 + R() * 1.2);
+        }
+
+        /* ============ S4 · 12 – 18 s · textures (cuts on the bar) ============ */
+        [["#m1", 12.0, 14.0], ["#m2", 14.0, 16.0], ["#m3", 16.0, 18.0]].forEach(([id, a, z], i) => {
+          vis(id, a, z);
+          tl.fromTo(id + " img", { scale: 1.35, filter: "blur(8px)" }, { scale: 1.12, filter: "blur(0px)", duration: 0.25, ease: "expo.out", immediateRender: false }, a);
+          tl.to(id + " img", { scale: 1.04, x: i === 1 ? 30 : -30, duration: 1.75, ease: "sine.inOut" }, a + 0.25);
+          const n = i + 1, len = document.getElementById("m" + n + "l").getTotalLength();
+          tl.fromTo("#m" + n + "a", { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, a + 0.3);
+          tl.fromTo("#m" + n + "l", { attr: { "stroke-dasharray": len, "stroke-dashoffset": len } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.35, ease: "power3.out", immediateRender: false }, a + 0.4);
+          tl.fromTo(id + " .mlabel", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", immediateRender: false }, a + 0.6);
+        });
+        tl.fromTo("#brushed", { backgroundPositionX: "0px" }, { backgroundPositionX: "140px", duration: 2, ease: "none", immediateRender: false }, 12.0);
+
+        /* ============ S5 · 18 – 25 s · reveal ============ */
+        vis("#s5", 18.0);
+        tl.fromTo("#flash", { opacity: 1 }, { opacity: 0, duration: 0.2, ease: "power2.out", immediateRender: false }, 18.0);
+        const S0 = 1080 / 1620;
+        const H = (s, px, py) => ({ scale: s, x: Math.min(0, Math.max(1080 - 1620 * s, 540 - s * px)), y: Math.min(0, Math.max(1920 - 2880 * s, 1000 - s * py)) });
+        tl.fromTo("#hero", H(0.9, 900, 1500), Object.assign({ duration: 6.8, ease: "sine.inOut", immediateRender: false }, H(0.78, 880, 1480)), 18.0);
+        tl.fromTo("#halo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out", immediateRender: false }, 18.1);
+        tl.to("#halo", { scale: 1.08, opacity: 0.8, duration: 1.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 18.9);
+        // earbuds levitate out of the case and turn in opposite directions
+        tl.fromTo("#bud1", { y: 0, x: 0, rotation: 0, scale: 1 }, { y: -520, x: -60, rotation: -28, scale: 1.12, duration: 1.4, ease: "power3.out", immediateRender: false }, 18.3);
+        tl.fromTo("#bud2", { y: 0, x: 0, rotation: 0, scale: 1 }, { y: -560, x: 70, rotation: 26, scale: 1.1, duration: 1.4, ease: "power3.out", immediateRender: false }, 18.4);
+        tl.to("#bud1", { y: -560, rotation: -10, duration: 2.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, 19.7);
+        tl.to("#bud2", { y: -600, rotation: 12, duration: 2.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, 19.8);
+        const convf = document.getElementById("convf");
+        for (let i = 0; i < 40; i++) {
+          const d = document.createElement("div"); d.className = "conv"; convf.appendChild(d);
+          const a = R() * Math.PI * 2, r0 = 600 + R() * 400;
+          tl.fromTo(d, { x: 540 + Math.cos(a) * r0, y: 1000 + Math.sin(a) * r0, opacity: 0 }, { x: 540 + Math.cos(a) * 40, y: 1000 + Math.sin(a) * 40, opacity: 1, duration: 1.1 + R() * 0.5, ease: "power2.in", immediateRender: false }, 18.2 + R() * 0.6);
+          tl.to(d, { opacity: 0, duration: 0.2 }, 19.9 + R() * 0.3);
+        }
+        const title = document.getElementById("title");
+        for (const ch of "KAIRO AIR") { const s = document.createElement("span"); s.textContent = ch === " " ? " " : ch; title.appendChild(s); }
+        tl.fromTo("#title span", { opacity: 0, scale: 3.2, z: 400, filter: "blur(12px)" }, { opacity: 1, scale: 1, z: 0, filter: "blur(0px)", duration: 0.55, ease: "power4.out", stagger: 0.05, immediateRender: false }, 18.5);
+        tl.fromTo("#title-sub", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false }, 19.4);
+        tl.to(["#title", "#title-sub"], { opacity: 0, y: -30, duration: 0.3, ease: "power2.in" }, 24.7);
+
+        /* ============ S6 · 25 – 32 s · express test ============ */
+        tl.to("#bud1", { y: 0, x: 0, rotation: 0, scale: 1, duration: 0.5, ease: "power3.in" }, 24.9);
+        tl.to("#bud2", { y: 0, x: 0, rotation: 0, scale: 1, duration: 0.5, ease: "power3.in" }, 24.95);
+        tl.to("#hero", Object.assign({ duration: 1.0, ease: "sine.inOut" }, H(0.9, 900, 1500)), 24.9);
+        tl.to("#halo", { opacity: 0.35, duration: 0.6 }, 25.0);
+        [["#led1", 25.5], ["#led2", 25.6]].forEach(([id, t]) => tl.fromTo(id, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.2, duration: b(1), ease: "sine.inOut", yoyo: true, repeat: 5, immediateRender: false }, t));
+        tl.fromTo("#charge", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.4)", immediateRender: false }, 25.5);
+        tl.fromTo("#gauge", { attr: { "stroke-dashoffset": 364.4 } }, { attr: { "stroke-dashoffset": 0 }, duration: 2.4, ease: "power2.inOut", immediateRender: false }, 25.8);
+        tl.to("#charge", { opacity: 0, y: 30, duration: 0.3 }, 28.4);
+        tl.set("#rings", { opacity: 1 }, 28.5);
+        document.querySelectorAll(".ring").forEach((r, i) => tl.fromTo(r, { opacity: 0.9, scale: 0.3 }, { opacity: 0, scale: 2.2, duration: 1.2, ease: "power2.out", repeat: 2, immediateRender: false }, 28.6 + i * 0.4));
+        tl.fromTo("#notif", { opacity: 0, y: -160 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.3)", immediateRender: false }, 29.5);
+        tl.to("#notif", { opacity: 0, y: -80, duration: 0.3, ease: "power2.in" }, 31.7);
+
+        /* ============ S7 · 32 – 37 s · specs on the beat ============ */
+        vis("#specs", 32.0, 37.0);
+        tl.to("#hero", { filter: "blur(18px) brightness(0.35)", duration: 0.3 }, 31.8);
+        tl.to("#halo", { opacity: 0, duration: 0.3 }, 31.8);
+        [["#sp1", 32.0], ["#sp2", 33.25], ["#sp3", 34.5], ["#sp4", 35.75]].forEach(([id, t], i, arr) => {
+          tl.set(id, { opacity: 1 }, t);
+          if (i < arr.length - 1) tl.set(id, { opacity: 0 }, arr[i + 1][1]); else tl.set(id, { opacity: 0 }, 37.0);
+          tl.fromTo(id, { x: 0, y: 0 }, { keyframes: [{ x: 3, y: -2, duration: 1 / 60 }, { x: -3, y: 2, duration: 1 / 60 }, { x: 2, y: 1, duration: 1 / 60 }, { x: 0, y: 0, duration: 1 / 60 }], ease: "none", immediateRender: false }, t);
+          tl.fromTo(id + " .v", { scale: 1.12, transformOrigin: "0% 50%" }, { scale: 1, duration: 0.25, ease: "expo.out", immediateRender: false }, t);
+        });
+        // the only magenta accent: -42 dB
+        tl.fromTo("#sp2 .v", { textShadow: "0 0 0 rgba(255,46,136,0)" }, { textShadow: "0 0 40px rgba(255,46,136,0.8)", duration: 0.2, yoyo: true, repeat: 1, immediateRender: false }, 33.25);
+
+        /* ============ S8 · 37 – 40 s · end card ============ */
+        tl.to("#hero", Object.assign({ filter: "blur(0px) brightness(1)", duration: 3.0, ease: "sine.inOut" }, H(S0, 810, 1440)), 37.0);
+        tl.to("#halo", { opacity: 0.5, duration: 0.6 }, 37.0);
+        tl.fromTo("#logo", { opacity: 0 }, { opacity: 1, duration: 0.05, immediateRender: false }, 37.3);
+        // RGB glitch: 3 frames of split channels and slices
+        [["#lg-r", -14, 6], ["#lg-c", 14, -5]].forEach(([id, dx, dy]) => {
+          tl.fromTo(id, { opacity: 0.9, x: dx, y: dy }, { keyframes: [{ x: dx, y: dy, duration: 1 / 30 }, { x: -dx * 0.6, y: dy, duration: 1 / 30 }, { x: dx * 0.3, y: 0, duration: 1 / 30 }], ease: "none", immediateRender: false }, 37.3);
+          tl.set(id, { opacity: 0 }, 37.4);
+        });
+        tl.fromTo("#lg-w", { x: 0, clipPath: "inset(0 0 0 0)" }, { keyframes: [{ x: 10, clipPath: "inset(30% 0 40% 0)", duration: 1 / 30 }, { x: -8, clipPath: "inset(0 0 55% 0)", duration: 1 / 30 }, { x: 0, clipPath: "inset(0 0 0 0)", duration: 1 / 30 }], ease: "none", immediateRender: false }, 37.3);
+        tl.fromTo("#sig", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", immediateRender: false }, 37.8);
+        tl.fromTo("#avail", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", immediateRender: false }, 38.2);
+        if (SIGNATURE_WATERMARK && SIGNATURE_ENDCARD) tl.fromTo("#watermark", { opacity: 0 }, { opacity: 0.3, duration: 0.4, immediateRender: false }, 38.0);
+
+        /* time-driven visuals (pure function of the playhead) */
+        const pct = document.getElementById("pct"), vizp = document.getElementById("vizp");
+        function state() {
+          const t = tl.time();
+          const k = t < 1.15 ? 0 : t < 1.6 ? (t - 1.15) / 0.45 : Math.max(0, 1 - (t - 1.6) / 0.6) * 0.6 + 0.4;
+          wp.setAttribute("d", waveAt(90 * k * (t < 1.15 ? 0 : 1), t * 9));
+          document.getElementById("wline").style.opacity = t < 1.15 ? 1 : 0;
+          const p = t < 25.8 ? 0 : Math.min(100, Math.round(100 * (0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, (t - 25.8) / 2.4)))));
+          pct.textContent = p + " %";
+          let d = "M0 120"; for (let x = 0; x <= 1080; x += 12) d += " L" + x + " " + (120 + Math.sin(x * 0.03 + t * 7) * Math.sin(x * 0.007 + t * 2) * 70).toFixed(1);
+          vizp.setAttribute("d", d);
+        }
+        tl.eventCallback("onUpdate", state); state();
+
+        const host = document.getElementById("kairo");
+        SE.addVignette(host, 0.25, "0,0,0");
+        SE.addGrain(host, tl, { opacity: 0.06, duration: T, fps: 30, blend: "overlay", seed: 1 });
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

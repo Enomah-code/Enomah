@@ -1,0 +1,336 @@
+<!doctype html>
+<html
+  lang="fr"
+  data-composition-variables='[
+    {"id":"SIGNATURE_ENDCARD","type":"boolean","label":"Carte de fin Stone Edits","default":true},
+    {"id":"SIGNATURE_WATERMARK","type":"boolean","label":"Filigrane Stone Edits","default":true}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Kutto Chop 3-en-1</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/shared/polish.js"></script>
+    <style>
+      @font-face { font-family: 'Archivo Black'; font-style: normal; font-weight: 400; font-display: block; src: url('assets/fonts/archivo-black-400.woff2') format('woff2'); }
+      @font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: block; src: url('assets/fonts/inter-600.woff2') format('woff2'); }
+      :root { --a1: #3a3f47; --a1g: #5b6470; --alert: #e5484d; --a1t: #e6e8eb; --cream: #fff4e6; --tomato: #ff5a36; --basil: #2fbf71; --lemon: #ffd23f; --ink: #1b1b1f; }
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--a1); }
+      #kutto { position: absolute; inset: 0; overflow: hidden; font-family: 'Inter', sans-serif; }
+      .shot { position: absolute; left: 0; top: 0; width: 1350px; height: 2400px; transform-origin: 0 0; opacity: 0; }
+      .shot img { position: absolute; inset: 0; width: 1350px; height: 2400px; display: block; }
+      .big { font-family: 'Archivo Black', sans-serif; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.92; }
+
+      /* act 1 */
+      #act1 { position: absolute; inset: 0; }
+      #hook { position: absolute; left: 60px; right: 140px; top: 300px; }
+      #hook .w { display: block; font-size: 150px; color: var(--a1t); text-shadow: 0 8px 40px rgba(0,0,0,0.55); opacity: 0; }
+      #hook .w.red { color: var(--alert); }
+      #clock { position: absolute; right: 150px; top: 250px; width: 150px; height: 150px; opacity: 0; }
+      #tear { position: absolute; left: 520px; top: 0; width: 70px; height: 96px; opacity: 0; }
+      #xmark { position: absolute; left: 290px; top: 700px; width: 500px; height: 500px; opacity: 0; }
+      #act1-cap { position: absolute; left: 60px; right: 140px; top: 1340px; font-size: 52px; color: var(--a1t); font-weight: 600; opacity: 0; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+      #whip { position: absolute; inset: 0; opacity: 0; background: linear-gradient(90deg, rgba(255,244,230,0) 0%, rgba(255,244,230,0.9) 45%, rgba(255,90,54,0.6) 55%, rgba(255,244,230,0) 100%); }
+
+      /* act 2 */
+      #act2 { position: absolute; inset: 0; background: var(--cream); opacity: 0; }
+      #hero-title { position: absolute; left: 40px; right: 120px; top: 240px; padding: 34px 36px 40px; border-radius: 36px; background: var(--cream); box-shadow: 0 24px 60px rgba(27,27,31,0.25); }
+      #hero-title .brand { font-weight: 600; font-size: 34px; letter-spacing: 0.22em; color: #c8391a; }
+      #hero-title .big { margin-top: 14px; font-size: 132px; color: var(--ink); }
+      #burst { position: absolute; left: 540px; top: 520px; width: 0; height: 0; }
+      .frag { position: absolute; opacity: 0; }
+      #sheen { position: absolute; top: -200px; left: -600px; width: 360px; height: 2400px; transform: rotate(18deg); background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.42), rgba(255,255,255,0)); mix-blend-mode: screen; opacity: 0; }
+
+      /* demo */
+      .demo { position: absolute; inset: 0; clip-path: circle(0% at 50% 52%); }
+      .demo .shot { opacity: 1; }
+      .grid { position: absolute; inset: 0; }
+      .tile { position: absolute; background-size: 1080px 1920px; transform: scale(0); border-radius: 6px; }
+      .badge { position: absolute; left: 50px; top: 240px; display: flex; align-items: center; gap: 22px; padding: 16px 34px 16px 18px; border-radius: 60px; background: var(--cream); box-shadow: 0 16px 40px rgba(27,27,31,0.3); opacity: 0; }
+      .badge .n { width: 92px; height: 92px; border-radius: 50%; background: var(--tomato); color: #fff; display: grid; place-items: center; font-family: 'Archivo Black', sans-serif; font-size: 54px; }
+      .badge .t { font-family: 'Archivo Black', sans-serif; font-size: 74px; color: var(--ink); letter-spacing: -0.02em; }
+      .chip { position: absolute; right: 150px; top: 1280px; padding: 18px 34px; border-radius: 50px; background: var(--ink); color: #fff; font-family: 'Archivo Black', sans-serif; font-size: 58px; opacity: 0; }
+      .chip span { color: var(--lemon); }
+
+      /* benefits */
+      #bene { position: absolute; inset: 0; background: var(--cream); opacity: 0; }
+      .card { position: absolute; left: 60px; width: 820px; overflow: hidden; border-radius: 44px; box-shadow: 0 30px 70px rgba(27,27,31,0.25); }
+      .card img { position: absolute; left: 0; top: 0; width: 820px; height: 1458px; }
+      .line { position: absolute; left: 60px; right: 140px; display: flex; align-items: center; gap: 30px; font-weight: 600; font-size: 50px; color: var(--ink); opacity: 0; }
+      .line svg { width: 84px; height: 84px; flex: none; }
+      .line b { font-family: "Archivo Black", sans-serif; font-weight: 400; color: #c8391a; }
+
+      /* CTA */
+      #cta { position: absolute; inset: 0; background: var(--cream); opacity: 0; }
+      #old { position: absolute; left: 60px; top: 900px; font-family: 'Archivo Black', sans-serif; font-size: 66px; color: #8b8b92; }
+      #old-strike { position: absolute; left: 52px; top: 940px; width: 380px; height: 8px; background: var(--alert); border-radius: 4px; transform-origin: 0 50%; transform: scaleX(0) rotate(-6deg); }
+      #new { position: absolute; left: 56px; top: 975px; font-family: 'Archivo Black', sans-serif; font-size: 190px; line-height: 1; color: var(--tomato); letter-spacing: -0.04em; opacity: 0; color: #e0441f; }
+      #badge40 { position: absolute; left: 700px; top: 170px; width: 230px; height: 230px; opacity: 0; }
+      #count { position: absolute; left: 60px; right: 140px; top: 1195px; font-weight: 600; font-size: 38px; color: var(--ink); opacity: 0; }
+      #count b { font-family: 'Archivo Black', sans-serif; font-weight: 400; color: var(--alert); font-feature-settings: "tnum" 1; letter-spacing: 0.02em; }
+      #btn { position: absolute; left: 60px; width: 820px; top: 1268px; height: 150px; border-radius: 80px; background: var(--tomato); color: #fff; display: grid; place-items: center; overflow: hidden;
+        font-family: 'Archivo Black', sans-serif; font-size: 50px; letter-spacing: 0.01em; box-shadow: 0 20px 50px rgba(255,90,54,0.45); opacity: 0; }
+      #btn-sheen { position: absolute; top: -40px; left: -220px; width: 140px; height: 240px; transform: rotate(20deg); background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.55), rgba(255,255,255,0)); }
+      #arrow { position: absolute; left: 440px; top: 1440px; width: 60px; height: 90px; opacity: 0; }
+      #watermark { position: absolute; right: 150px; bottom: 400px; width: 53px; height: 56px; opacity: 0; filter: brightness(0.15); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="31.5" data-main-duration="30">
+      <section id="kutto" class="clip" data-start="0" data-duration="30" data-track-index="0">
+        <!-- ACT 1 · the problem -->
+        <div id="act1">
+          <div class="shot" id="s-knife-a"><img src="assets/img/p-knife-a.jpg" alt="" /></div>
+          <div class="shot" id="s-knife-b"><img src="assets/img/p-knife-b.jpg" alt="" /></div>
+          <div class="shot" id="s-mess"><img src="assets/img/p-mess.jpg" alt="" /></div>
+          <svg id="clock" viewBox="-75 -75 150 150"><circle r="68" fill="rgba(58,63,71,0.85)" stroke="#e6e8eb" stroke-width="6" /><line id="clock-m" x1="0" y1="0" x2="0" y2="-50" stroke="#e6e8eb" stroke-width="7" stroke-linecap="round" /><line id="clock-h" x1="0" y1="0" x2="30" y2="0" stroke="#e5484d" stroke-width="8" stroke-linecap="round" /><circle r="7" fill="#e6e8eb" /></svg>
+          <svg id="tear" viewBox="0 0 70 96"><path d="M35 2 C35 2 6 44 6 64 C6 81 19 94 35 94 C51 94 64 81 64 64 C64 44 35 2 35 2 Z" fill="rgba(170,205,235,0.85)" stroke="#e6e8eb" stroke-width="3" /><path d="M20 62 C20 72 26 79 34 80" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" /></svg>
+          <svg id="xmark" viewBox="0 0 500 500"><circle cx="250" cy="250" r="220" fill="rgba(229,72,77,0.18)" stroke="#e5484d" stroke-width="18" /><path id="x1" d="M150 150 L350 350" stroke="#e5484d" stroke-width="44" stroke-linecap="round" /><path id="x2" d="M350 150 L150 350" stroke="#e5484d" stroke-width="44" stroke-linecap="round" /></svg>
+          <div id="act1-cap">Morceaux irréguliers, yeux qui piquent.</div>
+          <div id="hook"><span class="w big" id="w1">Encore</span><span class="w big red" id="w2">20 min</span><span class="w big" id="w3">pour un</span><span class="w big" id="w4">oignon ?</span></div>
+        </div>
+        <div id="whip"></div>
+
+        <!-- ACT 2 · the solution -->
+        <div id="act2">
+          <div class="shot" id="s-hero"><img src="assets/img/k-hero.jpg" alt="" /><div id="sheen"></div></div>
+          <div id="burst"></div>
+          <div id="hero-title"><div class="brand">KUTTO CHOP 3-EN-1</div><div class="big">Coupez court.</div></div>
+        </div>
+
+        <div class="demo" id="d1"><div class="shot" id="d1-press"><img src="assets/img/k-press.jpg" alt="" /></div><div class="grid" id="g1"></div>
+          <div class="badge" id="b1"><div class="n">1</div><div class="t">HACHER</div></div><div class="chip" id="c1">⏱ <span>5 s</span></div></div>
+        <div class="demo" id="d2"><div class="shot" id="d2-press"><img src="assets/img/k-open.jpg" alt="" /></div><div class="grid" id="g2"></div>
+          <div class="badge" id="b2"><div class="n">2</div><div class="t">ÉMINCER</div></div><div class="chip" id="c2">Rondelles <span>nettes</span></div></div>
+        <div class="demo" id="d3"><div class="shot" id="d3-press"><img src="assets/img/k-hero.jpg" alt="" /></div><div class="grid" id="g3"></div>
+          <div class="badge" id="b3"><div class="n">3</div><div class="t">RÂPER</div></div><div class="chip" id="c3">Copeaux <span>fins</span></div></div>
+
+        <div id="bene">
+          <div class="card" style="top:240px;height:620px;"><img src="assets/img/k-open.jpg" alt="" style="top:-360px;" /></div>
+          <div class="line" id="l1" style="top:930px;"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="40" fill="#2fbf71" /><path class="ck" d="M22 44 L37 58 L63 28" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg><div><b>10×</b> plus rapide</div></div>
+          <div class="line" id="l2" style="top:1070px;"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="40" fill="#2fbf71" /><path class="ck" d="M22 44 L37 58 L63 28" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg><div>Lavable au lave-vaisselle</div></div>
+          <div class="line" id="l3" style="top:1210px;"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="40" fill="#2fbf71" /><path class="ck" d="M22 44 L37 58 L63 28" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg><div>Lames inox garanties <b>5 ans</b></div></div>
+        </div>
+
+        <div id="cta">
+          <div class="card" style="top:230px;height:620px;"><img src="assets/img/k-hero.jpg" alt="" style="top:-300px;" /></div>
+          <svg id="badge40" viewBox="-115 -115 230 230"><g id="badge40-rot"><circle r="108" fill="#ffd23f" /><circle r="94" fill="none" stroke="#1b1b1f" stroke-width="3" stroke-dasharray="6 8" /></g><text x="0" y="22" text-anchor="middle" style="font-family:'Archivo Black';font-size:70px;fill:#1b1b1f;letter-spacing:-2px;">−40 %</text></svg>
+          <div id="old">49,90 €</div><div id="old-strike"></div>
+          <div id="new">29,90 €</div>
+          <div id="count">L’offre se termine dans <b id="count-t">02:59:47</b></div>
+          <div id="btn"><div id="btn-sheen"></div>COMMANDER MAINTENANT</div>
+          <svg id="arrow" viewBox="0 0 60 90"><path d="M30 4 L30 80 M8 58 L30 82 L52 58" stroke="#1b1b1f" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </div>
+        <img id="watermark" src="assets/brand/stone-edits-logo-blanc.svg" alt="" />
+      </section>
+
+      <div id="se-opener" data-composition-id="se-opener" data-composition-src="compositions/se-opener.html"
+        data-start="0" data-duration="0.9" data-track-index="6" data-width="1080" data-height="1920"></div>
+      <div id="se-endcard" data-composition-id="se-endcard" data-composition-src="compositions/se-endcard.html"
+        data-start="30" data-duration="1.5" data-track-index="5" data-width="1080" data-height="1920"
+        data-variable-values='{"logoPct":22}'></div>
+
+      <!-- sound: Pixabay Content License + synthesised chops / ticks / beeps -->
+      <audio id="a-w1" src="assets/sfx/impact-bass-1.mp3" data-start="0.8" data-duration="0.6" data-track-index="10" data-volume="0.35"></audio>
+      <audio id="a-w2" src="assets/sfx/impact-bass-2.mp3" data-start="1.03" data-duration="0.6" data-track-index="11" data-volume="0.35"></audio>
+      <audio id="a-w3" src="assets/sfx/impact-bass-1.mp3" data-start="1.27" data-duration="0.6" data-track-index="12" data-volume="0.35"></audio>
+      <audio id="a-w4" src="assets/sfx/impact-bass-2.mp3" data-start="1.5" data-duration="0.9" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="a-tick" src="assets/sfx/typing.mp3" data-start="1.9" data-duration="1.54" data-track-index="14" data-volume="0.35"></audio>
+      <audio id="a-tick2" src="assets/sfx/typing.mp3" data-start="3.1" data-duration="1.4" data-track-index="15" data-volume="0.3"></audio>
+      <audio id="a-buzz" src="assets/sfx/error.mp3" data-start="3.75" data-duration="0.9" data-track-index="16" data-volume="0.5"></audio>
+      <audio id="a-whip" src="assets/sfx/whoosh-cinematic.mp3" data-start="4.35" data-duration="1.3" data-track-index="17" data-volume="0.45"></audio>
+      <audio id="a-land" src="assets/sfx/impact-bass-2.mp3" data-start="5.5" data-duration="1.4" data-track-index="18" data-volume="0.5"></audio>
+      <audio id="a-pop" src="assets/sfx/pop.mp3" data-start="5.72" data-duration="0.7" data-track-index="19" data-volume="0.4"></audio>
+      <audio id="a-riser" src="assets/sfx/riser.mp3" data-start="6.5" data-duration="2.5" data-track-index="20" data-volume="0.18"></audio>
+      <audio id="a-chime" src="assets/sfx/chime.mp3" data-start="25.1" data-duration="2.2" data-track-index="21" data-volume="0.35"></audio>
+      <audio id="a-ping" src="assets/sfx/ping.mp3" data-start="25.2" data-duration="1.2" data-track-index="22" data-volume="0.35"></audio>
+      <audio id="cue-0" src="assets/fx/chop.wav" data-start="2.050" data-duration="0.25" data-track-index="30" data-volume="0.35"></audio>
+      <audio id="cue-1" src="assets/fx/chop.wav" data-start="2.400" data-duration="0.25" data-track-index="31" data-volume="0.35"></audio>
+      <audio id="cue-2" src="assets/fx/chop.wav" data-start="2.620" data-duration="0.25" data-track-index="32" data-volume="0.35"></audio>
+      <audio id="cue-3" src="assets/fx/chop.wav" data-start="3.000" data-duration="0.25" data-track-index="33" data-volume="0.35"></audio>
+      <audio id="cue-4" src="assets/fx/chop.wav" data-start="3.350" data-duration="0.25" data-track-index="34" data-volume="0.35"></audio>
+      <audio id="cue-5" src="assets/fx/chop.wav" data-start="3.450" data-duration="0.25" data-track-index="35" data-volume="0.35"></audio>
+      <audio id="cue-6" src="assets/fx/chop.wav" data-start="9.400" data-duration="0.25" data-track-index="36" data-volume="0.55"></audio>
+      <audio id="cue-7" src="assets/fx/chop.wav" data-start="9.869" data-duration="0.25" data-track-index="37" data-volume="0.55"></audio>
+      <audio id="cue-8" src="assets/fx/chop.wav" data-start="10.338" data-duration="0.25" data-track-index="38" data-volume="0.55"></audio>
+      <audio id="cue-9" src="assets/sfx/pop.mp3" data-start="10.800" data-duration="0.7" data-track-index="39" data-volume="0.4"></audio>
+      <audio id="cue-10" src="assets/fx/chop.wav" data-start="12.730" data-duration="0.25" data-track-index="40" data-volume="0.55"></audio>
+      <audio id="cue-11" src="assets/fx/chop.wav" data-start="13.199" data-duration="0.25" data-track-index="41" data-volume="0.55"></audio>
+      <audio id="cue-12" src="assets/fx/chop.wav" data-start="13.668" data-duration="0.25" data-track-index="42" data-volume="0.55"></audio>
+      <audio id="cue-13" src="assets/sfx/pop.mp3" data-start="14.130" data-duration="0.7" data-track-index="43" data-volume="0.4"></audio>
+      <audio id="cue-14" src="assets/fx/chop.wav" data-start="16.060" data-duration="0.25" data-track-index="44" data-volume="0.55"></audio>
+      <audio id="cue-15" src="assets/fx/chop.wav" data-start="16.529" data-duration="0.25" data-track-index="45" data-volume="0.55"></audio>
+      <audio id="cue-16" src="assets/fx/chop.wav" data-start="16.997" data-duration="0.25" data-track-index="46" data-volume="0.55"></audio>
+      <audio id="cue-17" src="assets/sfx/pop.mp3" data-start="17.460" data-duration="0.7" data-track-index="47" data-volume="0.4"></audio>
+      <audio id="cue-18" src="assets/sfx/whoosh-short.mp3" data-start="12.100" data-duration="0.6" data-track-index="48" data-volume="0.35"></audio>
+      <audio id="cue-19" src="assets/sfx/whoosh-short.mp3" data-start="15.440" data-duration="0.6" data-track-index="49" data-volume="0.35"></audio>
+      <audio id="cue-20" src="assets/sfx/click.mp3" data-start="19.550" data-duration="0.36" data-track-index="30" data-volume="0.5"></audio>
+      <audio id="cue-21" src="assets/sfx/click.mp3" data-start="20.487" data-duration="0.36" data-track-index="31" data-volume="0.5"></audio>
+      <audio id="cue-22" src="assets/sfx/click.mp3" data-start="21.425" data-duration="0.36" data-track-index="32" data-volume="0.5"></audio>
+      <audio id="cue-23" src="assets/sfx/impact-bass-1.mp3" data-start="25.000" data-duration="0.8" data-track-index="33" data-volume="0.35"></audio>
+      <audio id="cue-24" src="assets/fx/beep.wav" data-start="26.000" data-duration="0.12" data-track-index="34" data-volume="0.25"></audio>
+      <audio id="cue-25" src="assets/fx/beep.wav" data-start="27.000" data-duration="0.12" data-track-index="35" data-volume="0.25"></audio>
+      <audio id="cue-26" src="assets/fx/beep.wav" data-start="28.000" data-duration="0.12" data-track-index="36" data-volume="0.25"></audio>
+      <audio id="cue-27" src="assets/fx/beep.wav" data-start="29.000" data-duration="0.12" data-track-index="37" data-volume="0.25"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const V = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+        const SIGNATURE_ENDCARD = V.SIGNATURE_ENDCARD !== false, SIGNATURE_WATERMARK = V.SIGNATURE_WATERMARK !== false;
+        if (!SIGNATURE_ENDCARD) { document.getElementById("se-endcard").setAttribute("data-hidden", ""); document.getElementById("se-opener").setAttribute("data-hidden", ""); }
+        const b = SE.beatGrid(128);                  // 1 beat = 0.469 s
+        const R = SE.prng(303);
+        const T = 30, S0 = 0.8;                      // plates are 1350 x 2400
+        const tl = gsap.timeline({ paused: true });
+        const $ = (s) => document.querySelector(s);
+        const shot = (id, s, px, py) => {   // centre plate point (px,py), never revealing an edge
+          s = Math.max(s, S0);
+          return { scale: s, x: Math.min(0, Math.max(1080 - 1350 * s, 540 - s * px)), y: Math.min(0, Math.max(1920 - 2400 * s, 960 - s * py)) };
+        };
+        const C = [675, 1200];
+
+        /* generated sound cues (sample + timing, no randomness at render) */
+        const cue = () => {};   // sound cues are authored as static <audio> tags (see markup)
+
+        /* ============ ACT 1 · 0 – 4.5 s ============ */
+        tl.set("#s-knife-a", { opacity: 1 }, 0);
+        tl.fromTo("#s-knife-a", shot(0, S0, ...C), Object.assign({ duration: 1.9, ease: "sine.inOut" }, shot(0, 0.88, 700, 1100)), 0);
+        const WT = [0.8, 1.03, 1.27, 1.5];
+        ["#w1", "#w2", "#w3", "#w4"].forEach((id, i) => {
+          tl.fromTo(id, { opacity: 0, scale: 1.7, transformOrigin: "0% 50%" }, { opacity: 1, scale: 1, duration: 0.14, ease: "power4.in", immediateRender: false }, WT[i]);
+          tl.fromTo("#hook", { x: 0, y: 0 }, { keyframes: [{ x: -6, y: 4, duration: 0.033 }, { x: 5, y: -3, duration: 0.033 }, { x: -2, y: 2, duration: 0.033 }, { x: 0, y: 0, duration: 0.033 }], ease: "none", immediateRender: false }, WT[i] + 0.14);
+        });
+        tl.to("#hook", { opacity: 0, duration: 0.12 }, 1.86);
+        // struggling knife: irregular jitter, uncomfortable framing
+        tl.set("#s-knife-a", { opacity: 0 }, 1.9);
+        tl.set("#s-knife-b", { opacity: 1 }, 1.9);
+        const jit = []; for (let i = 0; i < 14; i++) jit.push({ x: (R() - 0.5) * 22, y: (R() - 0.5) * 16, rotation: (R() - 0.5) * 1.4, duration: 0.05 + R() * 0.08 });
+        tl.fromTo("#s-knife-b", shot(0, 0.9, 700, 1250), Object.assign({ duration: 1.2, ease: "none" }, shot(0, 0.96, 720, 1260)), 1.9);
+        tl.fromTo("#act1", { x: 0, y: 0, rotation: 0 }, { keyframes: jit, ease: "none", immediateRender: false }, 1.95);
+        tl.set("#act1", { x: 0, y: 0, rotation: 0 }, 3.1);
+        tl.set("#s-knife-b", { opacity: 0 }, 3.1);
+        tl.set("#s-mess", { opacity: 1 }, 3.1);
+        tl.fromTo("#s-mess", shot(0, 0.86, 700, 1500), Object.assign({ duration: 1.4, ease: "sine.inOut" }, shot(0, 0.92, 760, 1560)), 3.1);
+        tl.fromTo("#clock", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(1.6)", immediateRender: false }, 1.95);
+        tl.fromTo("#clock-m", { rotation: 0 }, { rotation: 360 * 9, duration: 2.55, ease: "power1.in", svgOrigin: "0 0" }, 1.95);
+        tl.fromTo("#clock-h", { rotation: 0 }, { rotation: 360 * 0.75, duration: 2.55, ease: "power1.in", svgOrigin: "0 0" }, 1.95);
+        tl.fromTo("#tear", { opacity: 0, y: 560, scaleY: 0.6 }, { opacity: 1, y: 640, scaleY: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.35);
+        tl.to("#tear", { y: 1200, scaleY: 1.3, duration: 0.55, ease: "power2.in" }, 2.7);
+        tl.to("#tear", { opacity: 0, duration: 0.1 }, 3.2);
+        tl.fromTo("#act1-cap", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out", immediateRender: false }, 3.15);
+        tl.fromTo("#xmark", { opacity: 0, scale: 1.6, rotation: -12, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, rotation: 0, duration: 0.18, ease: "power4.in", immediateRender: false }, 3.75);
+        tl.fromTo("#act1", { x: 0 }, { keyframes: [{ x: -14, duration: 0.03 }, { x: 12, duration: 0.03 }, { x: -8, duration: 0.03 }, { x: 0, duration: 0.03 }], ease: "none", immediateRender: false }, 3.93);
+        // chops that miss the rhythm (tense, uncomfortable)
+        [2.05, 2.4, 2.62, 3.0, 3.35, 3.45].forEach((t) => cue("assets/fx/chop.wav", t, 0.25, 0.35));
+
+        /* ============ WHIP PAN · 4.5 – 5.5 s  (palette flips during the blur) ============ */
+        tl.to("#act1", { x: -1150, filter: "blur(40px)", duration: 0.32, ease: "power3.in" }, 4.45);
+        tl.fromTo("#whip", { opacity: 0, x: 600 }, { opacity: 1, x: -600, duration: 0.5, ease: "none", immediateRender: false }, 4.55);
+        tl.set("#act2", { opacity: 1 }, 4.77);
+        tl.set("#act1", { opacity: 0 }, 4.78);
+        tl.set("#s-hero", { opacity: 1 }, 4.77);
+        tl.fromTo("#act2", { x: 1150, filter: "blur(40px)" }, { x: 0, filter: "blur(0px)", duration: 0.45, ease: "power3.out", immediateRender: false }, 4.77);
+
+        /* ============ PRODUCT HERO · 5.5 – 9 s ============ */
+        tl.fromTo("#s-hero", shot(0, 1.0, 680, 1150), Object.assign({ duration: 0.55, ease: "back.out(1.3)", immediateRender: false }, shot(0, S0, 700, 1250)), 4.95);
+        tl.to("#s-hero", Object.assign({ duration: 3.4, ease: "sine.inOut" }, shot(0, 0.86, 700, 1330)), 5.5);
+        tl.fromTo("#hero-title", { opacity: 0, y: -60, rotation: -3 }, { opacity: 1, y: 0, rotation: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false }, 5.55);
+        tl.fromTo("#sheen", { opacity: 1, x: 0 }, { opacity: 1, x: 2400, duration: 0.9, ease: "power2.inOut", immediateRender: false }, 6.3);
+        const burst = document.getElementById("burst");
+        const cols = ["#ff5a36", "#2fbf71", "#ffd23f"];
+        for (let i = 0; i < 26; i++) {
+          const f = document.createElement("div"); f.className = "frag";
+          const sz = 18 + R() * 34, kind = i % 3;
+          f.style.cssText += "width:" + sz + "px;height:" + sz + "px;margin:" + (-sz / 2) + "px 0 0 " + (-sz / 2) + "px;background:" + cols[i % 3] + ";" +
+            (kind === 0 ? "border-radius:50%;" : kind === 1 ? "clip-path:polygon(50% 0,100% 100%,0 100%);" : "border-radius:6px;");
+          burst.appendChild(f);
+          const a = R() * Math.PI * 2, d = 260 + R() * 360;
+          tl.fromTo(f, { x: 0, y: 0, opacity: 1, scale: 0.2, rotation: 0 }, { x: Math.cos(a) * d, y: Math.sin(a) * d * 0.8, scale: 1, rotation: (R() - 0.5) * 540, duration: 0.8 + R() * 0.4, ease: "power3.out", immediateRender: false }, 5.72);
+          tl.to(f, { opacity: 0, duration: 0.3 }, 6.4 + R() * 0.5);
+        }
+        tl.to("#hero-title", { opacity: 0, y: -30, duration: 0.25, ease: "power2.in" }, 8.72);
+
+        /* ============ DEMO · 9 – 19 s  (three moves, iris match cuts on round shapes) ============ */
+        const RES = ["assets/img/r-onion.jpg", "assets/img/r-carrot.jpg", "assets/img/r-cheese.jpg"];
+        const COLS = 4, ROWS = 6, TW = 1080 / COLS, TH = 1920 / ROWS;
+        for (let k = 0; k < 3; k++) {
+          const t0 = 9.0 + k * 3.33, id = "d" + (k + 1);
+          // iris opening from the round result of the previous move
+          tl.fromTo("#" + id, { clipPath: "circle(0% at 50% 52%)" }, { clipPath: "circle(80% at 50% 52%)", duration: 0.42, ease: "expo.inOut", immediateRender: false }, t0 - 0.2);
+          tl.fromTo("#" + id + "-press", shot(0, 0.86, 680, 1200), Object.assign({ duration: 1.5, ease: "sine.inOut", immediateRender: false }, shot(0, 0.92, 690, 1150)), t0 - 0.2);
+          tl.fromTo("#b" + (k + 1), { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, t0 + 0.1);
+          // three presses on the beat: squash & stretch + crunchy chop
+          for (let p = 0; p < 3; p++) {
+            const tp = t0 + 0.4 + p * b(1);
+            tl.to("#" + id + "-press", { scaleY: 0.92 * 0.96, scaleX: 0.92 * 1.015, duration: 0.06, ease: "power2.in" }, tp);
+            tl.to("#" + id + "-press", { scaleY: 0.92, scaleX: 0.92, duration: 0.2, ease: "elastic.out(1, 0.45)" }, tp + 0.06);
+            cue("assets/fx/chop.wav", tp, 0.25, 0.55);
+          }
+          // the result pops into a perfect grid
+          const g = document.getElementById("g" + (k + 1));
+          const tiles = [];
+          for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+            const d = document.createElement("div"); d.className = "tile";
+            d.style.cssText += "left:" + (c * TW + 4) + "px;top:" + (r * TH + 4) + "px;width:" + (TW - 8) + "px;height:" + (TH - 8) + "px;background-image:url(" + RES[k] + ");background-position:" + (-c * TW - 4) + "px " + (-r * TH - 4) + "px;";
+            g.appendChild(d); tiles.push({ d, dist: Math.hypot(c - 1.5, r - 2.5) });
+          }
+          tiles.sort((a, b2) => a.dist - b2.dist);
+          const tg = t0 + 1.8;
+          tiles.forEach((o, i) => tl.fromTo(o.d, { scale: 0, rotation: -8 }, { scale: 1, rotation: 0, duration: 0.32, ease: "back.out(1.8)", immediateRender: false }, tg + i * 0.028));
+          cue("assets/sfx/pop.mp3", tg, 0.7, 0.4);
+          tl.to(tiles.map((o) => o.d), { borderRadius: 0, scale: 1.03, duration: 0.25, ease: "power2.inOut" }, tg + 0.9);
+          tl.fromTo("#c" + (k + 1), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.8)", immediateRender: false }, tg + 0.45);
+          if (k > 0) tl.set("#d" + k, { opacity: 0 }, t0 + 0.25);
+        }
+        cue("assets/sfx/whoosh-short.mp3", 12.1, 0.6, 0.35);
+        cue("assets/sfx/whoosh-short.mp3", 15.44, 0.6, 0.35);
+
+        /* ============ BENEFITS · 19 – 23.5 s ============ */
+        tl.fromTo("#bene", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false }, 18.9);
+        tl.set("#d3", { opacity: 0 }, 19.35);
+        ["#l1", "#l2", "#l3"].forEach((id, i) => {
+          const t = 19.4 + i * b(2);
+          tl.fromTo(id, { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out", immediateRender: false }, t);
+          tl.fromTo(id + " .ck", { attr: { "stroke-dasharray": 70, "stroke-dashoffset": 70 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.3, ease: "power2.out", immediateRender: false }, t + 0.15);
+          cue("assets/sfx/click.mp3", t + 0.15, 0.36, 0.5);
+        });
+
+        /* ============ CTA & URGENCY · 23.5 – 30 s ============ */
+        tl.fromTo("#cta", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false }, 23.4);
+        tl.set("#bene", { opacity: 0 }, 23.85);
+        tl.fromTo("#old-strike", { scaleX: 0, rotation: -6 }, { scaleX: 1, rotation: -6, duration: 0.3, ease: "power2.out", immediateRender: false }, 24.4);
+        tl.fromTo("#new", { opacity: 0, y: 60, scale: 0.7, transformOrigin: "0% 50%" }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(2)", immediateRender: false }, 25.0);
+        cue("assets/sfx/impact-bass-1.mp3", 25.0, 0.8, 0.35);
+        tl.fromTo("#badge40", { opacity: 0, scale: 0, rotation: -90, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: "back.out(1.8)", immediateRender: false }, 24.0);
+        tl.fromTo("#badge40-rot", { rotation: 0 }, { rotation: 180, duration: 6, ease: "none", svgOrigin: "0 0" }, 24.0);
+        tl.fromTo("#count", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", immediateRender: false }, 25.4);
+        tl.fromTo("#btn", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)", immediateRender: false }, 25.7);
+        tl.fromTo("#btn", { scale: 1 }, { scale: 1.05, duration: b(1), ease: "sine.inOut", yoyo: true, repeat: 7, immediateRender: false }, 26.1);
+        [26.4, 28.2].forEach((t) => tl.fromTo("#btn-sheen", { x: 0 }, { x: 1150, duration: 0.7, ease: "power2.inOut", immediateRender: false }, t));
+        tl.fromTo("#arrow", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3, immediateRender: false }, 26.0);
+        tl.fromTo("#arrow", { y: 0 }, { y: 18, duration: b(1), ease: "sine.inOut", yoyo: true, repeat: 7, immediateRender: false }, 26.3);
+        // countdown beeps every real second
+        for (let s = 0; s < 4; s++) cue("assets/fx/beep.wav", 26.0 + s, 0.12, 0.25);
+        if (SIGNATURE_WATERMARK && SIGNATURE_ENDCARD) tl.fromTo("#watermark", { opacity: 0 }, { opacity: 0.3, duration: 0.4, immediateRender: false }, 28.0);
+
+        /* time-driven text (pure function of the playhead) */
+        const cEl = document.getElementById("count-t");
+        function state() {
+          const t = tl.time();
+          const left = 2 * 3600 + 59 * 60 + 47 - Math.max(0, Math.floor(t - 25.4));
+          const hh = Math.floor(left / 3600), mm = Math.floor((left % 3600) / 60), ss = left % 60;
+          cEl.textContent = [hh, mm, ss].map((v) => (v < 10 ? "0" : "") + v).join(":");
+        }
+        tl.eventCallback("onUpdate", state); state();
+
+        const host = document.getElementById("kutto");
+        SE.addVignette(host, 0.18, "27,27,31");
+        SE.addGrain(host, tl, { opacity: 0.05, duration: T, fps: 30, blend: "overlay", seed: 3 });
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>
