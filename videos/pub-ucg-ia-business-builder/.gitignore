@@ -4,3 +4,5 @@ renders/
 snapshots/
 .hyperframes/
 assets/aroll-bg/*.mp4
+assets/matte/
+assets/aroll-gs/
