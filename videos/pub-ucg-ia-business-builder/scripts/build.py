@@ -210,8 +210,11 @@ def main():
     media, hosts, sfx = [], [], []
     for c in clips:
         cid, s, d = c["id"], c["start"], c["dur"]
+        # plan avec fond remplacé (bureau EMK Blue Diamond) si disponible, sauf BG=0
+        use_bg = os.environ.get("BG", "1") != "0" and os.path.exists(os.path.join(ROOT, "assets/aroll-bg", f"{cid}.mp4"))
+        vsrc = f"assets/aroll-bg/{cid}.mp4" if use_bg else f"assets/aroll/{cid}.mp4"
         media.append(
-            f'      <video id="v-{cid}" class="clip aroll" src="assets/aroll/{cid}.mp4" '
+            f'      <video id="v-{cid}" class="clip aroll" src="{vsrc}" '
             f'data-start="{s}" data-duration="{d}" data-track-index="0" muted playsinline></video>')
         # piste voix retravaillée (ex. effet talkie-walkie) si elle existe
         asrc = f"assets/aroll/{cid}-audio.m4a" if os.path.exists(os.path.join(AROLL, f"{cid}-audio.m4a")) else f"assets/aroll/{cid}.mp4"
