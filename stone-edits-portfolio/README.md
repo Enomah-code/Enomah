@@ -14,7 +14,7 @@ _shared/            neutral kit shared by every project
   build.py          syncs the kit into a project (assets/ + compositions/se-endcard.html)
   render.sh         final render: 60 fps, 16 Mb/s H.264, AAC 320 kb/s 48 kHz, metadata stripped
   endcard-preview/  standalone preview of the end card
-02-showcase-lumen/  project 02 (structure + motion done; product visuals to be replaced, see below)
+02-showcase-lumen/  project 02 — done (photo-based, see assets/img/CREDITS.md)
 livrables/          rendered MP4 / posters (not versioned)
 ```
 
@@ -30,9 +30,10 @@ _shared/render.sh 02-showcase-lumen StoneEdits_02_Showcase_Lumen_1x1 --clean  # 
 ## Decisions (client feedback, 2026-09-25)
 
 - **Product visuals must be photorealistic.** Code-drawn products (SVG/CSS) are rejected for the portfolio.
-  Source order: images generated through the Gemini API (`GEMINI_API_KEY` environment variable),
-  with royalty-free photos (Unsplash / Pexels) as fallback or complement.
-  Motion, camera moves, callouts and typography stay built in code on top of those images.
+  The client's Gemini key is free-tier (image/video/music quota 0), so the client chose **royalty-free stock only**.
+  Method: one high-resolution hero photo per product (Pexels), cut out with rembg/BiRefNet, graded to the
+  project palette, background rebuilt; every shot is a camera move on that photo; screens are replaced by the
+  fictional brand UI through a perspective (homography) transform. Photo prep scripts live next to each project.
 - Stock photos must carry no real brand, logo or recognisable face.
 - **Logo animation:** a "blade clash" opener (blades strike and split to reveal the video) plus
   the same effect in the closing card, while keeping the brief's 1.5 s end card.

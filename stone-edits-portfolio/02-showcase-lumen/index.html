@@ -3,8 +3,7 @@
   lang="fr"
   data-composition-variables='[
     {"id":"SIGNATURE_ENDCARD","type":"boolean","label":"Carte de fin Stone Edits","default":true},
-    {"id":"SIGNATURE_WATERMARK","type":"boolean","label":"Filigrane Stone Edits","default":true},
-    {"id":"MIDNIGHT","type":"boolean","label":"Version Midnight","default":false}
+    {"id":"SIGNATURE_WATERMARK","type":"boolean","label":"Filigrane Stone Edits","default":true}
   ]'
 >
   <head>
@@ -18,35 +17,34 @@
       @font-face { font-family: 'Inter'; font-style: normal; font-weight: 300; font-display: block; src: url('assets/fonts/inter-300.woff2') format('woff2'); }
       @font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: block; src: url('assets/fonts/inter-500.woff2') format('woff2'); }
 
-      :root {
-        --bg: #efece7; --bg2: #ddd7ce; --case: #2b2b2e; --champ: #c8a76a; --sand: #b9ae9c;
-        --ink: #1d1d1f; --taupe: #7d766c; --glass: #0e0e10; --screen-fg: #edeae4;
-      }
+      :root { --bg: #efece7; --bg2: #ddd7ce; --champ: #c8a76a; --sand: #b9ae9c; --ink: #1d1d1f; --taupe: #7d766c; }
       body { margin: 0; background: var(--bg); }
       #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
-      #lumen { position: absolute; inset: 0; overflow: hidden; font-family: 'Inter', sans-serif; color: var(--ink); }
+      #lumen { position: absolute; inset: 0; overflow: hidden; font-family: 'Inter', sans-serif; color: var(--ink);
+        background: radial-gradient(ellipse 70% 62% at 50% 44%, #f6f3ee 0%, var(--bg) 45%, var(--bg2) 100%); }
 
-      /* ---------- studio background ---------- */
-      #bg { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 62% at 50% 44%, #f6f3ee 0%, var(--bg) 45%, var(--bg2) 100%); }
-      #bg-floor { position: absolute; left: 0; right: 0; bottom: 0; height: 38%; background: linear-gradient(180deg, rgba(221,215,206,0) 0%, rgba(205,197,185,0.55) 100%); }
-      #dial { position: absolute; left: 90px; top: 60px; width: 900px; height: 900px; opacity: 0.55; }
-      #glow { position: absolute; left: 190px; top: 80px; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(255,252,245,0.9) 0%, rgba(255,252,245,0) 65%); }
+      /* ---------- photographic shot (plate space: 4000 x 4000) ---------- */
+      .shot { position: absolute; left: 0; top: 0; width: 4000px; height: 4000px; transform-origin: 0 0; }
+      .shot img { position: absolute; left: 0; top: 0; width: 4000px; height: 4000px; display: block; }
+      #plate-blur { filter: blur(26px); opacity: 0;
+        -webkit-mask-image: radial-gradient(ellipse 34% 30% at var(--fx, 50%) var(--fy, 50%), rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, #000 100%);
+        mask-image: radial-gradient(ellipse 34% 30% at var(--fx, 50%) var(--fy, 50%), rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, #000 100%); }
+      /* specular light sweep, clipped to the watch silhouette */
+      #sweep { position: absolute; left: 0; top: 0; width: 4000px; height: 4000px; mix-blend-mode: screen; opacity: 0.9; overflow: hidden;
+        -webkit-mask-image: url('assets/img/lumen-watch.webp'); mask-image: url('assets/img/lumen-watch.webp');
+        -webkit-mask-size: 4000px 4000px; mask-size: 4000px 4000px; }
+      #sweep-band { position: absolute; left: -1600px; top: -800px; width: 900px; height: 4800px; transform-origin: 50% 50%;
+        background: linear-gradient(90deg, rgba(255,240,210,0) 0%, rgba(255,240,210,0.30) 40%, rgba(255,250,235,0.55) 50%, rgba(255,240,210,0.30) 60%, rgba(255,240,210,0) 100%); }
+      #screen-ui { position: absolute; left: 0; top: 0; width: 880px; height: 1100px; transform-origin: 0 0; }
+      #wrist-ui { position: absolute; left: 0; top: 0; width: 800px; height: 1000px; transform-origin: 0 0; }
+      .ui { position: absolute; inset: 0; border-radius: 150px; overflow: hidden; background: radial-gradient(ellipse at 50% 30%, #121214 0%, #050506 70%); }
+      .ui .glare { position: absolute; inset: 0; background: linear-gradient(118deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.07) 44%, rgba(255,255,255,0) 58%); }
 
-      /* ---------- camera + rig ---------- */
-      #camera { position: absolute; inset: 0; transform-origin: 540px 540px; }
-      #rig { position: absolute; left: 540px; top: 510px; width: 0; height: 0; }
-      #shadow { position: absolute; left: -170px; top: 380px; width: 340px; height: 60px; border-radius: 50%;
-        background: radial-gradient(ellipse at center, rgba(60,50,40,0.30) 0%, rgba(60,50,40,0.12) 45%, rgba(60,50,40,0) 72%); }
-      #shadow-core { position: absolute; left: -110px; top: 398px; width: 220px; height: 22px; border-radius: 50%;
-        background: radial-gradient(ellipse at center, rgba(40,32,26,0.28) 0%, rgba(40,32,26,0) 70%); }
-      #scaler { position: absolute; left: 0; top: 0; width: 0; height: 0; }
-      #stage3d { position: absolute; left: -200px; top: -520px; width: 400px; height: 1040px; perspective: 2600px; perspective-origin: 50% 50%; }
-      #watch { position: absolute; left: 200px; top: 520px; width: 0; height: 0; transform-style: preserve-3d; }
-      #watch .pl { position: absolute; backface-visibility: hidden; }
-      #watch .sl { position: absolute; }
-
-      /* forearm (scene 5) */
-      #wrist { position: absolute; left: -1100px; top: -210px; width: 1700px; height: 420px; overflow: visible; }
+      /* wrist shot (3000 x 1800 at display scale 1) */
+      #wrist-shot { position: absolute; left: 0; top: 0; width: 3000px; height: 1800px; transform-origin: 0 0; opacity: 0; }
+      #wrist-shot img { position: absolute; left: 0; top: 0; width: 3000px; height: 1800px; }
+      #wrist-shadow { position: absolute; left: 60px; top: 1330px; width: 2600px; height: 180px; border-radius: 50%;
+        background: radial-gradient(ellipse at 40% 50%, rgba(70,56,44,0.30) 0%, rgba(70,56,44,0) 70%); filter: blur(30px); }
 
       /* ---------- HUD / callouts ---------- */
       #hud { position: absolute; inset: 0; pointer-events: none; }
@@ -55,83 +53,45 @@
       .co-dot { fill: var(--champ); }
       .co-anchor { fill: none; stroke: var(--champ); stroke-width: 1.5; }
       .label { position: absolute; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; font-size: 22px; line-height: 1.25; color: var(--ink); white-space: nowrap; }
-      .label small { display: block; font-weight: 300; font-size: 17px; color: #655f56; letter-spacing: 0.14em; margin-top: 6px; }
-      .dim { position: absolute; font-weight: 300; font-size: 16px; letter-spacing: 0.16em; color: var(--taupe); white-space: nowrap; }
+      .label small { display: block; font-weight: 300; font-size: 17px; color: #5f5950; letter-spacing: 0.14em; margin-top: 6px; }
+      .dim { position: absolute; font-weight: 500; font-size: 15px; letter-spacing: 0.2em; color: #5f5950; white-space: nowrap; }
 
       /* ---------- titles ---------- */
-      #title-wrap { position: absolute; left: 84px; right: 84px; bottom: 76px; height: 170px; }
-      #name { position: absolute; left: 0; bottom: 58px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 70px; line-height: 1; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
-      #tag { position: absolute; left: 2px; bottom: 140px; font-weight: 500; font-size: 15px; letter-spacing: 0.3em; color: var(--taupe); text-transform: uppercase; }
-      #price { position: absolute; left: 134px; bottom: -4px; font-weight: 300; font-size: 40px; letter-spacing: 0.04em; color: var(--ink); font-feature-settings: "tnum" 1; }
-      #rule { position: absolute; left: 2px; bottom: 16px; width: 110px; height: 1.5px; background: var(--champ); transform-origin: 0% 50%; }
-
-      #watermark { position: absolute; right: 84px; bottom: 76px; width: 53px; height: 56px; opacity: 0; }
-
-      /* Midnight variant */
-      .midnight #lumen { color: #edeae4; }
-      .midnight #bg { background: radial-gradient(ellipse 70% 62% at 50% 44%, #242428 0%, #141416 55%, #0c0c0d 100%); }
-      .midnight #bg-floor { background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 100%); }
-      .midnight #glow { background: radial-gradient(circle, rgba(200,167,106,0.10) 0%, rgba(200,167,106,0) 65%); }
-      .midnight #name, .midnight #price, .midnight .label { color: #edeae4; }
-      .midnight #tag, .midnight .label small, .midnight .dim { color: #a39c92; }
+      #title-wrap { position: absolute; right: 84px; top: 72px; width: 520px; height: 170px; }
+      #tag { position: absolute; right: 2px; bottom: 140px; font-weight: 500; font-size: 15px; letter-spacing: 0.3em; color: #5f5950; text-transform: uppercase; }
+      #name { position: absolute; right: 0; bottom: 58px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500; font-size: 70px; line-height: 1; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+      #rule { position: absolute; right: 2px; bottom: 16px; width: 110px; height: 1.5px; background: var(--champ); transform-origin: 100% 50%; }
+      #price { position: absolute; right: 134px; bottom: -4px; font-weight: 300; font-size: 40px; letter-spacing: 0.04em; color: var(--ink); font-feature-settings: "tnum" 1; }
+      #watermark { position: absolute; right: 84px; bottom: 76px; width: 53px; height: 56px; opacity: 0; filter: brightness(0.12); }
     </style>
   </head>
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1080" data-duration="19.5" data-main-duration="18">
       <section id="lumen" class="clip" data-start="0" data-duration="18" data-track-index="0">
-        <div id="bg"></div>
-        <div id="bg-floor"></div>
-        <div id="glow"></div>
-        <svg id="dial" viewBox="-450 -450 900 900"><g id="dial-ticks"></g></svg>
-
-        <div id="camera" data-layout-allow-overflow data-layout-allow-overlap>
-          <div id="rig">
-            <div id="shadow"></div>
-            <div id="shadow-core"></div>
-            <svg id="wrist" viewBox="-1100 -210 1700 420">
-              <defs>
-                <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#c9b29c" />
-                  <stop offset="0.28" stop-color="#dcc7b3" />
-                  <stop offset="0.55" stop-color="#d4bea9" />
-                  <stop offset="1" stop-color="#a88f78" />
-                </linearGradient>
-                <linearGradient id="skin-fade" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stop-color="#000" />
-                  <stop offset="0.22" stop-color="#fff" />
-                </linearGradient>
-                <mask id="arm-mask"><rect x="-1100" y="-210" width="1700" height="420" fill="url(#skin-fade)" /></mask>
-                <filter id="arm-soft" x="-10%" y="-40%" width="120%" height="180%"><feGaussianBlur stdDeviation="14" /></filter>
-              </defs>
-              <ellipse cx="-160" cy="178" rx="720" ry="26" fill="rgba(60,48,38,0.22)" filter="url(#arm-soft)" />
-              <g mask="url(#arm-mask)">
-                <!-- forearm tapering to the wrist, stylised hand closing the silhouette -->
-                <path fill="url(#skin)" d="M-1100 -150 C-700 -158 -300 -150 60 -128 C170 -122 250 -126 330 -150 C430 -178 520 -150 560 -80 C590 -28 590 40 560 92 C520 160 430 180 330 150 C250 126 170 122 60 128 C-300 150 -700 160 -1100 152 Z" />
-                <path fill="rgba(255,255,255,0.22)" d="M-1100 -120 C-700 -126 -300 -118 60 -98 C170 -92 250 -96 330 -118 C400 -136 470 -124 510 -96 C430 -110 360 -96 300 -84 C200 -70 120 -76 40 -80 C-300 -94 -700 -100 -1100 -94 Z" />
-              </g>
-            </svg>
-            <div id="scaler">
-              <div id="stage3d"><div id="watch"></div></div>
-            </div>
-          </div>
+        <div class="shot" id="shot">
+          <img id="plate" src="assets/img/lumen-plate.jpg" alt="" />
+          <div id="screen-ui" data-layout-allow-overlap data-layout-allow-overflow data-layout-allow-occlusion></div>
+          <div id="sweep"><div id="sweep-band"></div></div>
+          <img id="plate-blur" src="assets/img/lumen-plate.jpg" alt="" />
+        </div>
+        <div id="wrist-shot">
+          <div id="wrist-shadow"></div>
+          <img src="assets/img/lumen-wrist.webp" alt="" />
+          <div id="wrist-ui" data-layout-allow-overlap data-layout-allow-overflow></div>
         </div>
 
         <div id="hud">
           <svg viewBox="0 0 1080 1080">
-            <g id="co1"><circle class="co-anchor" id="co1-a" cx="578" cy="470" r="7" /><path class="co-line" id="co1-l" d="M578 470 L700 392" /><circle class="co-dot" id="co1-d" cx="700" cy="392" r="4.5" /></g>
-            <g id="co2"><circle class="co-anchor" id="co2-a" cx="520" cy="600" r="7" /><path class="co-line" id="co2-l" d="M520 600 L700 500" /><circle class="co-dot" id="co2-d" cx="700" cy="500" r="4.5" /></g>
-            <g id="co3"><circle class="co-anchor" id="co3-a" cx="410" cy="500" r="7" /><path class="co-line" id="co3-l" d="M410 500 L560 402" /><circle class="co-dot" id="co3-d" cx="560" cy="402" r="4.5" /></g>
-            <g id="dims">
-              <path class="co-line" id="dim-l" d="M300 322 L300 698" />
-              <path class="co-line" id="dim-t" d="M290 322 L310 322" />
-              <path class="co-line" id="dim-b" d="M290 698 L310 698" />
-            </g>
+            <g id="co1"><circle class="co-anchor" id="co1-a" r="7" /><path class="co-line" id="co1-l" /><circle class="co-dot" id="co1-d" r="4.5" /></g>
+            <g id="co2"><circle class="co-anchor" id="co2-a" r="7" /><path class="co-line" id="co2-l" /><circle class="co-dot" id="co2-d" r="4.5" /></g>
+            <g id="co3"><circle class="co-anchor" id="co3-a" r="7" /><path class="co-line" id="co3-l" /><circle class="co-dot" id="co3-d" r="4.5" /></g>
+            <g id="dims"><path class="co-line" id="dim-l" /><path class="co-line" id="dim-t" /><path class="co-line" id="dim-b" /></g>
           </svg>
-          <div class="label" id="lb1" style="left:722px; top:372px;">Amoled 1,9″<small>2000 nits</small></div>
-          <div class="label" id="lb2" style="left:722px; top:480px;">Titane grade 5<small>Maille milanaise</small></div>
-          <div class="label" id="lb3" style="left:582px; top:382px;">Couronne haptique<small>Un cran, un geste</small></div>
-          <div class="dim" id="dim-lb1" style="left:176px; top:490px;">44 MM</div>
-          <div class="dim" id="dim-lb2" style="left:176px; top:516px;">38 G</div>
+          <div class="label" id="lb1">Amoled 1,9″<small>2000 nits</small></div>
+          <div class="label" id="lb2">Titane grade 5<small>Boîtier brossé</small></div>
+          <div class="label" id="lb3">Couronne haptique<small>Un cran, un geste</small></div>
+          <div class="dim" id="dim-lb1">44 MM</div>
+          <div class="dim" id="dim-lb2">38 G</div>
         </div>
 
         <div id="title-wrap">
@@ -143,21 +103,23 @@
         <img id="watermark" src="assets/brand/stone-edits-logo-blanc.svg" alt="" />
       </section>
 
+      <div id="se-opener" data-composition-id="se-opener" data-composition-src="compositions/se-opener.html"
+        data-start="0" data-duration="0.9" data-track-index="6" data-width="1080" data-height="1080"></div>
       <div id="se-endcard" data-composition-id="se-endcard" data-composition-src="compositions/se-endcard.html"
         data-start="18" data-duration="1.5" data-track-index="5" data-width="1080" data-height="1080"
         data-variable-values='{"logoPct":20}'></div>
 
       <!-- sound design (Pixabay Content License) -->
-      <audio id="sfx-move1" src="assets/sfx/whoosh-cinematic.mp3" data-start="4.35" data-duration="1.6" data-track-index="10" data-volume="0.16"></audio>
-      <audio id="sfx-ping1" src="assets/sfx/ping.mp3" data-start="5.55" data-duration="1.2" data-track-index="11" data-volume="0.12"></audio>
-      <audio id="sfx-move2" src="assets/sfx/whoosh-cinematic.mp3" data-start="7.65" data-duration="1.6" data-track-index="12" data-volume="0.14"></audio>
-      <audio id="sfx-ping2" src="assets/sfx/ping.mp3" data-start="8.9" data-duration="1.2" data-track-index="13" data-volume="0.1"></audio>
-      <audio id="sfx-move3" src="assets/sfx/whoosh-short.mp3" data-start="10.75" data-duration="0.6" data-track-index="14" data-volume="0.14"></audio>
+      <audio id="sfx-move1" src="assets/sfx/whoosh-cinematic.mp3" data-start="4.3" data-duration="1.6" data-track-index="10" data-volume="0.16"></audio>
+      <audio id="sfx-wake" src="assets/sfx/click-soft.mp3" data-start="5.2" data-duration="0.36" data-track-index="11" data-volume="0.35"></audio>
+      <audio id="sfx-ping1" src="assets/sfx/ping.mp3" data-start="5.55" data-duration="1.2" data-track-index="12" data-volume="0.1"></audio>
+      <audio id="sfx-move2" src="assets/sfx/whoosh-cinematic.mp3" data-start="7.6" data-duration="1.6" data-track-index="13" data-volume="0.14"></audio>
+      <audio id="sfx-move3" src="assets/sfx/whoosh-short.mp3" data-start="10.7" data-duration="0.6" data-track-index="14" data-volume="0.14"></audio>
       <audio id="sfx-tick" src="assets/sfx/click-soft.mp3" data-start="12.0" data-duration="0.36" data-track-index="15" data-volume="0.7"></audio>
-      <audio id="sfx-button" src="assets/sfx/click.mp3" data-start="12.667" data-duration="0.36" data-track-index="16" data-volume="0.45"></audio>
+      <audio id="sfx-tick2" src="assets/sfx/click.mp3" data-start="12.667" data-duration="0.36" data-track-index="16" data-volume="0.4"></audio>
       <audio id="sfx-move4" src="assets/sfx/whoosh-cinematic.mp3" data-start="13.2" data-duration="1.4" data-track-index="17" data-volume="0.12"></audio>
-      <audio id="sfx-snap" src="assets/sfx/pop.mp3" data-start="14.45" data-duration="0.7" data-track-index="18" data-volume="0.25"></audio>
-      <audio id="sfx-chime" src="assets/sfx/chime.mp3" data-start="15.333" data-duration="2.2" data-track-index="19" data-volume="0.28"></audio>
+      <audio id="sfx-chime" src="assets/sfx/chime.mp3" data-start="14.667" data-duration="2.2" data-track-index="18" data-volume="0.28"></audio>
+      <audio id="sfx-move5" src="assets/sfx/whoosh-short.mp3" data-start="16.3" data-duration="0.6" data-track-index="19" data-volume="0.12"></audio>
     </div>
 
     <script>
@@ -165,203 +127,103 @@
         const V = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
         const SIGNATURE_ENDCARD = V.SIGNATURE_ENDCARD !== false;
         const SIGNATURE_WATERMARK = V.SIGNATURE_WATERMARK !== false;
-        if (V.MIDNIGHT) document.documentElement.classList.add("midnight");
-        if (!SIGNATURE_ENDCARD) document.getElementById("se-endcard").setAttribute("data-hidden", "");
-
-        const b = SE.beatGrid(90); // 1 beat = 0.667 s
-        const C = { W: 300, H: 352, R: 84, D: 46, N: 18 };
-
-        /* ---------------- build the watch ---------------- */
-        const watch = document.getElementById("watch");
-        function plane(cls, w, h, css, tf, html) {
-          const d = document.createElement("div");
-          d.className = cls;
-          d.style.cssText = "width:" + w + "px;height:" + h + "px;left:" + (-w / 2) + "px;top:" + (-h / 2) + "px;" + css + "transform:" + tf + ";";
-          if (html) d.innerHTML = html;
-          watch.appendChild(d);
-          return d;
+        if (!SIGNATURE_ENDCARD) {
+          document.getElementById("se-endcard").setAttribute("data-hidden", "");
+          document.getElementById("se-opener").setAttribute("data-hidden", "");
         }
-        function mix(a, b2, t) { return Math.round(a + (b2 - a) * t); }
-
-        // straps first (behind the case), 3 slices each for thickness
-        const mesh = "background-color:#b9ae9c;background-image:" +
-          "repeating-linear-gradient(90deg, rgba(255,255,255,0.28) 0 1px, rgba(0,0,0,0) 1px 4px)," +
-          "repeating-linear-gradient(0deg, rgba(70,60,48,0.22) 0 1px, rgba(0,0,0,0) 1px 3px)," +
-          "linear-gradient(90deg, rgba(60,50,40,0.35) 0%, rgba(255,255,255,0.18) 22%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.18) 78%, rgba(60,50,40,0.35) 100%);";
-        const strapTop = document.createElement("div");
-        const strapBot = document.createElement("div");
-        [strapTop, strapBot].forEach((wrap, k) => {
-          wrap.id = k ? "strap-bot" : "strap-top";
-          wrap.style.cssText = "position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;";
-          watch.appendChild(wrap);
-          for (let s = 0; s < 3; s++) {
-            const d = document.createElement("div");
-            const z = -6 + s * 4;
-            const top = k ? C.H / 2 - 30 : -(C.H / 2 - 30) - 360;
-            const rad = k ? "0 0 70px 70px" : "70px 70px 0 0";
-            d.className = "sl strap-sl";
-            d.style.cssText = "width:208px;height:360px;left:-104px;top:" + top + "px;border-radius:" + rad + ";" +
-              (s === 2 ? mesh : "background:#8f8574;") + "transform:translateZ(" + z + "px);";
-            if (s === 2) d.id = k ? "mesh-bot" : "mesh-top";
-            wrap.appendChild(d);
-          }
-          // clasp bar near the case (lug)
-          const lug = document.createElement("div");
-          lug.className = "sl";
-          lug.style.cssText = "width:232px;height:26px;left:-116px;top:" + (k ? C.H / 2 - 14 : -C.H / 2 - 12) + "px;border-radius:13px;" +
-            "background:linear-gradient(180deg,#e2cb98 0%,#c8a76a 45%,#8c6a24 100%);transform:translateZ(2px);";
-          wrap.appendChild(lug);
-        });
-
-        // case slices (the edge)
-        for (let i = 0; i < C.N; i++) {
-          const t = i / (C.N - 1);
-          const z = -C.D / 2 + t * C.D;
-          const edge = Math.sin(t * Math.PI);
-          const col = "rgb(" + mix(28, 64, edge * 0.7 + t * 0.3) + "," + mix(28, 63, edge * 0.7 + t * 0.3) + "," + mix(31, 68, edge * 0.7 + t * 0.3) + ")";
-          const d = document.createElement("div");
-          d.className = "sl";
-          d.style.cssText = "width:" + C.W + "px;height:" + C.H + "px;left:" + (-C.W / 2) + "px;top:" + (-C.H / 2) + "px;border-radius:" + C.R + "px;background:" + col + ";transform:translateZ(" + z.toFixed(2) + "px);";
-          watch.appendChild(d);
-        }
-        // solid flanks so the edge-on frame reads as metal, not stacked slices
-        [-1, 1].forEach((sd) => {
-          plane("pl", C.D, C.H - 6, "border-radius:" + (C.D / 2) + "px;background:linear-gradient(90deg,#1c1c1f 0%,#48484e 45%,#3a3a3f 60%,#1c1c1f 100%);",
-            "translateX(" + (sd * C.W / 2) + "px) rotateY(" + (sd * 90) + "deg)");
-          ["strap-top", "strap-bot"].forEach((sid, k) => {
-            const d = document.createElement("div");
-            d.className = "pl";
-            d.style.cssText = "width:12px;height:360px;left:-6px;top:" + (k ? C.H / 2 - 30 : -(C.H / 2 - 30) - 360) + "px;border-radius:6px;background:linear-gradient(90deg,#7d7464,#a39a88 50%,#7d7464);transform:translateX(" + (sd * 104) + "px) rotateY(" + (sd * 90) + "deg);";
-            document.getElementById(sid).appendChild(d);
-          });
-        });
-        // crown + pusher, stacked slices protruding on +x
-        for (let i = 0; i < 9; i++) {
-          const z = -13 + i * 3.25;
-          const d = document.createElement("div");
-          d.className = "sl";
-          d.style.cssText = "width:34px;height:58px;left:" + (C.W / 2 - 12) + "px;top:-78px;border-radius:9px;background:linear-gradient(180deg,#e9d4a4,#c8a76a 50%,#7d5e22);transform:translateZ(" + z + "px);";
-          watch.appendChild(d);
-        }
-        const crownFace = plane("pl", 26, 58, "background-color:#c8a76a;background-image:repeating-linear-gradient(180deg, rgba(255,240,205,0.85) 0 2px, rgba(120,90,40,0.9) 2px 5px);background-size:100% 5px;border-radius:4px;", "translateX(" + (C.W / 2 + 22) + "px) translateY(-49px) rotateY(90deg)");
-        crownFace.id = "crown-face";
-        const pusher = document.createElement("div");
-        pusher.id = "pusher";
-        pusher.style.cssText = "position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;";
-        watch.appendChild(pusher);
-        for (let i = 0; i < 5; i++) {
-          const d = document.createElement("div");
-          d.className = "sl";
-          d.style.cssText = "width:22px;height:64px;left:" + (C.W / 2 - 12) + "px;top:22px;border-radius:8px;background:linear-gradient(180deg,#5a5a60,#2b2b2e);transform:translateZ(" + (-8 + i * 4) + "px);";
-          pusher.appendChild(d);
-        }
-
-        // case back
-        plane("pl", C.W, C.H,
-          "border-radius:" + C.R + "px;background:radial-gradient(circle at 50% 50%, #1c1c1f 0 58px, #c8a76a 58px 62px, #323236 62px 110px, #28282b 110px);",
-          "translateZ(" + (-C.D / 2 - 0.6) + "px) rotateY(180deg)",
-          '<div style="position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle,#3b3036 0 30%,#141416 32%);box-shadow:0 0 0 2px rgba(200,167,106,.5)"></div>' +
-          '<div id="back-sheen" style="position:absolute;inset:0;border-radius:' + C.R + 'px;background:linear-gradient(110deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.16) 48%, rgba(255,255,255,0) 62%);background-size:260% 100%;"></div>');
-
-        // front face: bezel + glass + UI
-        let dialTicks = "";
-        for (let i = 0; i < 60; i++) {
-          const L = i % 5 === 0 ? 6 : 3;
-          dialTicks += '<line x1="0" y1="-62" x2="0" y2="' + (-62 + L) + '" stroke="' + (i % 5 === 0 ? "#c8a76a" : "#5d5850") + '" stroke-width="1.2" transform="rotate(' + i * 6 + ')"/>';
-        }
-        const ui =
-          '<div id="glass" data-layout-allow-overlap data-layout-allow-overflow style="position:absolute;left:22px;top:22px;right:22px;bottom:22px;border-radius:62px;background:radial-gradient(ellipse at 50% 30%, #1a1a1d 0%, #0b0b0c 70%);overflow:hidden;">' +
-            '<div id="ui-time" data-layout-allow-overlap style="position:absolute;left:0;right:0;top:34px;text-align:center;font:300 60px/1 Inter,sans-serif;color:#edeae4;letter-spacing:-0.01em;font-feature-settings:\'tnum\' 1;">' +
-              '<span>09:4</span><span id="ui-min" data-layout-allow-overlap style="display:inline-block;position:relative;width:0.62em;height:1em;overflow:hidden;vertical-align:top;"><span id="ui-m1" data-layout-allow-overlap style="position:absolute;left:0;top:0;">1</span><span id="ui-m2" data-layout-allow-overlap style="position:absolute;left:0;top:0;">2</span></span></div>' +
-            '<div id="ui-date" style="position:absolute;left:0;right:0;top:104px;text-align:center;font:500 12px/1 Inter,sans-serif;letter-spacing:0.24em;color:#8f887e;">MAR. 14 MAI</div>' +
-            '<svg id="ui-rings" viewBox="-64 -64 128 128" style="position:absolute;left:68px;top:116px;width:120px;height:120px;">' + dialTicks +
-              '<circle r="46" fill="none" stroke="rgba(200,167,106,0.16)" stroke-width="4"/><circle r="38" fill="none" stroke="rgba(185,174,156,0.16)" stroke-width="4"/>' +
-              '<circle id="ring1" r="46" fill="none" stroke="#c8a76a" stroke-width="4" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="289" stroke-dashoffset="62"/>' +
-              '<circle id="ring2" r="38" fill="none" stroke="#b9ae9c" stroke-width="4" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="238.8" stroke-dashoffset="84"/>' +
-              '<text x="0" y="6" text-anchor="middle" style="font:300 21px Inter,sans-serif;fill:#edeae4;font-feature-settings:\'tnum\' 1;">8 426</text>' +
-              '<text x="0" y="20" text-anchor="middle" style="font:500 7px Inter,sans-serif;letter-spacing:2px;fill:#8f887e;">PAS</text>' +
-            '</svg>' +
-            '<svg viewBox="0 0 200 40" style="position:absolute;left:28px;bottom:26px;width:200px;height:40px;overflow:visible;">' +
-              '<path id="ui-ecg" d="M0 24 L40 24 L48 24 L54 12 L60 30 L66 2 L72 38 L78 24 L112 24 L118 18 L124 24 L200 24" fill="none" stroke="#c8a76a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="260" stroke-dashoffset="0"/>' +
-            '</svg>' +
-            '<div style="position:absolute;right:30px;bottom:60px;font:500 13px/1 Inter,sans-serif;letter-spacing:0.12em;color:#edeae4;font-feature-settings:\'tnum\' 1;"><span style="color:#c8a76a">♥</span> 72 BPM</div>' +
-            '<div id="ui-notif" data-layout-allow-overlap style="position:absolute;left:12px;right:12px;top:12px;height:112px;border-radius:44px 44px 20px 20px;background:#2a2a2e;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;">' +
-              '<div style="position:absolute;left:22px;top:24px;width:12px;height:12px;border-radius:50%;background:#c8a76a;"></div>' +
-              '<div style="position:absolute;left:44px;top:20px;font:500 12px/1 Inter,sans-serif;letter-spacing:0.2em;color:#8f887e;">AGENDA</div>' +
-              '<div style="position:absolute;left:22px;top:48px;font:italic 500 30px/1 \'Cormorant Garamond\',serif;color:#edeae4;">Atelier, 10:00</div>' +
-              '<div style="position:absolute;left:22px;top:84px;font:300 13px/1 Inter,sans-serif;letter-spacing:0.08em;color:#b9ae9c;">Salle Lumière</div>' +
-            '</div>' +
-            '<div id="glass-sheen" style="position:absolute;inset:0;background:linear-gradient(115deg, rgba(255,255,255,0) 35%, rgba(255,255,255,0.13) 47%, rgba(255,255,255,0.02) 53%, rgba(255,255,255,0) 60%);background-size:300% 100%;background-position:40% 0;"></div>' +
-          '</div>';
-        const face = plane("pl", C.W, C.H,
-          "border-radius:" + C.R + "px;background:linear-gradient(145deg,#4a4a50 0%,#2b2b2e 40%,#1d1d20 100%);box-shadow:inset 0 0 0 4px #c8a76a, inset 0 0 0 6px rgba(0,0,0,0.35);",
-          "translateZ(" + (C.D / 2 + 0.6) + "px)", ui);
-        face.id = "face";
-        const shade = document.createElement("div");
-        shade.id = "face-shade";
-        shade.style.cssText = "position:absolute;inset:0;border-radius:" + C.R + "px;background:#000;opacity:0;";
-        face.appendChild(shade);
-
-        /* ---------------- decorative dial ---------------- */
-        const ticks = document.getElementById("dial-ticks");
-        let tk = "";
-        for (let i = 0; i < 120; i++) {
-          const a = (i / 120) * 360, major = i % 10 === 0, mid = i % 5 === 0;
-          const r1 = major ? 400 : mid ? 414 : 422, r2 = 436;
-          tk += '<line x1="0" y1="-' + r1 + '" x2="0" y2="-' + r2 + '" stroke="' + (major ? "#c8a76a" : "#b9ae9c") + '" stroke-width="' + (major ? 2 : 1) + '" opacity="' + (major ? 0.55 : 0.35) + '" transform="rotate(' + a + ')"/>';
-        }
-        tk += '<circle r="446" fill="none" stroke="#b9ae9c" stroke-width="1" opacity="0.35"/><circle r="386" fill="none" stroke="#c8a76a" stroke-width="1" opacity="0.25"/>';
-        ticks.innerHTML = tk;
-
-        /* ---------------- timeline ---------------- */
-        const tl = gsap.timeline({ paused: true });
+        const b = SE.beatGrid(90);
         const T = 18;
-        const $ = (s) => document.querySelector(s);
 
-        // camera helper: put rig-space point (px,py) at screen offset (qx,qy) from centre with scale s
-        const cam = (s, px, py, qx, qy) => ({ scale: s, x: qx - s * px, y: qy - s * py });
-        const REST = cam(1, 0, 0, 0, 0);
-        gsap.set("#camera", REST);
-        gsap.set("#scaler", { scale: 0.78 });
-        gsap.set("#watch", { rotationY: 0 });
+        /* ---------- perspective mapping of a flat UI onto a photographed screen ---------- */
+        function homography(w, h, Q) {
+          const src = [[0, 0], [w, 0], [w, h], [0, h]];
+          const A = [], B = [];
+          for (let i = 0; i < 4; i++) {
+            const [x, y] = src[i], [u, v] = Q[i];
+            A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); B.push(u);
+            A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); B.push(v);
+          }
+          for (let c = 0; c < 8; c++) {
+            let p = c;
+            for (let r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+            [A[c], A[p]] = [A[p], A[c]]; [B[c], B[p]] = [B[p], B[c]];
+            for (let r = 0; r < 8; r++) if (r !== c) {
+              const f = A[r][c] / A[c][c];
+              for (let k = c; k < 8; k++) A[r][k] -= f * A[c][k];
+              B[r] -= f * B[c];
+            }
+          }
+          const H = B.map((v, i) => v / A[i][i]);
+          return "matrix3d(" + [H[0], H[3], 0, H[6], H[1], H[4], 0, H[7], 0, 0, 1, 0, H[2], H[5], 0, 1].map((n) => n.toFixed(8)).join(",") + ")";
+        }
+        const QW = [[1152, 1363], [2209, 963], [2914, 2030], [1735, 2510]];    // hero screen, plate px
+        const QH = [[303, 934], [637.5, 919], [637.5, 1342.5], [303, 1354]];   // wrist screen, wrist px
 
-        // ambient: dial drift, glow breath, floating bob (respiration)
-        tl.fromTo("#dial-ticks", { rotation: 0 }, { rotation: 12, duration: T, ease: "none", svgOrigin: "0 0" }, 0);
-        tl.fromTo("#glow", { scale: 1, opacity: 0.85 }, { scale: 1.06, opacity: 1, duration: T / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
-        tl.fromTo("#scaler", { y: 0 }, { y: -10, duration: T / 4, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0);
+        /* hero watch UI (880 x 1100 design units) */
+        let ticks = "";
+        for (let i = 0; i < 60; i++) {
+          const L = i % 5 === 0 ? 22 : 11;
+          ticks += '<line x1="0" y1="-236" x2="0" y2="' + (-236 + L) + '" stroke="' + (i % 5 === 0 ? "#c8a76a" : "#4d4841") + '" stroke-width="4" transform="rotate(' + i * 6 + ')"/>';
+        }
+        const sui = document.getElementById("screen-ui");
+        sui.style.transform = homography(880, 1100, QW);
+        sui.innerHTML =
+          '<div class="ui" id="ui-face" style="opacity:0">' +
+            '<div id="ui-time" style="position:absolute;left:0;right:0;top:92px;text-align:center;font:300 200px/1 Inter,sans-serif;color:#edeae4;letter-spacing:-0.02em;font-feature-settings:\'tnum\' 1;">' +
+              '<span>09:4</span><span style="display:inline-block;position:relative;width:0.62em;height:1em;overflow:hidden;vertical-align:top;"><span id="ui-m1" style="position:absolute;left:0;top:0;">1</span><span id="ui-m2" style="position:absolute;left:0;top:0;">2</span></span></div>' +
+            '<div style="position:absolute;left:0;right:0;top:318px;text-align:center;font:500 38px/1 Inter,sans-serif;letter-spacing:0.24em;color:#8f887e;">MAR. 14 MAI</div>' +
+            '<svg viewBox="-260 -260 520 520" style="position:absolute;left:200px;top:400px;width:480px;height:480px;">' + ticks +
+              '<circle r="190" fill="none" stroke="rgba(200,167,106,0.16)" stroke-width="16"/><circle r="156" fill="none" stroke="rgba(185,174,156,0.16)" stroke-width="16"/>' +
+              '<circle id="ring1" r="190" fill="none" stroke="#c8a76a" stroke-width="16" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="1193.8" stroke-dashoffset="1193.8"/>' +
+              '<circle id="ring2" r="156" fill="none" stroke="#b9ae9c" stroke-width="16" stroke-linecap="round" transform="rotate(-90)" stroke-dasharray="980.2" stroke-dashoffset="980.2"/>' +
+              '<text x="0" y="22" text-anchor="middle" style="font:300 76px Inter,sans-serif;fill:#edeae4;">8 426</text>' +
+              '<text x="0" y="74" text-anchor="middle" style="font:500 26px Inter,sans-serif;letter-spacing:8px;fill:#8f887e;">PAS</text>' +
+            '</svg>' +
+            '<svg viewBox="0 0 700 120" style="position:absolute;left:90px;bottom:70px;width:700px;height:120px;overflow:visible;">' +
+              '<path id="ui-ecg" d="M0 72 L150 72 L178 72 L198 36 L220 92 L242 6 L264 114 L286 72 L410 72 L432 54 L454 72 L700 72" fill="none" stroke="#c8a76a" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="900" stroke-dashoffset="900"/>' +
+            '</svg>' +
+            '<div style="position:absolute;right:100px;bottom:190px;font:500 40px/1 Inter,sans-serif;letter-spacing:0.12em;color:#edeae4;"><span style="color:#c8a76a">♥</span> 72 BPM</div>' +
+            '<div class="glare"></div>' +
+          '</div>';
 
-        /* title block: visible at frame 0 and at the last frame so the loop closes */
-        tl.fromTo(["#name", "#price", "#tag"], { opacity: 1, y: 0 }, { opacity: 0, y: 10, duration: 0.5, ease: "power2.in", stagger: 0.05 }, 0.4);
-        tl.fromTo("#rule", { scaleX: 1 }, { scaleX: 0, duration: 0.45, ease: "power2.in" }, 0.45);
+        sui.querySelectorAll("*").forEach((e) => { e.setAttribute("data-layout-allow-overlap", ""); e.setAttribute("data-layout-allow-occlusion", ""); });
 
-        /* S1 · 0 – 4.5 s · 360° rotation */
-        tl.fromTo("#watch", { rotationY: 0 }, { rotationY: 360, duration: 4.5, ease: "sine.inOut" }, 0);
-        // technical annotations drawn on the plan
-        tl.fromTo("#dim-l", { attr: { "stroke-dasharray": 376, "stroke-dashoffset": 376 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.6, ease: "power3.out" }, b(2));
-        tl.fromTo(["#dim-t", "#dim-b"], { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.1 }, b(2) + 0.2);
-        tl.fromTo(["#dim-lb1", "#dim-lb2"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.12 }, b(2) + 0.45);
-        tl.to(["#dims", "#dim-lb1", "#dim-lb2"], { opacity: 0, duration: 0.35, ease: "power2.in" }, 4.1);
-        // UI reset while the face is turned away (keeps the loop seamless)
-        tl.set("#ring1", { attr: { "stroke-dashoffset": 289 } }, 2.25);
-        tl.set("#ring2", { attr: { "stroke-dashoffset": 238.8 } }, 2.25);
-        tl.set("#ui-ecg", { attr: { "stroke-dashoffset": 260 } }, 2.25);
-        tl.set("#ui-m1", { y: 0 }, 2.25);
-        tl.set("#ui-m2", { y: "100%" }, 2.25);
-        gsap.set("#ui-m1", { y: "-100%" });
-        gsap.set("#ui-m2", { y: 0 });
+        /* wrist notification UI (800 x 1000) */
+        const wui = document.getElementById("wrist-ui");
+        wui.style.transform = homography(800, 1000, QH);
+        wui.innerHTML =
+          '<div class="ui" id="wui-face" style="border-radius:170px;opacity:0">' +
+            '<div style="position:absolute;left:0;right:0;top:90px;text-align:center;font:300 150px/1 Inter,sans-serif;color:#edeae4;">09:58</div>' +
+            '<div id="wui-card" style="position:absolute;left:44px;right:44px;top:330px;height:560px;border-radius:70px;background:#26262a;">' +
+              '<div style="position:absolute;left:60px;top:70px;width:36px;height:36px;border-radius:50%;background:#c8a76a;"></div>' +
+              '<div style="position:absolute;left:124px;top:70px;font:500 36px/1 Inter,sans-serif;letter-spacing:0.2em;color:#8f887e;">AGENDA</div>' +
+              '<div style="position:absolute;left:60px;top:170px;font:italic 500 112px/1 \'Cormorant Garamond\',serif;color:#edeae4;">Atelier,</div>' +
+              '<div style="position:absolute;left:60px;top:290px;font:italic 500 112px/1 \'Cormorant Garamond\',serif;color:#edeae4;">10:00</div>' +
+              '<div style="position:absolute;left:60px;top:440px;font:300 40px/1 Inter,sans-serif;letter-spacing:0.08em;color:#b9ae9c;">Salle Lumière</div>' +
+            '</div>' +
+            '<div class="glare"></div>' +
+          '</div>';
 
-        /* S2 · 4.5 – 8.0 s · orbit into the screen */
-        const S2 = cam(2.1, 0, 0, -150, 0);
-        tl.to("#camera", Object.assign({ duration: 1.0, ease: "sine.inOut" }, S2), 4.45);
-        tl.fromTo("#watch", { rotationY: 0 }, { rotationY: -10, duration: 0.95, ease: "sine.inOut", immediateRender: false }, 4.5);
-        tl.to("#watch", { rotationY: 0, duration: 1.6, ease: "sine.inOut" }, 5.45);
-        tl.to("#ring1", { attr: { "stroke-dashoffset": 62 }, duration: 1.4, ease: "power3.out" }, b(7.5));
-        tl.to("#ring2", { attr: { "stroke-dashoffset": 84 }, duration: 1.4, ease: "power3.out" }, b(7.5) + 0.14);
-        tl.to("#ui-ecg", { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "sine.inOut" }, b(8.5));
-        tl.to("#ui-m1", { y: "-100%", duration: 0.35, ease: "power3.inOut" }, b(10));
-        tl.to("#ui-m2", { y: 0, duration: 0.35, ease: "power3.inOut" }, b(10));
+        wui.querySelectorAll("*").forEach((e) => e.setAttribute("data-layout-allow-overlap", ""));
 
-        /* callout choreography: anchor ring, line draws, dot, then label rises 12 px */
+        /* ---------- camera: put plate point (px,py) at frame point (fx,fy) with scale s ---------- */
+        const OX = 400, OY = 500; // authored coordinates -> 4000 px plate
+        const cam = (s, px, py, fx, fy) => ({ scale: s, x: fx - s * (px + OX), y: fy - s * (py + OY) });
+        const toFrame = (c, p) => [c.x + c.scale * (p[0] + OX), c.y + c.scale * (p[1] + OY)];
+        const HERO = cam(0.3, 1560, 1640, 470, 610);
+        const tl = gsap.timeline({ paused: true });
+        gsap.set("#shot", HERO);
+
+        /* callout: anchor ring, line draws, dot, label rises 12 px (always the same) */
+        function place(id, lb, A, D, lx, ly, align) {
+          const f = (p) => p[0].toFixed(1) + " " + p[1].toFixed(1);
+          document.getElementById(id + "-a").setAttribute("cx", A[0]); document.getElementById(id + "-a").setAttribute("cy", A[1]);
+          document.getElementById(id + "-d").setAttribute("cx", D[0]); document.getElementById(id + "-d").setAttribute("cy", D[1]);
+          document.getElementById(id + "-l").setAttribute("d", "M" + f(A) + " L" + f(D));
+          const el = document.querySelector(lb);
+          el.style.top = ly + "px";
+          if (align === "right") el.style.right = (1080 - lx) + "px"; else el.style.left = lx + "px";
+        }
         function callout(id, lb, at, out) {
           const len = document.getElementById(id + "-l").getTotalLength();
           tl.fromTo("#" + id + "-a", { opacity: 0, scale: 0.4, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.4)" }, at);
@@ -370,77 +232,89 @@
           tl.fromTo(lb, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, at + 0.6);
           tl.to(["#" + id, lb], { opacity: 0, duration: 0.3, ease: "power2.in" }, out);
         }
-        callout("co1", "#lb1", b(8), 7.7);
 
-        /* S3 · 8.0 – 11.0 s · lateral travelling along the bracelet */
-        tl.to("#camera", Object.assign({ duration: 0.9, ease: "sine.inOut" }, cam(2.6, 0, 150, -140, 0)), 7.75);
-        tl.to("#camera", Object.assign({ duration: 2.35, ease: "sine.inOut" }, cam(2.6, 0, 318, -140, 0)), 8.65);
-        tl.fromTo(["#face", "#strap-top"], { filter: "blur(0px)" }, { filter: "blur(7px)", duration: 0.8, ease: "sine.inOut", immediateRender: false }, 8.1);
-        tl.to(["#face", "#strap-top"], { filter: "blur(0px)", duration: 0.6, ease: "sine.inOut" }, 10.7);
+        /* title block: visible on frame 0 and on the last frame (seamless loop) */
+        tl.fromTo(["#name", "#price", "#tag"], { opacity: 1, y: 0 }, { opacity: 0, y: 10, duration: 0.5, ease: "power2.in", stagger: 0.05 }, 1.0);
+        tl.fromTo("#rule", { scaleX: 1 }, { scaleX: 0, duration: 0.45, ease: "power2.in" }, 1.05);
+
+        /* S1 · 0 – 4.5 s · slow orbit with a travelling studio light */
+        const S1 = cam(0.39, 1640, 1400, 540, 540);
+        tl.to("#shot", Object.assign({ duration: 4.4, ease: "sine.inOut" }, S1), 0);
+        tl.fromTo("#sweep-band", { x: 400, rotation: 24 }, { x: 4800, rotation: 24, duration: 3.6, ease: "sine.inOut" }, 0.4);
+        const dA = toFrame(S1, [620, 780]), dB = toFrame(S1, [1230, 2150]);
+        const dimX = 104;
+        document.getElementById("dim-l").setAttribute("d", "M" + dimX + " " + dA[1].toFixed(0) + " L" + dimX + " " + dB[1].toFixed(0));
+        document.getElementById("dim-t").setAttribute("d", "M" + (dimX - 10) + " " + dA[1].toFixed(0) + " L" + (dimX + 10) + " " + dA[1].toFixed(0));
+        document.getElementById("dim-b").setAttribute("d", "M" + (dimX - 10) + " " + dB[1].toFixed(0) + " L" + (dimX + 10) + " " + dB[1].toFixed(0));
+        const midY = (dA[1] + dB[1]) / 2;
+        Object.assign(document.getElementById("dim-lb1").style, { left: dimX - 58 + "px", top: midY - 40 + "px", transform: "rotate(-90deg)" });
+        Object.assign(document.getElementById("dim-lb2").style, { left: dimX - 50 + "px", top: midY + 60 + "px", transform: "rotate(-90deg)" });
+        const dimLen = dB[1] - dA[1];
+        tl.fromTo("#dim-l", { attr: { "stroke-dasharray": dimLen, "stroke-dashoffset": dimLen } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.6, ease: "power3.out" }, b(2));
+        tl.fromTo(["#dim-t", "#dim-b"], { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.1 }, b(2) + 0.2);
+        tl.fromTo(["#dim-lb1", "#dim-lb2"], { opacity: 0, x: 12 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out", stagger: 0.12 }, b(2) + 0.45);
+        tl.to(["#dims", "#dim-lb1", "#dim-lb2"], { opacity: 0, duration: 0.35, ease: "power2.in" }, 4.0);
+
+        /* S2 · 4.5 – 8.0 s · orbit into the screen, the watch wakes up */
+        const S2 = cam(0.64, 1640, 1240, 600, 600);
+        tl.to("#shot", Object.assign({ duration: 1.1, ease: "sine.inOut" }, S2), 4.4);
+        tl.to("#shot", Object.assign({ duration: 2.4, ease: "sine.inOut" }, cam(0.68, 1640, 1240, 600, 600)), 5.5);
+        tl.fromTo("#ui-face", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, 5.2);
+        tl.to("#ring1", { attr: { "stroke-dashoffset": 250 }, duration: 1.4, ease: "power3.out" }, b(8));
+        tl.to("#ring2", { attr: { "stroke-dashoffset": 330 }, duration: 1.4, ease: "power3.out" }, b(8) + 0.14);
+        tl.to("#ui-ecg", { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "sine.inOut" }, b(9));
+        gsap.set("#ui-m2", { y: "100%" });
+        tl.to("#ui-m1", { y: "-100%", duration: 0.35, ease: "power3.inOut" }, b(10));
+        tl.to("#ui-m2", { y: "0%", duration: 0.35, ease: "power3.inOut" }, b(10));
+        place("co1", "#lb1", toFrame(S2, [1180, 700]), [300, 172], 84, 104, "left");
+        callout("co1", "#lb1", b(8.5), 7.7);
+
+        /* S3 · 8.0 – 11.0 s · travelling along the case edge, shallow depth of field */
+        const S3a = cam(1.0, 900, 760, 520, 640), S3b = cam(1.0, 1640, 470, 560, 640);
+        tl.to("#shot", Object.assign({ duration: 0.9, ease: "sine.inOut" }, S3a), 7.75);
+        tl.to("#shot", Object.assign({ duration: 2.35, ease: "sine.inOut" }, S3b), 8.65);
+        tl.fromTo("#plate-blur", { opacity: 0, "--fx": "32.5%", "--fy": "31.5%" }, { opacity: 1, "--fx": "32.5%", "--fy": "31.5%", duration: 0.7, ease: "sine.inOut", immediateRender: false }, 7.9);
+        tl.to("#plate-blur", { "--fx": "51%", "--fy": "24.25%", duration: 2.35, ease: "sine.inOut" }, 8.65);
+        tl.to("#plate-blur", { opacity: 0, duration: 0.5, ease: "sine.inOut" }, 10.75);
+        place("co2", "#lb2", [540, 600], [420, 300], 84, 248, "left");
         callout("co2", "#lb2", b(13), 10.65);
 
-        /* S4 · 11.0 – 13.5 s · crown & pusher macro */
-        tl.to("#watch", { rotationY: -62, duration: 1.0, ease: "sine.inOut" }, 10.75);
-        tl.to("#camera", Object.assign({ duration: 1.0, ease: "sine.inOut" }, cam(2.9, 62, -68, -170, -20)), 10.75);
-        tl.to("#crown-face", { backgroundPosition: "0px 5px", duration: 0.18, ease: "power3.out" }, b(18));
-        tl.fromTo("#pusher", { x: 0 }, { x: -3, duration: 0.08, ease: "power2.in", immediateRender: false }, b(19));
-        tl.to("#pusher", { x: 0, duration: 0.22, ease: "back.out(2)" }, b(19) + 0.1);
+        /* S4 · 11.0 – 13.5 s · macro on the crown */
+        const S4 = cam(1.45, 2258, 980, 380, 560);
+        tl.to("#shot", Object.assign({ duration: 1.0, ease: "sine.inOut" }, S4), 10.75);
+        tl.to("#shot", Object.assign({ duration: 1.6, ease: "sine.inOut" }, cam(1.5, 2258, 980, 380, 560)), 11.75);
+        tl.set("#sweep-band", { x: 3700, y: 0, rotation: 70 }, 11.9);
+        tl.to("#sweep-band", { y: -1600, duration: 0.3, ease: "power2.out" }, b(18));
+        tl.set("#sweep-band", { x: 5200, y: 0, rotation: 24 }, 13.2);
+        place("co3", "#lb3", [430, 560], [600, 470], 620, 440, "left");
         callout("co3", "#lb3", b(17), 13.15);
 
-        /* S5 · 13.5 – 16.5 s · on the wrist */
-        tl.to("#camera", Object.assign({ duration: 1.0, ease: "sine.inOut" }, cam(1.25, 0, -10, 0, 0)), 13.2);
-        tl.to("#watch", { rotationY: 0, duration: 1.0, ease: "sine.inOut" }, 13.2);
-        gsap.set("#wrist", { x: 2300, opacity: 0 });
-        tl.fromTo("#wrist", { x: 2300, opacity: 1 }, { x: 0, opacity: 1, duration: 1.1, ease: "power3.out", immediateRender: false }, 13.35);
-        tl.to("#scaler", { scale: 0.64, duration: 0.5, ease: "power2.inOut" }, 13.8);
-        tl.to(["#shadow", "#shadow-core"], { opacity: 0, duration: 0.4 }, 13.4);
-        tl.to(["#strap-top", "#strap-bot"], { scaleY: 0.3, duration: 0.3, ease: "power2.in" }, 14.2);
-        tl.fromTo("#stage3d", { scale: 1 }, { scale: 1.07, duration: 0.14, ease: "power2.in", immediateRender: false }, 14.18);
-        tl.to("#stage3d", { scale: 1, duration: 0.4, ease: "back.out(3)" }, 14.32);
-        tl.fromTo("#ui-notif", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, b(23));
-        tl.to("#ui-notif", { opacity: 0, y: -24, duration: 0.35, ease: "power2.in" }, 16.2);
-        tl.to(["#ui-time", "#ui-date"], { opacity: 0, duration: 0.2, ease: "power2.in" }, b(23) - 0.05);
-        tl.to(["#ui-time", "#ui-date"], { opacity: 1, duration: 0.3, ease: "power2.out" }, 16.45);
+        /* S5 · 13.5 – 16.5 s · on the wrist, a notification arrives */
+        const W0 = { scale: 0.62, x: 270 - 0.62 * 470, y: 560 - 0.62 * 1135 }, W1 = { scale: 0.66, x: 290 - 0.66 * 470, y: 560 - 0.66 * 1135 };
+        tl.to("#shot", Object.assign({ duration: 0.8, ease: "power2.in" }, cam(1.9, 2258, 980, 380, 560)), 13.2);
+        tl.fromTo("#wrist-shot", { opacity: 0, scale: 0.7, x: 320 - 0.7 * 470, y: 560 - 0.7 * 1135 }, Object.assign({ opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, W0), 13.6);
+        tl.to("#wrist-shot", Object.assign({ duration: 2.4, ease: "sine.inOut" }, W1), 14.0);
+        tl.to("#shot", { opacity: 0, duration: 0.35, ease: "power2.in" }, 13.65);
+        tl.set("#shot", { opacity: 1 }, 16.0);
+        tl.fromTo("#wui-face", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, b(21.5));
+        tl.fromTo("#wui-card", { y: -120, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, b(22));
 
         /* S6 · 16.5 – 18.0 s · packshot, identical to frame 0 */
-        tl.to("#wrist", { x: 2300, duration: 0.8, ease: "power2.in" }, 16.35);
-        tl.set("#wrist", { opacity: 0 }, 17.2);
-        tl.to(["#strap-top", "#strap-bot"], { scaleY: 1, duration: 0.5, ease: "power3.out" }, 16.5);
-        tl.to("#scaler", { scale: 0.78, duration: 0.7, ease: "sine.inOut" }, 16.4);
-        tl.to("#camera", Object.assign({ duration: 0.9, ease: "sine.inOut" }, REST), 16.4);
-        tl.to(["#shadow", "#shadow-core"], { opacity: 1, duration: 0.5 }, 16.8);
-        tl.fromTo("#tag", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 16.85);
-        tl.fromTo("#name", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", immediateRender: false }, 16.95);
-        tl.fromTo("#rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out", immediateRender: false }, 17.05);
-        tl.fromTo("#price", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 17.15);
+        tl.set("#shot", HERO, 16.0);
+        tl.set("#ui-face", { opacity: 0 }, 16.0);
+        tl.to("#wrist-shot", { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 16.3);
+        tl.fromTo("#tag", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 16.75);
+        tl.fromTo("#name", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", immediateRender: false }, 16.85);
+        tl.fromTo("#rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out", immediateRender: false }, 16.95);
+        tl.fromTo("#price", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false }, 17.05);
 
-        // Stone Edits watermark over the last two seconds before the end card (dark tint on the light studio)
         if (SIGNATURE_WATERMARK && SIGNATURE_ENDCARD) {
-          const wm = document.getElementById("watermark");
-          if (!V.MIDNIGHT) wm.style.filter = "brightness(0.12)";
-          tl.fromTo(wm, { opacity: 0 }, { opacity: 0.3, duration: 0.4, ease: "power2.out" }, 16.0);
+          tl.fromTo("#watermark", { opacity: 0 }, { opacity: 0.3, duration: 0.4, ease: "power2.out" }, 16.0);
         }
 
-        /* per-frame lighting derived from the watch angle */
-        const face$ = $("#face-shade"), sheen = $("#glass-sheen"), backSheen = $("#back-sheen");
-        const sh = $("#shadow"), shc = $("#shadow-core");
-        function light() {
-          const a = gsap.getProperty("#watch", "rotationY") * Math.PI / 180;
-          const c = Math.cos(a), s = Math.sin(a);
-          face$.style.opacity = (0.55 * (1 - Math.max(0, c))).toFixed(3);
-          sheen.style.backgroundPosition = (40 + s * 60).toFixed(1) + "% 0";
-          if (backSheen) backSheen.style.backgroundPosition = (40 - s * 60).toFixed(1) + "% 0";
-          const w = (Math.abs(c) * 300 + Math.abs(s) * 60) / 300;
-          sh.style.transform = "scaleX(" + (0.45 + 0.55 * w).toFixed(3) + ")";
-          shc.style.transform = "scaleX(" + (0.4 + 0.6 * w).toFixed(3) + ")";
-        }
-        tl.eventCallback("onUpdate", light);
-        light();
-
-        // polish: grain + vignette over the product scenes
         const host = document.getElementById("lumen");
-        SE.addVignette(host, V.MIDNIGHT ? 0.35 : 0.14, V.MIDNIGHT ? "0,0,0" : "90,78,62");
-        SE.addGrain(host, tl, { opacity: V.MIDNIGHT ? 0.06 : 0.045, duration: T, fps: 30, blend: "overlay", seed: 2 });
+        SE.addVignette(host, 0.16, "90,78,62");
+        SE.addGrain(host, tl, { opacity: 0.05, duration: T, fps: 30, blend: "overlay", seed: 2 });
 
         window.__timelines["main"] = tl;
       })();
