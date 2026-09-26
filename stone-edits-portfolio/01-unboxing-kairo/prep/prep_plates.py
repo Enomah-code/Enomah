@@ -10,6 +10,13 @@ def cool(f, sat=0.9, lift=0.0):
 # ---------- hero: earbuds in open case ----------
 im = cv2.imread(f"{SRC}/3585797.jpg").astype(np.float32) / 255
 k = 6936 / 900
+orig = im.copy()
+for (vx, vy) in ((445, 707), (650, 578)):          # macros: LED off (neutral grey)
+    cx, cy = int(vx * k), int(vy * k); r = 70
+    roi = orig[cy - r:cy + r, cx - r:cx + r]
+    g = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)[..., None]
+    red = np.clip((roi[..., 2] - np.maximum(roi[..., 0], roi[..., 1])) * 4, 0, 1)[..., None]
+    orig[cy - r:cy + r, cx - r:cx + r] = roi * (1 - red) + np.repeat(g * 0.6, 3, 2) * red
 # LEDs: red -> electric cyan
 for (vx, vy) in ((445, 707), (650, 578)):
     cx, cy = int(vx * k), int(vy * k); r = 60
@@ -50,7 +57,7 @@ print("hero crop x0", X0, "scale", 1620 / (X1 - X0))
 # macro crops (native resolution, 9:16) for the texture scene
 def macro(name, cx, cy, w, extra=None):
     h = int(w * 16 / 9); x0, y0 = int(cx - w / 2), int(cy - h / 2)
-    f = cool(im[y0:y0 + h, x0:x0 + w], sat=0.6, lift=0.02)
+    f = cool(orig[y0:y0 + h, x0:x0 + w], sat=0.6, lift=0.02)
     if extra: f = extra(f)
     cv2.imwrite(f"{OUT}/{name}.jpg", (cv2.resize(f, (1080, 1920), interpolation=cv2.INTER_AREA) * 255).astype(np.uint8), [cv2.IMWRITE_JPEG_QUALITY, 92])
 macro("m-case", int(560 * k), int(860 * k), 1400, lambda f: np.clip((f - 0.02) * 2.4, 0, 1))
