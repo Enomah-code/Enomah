@@ -1,0 +1,190 @@
+<!doctype html>
+<html
+  lang="fr"
+  data-composition-variables='[
+    {"id":"SIGNATURE_ENDCARD","type":"boolean","label":"Carte de fin Stone Edits","default":true},
+    {"id":"SIGNATURE_WATERMARK","type":"boolean","label":"Filigrane Stone Edits","default":true}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <title>Solen Commute 22</title>
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/shared/polish.js"></script>
+    <style>
+      @font-face { font-family: 'Fraunces'; font-style: italic; font-weight: 400; font-display: block; src: url('assets/fonts/fraunces-400i.woff2') format('woff2'); }
+      @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: block; src: url('assets/fonts/dm-sans-500.woff2') format('woff2'); }
+      :root { --sh: #1b2a2c; --mid: #5e7a74; --amber: #d98e4a; --hi: #efe3ce; --olive: #6b6b4e; --tx: #f3eadb; }
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--sh); }
+      #solen { position: absolute; inset: 0; overflow: hidden; font-family: 'DM Sans', sans-serif; color: var(--tx); }
+
+      /* one grading recipe for every shot */
+      .shot { position: absolute; inset: 0; overflow: hidden; }
+      .wrap { position: absolute; transform-origin: 50% 50%; }
+      .wrap video, .wrap img { display: block; width: 100%; height: 100%; object-fit: cover; }
+      .grade { filter: contrast(1.08) saturate(0.9); }
+      #g-teal { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(27,42,44,0.55), rgba(27,42,44,0.35)); mix-blend-mode: soft-light; pointer-events: none; }
+      #g-amber { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(217,142,74,0.2), rgba(217,142,74,0.12) 60%, rgba(239,227,206,0.12)); mix-blend-mode: soft-light; pointer-events: none; }
+
+      #lb-top, #lb-bot { position: absolute; left: 0; right: 0; height: 449px; background: #0b0f10; z-index: 40; }
+      #lb-top { top: 0; transform-origin: 50% 0; }
+      #lb-bot { bottom: 0; transform-origin: 50% 100%; }
+      .stamp { position: absolute; left: 70px; top: 76px; padding: 10px 18px 10px 16px; border-radius: 22px; background: rgba(10,15,16,0.5); font-weight: 500; font-size: 26px; letter-spacing: 0.3em; color: rgba(243,234,219,0.95); z-index: 45; opacity: 0; font-feature-settings: "tnum" 1; }
+      .stamp i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--amber); margin-right: 16px; vertical-align: middle; position: relative; top: -3px; font-style: normal; }
+      .leak { position: absolute; left: -400px; top: -300px; width: 1900px; height: 1950px; z-index: 50; opacity: 0; mix-blend-mode: screen;
+        background: radial-gradient(ellipse 40% 35% at 30% 40%, rgba(255,170,90,0.95), rgba(217,142,74,0.5) 40%, rgba(217,142,74,0) 70%),
+                    radial-gradient(ellipse 30% 45% at 70% 60%, rgba(255,210,150,0.7), rgba(217,142,74,0) 70%); }
+      .dlabel { position: absolute; left: 80px; bottom: 96px; z-index: 45; font-weight: 500; font-size: 30px; letter-spacing: 0.34em; color: var(--tx); opacity: 0; text-shadow: 0 2px 20px rgba(0,0,0,0.6); }
+      .dlabel::before { content: ""; display: block; width: 56px; height: 2px; background: var(--amber); margin-bottom: 18px; }
+
+      /* iconic set */
+      #set { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 70% at 40% 30%, #22363a 0%, #172325 55%, #0d1415 100%); opacity: 0; }
+      #floor { position: absolute; left: -80px; right: -80px; top: 1030px; height: 400px; background: url('assets/img/floor.jpg') center / cover; filter: brightness(0.9); }
+      #floor::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(13,20,21,0.7), rgba(13,20,21,0.2) 40%, rgba(13,20,21,0.8)); }
+      #beam { position: absolute; left: -220px; top: -260px; width: 1000px; height: 1700px; transform: rotate(-24deg); transform-origin: 50% 0;
+        background: linear-gradient(180deg, rgba(255,190,120,0.34), rgba(217,142,74,0.12) 60%, rgba(217,142,74,0)); clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%); mix-blend-mode: screen; }
+      #pool { position: absolute; left: 180px; top: 980px; width: 760px; height: 190px; border-radius: 50%; background: radial-gradient(ellipse, rgba(255,180,110,0.45), rgba(217,142,74,0) 70%); mix-blend-mode: screen; }
+      #bagrig { position: absolute; left: 540px; top: 1085px; width: 0; height: 0; }
+      #bagshadow { position: absolute; left: -330px; top: -40px; width: 660px; height: 80px; border-radius: 50%; background: radial-gradient(ellipse, rgba(0,0,0,0.75), rgba(0,0,0,0) 70%); filter: blur(8px); }
+      #bag { position: absolute; left: -350px; top: -720px; width: 700px; height: 721px; filter: drop-shadow(-30px 20px 40px rgba(0,0,0,0.55)); }
+      #baglight { position: absolute; left: -350px; top: -720px; width: 700px; height: 721px; mix-blend-mode: soft-light;
+        -webkit-mask-image: url('assets/img/bag.webp'); mask-image: url('assets/img/bag.webp'); -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+        background: linear-gradient(115deg, rgba(255,190,120,0.85) 0%, rgba(255,190,120,0.2) 45%, rgba(20,30,32,0.6) 100%); }
+      .mote { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: rgba(255,220,170,0.9); box-shadow: 0 0 6px rgba(255,190,120,0.8); opacity: 0; }
+      #brand { position: absolute; left: 0; right: 0; top: 150px; text-align: center; opacity: 0; }
+      #brand .n { font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: 150px; line-height: 1; letter-spacing: 0.01em; color: var(--tx); }
+      #brand .s { margin-top: 26px; font-weight: 500; font-size: 26px; letter-spacing: 0.3em; color: rgba(243,234,219,0.8); }
+      #dim { position: absolute; inset: 0; background: #000; opacity: 0; z-index: 60; }
+      #watermark { position: absolute; right: 80px; bottom: 80px; width: 53px; height: 56px; opacity: 0; z-index: 55; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1350" data-duration="29.5" data-main-duration="28">
+      <!-- footage (Pexels License), each timed clip sits in an untimed wrapper that carries the camera move -->
+      <div class="shot" id="sh-walk"><div class="wrap grade" id="w-walk" style="left:0;top:-285px;width:1080px;height:1920px;">
+        <video id="v-walk" class="clip" src="assets/video/walk.mp4" data-start="0" data-duration="4.25" data-media-start="0.2" data-track-index="1" muted playsinline></video></div></div>
+      <div class="shot" id="sh-cafe"><div class="wrap grade" id="w-cafe" style="left:-560px;top:0;width:2400px;height:1350px;">
+        <video id="v-cafe" class="clip" src="assets/video/cafe.mp4" data-start="4.0" data-duration="5.0" data-media-start="0" data-track-index="2" muted playsinline></video></div></div>
+      <div class="shot" id="sh-work"><div class="wrap grade" id="w-work" style="left:-760px;top:0;width:2561px;height:1350px;">
+        <video id="v-work" class="clip" src="assets/video/work.mp4" data-start="9.0" data-duration="4.53" data-media-start="0" data-track-index="3" muted playsinline></video></div></div>
+      <div class="shot" id="sh-drip"><div class="wrap grade" id="w-drip" style="left:-700px;top:0;width:2400px;height:1350px;">
+        <video id="v-drip" class="clip" src="assets/video/drip.mp4" data-start="16.33" data-duration="2.4" data-media-start="2.6" data-track-index="4" muted playsinline></video></div></div>
+
+      <section id="solen" class="clip" data-start="0" data-duration="28" data-track-index="0">
+        <div class="shot" id="sh-zip" style="opacity:0;"><div class="wrap grade" id="w-zip" style="left:0;top:0;width:1080px;height:1350px;"><img src="assets/img/m-zip.jpg" alt="" /></div></div>
+        <div class="shot" id="sh-strap" style="opacity:0;"><div class="wrap grade" id="w-strap" style="left:0;top:0;width:1080px;height:1350px;"><img src="assets/img/m-strap.jpg" alt="" /></div></div>
+        <div id="set">
+          <div id="floor"></div><div id="beam"></div><div id="pool"></div>
+          <div id="bagrig"><div id="bagshadow"></div><img id="bag" class="grade" src="assets/img/bag.webp" alt="" /><div id="baglight"></div></div>
+          <div id="motes"></div>
+          <div id="brand"><div class="n">Solen</div><div class="s">COMMUTE 22 — CHAQUE TRAJET COMPTE.</div></div>
+        </div>
+        <div id="g-teal"></div><div id="g-amber"></div>
+        <div id="lb-top"></div><div id="lb-bot"></div>
+        <div class="stamp" id="st1"><i></i>07:42</div>
+        <div class="stamp" id="st2"><i></i>08:15</div>
+        <div class="stamp" id="st3"><i></i>09:30</div>
+        <div class="dlabel" id="dl1">ZIP ÉTANCHE</div>
+        <div class="dlabel" id="dl2">TOILE DÉPERLANTE</div>
+        <div class="dlabel" id="dl3">CONFORT 12 H</div>
+        <div class="leak" id="leak1"></div><div class="leak" id="leak2"></div>
+        <div id="dim"></div>
+        <img id="watermark" src="assets/brand/stone-edits-logo-blanc.svg" alt="" />
+      </section>
+
+      <div id="se-opener" data-composition-id="se-opener" data-composition-src="compositions/se-opener.html"
+        data-start="0" data-duration="0.9" data-track-index="6" data-width="1080" data-height="1350"></div>
+      <div id="se-endcard" data-composition-id="se-endcard" data-composition-src="compositions/se-endcard.html"
+        data-start="28" data-duration="1.5" data-track-index="5" data-width="1080" data-height="1350"
+        data-variable-values='{"logoPct":22}'></div>
+
+      <!-- ambiences overlap by 0.5 s at each cut (J/L cuts); synthesised beds + Pixabay SFX -->
+      <audio id="amb-city" src="assets/fx/city.wav" data-start="0" data-duration="4.5" data-track-index="10" data-volume="0.5"></audio>
+      <audio id="amb-cafe" src="assets/fx/cafe.wav" data-start="3.5" data-duration="5.6" data-track-index="11" data-volume="0.45"></audio>
+      <audio id="sfx-cup" src="assets/fx/cup.wav" data-start="5.2" data-duration="0.5" data-track-index="12" data-volume="0.35"></audio>
+      <audio id="sfx-rustle1" src="assets/fx/rustle.wav" data-start="4.0" data-duration="1.0" data-track-index="13" data-volume="0.5"></audio>
+      <audio id="amb-keys" src="assets/sfx/typing.mp3" data-start="8.6" data-duration="1.54" data-track-index="14" data-volume="0.18"></audio>
+      <audio id="amb-keys2" src="assets/sfx/typing.mp3" data-start="10.4" data-duration="1.54" data-track-index="15" data-volume="0.15"></audio>
+      <audio id="sfx-rustle2" src="assets/fx/rustle.wav" data-start="9.1" data-duration="1.0" data-track-index="16" data-volume="0.45"></audio>
+      <audio id="sfx-leak1" src="assets/sfx/whoosh-cinematic.mp3" data-start="13.2" data-duration="1.6" data-track-index="17" data-volume="0.18"></audio>
+      <audio id="sfx-zip" src="assets/fx/zip.wav" data-start="14.3" data-duration="1.2" data-track-index="18" data-volume="0.6"></audio>
+      <audio id="sfx-drop1" src="assets/fx/drop.wav" data-start="16.9" data-duration="0.25" data-track-index="19" data-volume="0.5"></audio>
+      <audio id="sfx-drop2" src="assets/fx/drop.wav" data-start="17.7" data-duration="0.25" data-track-index="20" data-volume="0.4"></audio>
+      <audio id="sfx-rustle3" src="assets/fx/rustle.wav" data-start="18.8" data-duration="1.0" data-track-index="21" data-volume="0.45"></audio>
+      <audio id="sfx-leak2" src="assets/sfx/whoosh-cinematic.mp3" data-start="20.4" data-duration="2.0" data-track-index="22" data-volume="0.2"></audio>
+      <audio id="sfx-chime" src="assets/sfx/chime.mp3" data-start="22.8" data-duration="2.5" data-track-index="23" data-volume="0.22"></audio>
+    </div>
+
+    <script>
+      (function () {
+        const V = (window.__hyperframes && window.__hyperframes.getVariables && window.__hyperframes.getVariables()) || {};
+        const SIGNATURE_ENDCARD = V.SIGNATURE_ENDCARD !== false, SIGNATURE_WATERMARK = V.SIGNATURE_WATERMARK !== false;
+        if (!SIGNATURE_ENDCARD) { document.getElementById("se-endcard").setAttribute("data-hidden", ""); document.getElementById("se-opener").setAttribute("data-hidden", ""); }
+        const b = SE.beatGrid(85);   // 1 beat = 0.706 s
+        const R = SE.prng(606);
+        const T = 28;
+        const tl = gsap.timeline({ paused: true });
+
+        /* 0 – 4 s · morning commute: letterbox 2.39:1 opens to the full frame */
+        tl.fromTo(["#lb-top", "#lb-bot"], { scaleY: 1 }, { scaleY: 0, duration: 2.6, ease: "sine.inOut", immediateRender: false }, 0.9);
+        tl.fromTo("#w-walk", { scale: 1.12 }, { scale: 1.0, duration: 4.25, ease: "sine.out", immediateRender: false }, 0);
+        tl.fromTo("#st1", { opacity: 0 }, { opacity: 1, duration: 0.6, immediateRender: false }, 1.4);
+        tl.to("#st1", { opacity: 0, duration: 0.3 }, 3.8);
+
+        /* 4 – 9 s · café — match cut on the movement (bag leaves the shoulder, lands on the table) */
+        tl.fromTo("#w-cafe", { scale: 1.08, x: 30 }, { scale: 1.0, x: 0, duration: 5.0, ease: "sine.out", immediateRender: false }, 4.0);
+        tl.fromTo("#st2", { opacity: 0 }, { opacity: 1, duration: 0.5, immediateRender: false }, 4.6);
+        tl.to("#st2", { opacity: 0, duration: 0.3 }, 8.6);
+
+        /* 9 – 14 s · work — match cut: the hand going into the bag continues at the desk */
+        tl.fromTo("#w-work", { scale: 1.1 }, { scale: 1.02, duration: 4.53, ease: "sine.out", immediateRender: false }, 9.0);
+        tl.fromTo("#st3", { opacity: 0 }, { opacity: 1, duration: 0.5, immediateRender: false }, 9.5);
+        tl.to("#st3", { opacity: 0, duration: 0.3 }, 13.0);
+
+        /* light leak into the details */
+        tl.fromTo("#leak1", { opacity: 0, x: -500, rotation: -8 }, { opacity: 1, x: 0, rotation: 0, duration: 0.55, ease: "sine.in", immediateRender: false }, 13.15);
+        tl.to("#leak1", { opacity: 0, x: 500, duration: 0.7, ease: "sine.out" }, 13.7);
+
+        /* 14 – 21 s · three slow macros, focus pulled from soft to sharp */
+        tl.set("#sh-zip", { opacity: 1 }, 13.53);
+        tl.fromTo("#w-zip", { scale: 1.16, y: 60, filter: "contrast(1.08) saturate(0.9) blur(14px)" }, { scale: 1.08, y: -40, filter: "contrast(1.08) saturate(0.9) blur(0px)", duration: 2.8, ease: "sine.inOut", immediateRender: false }, 13.53);
+        tl.set("#sh-zip", { opacity: 0 }, 16.33);
+        tl.fromTo("#w-drip", { scale: 1.1, filter: "contrast(1.08) saturate(0.9) blur(10px)" }, { scale: 1.04, filter: "contrast(1.08) saturate(0.9) blur(0px)", duration: 2.33, ease: "sine.inOut", immediateRender: false }, 16.33);
+        tl.set("#sh-strap", { opacity: 1 }, 18.66);
+        tl.fromTo("#w-strap", { scale: 1.14, y: -50, filter: "contrast(1.08) saturate(0.9) blur(14px)" }, { scale: 1.05, y: 30, filter: "contrast(1.08) saturate(0.9) blur(0px)", duration: 2.6, ease: "sine.inOut", immediateRender: false }, 18.66);
+        [["#dl1", 14.3, 16.1], ["#dl2", 16.7, 18.5], ["#dl3", 19.0, 20.7]].forEach(([id, a, z]) => {
+          tl.fromTo(id, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, a);
+          tl.to(id, { opacity: 0, duration: 0.4, ease: "sine.in" }, z);
+        });
+
+        /* light leak into the iconic shot */
+        tl.fromTo("#leak2", { opacity: 0, x: 500, rotation: 10 }, { opacity: 1, x: 0, rotation: 0, duration: 0.6, ease: "sine.in", immediateRender: false }, 20.55);
+        tl.to("#leak2", { opacity: 0, x: -500, duration: 0.9, ease: "sine.out" }, 21.15);
+
+        /* 21 – 28 s · iconic shot: the bag alone in a ray of amber light */
+        tl.set("#set", { opacity: 1 }, 21.05);
+        tl.set("#sh-strap", { opacity: 0 }, 21.1);
+        tl.fromTo("#bagrig", { scale: 0.94, y: 20 }, { scale: 1.02, y: 0, duration: 6.95, ease: "sine.inOut", immediateRender: false }, 21.05);
+        tl.fromTo("#beam", { opacity: 0.6 }, { opacity: 1, duration: 3, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, 21.05);
+        const motes = document.getElementById("motes");
+        for (let i = 0; i < 46; i++) {
+          const m = document.createElement("div"); m.className = "mote";
+          const x = 80 + R() * 700, y = 80 + R() * 1000;
+          m.style.left = x + "px"; m.style.top = y + "px"; motes.appendChild(m);
+          tl.fromTo(m, { opacity: 0, x: 0, y: 0 }, { opacity: 0.25 + R() * 0.7, x: (R() - 0.5) * 50, y: -20 - R() * 60, duration: 6.5, ease: "sine.inOut", immediateRender: false }, 21.1 + R() * 0.6);
+        }
+        tl.fromTo("#brand", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.2, ease: "power2.out", immediateRender: false }, 22.6);
+        tl.fromTo("#brand .s", { opacity: 0 }, { opacity: 1, duration: 1.0, immediateRender: false }, 23.5);
+        tl.fromTo("#dim", { opacity: 0 }, { opacity: 0.45, duration: 1.4, ease: "sine.in", immediateRender: false }, 26.6);
+        if (SIGNATURE_WATERMARK && SIGNATURE_ENDCARD) tl.fromTo("#watermark", { opacity: 0 }, { opacity: 0.3, duration: 0.5, immediateRender: false }, 26.0);
+
+        const host = document.getElementById("solen");
+        SE.addVignette(host, 0.2, "10,16,17", 58);
+        SE.addGrain(host, tl, { opacity: 0.07, duration: T, fps: 30, blend: "overlay", seed: 6, z: 59 });
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

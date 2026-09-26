@@ -14,8 +14,16 @@ _shared/            neutral kit shared by every project
   build.py          syncs the kit into a project (assets/ + compositions/se-endcard.html)
   render.sh         final render: 60 fps, 16 Mb/s H.264, AAC 320 kb/s 48 kHz, metadata stripped
   endcard-preview/  standalone preview of the end card
-02-showcase-lumen/  project 02 — done (photo-based, see assets/img/CREDITS.md)
-livrables/          rendered MP4 / posters (not versioned)
+01-unboxing-kairo/         9:16 · 40 s · earbuds unboxing (photo-based)
+02-showcase-lumen/         1:1 · 18 s loop · smartwatch showcase (photo-based)
+03-probleme-solution-kutto 9:16 · 30 s · problem / solution ad (photo-based)
+04-avant-apres-nettra/     9:16 · 22 s · before / after (photo + real grease textures)
+05-features-orbis/         16:9 · 55 s · feature explainer (photo-based + UI)
+06-lifestyle-solen/        4:5 · 28 s · lifestyle film (stock footage, option A)
+livrables/                 rendered MP4 / posters (not versioned)
+
+Each project keeps `prep/` (plate preparation from the source photos), `assets/img|video/CREDITS.md`
+(every source photo / clip, all Pexels License) and `assets/fx/` (synthesised sound effects).
 ```
 
 ## Commands
@@ -38,5 +46,6 @@ _shared/render.sh 02-showcase-lumen StoneEdits_02_Showcase_Lumen_1x1 --clean  # 
 - **Logo animation:** a "blade clash" opener (blades strike and split to reveal the video) plus
   the same effect in the closing card, while keeping the brief's 1.5 s end card.
 - Defaults from brief §E apply: French text, signature on, cleaning (04), robot (05), bag + stock (06), euros.
-- Music: no royalty-free music provider is available in this environment; sound effects are
-  mixed in, music cues are listed per project in `audio-cues.md`.
+- Music: none (client decision). Each film carries its own sound design (Pixabay SFX + synthesised effects).
+- Renders are driven by pure functions of the playhead for anything text/position-based (cold render
+  workers seek arbitrary frames; per-tween onUpdate state can go stale).
