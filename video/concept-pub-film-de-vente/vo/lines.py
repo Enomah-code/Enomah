@@ -1,0 +1,22 @@
+# (id, pause_before_seconds, text)  — voix off du film de vente
+LINES = [
+ ("hook1", 0.9, "Aujourd'hui, un client vous juge en trois secondes."),
+ ("hook2", 0.25, "Pas sur votre talent. Sur votre site."),
+ ("pain", 0.5, "Un portfolio figé, des devis qui traînent sur WhatsApp, des fichiers perdus dans les mails… et des clients qui partent chez le concurrent."),
+ ("reveal", 0.9, "Voici Concept Pub."),
+ ("for", 0.2, "Un site vitrine haut de gamme, conçu pour les studios de création, les agences de communication et les boîtes de production."),
+ ("look", 0.5, "Dès la première seconde, l'image impose le respect. Noir, ivoire et or : une direction artistique digne des grandes maisons."),
+ ("services", 0.4, "Vos neuf métiers sont présentés avec clarté, de l'affiche au tournage, du motion design au podcast."),
+ ("reel", 0.3, "Et vos réalisations défilent comme au cinéma."),
+ ("sells", 0.6, "Mais surtout, ce site ne se contente pas de montrer. Il vend."),
+ ("devis", 0.4, "Le configurateur calcule le devis en direct : prestation, durée, options, délai. Votre client obtient son estimation en une minute, sans même vous appeler."),
+ ("rdv", 0.35, "Il réserve lui-même son rendez-vous, en visio ou au studio."),
+ ("client", 0.35, "Puis il suit tout depuis son espace client : l'avancement de chaque commande, les validations, les fichiers livrés."),
+ ("benef", 0.6, "Moins d'allers-retours. Plus de commandes. Une image irréprochable."),
+ ("mobile", 0.5, "Le site s'adapte à tous les écrans, aussi élégant sur mobile que sur grand écran."),
+ ("ds", 0.35, "Et il repose sur un design system complet : couleurs, typographies, composants. Votre logo, vos prestations, vos tarifs : tout se personnalise, sans repartir de zéro."),
+ ("offer", 0.6, "Vous repartez avec le site, son système graphique, et ce film de présentation."),
+ ("weeks", 0.3, "Des semaines de conception, déjà faites. Il ne reste qu'à y mettre votre nom."),
+ ("sign", 0.8, "Concept Pub. L'image qui fait vendre."),
+ ("cta", 0.3, "Réservez votre démonstration dès aujourd'hui."),
+]
