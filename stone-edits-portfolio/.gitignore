@@ -12,3 +12,10 @@ livrables/
 */compositions/se-endcard.html
 _shared/*/assets/
 _shared/*/compositions/se-endcard.html
+
+# local tooling
+*/node_modules/
+*/package-lock.json
+# licensed music is not redistributed; rebuild with prep/prep_bgm.sh
+*/assets/bgm/
+*/prep/bgm_src.mp3
