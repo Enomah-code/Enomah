@@ -1,13 +1,13 @@
-"""Music bed for the sales film: 108 s, D minor, soft pulse, ducked under the voice-over.
+"""Music bed for the sales film v2: 137 s, D minor, soft pulse, ducked under the voice-over.
 Deterministic. Whooshes before every scene cut, impacts on key beats."""
 import json, numpy as np
 from scipy.signal import butter, sosfilt, fftconvolve
 from scipy.io import wavfile
-SR = 48000; DUR = 108.0; N = int(SR * DUR)
+SR = 48000; DUR = 137.0; N = int(SR * DUR)
 rng = np.random.default_rng(11); t = np.arange(N) / SR
 L = np.zeros(N); R = np.zeros(N)
-CUTS = [7.0, 14.9, 23.7, 31.9, 37.9, 40.9, 45.4, 56.4, 60.1, 66.5, 71.7, 76.5, 88.6, 99.3]
-BIG = [14.97, 44.3, 99.37]
+CUTS = [7.8, 14.7, 20.0, 29.3, 49.45, 54.0, 71.55, 95.95, 101.2, 105.95, 117.95, 128.5]
+BIG = [21.6, 53.3, 128.81]
 def at(s): return int(s * SR)
 def add(sig, start, g=1.0, pan=0.0):
     i = at(start); j = min(N, i + len(sig))
@@ -39,13 +39,13 @@ def kick(n=int(0.45 * SR)):
     tt = np.arange(n) / SR; f = 42 + 68 * np.exp(-tt * 38)
     return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 8)
 def hat(n=int(0.06 * SR)): tt = np.arange(n) / SR; return hp(rng.standard_normal(n), 7500) * np.exp(-tt * 70)
-def on(s): return (14.9 <= s < 40.6) or (45.4 <= s < 71.5) or (76.5 <= s < 99.0)
-K = kick(); s = 14.9
-while s < 99:
+def on(s): return (20.0 <= s < 49.2) or (54.0 <= s < 95.7) or (101.2 <= s < 128.3)
+K = kick(); s = 20.0
+while s < 128.3:
     if on(s):
         add(K, s, 0.42)
         add(hat(), s + 0.25, 0.07, 0.3)
-        if int(round((s - 14.9) * 2)) % 4 == 0:
+        if int(round((s - 20.0) * 2)) % 4 == 0:
             n = int(0.9 * SR); f = midi([38, 34, 31, 33][int(s // 4) % 4])
             add(lp(np.sin(2 * np.pi * f * np.arange(n) / SR) + 0.3 * saw(f, n), 380) * adsr(n, 0.005, 0.25, 0.4, 0.5), s, 0.28)
     s += 0.5
@@ -64,12 +64,16 @@ def impact(n=int(2.4 * SR), big=1.0):
 for c in CUTS:
     w = whoosh(); add(w, c - 0.55, 0.22, -0.3); add(w, c - 0.55, 0.16, 0.3); add(impact(), c, 0.18)
 for c in BIG: add(impact(int(3.6 * SR), 1.5), c, 0.5)
-# countdown ticks 3-2-1 in the hook
-for i in range(3):
-    tt = np.arange(int(0.2 * SR)) / SR
-    add(np.sin(2 * np.pi * midi(86) * tt) * np.exp(-tt * 30), 3.0 + i, 0.18)
+# hook: low tension drone + a clock that ticks while the client waits for a quote
+n = int(20.0 * SR); tt = np.arange(n) / SR
+drone = (np.sin(2 * np.pi * 55 * tt) + 0.5 * np.sin(2 * np.pi * 82.4 * tt)) * np.clip(tt / 3, 0, 1) * np.clip((20.0 - tt) / 1.0, 0, 1)
+add(lp(drone, 300), 0, 0.22)
+for k in range(12):
+    tk = np.arange(int(0.08 * SR)) / SR
+    add(hp(rng.standard_normal(len(tk)), 3000) * np.exp(-tk * 90), 9.9 + k * 0.5, 0.14, 0.2 if k % 2 else -0.2)
+add(impact(int(2.4 * SR)), 1.08, 0.3)  # « l'erreur »
 # riser into the reveal and the outro
-for end in (14.9, 99.3):
+for end in (20.0, 128.5):
     n = int(2.0 * SR); tt = np.arange(n) / SR
     add(hp(rng.standard_normal(n), 2000) * (tt / 2.0) ** 3, end - 2.0, 0.12)
 

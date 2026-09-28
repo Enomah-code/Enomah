@@ -5,33 +5,41 @@
 
 ---
 
-## 1. Le film de vente (voix off) — 1 min 48
+## 1. Le film de vente (voix off) — 2 min 17
 
-Fichier : `concept-pub-film-de-vente.mp4` (1920×1080, voix off + musique + sous-titres).
+Fichier : `concept-pub-film-de-vente.mp4` (1920×1080, voix off, musique, sous-titres). Les passages marqués **DÉMO** sont filmés sur le vrai site, avec un curseur, de vrais clics et un défilement en direct.
 
 | Temps | Voix off | À l'écran |
 |---|---|---|
-| 0:00 | *Aujourd'hui, un client vous juge en trois secondes.* | Un compte à rebours doré se dessine autour d'un « 3 » géant. |
-| 0:04 | *Pas sur votre talent. Sur votre site.* | « Pas sur votre talent » est barré en rouge ; « Sur votre site » s'impose en or. |
-| 0:07 | *Un portfolio figé, des devis qui traînent sur WhatsApp, des fichiers perdus dans les mails… et des clients qui partent chez le concurrent.* | Le chaos du quotidien : un vieux portfolio marqué « FIGÉ », des relances de devis, des mails « RE: RE: RE: » ; puis tout s'envole hors de l'écran. |
-| 0:15 | *Voici Concept Pub.* | Révélation en cercle : le sceau or se dessine, le nom apparaît dans un éclat de lumière. |
-| 0:17 | *Un site vitrine haut de gamme, conçu pour les studios de création, les agences de communication et les boîtes de production.* | Les trois cibles apparaissent une à une. |
-| 0:24 | *Dès la première seconde, l'image impose le respect. Noir, ivoire et or : une direction artistique digne des grandes maisons.* | La page d'accueil réelle bascule en 3D dans un navigateur ; les trois couleurs de la charte apparaissent au rythme de la voix. |
-| 0:32 | *Vos neuf métiers sont présentés avec clarté, de l'affiche au tournage, du motion design au podcast.* | Un « 9 » monumental ; défilement de la vraie page Prestations ; les métiers s'affichent au mot près. |
-| 0:38 | *Et vos réalisations défilent comme au cinéma.* | Le carrousel des réalisations glisse ; des bandes noires cinéma se referment. |
-| 0:41 | *Mais surtout, ce site ne se contente pas de montrer. Il vend.* | L'écran bascule de l'ivoire au noir ; « Il vend. » en or géant. |
-| 0:45 | *Le configurateur calcule le devis en direct : prestation, durée, options, délai. Votre client obtient son estimation en une minute, sans même vous appeler.* | Défilement du vrai configurateur ; quatre coches or au rythme des mots ; « 1 min · zéro appel ». |
-| 0:56 | *Il réserve lui-même son rendez-vous, en visio ou au studio.* | Zoom sur l'agenda de prise de rendez-vous. |
-| 1:00 | *Puis il suit tout depuis son espace client : l'avancement de chaque commande, les validations, les fichiers livrés.* | Connexion puis tableau de bord client ; les trois fonctions apparaissent en légende. |
-| 1:06 | *Moins d'allers-retours. Plus de commandes. Une image irréprochable.* | Trois lignes typographiques, révélées une à une. |
-| 1:12 | *Le site s'adapte à tous les écrans, aussi élégant sur mobile que sur grand écran.* | Trois téléphones s'envolent devant l'écran d'ordinateur, puis s'écartent de part et d'autre. |
-| 1:16 | *Et il repose sur un design system complet : couleurs, typographies, composants. Votre logo, vos prestations, vos tarifs : tout se personnalise, sans repartir de zéro.* | Six panneaux du design system ; « Concept Pub » devient « Votre Studio », les FCFA deviennent des euros. |
-| 1:29 | *Vous repartez avec le site, son système graphique, et ce film de présentation.* | Trois cartes : Le site · Le système graphique · Le film. |
-| 1:34 | *Des semaines de conception, déjà faites. Il ne reste qu'à y mettre votre nom.* | Barre de progression à 100 % ; « Votre studio » se tape dans un cartouche. |
-| 1:39 | *Concept Pub. L'image qui fait vendre.* | Signature finale, reflet de lumière sur le slogan. |
-| 1:43 | *Réservez votre démonstration dès aujourd'hui.* | Bouton or « Réservez votre démonstration ». |
+| 0:00 | *Voici l'erreur que font la plupart des graphistes, des monteurs et des motion designers.* | « L'erreur n°1 » ; les métiers défilent en or : graphistes, monteurs, motion designers. |
+| 0:05 | *Ils pensent que leur talent suffit à vendre.* | « Le talent suffit à vendre. » est barré en rouge. |
+| 0:08 | *Mais leurs clients ne les trouvent pas. Ils attendent un devis pendant des jours. Et ils ne savent jamais où en est leur commande.* | Trois cartes, les « trois fuites » : Introuvables (recherche sans résultat), Trop lents (compteur de jours d'attente), Opaques (relances « Où en est ma commande ? »). |
+| 0:15 | *Résultat : ils partent chez le concurrent. Même quand votre travail est meilleur.* | « Le client part chez le concurrent. », avec une flèche qui file vers la droite. |
+| 0:20 | *La solution s'appelle Concept Pub.* | Révélation : le sceau or se dessine, le nom « Concept Pub » apparaît dans un éclat de lumière. |
+| 0:23 | *Un site vitrine haut de gamme, conçu pour les studios de création, les agences de communication et les boîtes de production.* | Les trois cibles apparaissent une à une. |
+| 0:30 | *Dès la première seconde, l'image impose le respect. Noir, ivoire et or : une direction artistique digne des grandes maisons.* | **DÉMO** : l'accueil du site s'anime ; le curseur survole les boutons ; les trois couleurs de la charte apparaissent en surimpression. |
+| 0:38 | *Regardez : chaque section se révèle au défilement, avec des animations fluides, dignes d'une marque de luxe.* | **DÉMO** : défilement en direct, les chiffres clés et les prestations se révèlent, les cartes réagissent au survol. |
+| 0:44 | *Vos neuf métiers sont présentés avec clarté, et vos réalisations défilent comme au cinéma.* | **DÉMO** : le carrousel horizontal des réalisations défile sous le curseur. |
+| 0:50 | *Mais surtout, ce site ne se contente pas de montrer. Il vend.* | Bascule de l'ivoire au noir ; « Il vend. » en or géant. |
+| 0:54 | *Votre client choisit sa prestation, règle la durée, ajoute ses options…* | **DÉMO** : clic sur « Motion design », glissement de la durée de 30 à 60 s, ajout de deux options (étapes 01, 02, 03). |
+| 0:59 | *…et le prix se met à jour en direct, sous ses yeux.* | **DÉMO** : zoom sur l'estimation ; clic sur « Express », le total monte en direct jusqu'à 763 000 FCFA. |
+| 1:02 | *Il valide, et sa commande est enregistrée. Sans un seul appel.* | **DÉMO** : clic sur « Valider et envoyer la commande », confirmation « Commande envoyée ✓ ». |
+| 1:07 | *Il réserve lui-même son rendez-vous : le jour, l'heure, en visio ou au studio.* | **DÉMO** : choix du jour, du créneau, de « Au studio », puis « Confirmer le rendez-vous ». |
+| 1:12 | *Et voici l'atout qui fait toute la différence : l'espace client.* | Carton plein écran : « L'espace client ». |
+| 1:15 | *Votre client se connecte, et retrouve toutes ses commandes au même endroit.* | **DÉMO** : saisie de l'e-mail et du mot de passe, clic sur « Accéder à mon espace », le tableau de bord s'ouvre. |
+| 1:19 | *Les projets en cours, avec leur avancement, étape par étape.* | **DÉMO** : onglet « En cours », zoom sur la barre d'avancement. |
+| 1:23 | *Les commandes livrées, avec les fichiers prêts à télécharger.* | **DÉMO** : clic sur « Livrées », zoom sur « Télécharger les fichiers ». |
+| 1:27 | *Et les devis à valider, en un seul clic.* | **DÉMO** : clic sur « Devis », puis sur « Valider le devis ». |
+| 1:30 | *Plus de relances, plus de fichiers perdus : votre studio paraît aussi professionnel qu'une grande agence.* | Le site recule sur la gauche ; « 0 relance · 0 fichier perdu · Aussi pro qu'une grande agence. » |
+| 1:36 | *Moins d'allers-retours. Plus de commandes. Une image irréprochable.* | Trois lignes typographiques. |
+| 1:41 | *Le site s'adapte à tous les écrans, aussi élégant sur mobile que sur grand écran.* | Trois téléphones s'envolent devant l'écran d'ordinateur. |
+| 1:46 | *Et il repose sur un design system complet : couleurs, typographies, composants. Votre logo, vos prestations, vos tarifs : tout se personnalise, sans repartir de zéro.* | Les panneaux du design system ; « Concept Pub » devient « Votre Studio ». |
+| 1:58 | *Vous repartez avec le site, son système graphique, et ce film de présentation.* | Trois cartes : Le site · Le système graphique · Le film. |
+| 2:03 | *Des semaines de conception, déjà faites. Il ne reste qu'à y mettre votre nom.* | Barre de progression à 100 % ; « Votre studio » se tape dans un cartouche. |
+| 2:09 | *Concept Pub. L'image qui fait vendre.* | Signature finale. |
+| 2:12 | *Réservez votre démonstration dès aujourd'hui.* | Bouton « Réservez votre démonstration ». |
 
----
+> Note : le film dit « la plupart des graphistes » et non un pourcentage précis. Un chiffre inventé (« 99 % ») peut se retourner contre vous face à un acheteur averti. Si vous avez une étude sérieuse à citer, on peut l'ajouter.
 
 ## 2. Script de présentation en rendez-vous (10 à 15 min)
 
@@ -98,7 +106,7 @@ Proposez deux formules (tarifs à fixer selon votre marché) :
 ## 3. Messages de prospection prêts à envoyer
 
 **WhatsApp / LinkedIn (court)**
-> Bonjour [Prénom], je vous envoie un film de 1 min 48 sur un site conçu pour les studios comme le vôtre : devis calculé en direct, rendez-vous en ligne, espace client. Il peut être à votre nom en quelques jours. 15 minutes cette semaine pour vous le montrer ? [lien vers la vidéo]
+> Bonjour [Prénom], je vous envoie un film de 2 min sur un site conçu pour les studios comme le vôtre : devis calculé en direct, rendez-vous en ligne, espace client. Il peut être à votre nom en quelques jours. 15 minutes cette semaine pour vous le montrer ? [lien vers la vidéo]
 
 **E-mail**
 > **Objet :** Votre site peut-il faire un devis tout seul ?
@@ -111,7 +119,7 @@ Proposez deux formules (tarifs à fixer selon votre marché) :
 >
 > Il est livré avec son design system et un film de présentation, et il se personnalise entièrement à votre nom.
 >
-> Le film de 1 min 48 : [lien]
+> Le film de 2 minutes, avec une démonstration en direct : [lien]
 >
 > Seriez-vous disponible 15 minutes cette semaine pour une démonstration ?
 >
