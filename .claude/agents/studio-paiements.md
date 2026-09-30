@@ -20,7 +20,7 @@ Faire circuler l'argent sans erreur, sans perte et sans double traitement, dans 
 - Couche d'abstraction `PaymentProvider` (`packages/payments/`) : créer, vérifier, rembourser, reverser, recevoir un webhook.
 - Registre comptable interne en partie double (entrées, séquestre, commission, solde créateur, reversement) : l'argent ne disparaît jamais.
 - Webhooks : signature vérifiée, idempotence, revérification auprès du prestataire, réconciliation planifiée.
-- Commission par paliers marginaux (15 % jusqu'à 1 000 000 FCFA/mois, 10 % au-delà) ; montants en entiers.
+- Commission selon `docs/saas-createurs/COMMISSION.md` : 15 %, puis 10 % à vie après 4 000 000 FCFA cumulés ; taux figé au paiement ; montants en entiers.
 - Factures et avoirs numérotés sans trou ; export comptable.
 - Documenter pour le juriste et l'avocat le schéma exact des flux d'argent (qui détient quoi, quand).
 

@@ -6,7 +6,7 @@ Document de référence commun à **tous** les agents. Chaque agent le lit avant
 
 | Sujet | Décision |
 |---|---|
-| Modèle économique | **Plan B — commission** : accès gratuit et ouvert à tous ; 15 % sur les ventes du mois jusqu'à 1 000 000 FCFA, 10 % au-delà (paliers marginaux). Pas d'abonnement obligatoire. |
+| Modèle économique | **Plan B — commission** : accès gratuit et ouvert à tous ; 15 % par commande ; 10 % à vie dès le mois qui suit 4 000 000 FCFA de ventes cumulées (`docs/saas-createurs/COMMISSION.md`). Pas d'abonnement. |
 | Paiements | Tous les paiements clients passent par la plateforme, avec **séquestre** (fonds bloqués jusqu'à validation ou auto-validation à J+7), commission, reversements. Fonds détenus par un partenaire agréé, jamais sur un compte personnel. |
 | Société | **Basée au Bénin** (zone UEMOA, franc CFA XOF, régulation BCEAO). Stripe n'est pas disponible pour une société béninoise : candidats FedaPay, KkiaPay, CinetPay (Mobile Money + cartes), à confirmer sur le séquestre et les reversements. Structure juridique de l'encaissement pour compte de tiers à valider par un avocat. |
 | Portée | **Internationale** : créateurs et clients de tout pays ; FR + EN au lancement ; multi-devises ; fuseaux horaires. |

@@ -25,7 +25,7 @@ Page de comparaison des modèles économiques (avec simulateur) : https://claude
 
 ### R3. Modèle économique — deux plans comparés
 - **Plan A — abonnement** : 0 / 9 900 / 24 900 FCFA par mois, 0 % de commission, le créateur encaisse lui-même. Pas de séquestre possible.
-- **Plan B — commission (recommandé)** : accès gratuit et ouvert à tous ; 15 % sur les ventes du mois jusqu'à 1 000 000 FCFA, 10 % au-delà (paliers marginaux, pas d'effet de seuil). Égalité avec le plan Pro à 66 000 FCFA de ventes mensuelles.
+- **Plan B — commission (recommandé)** : accès gratuit et ouvert à tous ; 15 % par commande, puis 10 % à vie après 4 000 000 FCFA de ventes cumulées (voir R10).
 - Recommandation : plan B, car il est le seul compatible avec paiements par la plateforme, séquestre, jauges vérifiées et accès sans barrière. Plus tard : abonnement Pro facultatif à commission réduite (ex. 5 %) pour retenir les gros vendeurs ; frais de service client facultatifs (3–5 %) pour couvrir les frais de paiement.
 
 ### R4. Paiements par la plateforme (si plan B)
@@ -81,6 +81,10 @@ Surveillance : toi au sommet (priorités, validation de fin de phase) → chef d
 - **Modèle : plan B (commission)** retenu. Pas d'abonnement obligatoire ; la section 4.1 (abonnements, relances de renouvellement) est abandonnée.
 - **Société basée au Bénin** : zone UEMOA, XOF, régulation BCEAO. Stripe indisponible pour une société béninoise → partenaires candidats FedaPay, KkiaPay, CinetPay (à comparer sur séquestre, reversements, cartes internationales, frais). Structure de l'encaissement pour compte de tiers à valider par un avocat spécialisé BCEAO.
 - **Équipe d'agents créée** : 20 agents dans `.claude/agents/studio-*.md`, charte commune `docs/saas-createurs/EQUIPE.md`, journal `docs/saas-createurs/suivi/JOURNAL.md`, suivi automatique du temps par hook (`.claude/logs/agents.jsonl`, synthèse : `python3 docs/saas-createurs/suivi/temps.py`).
+
+- **Nom : Studio OS.** Le projet part dans un dépôt dédié et privé `Enomah-code/studio-os` (à créer par le fondateur ; contenu prêt).
+- **Langues au lancement : français et anglais.**
+- **Commission** : 15 % par commande ; dès que le cumul des ventes libérées atteint **4 000 000 FCFA** (6 097,96 €), toutes les commandes passent à **10 % à partir du mois suivant, définitivement**. Détail : `docs/saas-createurs/COMMISSION.md`.
 
 ### R9. Décisions à prendre (remplace la section 14)
 1. Nom et domaine. 2. Modèle : A ou B (recommandé). 3. Pays de la société (décide du partenaire de paiement). 4. Taux et paliers définitifs. 5. Langues du lancement. 6. Pile technique. 7. Dépôt dédié. 8. Offre clé en main.
