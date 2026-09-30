@@ -2,7 +2,83 @@
 
 > Nom de code provisoire : **Studio OS** (à remplacer par le nom définitif).
 > Point de départ : la maquette *Concept Pub — Vitrine complète* (handoff Claude Design) et son design system.
-> Statut : plan de A à Z, avant toute ligne de code. Les chiffres (prix, délais) sont des hypothèses à valider.
+> Statut : plan de A à Z, avant toute ligne de code. **Révision 2** intégrée ci-dessous. Les chiffres (prix, délais) sont des hypothèses à valider.
+
+---
+
+## Révision 2 (30 septembre 2026) — prime sur le reste du document
+
+Retours après la première lecture. Quand une section plus bas contredit ce bloc, **c'est ce bloc qui fait foi**.
+Page de comparaison des modèles économiques (avec simulateur) : https://claude.ai/artifact/P5gGFGuS1LcY6xFJj2UeXo
+
+### R1. Livraison protégée (garantie livraison ↔ paiement)
+- Avant **paiement total** : filigrane dynamique au nom et à la référence du client, aucun bouton de téléchargement / partage / lien public, résolution réduite, jamais la source, vidéo en streaming DRM (Widevine / FairPlay / PlayReady), images converties en vidéo DRM, liens signés courts, clic droit désactivé.
+- Application mobile (plus tard) : `FLAG_SECURE` sur Android (capture et enregistrement bloqués), détection `UIScreen.isCaptured` sur iOS pour masquer le contenu.
+- Après paiement total : HD sans filigrane, téléchargements par format, sources, liens de partage, facture finale.
+- Limite à assumer : aucun site ne bloque l'enregistrement d'écran à 100 % (Chrome desktop en DRM logiciel, ou un autre téléphone qui filme). D'où trois couches : DRM + filigrane nominatif traçable + **séquestre** (garantie financière, plan B).
+
+### R2. Marketplace
+- `plateforme.com/explorer` : catégories, sous-catégories, filtres (prix, délai, note, pays, langue, disponibilité, vérifié), tris, comparaison côte à côte de 3 créateurs, fiche créateur.
+- Jauges : note /5 avec sous-notes (qualité, communication, délais, rapport qualité-prix), taux de réussite (livré et validé sans litige perdu / commandes acceptées), respect des délais, réactivité (temps de réponse chat), taux de réachat, niveaux (Nouveau, Confirmé, Expert, Élite).
+- Intégrité : avis uniquement sur commande payée et livrée, moyenne bayésienne, pondération des 12 derniers mois, détection d'auto-commande (même moyen de paiement / appareil), droit de réponse, modération, mise en avant temporaire des nouveaux.
+- Nouvelles tables : `reviews(order_id UNIQUE, ratings jsonb, text, reply)`, `creator_scores(tenant_id, rating_bayes, success_rate, on_time_rate, response_time, repeat_rate, level, computed_at)`, `categories`, `favorites`.
+
+### R3. Modèle économique — deux plans comparés
+- **Plan A — abonnement** : 0 / 9 900 / 24 900 FCFA par mois, 0 % de commission, le créateur encaisse lui-même. Pas de séquestre possible.
+- **Plan B — commission (recommandé)** : accès gratuit et ouvert à tous ; 15 % sur les ventes du mois jusqu'à 1 000 000 FCFA, 10 % au-delà (paliers marginaux, pas d'effet de seuil). Égalité avec le plan Pro à 66 000 FCFA de ventes mensuelles.
+- Recommandation : plan B, car il est le seul compatible avec paiements par la plateforme, séquestre, jauges vérifiées et accès sans barrière. Plus tard : abonnement Pro facultatif à commission réduite (ex. 5 %) pour retenir les gros vendeurs ; frais de service client facultatifs (3–5 %) pour couvrir les frais de paiement.
+
+### R4. Paiements par la plateforme (si plan B)
+- Les fonds sont détenus par un **partenaire agréé marketplace** (Stripe Connect, Mangopay, Adyen for Platforms ; Flutterwave, Paystack, FedaPay, CinetPay pour le Mobile Money), piloté par notre serveur. Jamais sur un compte personnel (activité réglementée).
+- Séquestre : paiement total (ou jalon) à l'acceptation → fonds bloqués → livraison → validation (ou auto-validation à J+7 sans réponse) → libération vers le solde du créateur moins commission → reversement hebdomadaire ou à la demande. Litige → médiation sur preuves. Non-livraison après délai + grâce → remboursement possible.
+- Vérification d'identité des créateurs (KYC) par le partenaire, lutte anti-blanchiment, déclarations fiscales des vendeurs selon les pays (ex. DAC7 dans l'UE).
+- Avec le plan A, la section 4.1 reste valable et le flux B se limite au modèle « compte du créateur ».
+
+### R5. Compte client unique
+- Un seul compte par client pour toute la plateforme (`compte.plateforme.com`), toutes commandes chez tous les créateurs. Habillé aux couleurs du créateur quand on arrive depuis sa vitrine (connexion unique entre domaines par redirection vers le domaine de la plateforme).
+- Un créateur ne voit que ses propres commandes et échanges avec ce client.
+- **Chat** temps réel (Supabase Realtime) : fil par projet, pièces jointes, accusés de lecture, e-mail si hors ligne, traduction automatique, signalement des échanges de coordonnées avant paiement.
+- Nouvelle commande et paiements depuis le compte.
+- Modèle de données : `clients` devient global (`customers`), relation `customer_tenant(customer_id, tenant_id, first_order_at)` ; `conversations(customer_id, tenant_id, project_id?)`, `messages(conversation_id, …, read_at)`.
+
+### R6. Relances
+- E-mail : pour chaque relance, le créateur choisit **Automatique** (réglages par défaut de la section 6), **Personnalisé** (délai, nombre, objet, texte avec variables) ou **Désactivé**. Les e-mails transactionnels indispensables (reçus, confirmation, sécurité) partent toujours.
+- **WhatsApp : aucun message n'est jamais envoyé par la plateforme.** Le créateur connecte son propre compte (WhatsApp Business Cloud API avec son numéro, Twilio, 360dialog, Wati, ou Zapier / Make / n8n via webhooks) ; les messages partent de son compte. Le bouton `wa.me` sur la vitrine reste possible (c'est le client qui écrit).
+
+### R7. International dès la conception
+- Langues : FR et EN au lancement (i18n dès la phase 0), puis ES, PT, AR. Traduction du chat.
+- Devises : affichage dans la devise du client, encaissement dans celle du créateur, reversement dans sa devise.
+- Moyens de paiement par pays (cartes, Apple/Google Pay, PayPal, virements, Mobile Money). Fuseaux horaires, formats locaux, TVA et mentions par pays.
+
+### R8. Équipe et agents IA (un agent par poste, supervisés)
+
+| Poste | Mission | Skills d'appui |
+|---|---|---|
+| Chef de projet (superviseur) | Découpe, distribue, suit délais, temps et coût par agent, rapport quotidien | `cs-project-manager`, `sprint-plan`, `sprint-health` |
+| Chef de produit | Spécifications, priorités, user stories | `cs-product-manager`, `prd`, `user-story` |
+| Architecte logiciel | Architecture, décisions écrites, modèle de données | `senior-architect`, `database-schema-designer` |
+| Designer UI/UX | Écrans créateur, client, marketplace ; design system | `ui-ux-pro-max`, `ui-design-system`, `ux-researcher-designer` |
+| Développeur front-end | Vitrines, éditeur, compte client, marketplace | `senior-frontend`, `a11y-audit` |
+| Développeur back-end | API, devis, projets, comptes, isolation | `senior-backend`, `api-design-reviewer` |
+| Ingénieur paiements | Séquestre, commissions, reversements, factures, devises | `stripe-integration-expert`, `senior-backend` |
+| Ingénieur marketplace | Recherche, classement, jauges, anti-fraude des avis | `senior-data-engineer`, `senior-backend` |
+| Ingénieur temps réel | Chat, notifications, traduction | `senior-fullstack` |
+| Ingénieur médias et protection | Stockage, streaming, DRM, filigranes | `senior-backend`, `senior-computer-vision` |
+| Développeur mobile | Apps iOS/Android, blocage des captures | `senior-fullstack` |
+| DevOps | Hébergement, CI/CD, surveillance, sauvegardes | `senior-devops`, `ci-cd-pipeline-builder`, `observability-designer` |
+| Testeur QA | Tests automatiques et manuels | `senior-qa`, `tdd-guide`, `webapp-testing` |
+| Relecteur de code | Revue avant chaque fusion | `code-reviewer`, `adversarial-reviewer` |
+| Expert sécurité | Audits, tests d'intrusion, paiements et données | `senior-security`, `security-pen-testing` |
+| Juriste et conformité | CGU, données, KYC, fiscalité internationale | `general-counsel-advisor`, `gdpr-dsgvo-expert` |
+| Finance et tarification | Modèle, commissions, trésorerie | `cfo-advisor`, `pricing-strategy`, `financial-analyst` |
+| Marketing et SEO | Acquisition créateurs et clients, SEO marketplace | `marketing-strategy-pmm`, `seo-audit`, `programmatic-seo` |
+| Rédacteur multilingue | Textes, e-mails, aide, traductions | `copywriting`, `email-sequence` |
+| Support et confiance | Aide, modération des avis, médiation des litiges | `customer-success-manager` |
+
+Surveillance : toi au sommet (priorités, validation de fin de phase) → chef de projet (distribution, temps et coût par agent, rapport quotidien) → agents, chacun sur sa branche et son périmètre. Rien n'est fusionné sans relecteur de code + QA (+ sécurité pour paiements et données). Tableau de suivi partagé. **À doubler par des humains** : avocat, expert-comptable, développeur senior pour la relecture des paiements.
+
+### R9. Décisions à prendre (remplace la section 14)
+1. Nom et domaine. 2. Modèle : A ou B (recommandé). 3. Pays de la société (décide du partenaire de paiement). 4. Taux et paliers définitifs. 5. Langues du lancement. 6. Pile technique. 7. Dépôt dédié. 8. Offre clé en main.
 
 ---
 
