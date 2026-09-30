@@ -29,3 +29,11 @@ Quand tu proposes des skills, utilise ce format concis :
 - Utilisateur parle de LLM/IA → proposer `/rag-architect`, `/claude-api`, `/llm-cost-optimizer`
 - Utilisateur parle de base de données → proposer `/sql-database-assistant`, `/database-schema-designer`
 - Utilisateur parle de revue de code → proposer `/code-reviewer`, `/karpathy-coder`
+
+
+## Projet Studio OS (SaaS pour créatifs)
+
+- Plan : `docs/saas-createurs/PLAN.md` (la section « Révision 2 » et « Décisions prises » priment).
+- Équipe : 20 agents `studio-*` dans `.claude/agents/`, charte commune `docs/saas-createurs/EQUIPE.md`.
+- Pour tout travail sur Studio OS, la session principale orchestre : elle demande d'abord un plan de délégation à `studio-chef-de-projet`, puis confie chaque tâche à l'agent du poste concerné, et ne fusionne rien sans `studio-relecteur-code` + `studio-qa` (+ `studio-securite` pour paiements, authentification, données, fichiers).
+- Temps par agent : `python3 docs/saas-createurs/suivi/temps.py`.

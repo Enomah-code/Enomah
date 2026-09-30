@@ -77,6 +77,11 @@ Page de comparaison des modèles économiques (avec simulateur) : https://claude
 
 Surveillance : toi au sommet (priorités, validation de fin de phase) → chef de projet (distribution, temps et coût par agent, rapport quotidien) → agents, chacun sur sa branche et son périmètre. Rien n'est fusionné sans relecteur de code + QA (+ sécurité pour paiements et données). Tableau de suivi partagé. **À doubler par des humains** : avocat, expert-comptable, développeur senior pour la relecture des paiements.
 
+### R10. Décisions prises (30 septembre 2026)
+- **Modèle : plan B (commission)** retenu. Pas d'abonnement obligatoire ; la section 4.1 (abonnements, relances de renouvellement) est abandonnée.
+- **Société basée au Bénin** : zone UEMOA, XOF, régulation BCEAO. Stripe indisponible pour une société béninoise → partenaires candidats FedaPay, KkiaPay, CinetPay (à comparer sur séquestre, reversements, cartes internationales, frais). Structure de l'encaissement pour compte de tiers à valider par un avocat spécialisé BCEAO.
+- **Équipe d'agents créée** : 20 agents dans `.claude/agents/studio-*.md`, charte commune `docs/saas-createurs/EQUIPE.md`, journal `docs/saas-createurs/suivi/JOURNAL.md`, suivi automatique du temps par hook (`.claude/logs/agents.jsonl`, synthèse : `python3 docs/saas-createurs/suivi/temps.py`).
+
 ### R9. Décisions à prendre (remplace la section 14)
 1. Nom et domaine. 2. Modèle : A ou B (recommandé). 3. Pays de la société (décide du partenaire de paiement). 4. Taux et paliers définitifs. 5. Langues du lancement. 6. Pile technique. 7. Dépôt dédié. 8. Offre clé en main.
 
