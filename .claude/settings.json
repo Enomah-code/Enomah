@@ -10,6 +10,30 @@
           }
         ]
       }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p /home/user/Enomah/.claude/logs && python3 -c 'import sys,json,datetime; d=json.load(sys.stdin); print(json.dumps({\"ts\":datetime.datetime.now(datetime.timezone.utc).strftime(\"%Y-%m-%dT%H:%M:%SZ\"),\"event\":d.get(\"hook_event_name\"),\"agent\":d.get(\"agent_type\"),\"agent_id\":d.get(\"agent_id\"),\"input\":d},ensure_ascii=False))' >> /home/user/Enomah/.claude/logs/agents.jsonl 2>/dev/null || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p /home/user/Enomah/.claude/logs && python3 -c 'import sys,json,datetime; d=json.load(sys.stdin); print(json.dumps({\"ts\":datetime.datetime.now(datetime.timezone.utc).strftime(\"%Y-%m-%dT%H:%M:%SZ\"),\"event\":d.get(\"hook_event_name\"),\"agent\":d.get(\"agent_type\"),\"agent_id\":d.get(\"agent_id\"),\"input\":d},ensure_ascii=False))' >> /home/user/Enomah/.claude/logs/agents.jsonl 2>/dev/null || true",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }
