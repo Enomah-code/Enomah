@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- Pub Meta motion design — Certification AI Business Building (EMK Blue Diamond, boutique Chariow).
+         Structure inspirée du modèle : problème → solution → étapes → contenu → preuve chiffrée → « plus besoin de » → offre → CTA.
+         Chiffres : analytics Chariow (117 ventes, 12 avis, 100 % positifs, 4 999 F au lieu de 35 000 F). -->
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      :root {
+        --navy: #0a1230; --navy-2: #121d47; --navy-deep: #050a1d;
+        --gold: #f2b33d; --gold-l: #ffd98a; --cream: #fbf6ec; --ink: #0b1026; --muted: #8a93b5;
+        --green: #25d366; --red: #ff4b55;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-deep); }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--navy-deep);
+        font-family: "Montserrat", sans-serif; color: #fff; }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .bg-dark { position: absolute; inset: 0; background: radial-gradient(110% 60% at 50% 30%, var(--navy-2) 0%, var(--navy) 55%, var(--navy-deep) 100%); }
+      .bg-light { position: absolute; inset: 0; background: radial-gradient(110% 70% at 50% 35%, #ffffff 0%, var(--cream) 60%, #efe6d3 100%); }
+      .blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+      .blob.gold { background: rgba(242, 179, 61, 0.42); }
+      .blob.blue { background: rgba(70, 110, 255, 0.35); }
+      .blob.soft { background: rgba(242, 179, 61, 0.28); }
+      .h { font-weight: 900; letter-spacing: -0.035em; line-height: 0.98; }
+      .gold-t { color: var(--gold); }
+      .ink { color: var(--ink); }
+      .kicker { font-weight: 700; font-size: 34px; letter-spacing: 0.02em; color: var(--muted); }
+      .word { display: inline-block; }
+
+      /* A — accroche */
+      #a-text { position: absolute; left: 90px; top: 520px; width: 900px; font-size: 104px; }
+      #a-ia { font-size: 300px; display: block; line-height: 0.9; margin-top: 10px; }
+      .chip { position: absolute; padding: 20px 34px; border-radius: 999px; font-weight: 800; font-size: 36px;
+        background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.16); color: #fff; white-space: nowrap; }
+      .chip i { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); margin-right: 14px; vertical-align: middle; }
+
+      /* B — problème */
+      #b-text { position: absolute; left: 90px; top: 280px; width: 920px; font-size: 86px; }
+      #b-chart { position: absolute; left: 90px; top: 1010px; width: 900px; height: 380px; display: flex; align-items: flex-end; gap: 26px; }
+      .bar { flex: 1; border-radius: 16px 16px 6px 6px; background: rgba(255, 255, 255, 0.12); transform-origin: 50% 100%; }
+      .bar.hi { background: linear-gradient(180deg, var(--gold-l), var(--gold)); }
+      #b-q { position: absolute; left: 800px; top: 640px; font-weight: 900; font-size: 190px; color: var(--gold); }
+
+      /* C — révélation */
+      #c-flash { position: absolute; inset: 0; background: #fff; }
+      #c-logo { position: absolute; left: 290px; top: 300px; width: 500px; height: 510px; }
+      #c-logo img { width: 100%; height: 100%; display: block; }
+      #c-kicker { position: absolute; left: 0; right: 0; top: 870px; text-align: center; font-weight: 800; font-size: 40px; letter-spacing: 0.32em; color: var(--gold); }
+      #c-title { position: absolute; left: 0; right: 0; top: 940px; text-align: center; font-size: 132px; }
+      #c-steps { position: absolute; left: 0; right: 0; top: 1260px; display: flex; justify-content: center; align-items: center; gap: 18px; }
+      .pill { display: inline-flex; align-items: center; gap: 18px; padding: 24px 44px; border-radius: 999px; font-weight: 800; font-size: 42px; }
+      .pill.gold { background: var(--gold); color: var(--ink); box-shadow: 0 18px 50px rgba(242, 179, 61, 0.35); }
+      .pill.ghost { background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255, 255, 255, 0.2); color: #fff; }
+      .dot { width: 26px; height: 26px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); }
+
+      /* D — 3 étapes (clair) */
+      #d-head { position: absolute; left: 90px; top: 280px; font-size: 92px; }
+      .card { position: absolute; left: 90px; width: 900px; padding: 40px 44px; border-radius: 40px; background: #fff;
+        box-shadow: 0 30px 80px rgba(11, 16, 38, 0.12); display: flex; align-items: center; gap: 36px; }
+      .card .num { flex: none; width: 120px; height: 120px; border-radius: 32px; background: var(--ink); color: var(--gold);
+        font-weight: 900; font-size: 54px; display: flex; align-items: center; justify-content: center; }
+      .card .txt { flex: 1; font-weight: 800; font-size: 44px; line-height: 1.12; color: var(--ink); letter-spacing: -0.02em; }
+      .card .txt small { display: block; font-weight: 600; font-size: 32px; color: #6b7290; margin-top: 10px; letter-spacing: 0; }
+      .card .ok { flex: none; width: 76px; height: 76px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; }
+      .card .ok svg { width: 44px; height: 44px; }
+      #d-c1 { top: 560px; } #d-c2 { top: 830px; } #d-c3 { top: 1100px; }
+
+      /* E — contenu */
+      #e-head { position: absolute; left: 90px; top: 280px; font-size: 90px; }
+      #e-big { position: absolute; left: 90px; top: 470px; font-weight: 900; font-size: 380px; line-height: 1; color: var(--gold); letter-spacing: -0.05em; }
+      #e-big-l { position: absolute; left: 380px; top: 590px; font-weight: 800; font-size: 64px; line-height: 1.05; }
+      .row { position: absolute; left: 90px; width: 900px; display: flex; align-items: center; gap: 30px; padding: 30px 36px; border-radius: 30px;
+        background: rgba(255, 255, 255, 0.07); border: 2px solid rgba(255, 255, 255, 0.12); font-weight: 800; font-size: 46px; }
+      .row .ic { flex: none; width: 74px; height: 74px; border-radius: 22px; background: var(--gold); display: flex; align-items: center; justify-content: center; }
+      .row .ic svg { width: 42px; height: 42px; }
+      .row b { color: var(--gold); }
+      #e-r1 { top: 880px; } #e-r2 { top: 1050px; } #e-r3 { top: 1262px; }
+
+      /* F — preuve */
+      #f-ring { position: absolute; left: 240px; top: 300px; width: 600px; height: 600px; }
+      #f-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+      #f-num { position: absolute; left: 240px; top: 300px; width: 600px; height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      #f-num .n { font-weight: 900; font-size: 210px; letter-spacing: -0.05em; line-height: 1; }
+      #f-num .l { font-weight: 700; font-size: 40px; color: var(--muted); margin-top: 6px; }
+      #f-tip { position: absolute; width: 34px; height: 34px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 30px var(--gold); left: 523px; top: 313px; }
+      #f-pos { position: absolute; left: 90px; top: 960px; width: 900px; display: flex; align-items: center; justify-content: center; gap: 28px; }
+      #f-pos .pc { font-weight: 900; font-size: 110px; color: var(--gold); letter-spacing: -0.04em; }
+      #f-pos .pl { font-weight: 800; font-size: 44px; line-height: 1.1; }
+      .stars { display: flex; gap: 8px; }
+      .stars svg { width: 46px; height: 46px; }
+      #f-flags { position: absolute; left: 0; right: 0; top: 1150px; display: flex; justify-content: center; gap: 22px; }
+      .flag { display: flex; align-items: center; gap: 14px; padding: 16px 26px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); font-weight: 700; font-size: 32px; }
+      .flag .f { width: 54px; height: 36px; border-radius: 6px; overflow: hidden; display: flex; }
+      .flag .f span { flex: 1; }
+      .review { position: absolute; left: 90px; width: 900px; padding: 34px 40px; border-radius: 34px; background: #fff; color: var(--ink); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35); }
+      .review q { display: block; font-weight: 800; font-size: 44px; line-height: 1.18; letter-spacing: -0.015em; quotes: "« " " »"; }
+      .review .who { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; font-weight: 700; font-size: 32px; color: #6b7290; }
+      .review .stars svg { width: 34px; height: 34px; }
+      #f-rv1 { top: 1010px; } #f-rv2 { top: 1250px; }
+
+      /* G — plus besoin de (clair) */
+      #g-head { position: absolute; left: 90px; top: 420px; font-size: 120px; color: var(--ink); }
+      .strike { position: absolute; left: 90px; font-weight: 900; font-size: 76px; letter-spacing: -0.035em; color: var(--ink); white-space: nowrap; }
+      .strike .line { position: absolute; left: -10px; right: -10px; top: 52%; height: 14px; border-radius: 8px; background: var(--red); transform-origin: 0 50%; }
+      #g-s1 { top: 690px; } #g-s2 { top: 850px; }
+      #g-yes { position: absolute; left: 90px; top: 1080px; }
+
+      /* H — offre */
+      #h-kicker { position: absolute; left: 0; right: 0; top: 250px; text-align: center; }
+      #h-cert { position: absolute; left: 250px; top: 330px; width: 580px; height: 580px; border-radius: 18px; overflow: hidden; box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5); }
+      #h-cert img { width: 100%; height: 100%; display: block; }
+      #h-cert-l { position: absolute; left: 0; right: 0; top: 945px; text-align: center; font-weight: 800; font-size: 42px; }
+      #h-price { position: absolute; left: 0; right: 0; top: 1010px; text-align: center; font-weight: 900; font-size: 180px; letter-spacing: -0.05em; color: var(--gold); line-height: 1; }
+      #h-price small { font-size: 80px; letter-spacing: -0.02em; }
+      #h-old { position: absolute; left: 0; right: 0; top: 1240px; display: flex; justify-content: center; }
+      #h-old .strike { position: relative; left: 0; font-size: 64px; color: rgba(255, 255, 255, 0.7); font-weight: 800; }
+      #h-old .strike .line { height: 9px; }
+      #h-badge { position: absolute; left: 720px; top: 290px; width: 230px; height: 230px; border-radius: 50%; background: var(--red);
+        display: flex; align-items: center; justify-content: center; flex-direction: column; font-weight: 900; color: #fff; box-shadow: 0 20px 50px rgba(255, 75, 85, 0.45); }
+      #h-badge .p { font-size: 78px; letter-spacing: -0.04em; line-height: 1; }
+      #h-badge .s { font-size: 26px; letter-spacing: 0.08em; }
+
+      /* I — CTA */
+      #i-logo { position: absolute; left: 320px; top: 260px; width: 440px; height: 449px; }
+      #i-logo img { width: 100%; height: 100%; display: block; }
+      #i-title { position: absolute; left: 0; right: 0; top: 760px; text-align: center; font-size: 104px; }
+      #i-sub { position: absolute; left: 0; right: 0; top: 1000px; text-align: center; font-weight: 700; font-size: 40px; color: var(--muted); }
+      #i-btn { position: absolute; left: 0; right: 0; top: 1090px; display: flex; justify-content: center; }
+      #i-btn .pill { font-size: 52px; padding: 32px 60px; }
+      #i-btn svg { width: 52px; height: 52px; }
+      #i-hand { position: absolute; left: 700px; top: 1180px; width: 110px; height: 110px; }
+      #i-arrow { position: absolute; left: 0; right: 0; top: 1300px; display: flex; justify-content: center; align-items: center; gap: 16px; font-weight: 800; font-size: 40px; color: var(--gold); }
+      #i-arrow svg { width: 44px; height: 44px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="41" data-width="1080" data-height="1920">
+
+      <!-- A — Accroche : l'IA partout -->
+      <div id="sc-a" class="clip scene" data-start="0" data-duration="3.2" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob blue" id="a-b1" style="left:-200px;top:200px;width:700px;height:700px"></div>
+        <div class="blob gold" id="a-b2" style="left:600px;top:1100px;width:600px;height:600px"></div>
+        <div class="chip" id="a-ch1" style="left:110px;top:250px"><i></i>ChatGPT</div>
+        <div class="chip" id="a-ch2" style="left:560px;top:360px"><i></i>Agents IA</div>
+        <div class="chip" id="a-ch3" style="left:480px;top:1260px"><i></i>Automatisation</div>
+        <div class="chip" id="a-ch4" style="left:110px;top:1390px"><i></i>Prompts</div>
+        <div class="chip" id="a-ch5" style="left:600px;top:1520px"><i></i>No-code</div>
+        <div id="a-text" class="h">
+          <span class="word" id="a-w1">Tu&nbsp;entends</span><br /><span class="word" id="a-w2">parler&nbsp;de&nbsp;l'</span>
+          <span class="gold-t word" id="a-ia">IA</span><span class="word" id="a-w3">partout…</span>
+        </div>
+      </div>
+
+      <!-- B — Problème -->
+      <div id="sc-b" class="clip scene" data-start="3.2" data-duration="3.4" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob blue" style="left:500px;top:-100px;width:700px;height:700px"></div>
+        <div id="b-text" class="h">
+          <span class="word" id="b-w1">…mais&nbsp;tu&nbsp;ne<br />sais&nbsp;pas&nbsp;comment</span><br />
+          <span class="word" id="b-w2">l'utiliser&nbsp;pour</span><br />
+          <span class="word gold-t" id="b-w3">lancer&nbsp;ton</span><br />
+          <span class="word gold-t" id="b-w4">activité</span>
+        </div>
+        <div id="b-chart">
+          <div class="bar" style="height:70%"></div><div class="bar" style="height:52%"></div><div class="bar" style="height:84%"></div>
+          <div class="bar" style="height:40%"></div><div class="bar" style="height:58%"></div><div class="bar hi" style="height:22%"></div>
+          <div class="bar" style="height:34%"></div>
+        </div>
+        <div id="b-q">?</div>
+      </div>
+
+      <!-- C — Révélation de la solution -->
+      <div id="sc-c" class="clip scene" data-start="6.6" data-duration="4.75" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob gold" id="c-b1" style="left:240px;top:250px;width:600px;height:600px"></div>
+        <div class="blob blue" style="left:-250px;top:1200px;width:700px;height:700px"></div>
+        <div id="c-logo"><img src="assets/img/logo-emk-calque.png" alt="EMK Blue Diamond" /></div>
+        <div id="c-kicker">CERTIFICATION</div>
+        <div id="c-title" class="h"><span class="word" id="c-t1">AI&nbsp;Business</span><br /><span class="word gold-t" id="c-t2">Building</span></div>
+        <div id="c-steps">
+          <div class="pill ghost" id="c-pill">Étape par étape</div>
+          <div class="dot" id="c-d1"></div><div class="dot" id="c-d2"></div><div class="dot" id="c-d3"></div>
+        </div>
+        <div id="c-flash"></div>
+      </div>
+
+      <!-- D — Ce que tu apprends (3 étapes) -->
+      <div id="sc-d" class="clip scene" data-start="11.35" data-duration="6.1" data-track-index="1">
+        <div class="bg-light"></div>
+        <div class="blob soft" style="left:500px;top:120px;width:700px;height:600px"></div>
+        <div id="d-head" class="h ink"><span class="word" id="d-h1">Tu&nbsp;apprends</span><br /><span class="word" id="d-h2">à&nbsp;<span class="gold-t">construire</span>&nbsp;:</span></div>
+        <div class="card" id="d-c1">
+          <div class="num">01</div>
+          <div class="txt">Maîtriser les prompts<small>ChatGPT, Claude & co. au service de ton activité</small></div>
+          <div class="ok" id="d-ok1"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div>
+        </div>
+        <div class="card" id="d-c2">
+          <div class="num">02</div>
+          <div class="txt">Des agents IA qui vendent sur WhatsApp<small>Ils répondent à tes clients 24h/24</small></div>
+          <div class="ok" id="d-ok2"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div>
+        </div>
+        <div class="card" id="d-c3">
+          <div class="num">03</div>
+          <div class="txt">Tes sites & applis, sans coder<small>Avec paiement Mobile Money intégré</small></div>
+          <div class="ok" id="d-ok3"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div>
+        </div>
+      </div>
+
+      <!-- E — Contenu de la formation -->
+      <div id="sc-e" class="clip scene" data-start="17.45" data-duration="4.1" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob gold" style="left:-150px;top:350px;width:650px;height:650px"></div>
+        <div id="e-big"><span id="e-n">8</span></div>
+        <div id="e-big-l">modules<br /><span class="gold-t">pratiques</span></div>
+        <div class="row" id="e-r1">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10" /></svg></div>
+          <span><b>106</b> prompts prêts à copier</span>
+        </div>
+        <div class="row" id="e-r2">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg></div>
+          <span><b>10</b> templates d'automatisation</span>
+        </div>
+        <div class="row" id="e-r3">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z" /><path d="M14 3v5h5M10 13h6M10 17h6" /></svg></div>
+          <span>Devis · factures · contrats</span>
+        </div>
+      </div>
+
+      <!-- F — Preuve chiffrée -->
+      <div id="sc-f" class="clip scene" data-start="21.55" data-duration="5" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob blue" style="left:200px;top:250px;width:700px;height:700px"></div>
+        <div id="f-top">
+          <div id="f-ring">
+            <svg viewBox="0 0 600 600"><circle cx="300" cy="300" r="270" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="22" />
+              <circle id="f-arc" cx="300" cy="300" r="270" fill="none" stroke="#25d366" stroke-width="22" stroke-linecap="round" stroke-dasharray="1696.5" stroke-dashoffset="1696.5" /></svg>
+          </div>
+          <div id="f-num"><div class="l">Déjà</div><div class="n" id="f-n">0</div><div class="l">apprenants</div></div>
+          <div id="f-tip"></div>
+        </div>
+        <div id="f-pos">
+          <div class="pc">100%</div>
+          <div><div class="pl">d'avis<br />positifs</div></div>
+          <div class="stars" id="f-stars">
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+          </div>
+        </div>
+        <div id="f-flags">
+          <div class="flag" id="f-fl1"><div class="f"><span style="background:#f77f00"></span><span style="background:#fff"></span><span style="background:#009e60"></span></div>Côte d'Ivoire</div>
+          <div class="flag" id="f-fl2"><div class="f"><span style="background:#008751;flex:0.4"></span><span style="display:flex;flex-direction:column;flex:0.6"><span style="flex:1;background:#fcd116"></span><span style="flex:1;background:#e8112d"></span></span></div>Bénin</div>
+          <div class="flag" id="f-fl3"><div class="f"><span style="background:#007a5e"></span><span style="background:#ce1126"></span><span style="background:#fcd116"></span></div>Cameroun</div>
+        </div>
+        <div class="review" id="f-rv1">
+          <q>Mon premier site internet… sans codage.</q>
+          <div class="who"><span>Elie · apprenant</span><div class="stars">
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+          </div></div>
+        </div>
+        <div class="review" id="f-rv2">
+          <q>L'une des meilleures formations… un agent IA qui vend sur WhatsApp.</q>
+          <div class="who"><span>Rick · apprenant</span><div class="stars">
+            <svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg><svg viewBox="0 0 24 24"><path fill="#f2b33d" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" /></svg>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- G — Plus besoin de… -->
+      <div id="sc-g" class="clip scene" data-start="26.55" data-duration="3.7" data-track-index="1">
+        <div class="bg-light"></div>
+        <div class="blob soft" style="left:-100px;top:1100px;width:700px;height:600px"></div>
+        <div id="g-head" class="h">Plus besoin</div>
+        <div class="strike" id="g-s1">d'être développeur<div class="line" id="g-l1"></div></div>
+        <div class="strike" id="g-s2">d'un gros budget<div class="line" id="g-l2"></div></div>
+        <div id="g-yes" class="pill gold">Juste ton téléphone et l'IA</div>
+      </div>
+
+      <!-- H — Offre -->
+      <div id="sc-h" class="clip scene" data-start="30.25" data-duration="6.5" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob gold" id="h-b1" style="left:240px;top:950px;width:600px;height:450px"></div>
+        <div class="blob blue" style="left:-200px;top:200px;width:600px;height:600px"></div>
+        <div id="h-kicker" class="kicker">AUJOURD'HUI</div>
+        <div id="h-cert"><img src="assets/img/certificat.png" alt="Certificat AI Business Building" /></div>
+        <div id="h-cert-l">Formation <span class="gold-t">+</span> certificat</div>
+        <div id="h-price"><span id="h-pn">35 000</span> <small>F CFA</small></div>
+        <div id="h-old"><div class="strike">au lieu de 35 000 F<div class="line" id="h-l"></div></div></div>
+        <div id="h-badge"><div class="p">-86%</div><div class="s">OFFRE</div></div>
+      </div>
+
+      <!-- I — CTA -->
+      <div id="sc-i" class="clip scene" data-start="36.75" data-duration="4.25" data-track-index="1">
+        <div class="bg-dark"></div>
+        <div class="blob gold" id="i-b1" style="left:240px;top:200px;width:600px;height:600px"></div>
+        <div class="blob blue" style="left:500px;top:1200px;width:700px;height:700px"></div>
+        <div id="i-logo"><img src="assets/img/logo-emk-calque.png" alt="EMK Blue Diamond" /></div>
+        <div id="i-title" class="h">AI Business<br /><span class="gold-t">Building</span></div>
+        <div id="i-sub">Certification · EMK Blue Diamond</div>
+        <div id="i-btn"><div class="pill gold" id="i-pill">Rejoindre sur Chariow
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0b1026" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></div></div>
+        <svg id="i-hand" viewBox="0 0 24 24" fill="#fff" stroke="#0b1026" stroke-width="1.2" stroke-linejoin="round"><path d="M9 11V4.5a1.5 1.5 0 013 0V10l5.3 1.1a2 2 0 011.6 2.3l-.9 5A3 3 0 0115 21h-4.2a3 3 0 01-2.4-1.2L5 15.3a1.5 1.5 0 012.2-2L9 15z" /></svg>
+        <div id="i-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="#f2b33d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15M5 12l7 7 7-7" /></svg>Lien sous la vidéo</div>
+      </div>
+
+      <!-- Audio : voix off, musique, bruitages -->
+      <audio id="vo" src="assets/vo/vo-full.wav" data-start="0" data-duration="41" data-track-index="10" data-volume="1"></audio>
+      <audio id="bgm" src="assets/audio/bgm.wav" data-start="0" data-duration="41" data-track-index="11" data-volume="0.16"></audio>
+      <audio id="sfx-00" src="assets/sfx/whoosh-short.mp3" data-start="0.25" data-duration="0.57" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sfx-01" src="assets/sfx/pop.mp3" data-start="1.4" data-duration="0.70" data-track-index="13" data-volume="0.35"></audio>
+      <audio id="sfx-02" src="assets/sfx/pop.mp3" data-start="1.73" data-duration="0.70" data-track-index="14" data-volume="0.3"></audio>
+      <audio id="sfx-03" src="assets/sfx/pop.mp3" data-start="2.01" data-duration="0.70" data-track-index="15" data-volume="0.3"></audio>
+      <audio id="sfx-04" src="assets/sfx/pop.mp3" data-start="2.29" data-duration="0.70" data-track-index="16" data-volume="0.3"></audio>
+      <audio id="sfx-05" src="assets/sfx/pop.mp3" data-start="2.57" data-duration="0.70" data-track-index="17" data-volume="0.3"></audio>
+      <audio id="sfx-06" src="assets/sfx/whoosh.mp3" data-start="3.18" data-duration="0.57" data-track-index="18" data-volume="0.55"></audio>
+      <audio id="sfx-07" src="assets/sfx/pop.mp3" data-start="5.62" data-duration="0.70" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sfx-08" src="assets/sfx/impact-bass-1.mp3" data-start="6.62" data-duration="2.10" data-track-index="13" data-volume="0.8"></audio>
+      <audio id="sfx-09" src="assets/sfx/sparkle.mp3" data-start="8.9" data-duration="1.80" data-track-index="14" data-volume="0.45"></audio>
+      <audio id="sfx-10" src="assets/sfx/click.mp3" data-start="10.24" data-duration="0.36" data-track-index="15" data-volume="0.5"></audio>
+      <audio id="sfx-11" src="assets/sfx/click.mp3" data-start="10.54" data-duration="0.36" data-track-index="16" data-volume="0.5"></audio>
+      <audio id="sfx-12" src="assets/sfx/click.mp3" data-start="10.84" data-duration="0.36" data-track-index="17" data-volume="0.5"></audio>
+      <audio id="sfx-13" src="assets/sfx/whoosh.mp3" data-start="11.3" data-duration="0.57" data-track-index="18" data-volume="0.55"></audio>
+      <audio id="sfx-14" src="assets/sfx/pop.mp3" data-start="11.98" data-duration="0.70" data-track-index="12" data-volume="0.4"></audio>
+      <audio id="sfx-15" src="assets/sfx/click.mp3" data-start="12.55" data-duration="0.36" data-track-index="13" data-volume="0.35"></audio>
+      <audio id="sfx-16" src="assets/sfx/pop.mp3" data-start="12.93" data-duration="0.70" data-track-index="14" data-volume="0.4"></audio>
+      <audio id="sfx-17" src="assets/sfx/click.mp3" data-start="13.5" data-duration="0.36" data-track-index="15" data-volume="0.35"></audio>
+      <audio id="sfx-18" src="assets/sfx/pop.mp3" data-start="15.78" data-duration="0.70" data-track-index="16" data-volume="0.4"></audio>
+      <audio id="sfx-19" src="assets/sfx/click.mp3" data-start="16.35" data-duration="0.36" data-track-index="17" data-volume="0.35"></audio>
+      <audio id="sfx-20" src="assets/sfx/whoosh-short.mp3" data-start="17.4" data-duration="0.57" data-track-index="18" data-volume="0.55"></audio>
+      <audio id="sfx-21" src="assets/sfx/pop.mp3" data-start="17.55" data-duration="0.70" data-track-index="12" data-volume="0.45"></audio>
+      <audio id="sfx-22" src="assets/sfx/click.mp3" data-start="18.93" data-duration="0.36" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="sfx-23" src="assets/sfx/click.mp3" data-start="19.83" data-duration="0.36" data-track-index="14" data-volume="0.45"></audio>
+      <audio id="sfx-24" src="assets/sfx/click.mp3" data-start="20.28" data-duration="0.36" data-track-index="15" data-volume="0.45"></audio>
+      <audio id="sfx-25" src="assets/sfx/whoosh.mp3" data-start="21.5" data-duration="0.57" data-track-index="16" data-volume="0.5"></audio>
+      <audio id="sfx-26" src="assets/sfx/typing.mp3" data-start="21.95" data-duration="1.30" data-track-index="17" data-volume="0.3"></audio>
+      <audio id="sfx-27" src="assets/sfx/chime.mp3" data-start="23.0" data-duration="2.50" data-track-index="18" data-volume="0.45"></audio>
+      <audio id="sfx-28" src="assets/sfx/sparkle.mp3" data-start="23.75" data-duration="1.80" data-track-index="12" data-volume="0.4"></audio>
+      <audio id="sfx-29" src="assets/sfx/pop.mp3" data-start="24.33" data-duration="0.70" data-track-index="13" data-volume="0.3"></audio>
+      <audio id="sfx-30" src="assets/sfx/pop.mp3" data-start="24.45" data-duration="0.70" data-track-index="14" data-volume="0.3"></audio>
+      <audio id="sfx-31" src="assets/sfx/pop.mp3" data-start="24.57" data-duration="0.70" data-track-index="15" data-volume="0.3"></audio>
+      <audio id="sfx-32" src="assets/sfx/pop.mp3" data-start="25.15" data-duration="0.70" data-track-index="16" data-volume="0.45"></audio>
+      <audio id="sfx-33" src="assets/sfx/pop.mp3" data-start="25.6" data-duration="0.70" data-track-index="17" data-volume="0.45"></audio>
+      <audio id="sfx-34" src="assets/sfx/whoosh-short.mp3" data-start="26.5" data-duration="0.57" data-track-index="18" data-volume="0.5"></audio>
+      <audio id="sfx-35" src="assets/sfx/glitch-1.mp3" data-start="28.33" data-duration="0.60" data-track-index="12" data-volume="0.35"></audio>
+      <audio id="sfx-36" src="assets/sfx/glitch-1.mp3" data-start="29.58" data-duration="0.60" data-track-index="13" data-volume="0.35"></audio>
+      <audio id="sfx-37" src="assets/sfx/pop.mp3" data-start="29.83" data-duration="0.70" data-track-index="14" data-volume="0.45"></audio>
+      <audio id="sfx-38" src="assets/sfx/whoosh.mp3" data-start="30.2" data-duration="0.57" data-track-index="15" data-volume="0.55"></audio>
+      <audio id="sfx-39" src="assets/sfx/whoosh-short.mp3" data-start="31.22" data-duration="0.57" data-track-index="16" data-volume="0.45"></audio>
+      <audio id="sfx-40" src="assets/sfx/typing.mp3" data-start="33.15" data-duration="1.30" data-track-index="17" data-volume="0.35"></audio>
+      <audio id="sfx-41" src="assets/sfx/impact-bass-1.mp3" data-start="34.52" data-duration="2.10" data-track-index="18" data-volume="0.6"></audio>
+      <audio id="sfx-42" src="assets/sfx/click.mp3" data-start="35.83" data-duration="0.36" data-track-index="12" data-volume="0.5"></audio>
+      <audio id="sfx-43" src="assets/sfx/impact-bass-1.mp3" data-start="36.25" data-duration="2.10" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="sfx-44" src="assets/sfx/whoosh.mp3" data-start="36.7" data-duration="0.57" data-track-index="14" data-volume="0.55"></audio>
+      <audio id="sfx-45" src="assets/sfx/click.mp3" data-start="38.08" data-duration="0.36" data-track-index="15" data-volume="0.6"></audio>
+      <audio id="sfx-46" src="assets/sfx/sparkle.mp3" data-start="38.6" data-duration="1.80" data-track-index="16" data-volume="0.45"></audio>
+    </div>
+
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        const pop = (sel, at, from) => tl.fromTo(sel, Object.assign({ autoAlpha: 0, scale: 0.6, y: 40 }, from || {}),
+          { autoAlpha: 1, scale: 1, y: 0, x: 0, rotation: 0, duration: 0.45, ease: "back.out(1.9)" }, at);
+        const rise = (sel, at, d) => tl.fromTo(sel, { autoAlpha: 0, y: 70 }, { autoAlpha: 1, y: 0, duration: d || 0.45, ease: "power3.out" }, at);
+        const drift = (sel, t0, t1, x, y) => tl.fromTo(sel, { x: 0, y: 0 }, { x: x, y: y, duration: t1 - t0, ease: "sine.inOut" }, t0);
+
+        // A — accroche (0 → 3.2)
+        drift("#a-b1", 0, 3.2, 160, 120); drift("#a-b2", 0, 3.2, -140, -100);
+        rise("#a-w1", 0.1); rise("#a-w2", 0.6); rise("#a-w3", 2.45, 0.4);
+        tl.fromTo("#a-ia", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(2.2)", transformOrigin: "0% 60%" }, 1.35);
+        ["#a-ch1", "#a-ch2", "#a-ch3", "#a-ch4", "#a-ch5"].forEach((c, i) => {
+          pop(c, 1.45 + i * 0.28, { rotation: i % 2 ? 8 : -8 });
+          tl.fromTo(c, { y: 0 }, { y: -30 - i * 6, duration: 1.4, ease: "sine.inOut", immediateRender: false }, 1.9 + i * 0.28);
+        });
+
+        // B — problème (3.2 → 6.6)
+        tl.fromTo("#sc-b", { x: 180 }, { x: 0, duration: 0.35, ease: "power3.out" }, 3.2);
+        rise("#b-w1", 3.3, 0.4); rise("#b-w2", 4.1, 0.4); rise("#b-w3", 4.9, 0.4); rise("#b-w4", 5.6, 0.4);
+        tl.fromTo("#b-chart .bar", { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "power3.out", stagger: 0.06 }, 3.45);
+        tl.fromTo("#b-chart .bar", { scaleY: 1 }, { scaleY: 0.35, duration: 0.9, ease: "power2.in", stagger: 0.05, immediateRender: false }, 4.6);
+        pop("#b-q", 5.65, { rotation: -25 });
+        tl.fromTo("#b-q", { rotation: 0 }, { rotation: 10, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 2, immediateRender: false }, 6.1);
+
+        // C — révélation (6.6 → 11.35)
+        tl.fromTo("#c-flash", { autoAlpha: 0.9 }, { autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 6.65);
+        tl.fromTo("#c-logo", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0 }, 6.7);   // logo posé tel quel, sans fondu
+        tl.fromTo("#c-logo", { scale: 0.6 }, { scale: 1, duration: 0.55, ease: "back.out(1.8)", immediateRender: false }, 6.7);
+        tl.fromTo("#c-logo", { scale: 1 }, { scale: 1.05, duration: 4, ease: "sine.out", immediateRender: false }, 7.25);
+        tl.fromTo("#c-b1", { scale: 0.6, autoAlpha: 0.4 }, { scale: 1.2, autoAlpha: 1, duration: 4.5, ease: "sine.out" }, 6.7);
+        tl.fromTo("#c-kicker", { autoAlpha: 0, scale: 1.4 }, { autoAlpha: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 7.1);
+        rise("#c-t1", 7.55, 0.5);
+        tl.fromTo("#c-t2", { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: "power4.out" }, 8.95);
+        pop("#c-pill", 9.75);
+        ["#c-d1", "#c-d2", "#c-d3"].forEach((d, i) => {
+          pop(d, 9.9 + i * 0.1);
+          tl.fromTo(d, { backgroundColor: "rgba(255,255,255,0.2)", scale: 1 }, { backgroundColor: "#f2b33d", scale: 1.25, duration: 0.2, ease: "back.out(3)", immediateRender: false }, 10.26 + i * 0.3);
+        });
+
+        // D — 3 étapes (11.35 → 17.45)
+        tl.fromTo("#sc-d", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(80% at 50% 50%)", duration: 0.5, ease: "power3.out" }, 11.35);
+        rise("#d-h1", 11.45); rise("#d-h2", 11.65);
+        [["#d-c1", "#d-ok1", 12.0], ["#d-c2", "#d-ok2", 12.95], ["#d-c3", "#d-ok3", 15.8]].forEach(([c, ok, at]) => {
+          tl.fromTo(c, { autoAlpha: 0, x: 260 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power3.out" }, at);
+          tl.fromTo(ok, { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(3)" }, at + 0.55);
+        });
+        tl.fromTo("#d-c2", { scale: 1 }, { scale: 1.04, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, 14.84);
+
+        // E — contenu (17.45 → 21.55)
+        tl.fromTo("#sc-e", { y: 220 }, { y: 0, duration: 0.4, ease: "power3.out" }, 17.45);
+        tl.fromTo("#e-big", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(2)", transformOrigin: "30% 60%" }, 17.55);
+        tl.fromTo("#e-big-l", { autoAlpha: 0, x: -60 }, { autoAlpha: 1, x: 0, duration: 0.4, ease: "power3.out" }, 17.8);
+        [["#e-r1", 18.95], ["#e-r2", 19.85], ["#e-r3", 20.3]].forEach(([r, at]) => {
+          tl.fromTo(r, { autoAlpha: 0, x: -200 }, { autoAlpha: 1, x: 0, duration: 0.42, ease: "power3.out" }, at);
+        });
+
+        // F — preuve (21.55 → 26.55)
+        tl.fromTo("#sc-f", { scale: 1.15 }, { scale: 1, duration: 0.35, ease: "power2.out" }, 21.55);
+        tl.fromTo("#f-arc", { strokeDashoffset: 1696.5 }, { strokeDashoffset: 1696.5 * 0.08, duration: 1.1, ease: "power2.out" }, 21.95);
+        tl.fromTo("#f-tip", { rotation: 0 }, { rotation: 331, duration: 1.1, ease: "power2.out", transformOrigin: "17px 287px" }, 21.95);
+        const cnt = { v: 0 };
+        tl.fromTo(cnt, { v: 0 }, { v: 117, duration: 1.1, ease: "power2.out",
+          onUpdate: () => { document.getElementById("f-n").textContent = Math.round(cnt.v); } }, 21.95);
+        tl.fromTo("#f-num .n", { scale: 1 }, { scale: 1.08, duration: 0.15, yoyo: true, repeat: 1, ease: "sine.inOut", immediateRender: false }, 23.05);
+        rise("#f-pos", 23.5, 0.4);
+        tl.fromTo("#f-stars svg", { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(3)", stagger: 0.07 }, 23.75);
+        ["#f-fl1", "#f-fl2", "#f-fl3"].forEach((f, i) => pop(f, 24.35 + i * 0.12));
+        // les avis prennent le relais : le haut remonte
+        tl.to("#f-top", { y: -60, scale: 0.78, duration: 0.5, ease: "power3.inOut", transformOrigin: "50% 0%" }, 24.95);
+        tl.to(["#f-pos", "#f-flags"], { autoAlpha: 0, y: -40, duration: 0.3, ease: "power2.in" }, 24.95);
+        tl.fromTo("#f-rv1", { autoAlpha: 0, y: 160, rotation: -3 }, { autoAlpha: 1, y: 0, rotation: -1.5, duration: 0.5, ease: "back.out(1.6)" }, 25.15);
+        tl.fromTo("#f-rv2", { autoAlpha: 0, y: 160, rotation: 3 }, { autoAlpha: 1, y: 0, rotation: 1.5, duration: 0.5, ease: "back.out(1.6)" }, 25.6);
+
+        // G — plus besoin de (26.55 → 30.25)
+        tl.fromTo("#g-head", { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out" }, 26.65);
+        rise("#g-s1", 27.6, 0.35); rise("#g-s2", 28.85, 0.35);
+        tl.fromTo("#g-l1", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 28.35);
+        tl.fromTo("#g-l2", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 29.6);
+        tl.fromTo("#g-s1", { x: 0 }, { x: 14, duration: 0.05, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, 28.35);
+        tl.fromTo("#g-s2", { x: 0 }, { x: 14, duration: 0.05, yoyo: true, repeat: 5, ease: "none", immediateRender: false }, 29.6);
+        tl.fromTo(["#g-s1", "#g-s2"], { opacity: 1 }, { opacity: 0.45, duration: 0.3, immediateRender: false, stagger: 1.25 }, 28.55);
+        pop("#g-yes", 29.85);
+
+        // H — offre (30.25 → 36.75)
+        tl.fromTo("#sc-h", { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.45, ease: "power3.inOut" }, 30.25);
+        rise("#h-kicker", 30.4, 0.4);
+        tl.fromTo("#h-cert", { autoAlpha: 0, rotation: -14, scale: 0.6, y: 120 }, { autoAlpha: 1, rotation: -3, scale: 1, y: 0, duration: 0.7, ease: "back.out(1.5)" }, 31.25);
+        tl.fromTo("#h-cert", { rotation: -3 }, { rotation: 2, duration: 4.5, ease: "sine.inOut", immediateRender: false }, 31.95);
+        rise("#h-cert-l", 31.6, 0.4);
+        tl.fromTo("#h-price", { autoAlpha: 0, scale: 0.7 }, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 33.0);
+        const pr = { v: 35000 };
+        tl.fromTo(pr, { v: 35000 }, { v: 4999, duration: 1.35, ease: "power3.out",
+          onUpdate: () => { document.getElementById("h-pn").textContent = Math.round(pr.v).toLocaleString("fr-FR").replace(/ | /g, " "); } }, 33.15);
+        tl.fromTo("#h-price", { scale: 1 }, { scale: 1.08, duration: 0.15, yoyo: true, repeat: 1, ease: "sine.inOut", immediateRender: false }, 34.55);
+        tl.fromTo("#h-b1", { autoAlpha: 0.3, scale: 0.7 }, { autoAlpha: 1, scale: 1.2, duration: 1.5, ease: "power2.out" }, 33.1);
+        rise("#h-old", 35.4, 0.35);
+        tl.fromTo("#h-l", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 35.85);
+        tl.fromTo("#h-badge", { autoAlpha: 0, scale: 2.2, rotation: -30 }, { autoAlpha: 1, scale: 1, rotation: 12, duration: 0.35, ease: "power4.in" }, 35.95);
+        tl.fromTo("#h-cert", { x: 0 }, { x: -8, duration: 0.05, yoyo: true, repeat: 3, ease: "none", immediateRender: false }, 36.3);
+
+        // I — CTA (36.75 → 41)
+        tl.fromTo("#sc-i", { scale: 1.2 }, { scale: 1, duration: 0.35, ease: "power2.out" }, 36.75);
+        tl.fromTo("#i-logo", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0 }, 36.8);
+        tl.fromTo("#i-logo", { scale: 0.7 }, { scale: 1, duration: 0.5, ease: "back.out(1.8)", immediateRender: false }, 36.8);
+        tl.fromTo("#i-b1", { scale: 0.8 }, { scale: 1.2, duration: 4.2, ease: "sine.inOut" }, 36.8);
+        rise("#i-title", 37.0); rise("#i-sub", 37.25, 0.4);
+        pop("#i-pill", 37.35);
+        tl.fromTo("#i-hand", { autoAlpha: 0, x: 140, y: 140 }, { autoAlpha: 1, x: 0, y: 0, duration: 0.45, ease: "power3.out" }, 37.6);
+        tl.fromTo("#i-hand", { scale: 1 }, { scale: 0.82, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.inOut", immediateRender: false }, 38.1);
+        tl.fromTo("#i-pill", { scale: 1 }, { scale: 0.93, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.inOut", immediateRender: false }, 38.1);
+        tl.fromTo("#i-pill", { scale: 1 }, { scale: 1.05, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, 38.6);
+        rise("#i-arrow", 38.5, 0.4);
+        tl.fromTo("#i-arrow svg", { y: 0 }, { y: 14, duration: 0.3, yoyo: true, repeat: 5, ease: "sine.inOut", immediateRender: false }, 38.9);
+
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>
