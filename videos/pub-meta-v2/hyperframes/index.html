@@ -216,7 +216,7 @@
             </div>
           </div>
         </div>
-        <div class="abs" id="sparks"></div>
+        <div class="abs" id="sparks" style="left:529px;top:669px"><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div><div class="spark" style="left:0;top:0;visibility:hidden"></div></div>
         <div class="abs" id="toast">
           <div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#10a854" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg></div>
           <div><div class="a">Vente conclue !</div><div class="b">Pendant que tu dormais · 03:08</div></div>
@@ -420,6 +420,12 @@
         tl.fromTo("#toast", { autoAlpha: 0, scale: 0.3, y: 120 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(2)" }, 4.62);
         tl.to("#ph", { scale: 0.9, autoAlpha: 0.55, duration: 0.4, ease: E.o3 }, 4.62);
         punch("#toast", 5.15, 1.05);
+        // gerbe d'étincelles dorées autour du toast (positions déterministes)
+        document.querySelectorAll("#sparks .spark").forEach((el, i) => {
+          const ang = (i / 16) * Math.PI * 2, d = 300 + (i % 3) * 90;
+          tl.fromTo(el, { autoAlpha: 1, x: 0, y: 0 }, { x: Math.cos(ang) * d, y: Math.sin(ang) * d, duration: 0.68, ease: "power3.out" }, 4.62);
+          tl.to(el, { autoAlpha: 0, duration: 0.5, ease: "none" }, 5.0);
+        });
 
         // ---------- SANS (5.75 → 10.45) ----------
         [["#s-r1", "#s-x1a", "#s-x1b", "#s-l1", 5.85, 6.35], ["#s-r2", "#s-x2a", "#s-x2b", "#s-l2", 7.25, 7.65]].forEach(([r, xa, xb, ln, a, x]) => {
