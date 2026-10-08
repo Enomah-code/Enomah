@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 390" width="260" height="390">
+  <!-- Logo de la formation IA Business Building (reconstruit d'après la vignette Chariow) -->
+  <path d="M130 2 L258 195 L130 388 L2 195 Z" fill="none" stroke="#d4af37" stroke-width="4" stroke-linejoin="miter"/>
+  <path d="M130 76 L210 195 L130 314 L50 195 Z" fill="none" stroke="#d4af37" stroke-width="2.6"/>
+  <circle cx="130" cy="195" r="44" fill="#0b1838" stroke="#4f6cf0" stroke-width="2.6"/>
+  <text x="130" y="212" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-size="46" fill="#d4af37">IA</text>
+</svg>

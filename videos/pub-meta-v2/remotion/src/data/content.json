@@ -1,0 +1,11 @@
+{
+  "cards": [
+    {"n": "MODULE 01", "t": "Les prompts", "s": "La méthode R.O.C.C.T.", "icon": "M4 5h16v11H9l-5 4zM12 7.5l1 2.2 2.3.6-2.3.6-1 2.2-1-2.2-2.3-.6 2.3-.6z"},
+    {"n": "MODULE 02", "t": "Automatisations", "s": "Make & n8n, pas à pas", "icon": "M13 2L4 14h7l-1 8 9-12h-7z"},
+    {"n": "MODULE 03", "t": "Agent WhatsApp", "s": "Il répond et vend 24h/24", "icon": "M5 8h14v11a0 0 0 010 0H5zM12 4v4M9 13h.01M15 13h.01M9 16h6M3 12v3M21 12v3"},
+    {"n": "MODULE 04", "t": "Ton site web", "s": "Sans écrire une ligne de code", "icon": "M3 4h18v16H3zM3 9h18M7 6.5h.01M10 6.5h.01"},
+    {"n": "MODULE 06", "t": "Ton application", "s": "Installable sur téléphone", "icon": "M7 2h10v20H7zM11 18h2"},
+    {"n": "MODULE 05", "t": "Mobile Money", "s": "MTN · Moov · Orange · Wave", "icon": "M3 7h15a3 3 0 013 3v8a2 2 0 01-2 2H5a2 2 0 01-2-2zM3 7l12-4 2 4M16 14h.01"}
+  ],
+  "avatars": [["A","#f2c14e"],["K","#7fa3ff"],["M","#ff8a80"],["S","#7be3a8"],["F","#ffd166"],["D","#b39ddb"],["J","#4dd0e1"],["R","#ffab91"],["E","#aed581"],["B","#f48fb1"]]
+}
