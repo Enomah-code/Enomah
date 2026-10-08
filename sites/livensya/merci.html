@@ -39,8 +39,9 @@
 <section class="heros merci-haut" aria-labelledby="titre-merci">
   <div class="conteneur">
     <p class="etiquette">Défi 60 jours</p>
-    <h1 id="titre-merci">Bienvenue dans le défi. <em>Ton jour 1, c'est ce soir.</em></h1>
-    <p>Merci pour ta confiance. Tu viens de faire ce que beaucoup repoussent depuis des années : décider. Ton accès arrive par e-mail dans les minutes qui suivent ton paiement.</p>
+    <h1 id="titre-merci">Bienvenue dans le défi<span data-salut></span>. <em>Ton jour 1, c'est ce soir.</em></h1>
+    <p>Merci pour ta confiance. Tu viens de faire ce que j'ai moi-même repoussé pendant des années : décider. Ton accès arrive par e-mail dans les minutes qui suivent ton paiement.</p>
+    <p class="signature" data-prenom data-repli="L'auteur du défi">L'auteur du défi</p>
   </div>
 </section>
 
@@ -51,11 +52,11 @@
       <h2 id="titre-maintenant" class="titre-section">Trois gestes pour avoir ton défi sous la main.</h2>
       <ol class="etapes">
         <li><div><b>Ouvre l'e-mail de Chariow</b><span>Il contient tes 3 documents. Pas là après 10 minutes ? Regarde dans les spams et l'onglet « Promotions ».</span></div></li>
-        <li><div><b>Télécharge les 3 PDF</b><span>Environ 45 Mo au total : fais-le en Wi-Fi ou avec un forfait suffisant. Tu peux aussi les retrouver à tout moment dans <a href="https://app.ateliat.com" rel="noopener">« Mes achats »</a>, avec ton e-mail.</span></div></li>
+        <li><div><b>Télécharge les 3 PDF</b><span>Environ 45 Mo au total : fais-le en Wi-Fi ou avec un forfait suffisant. Ton lien d'accès est aussi dans l'e-mail de confirmation de Chariow : garde-le précieusement.</span></div></li>
         <li><div><b>Garde-les dans ton téléphone</b><span>Dans le dossier Téléchargements ou dans ton lecteur PDF : tu pourras les lire sans connexion, même en déplacement.</span></div></li>
       </ol>
       <div class="honnete">
-        <p><strong>Rien reçu du tout ?</strong> Écris-nous depuis la <a href="https://ykhzgspm.mychariow.store/contact" rel="noopener">page contact</a> avec l'e-mail utilisé pour payer. On te répond au plus vite.</p>
+        <p><strong>Rien reçu du tout ?</strong> Écris-nous sur <a href="https://wa.me/22995726957" rel="noopener">WhatsApp au +229 95 72 69 57</a> ou à <a href="mailto:contact@emkbluediamond.online">contact@emkbluediamond.online</a>, avec l'e-mail utilisé pour payer. On te répond au plus vite.</p>
       </div>
     </div>
 
@@ -89,7 +90,8 @@
       <a href="https://ykhzgspm.mychariow.store/legal-notice" rel="noopener">Mentions légales</a>
       <a href="https://ykhzgspm.mychariow.store/terms-of-service" rel="noopener">Conditions d'utilisation</a>
       <a href="https://ykhzgspm.mychariow.store/privacy-policy" rel="noopener">Confidentialité</a>
-      <a href="https://ykhzgspm.mychariow.store/contact" rel="noopener">Contact</a>
+      <a href="https://wa.me/22995726957" rel="noopener">WhatsApp</a>
+      <a href="mailto:contact@emkbluediamond.online">contact@emkbluediamond.online</a>
     </nav>
     <p>Livensya © 2026 · Cotonou, Bénin</p>
   </div>
@@ -97,9 +99,13 @@
 
 <script>
 (function () {
-  function typo(t) { return String(t).replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« '); }
+  function typo(t) { return String(t).replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« '); }
+  /* Même prénom que PRENOM_NARRATEUR dans js/app.js (laisser vide pour un texte neutre) */
+  var PRENOM_NARRATEUR = '[Prénom]';
+  document.querySelectorAll('[data-prenom]').forEach(function (el) { el.textContent = PRENOM_NARRATEUR.trim() || el.getAttribute('data-repli') || ''; });
   try {
     var memo = JSON.parse(localStorage.getItem('lv_test') || 'null');
+    if (memo && memo.prenom) document.querySelector('[data-salut]').textContent = ', ' + memo.prenom;
     if (memo && memo.phrase) {
       document.getElementById('phrase-texte').textContent = typo('« ' + memo.phrase + ' »');
       document.getElementById('phrase-merci').hidden = false;

@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  var PIXEL_ID = ''; // ex. '123456789012345' : à fournir par Enock
+  var PIXEL_ID = ''; // ex. '123456789012345' : à fournir
 
   function nouvelId(nom) {
     var alea = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()

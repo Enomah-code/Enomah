@@ -2,6 +2,14 @@
 
 Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de données. Poids mesuré au premier chargement sur téléphone : environ 150 Ko (moins de 500 Ko une fois toutes les images chargées ; limite fixée : 1,5 Mo).
 
+## Version 2 (retours d'Enock)
+- **Narrateur** : la page ne parle plus d'Enock. Le narrateur est le personnage du livre. Son prénom est dans **une seule constante**, `PRENOM_NARRATEUR` en haut de `js/app.js` (valeur provisoire `'[Prénom]'`, visible exprès dans l'aperçu), et la même ligne en bas de `merci.html`. Tous les éléments `data-prenom` se remplissent seuls. Si tu laisses `''`, le texte devient neutre (« L'auteur du défi ») et la phrase « Moi, c'est … » disparaît.
+- **Histoire** : le récit est provisoire. Cherche `HISTOIRE DU LIVRE À INSÉRER` dans `index.html`.
+- **Prix** : il n'apparaît que dans la carte de l'offre (3 999 F, barré 12 500 F), après « Ce que tu reçois ». Tous les autres boutons disent « Commencer le défi » ou « Faire le défi avec moi ».
+- **Contact** : WhatsApp https://wa.me/22995726957 (+229 95 72 69 57) et contact@emkbluediamond.online, dans la carte de l'offre, la FAQ, la page merci et le pied de page.
+- **Aucune garantie** de remboursement n'est mentionnée nulle part.
+- **La confidence du test** (question sur la remarque la plus blessante) n'est jamais enregistrée ni envoyée : elle sert seulement à adapter le résultat sur le téléphone.
+
 ## Ce qu'il y a dans le dossier
 
 | Fichier | Rôle |
@@ -12,7 +20,7 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
 | `js/app.js` | Le test, le résultat, les boutons d'achat, la vidéo. **Les réglages sont en haut du fichier.** |
 | `js/tracking.js` | Le Pixel Meta. **`PIXEL_ID` est en haut du fichier.** |
 | `fonts/` | Les 2 polices, hébergées sur ton site (pas d'appel à Google) |
-| `images/` | Photos d'Enock, logos, mockups et fonds, en WebP. `images/marque/` = les originaux fournis |
+| `images/` | Photos avant/après, logos, mockups et fonds, en WebP. `images/marque/` = les originaux fournis |
 | `captures/` | Les captures téléphone (390 px) et ordinateur (1440 px) de chaque page |
 | `DESIGN.md` | La direction artistique et la planche de références |
 
@@ -36,10 +44,11 @@ const VIDEO_SRC = '';        // ex. 'videos/defi-60-jours.mp4'
 const VIDEO_AFFICHE = '';    // ex. 'videos/affiche.webp'
 ```
 
+- **Prénom du narrateur** : `const PRENOM_NARRATEUR = '[Prénom]';` (et la même ligne dans `merci.html`).
 - **Lien de paiement** : remplace par le lien direct du produit. Sur ta boutique, le paiement du produit est à l'adresse `https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout` : vérifie qu'il marche, puis colle-le. Les paramètres publicitaires (`utm_…`, `fbclid`) de l'adresse d'arrivée sont transmis automatiquement à Chariow.
 - **Vidéo faceless** : dépose le fichier dans un dossier `videos/` (MP4 H.264, format vertical 9:16, idéalement moins de 8 Mo), puis remplis `VIDEO_SRC`. Tant que c'est vide, la section est invisible pour les visiteurs. Rien ne se charge avant le clic sur « Lire la vidéo ».
 - **Textes** : directement dans `index.html` et `merci.html`. Garde le tutoiement, pas de tiret cadratin, et pas de promesse de kilos.
-- **Prix** : il apparaît plusieurs fois dans `index.html` (héros, ticket de l'offre, final, barre collante) et dans la description : cherche `999`.
+- **Prix** : une seule fois, dans la carte de l'offre de `index.html` : cherche `999`.
 - **Témoignages** : un modèle commenté est prêt dans `index.html` (cherche `TÉMOIGNAGES`). À n'utiliser qu'avec de vrais retours et l'accord écrit de la personne.
 - **Collecte des réponses du test** : la fonction `envoyerLead(donnees)` (en haut de `js/app.js`) est vide exprès. Aujourd'hui, aucune donnée ne quitte le téléphone (le test l'annonce aux visiteurs). Si tu la branches un jour, il faudra changer cette phrase et ta politique de confidentialité.
 
@@ -70,19 +79,14 @@ Un seul envoi, côté serveur, déclenché par la vente réelle :
 4. Pas de `Purchase` dans `merci.html` (expliqué en commentaire dans la page) : elle peut être rechargée ou ouverte sans achat.
 
 ## Ce qu'Enock doit fournir ou valider
-
-1. **Le récit de l'histoire** (section « L'histoire derrière le défi ») : chaque phrase est à relire et corriger. Elle a été écrite à partir des seules infos connues (« à 24 ans, on me donnait 14 ans »). La citation « Je ne voulais pas devenir quelqu'un d'autre… » est une proposition : garde-la seulement si elle est vraie pour toi.
-2. **L'exemple de journée** (méthode, levier 1 : 7 h bouillie et œufs, 10 h banane et arachides…) : remplace-le par une vraie journée de ton programme.
-3. **Le prix barré 12 500 F** : affiche-le seulement si c'est vraiment le prix prévu après le lancement. Sinon, retire-le. Sur Chariow, la remise « renouvelée chaque jour » avec compte à rebours est une fausse urgence : je te conseille de la couper (et elle n'apparaît pas sur ce site).
-4. **Le lien de paiement direct** (`/prd_4bisyd7x/checkout`) : à tester puis à coller dans `LIEN_PAIEMENT`.
-5. **La garantie** : aucune n'existe aujourd'hui, le site n'en affiche donc aucune. Si tu en décides une (ex. remboursement sous 7 jours), il faut l'écrire mot pour mot et l'activer aussi sur Chariow ; des emplacements commentés sont prêts.
-6. **Le visage** : tes yeux sont masqués sur les deux photos. Un vrai visage inspire beaucoup plus confiance ; c'est ton choix. Si tu les démasques, envoie les fichiers originaux.
-7. **Les mockups des livres** montrent des corps générés (dont un torse musclé dans le miroir) et disent « votre ». Sur la page, ils sont légendés « visuel d'illustration ». Pour les pubs Meta : pas de mockup avec torse nu ni d'avant/après, et je te conseille à terme une couverture sans corps idéalisé.
-8. **L'ID du Pixel Meta** (et plus tard le jeton API Conversions, à garder côté serveur uniquement).
-9. **La vidéo faceless** (HyperFrames) quand elle sera prête.
-10. **Un numéro WhatsApp** si tu veux un bouton « Une question ? » : je ne l'ai pas inventé, il n'y en a pas sur la page.
-11. **Tes vrais premiers retours clients** (avec accord) pour remplir l'emplacement témoignages.
-12. **Deux phrases de service** dans la carte de l'offre : « Écris-moi depuis la page contact » (c'est toi qui réponds) et « pas reçu, on règle ça avec toi ». Garde-les seulement si tu peux les tenir.
-13. **Deux vraies captures de pages** de tes PDF (une journée du programme, une page du carnet) : c'est la meilleure preuve qui manque, l'emplacement est prêt (cherche `EXTRAIT` dans `index.html`).
-14. **Une adresse e-mail de contact** à afficher près du bouton d'achat, avec un délai de réponse réaliste.
-15. **Ton ✅** sur l'aperçu avant toute mise en ligne.
+1. **Le prénom du narrateur** (celui du livre) : à mettre dans `PRENOM_NARRATEUR` (`js/app.js` et `merci.html`).
+2. **L'histoire du livre** : à coller à la place du récit provisoire (`HISTOIRE DU LIVRE À INSÉRER`), à la 1re personne, au tutoiement.
+3. **Les photos** : elles sont désormais présentées comme celles du narrateur (« Moi, à 24 ans », « Avant », « Après »). À confirmer que c'est bien voulu.
+4. **Le prix barré 12 500 F** : à garder seulement si c'est vraiment le prix prévu après le lancement. Sur Chariow, je conseille de couper le compte à rebours « renouvelé chaque jour » (fausse urgence).
+5. **Le lien de paiement direct** (`/prd_4bisyd7x/checkout`, qui répond bien) : à confirmer puis à coller dans `LIEN_PAIEMENT`.
+6. **Deux vraies captures de pages** des PDF (une structure de repas du programme, une page du carnet) : l'emplacement `EXTRAIT` est prêt.
+7. **La phrase de service** dans la carte de l'offre (« Pas reçu ? Écris-nous sur WhatsApp ») : à garder si quelqu'un répond vraiment sur ce numéro.
+8. **Les mockups des livres** (corps générés, « votre ») : légendés « visuel d'illustration ». Pas de torse nu ni d'avant/après dans les pubs Meta.
+9. **L'ID du Pixel Meta** (le jeton API Conversions reste côté serveur).
+10. **La vidéo faceless** quand elle sera prête, puis de vrais témoignages, avec accord.
+11. **Ton ✅** sur l'aperçu avant toute mise en ligne.

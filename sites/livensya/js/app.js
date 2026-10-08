@@ -3,7 +3,7 @@
    RÉGLAGES (les seules lignes à modifier) */
 
 /* Lien de paiement Chariow du produit prd_4bisyd7x.
-   Valeur provisoire : la boutique. Lien direct probable (vu sur la boutique, à confirmer par Enock) :
+   Valeur provisoire : la boutique. Lien direct probable (vu sur la boutique, à confirmer) :
    https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout */
 const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store';
 
@@ -11,6 +11,10 @@ const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store';
    Exemple : 'videos/defi-60-jours.mp4' et 'videos/affiche.webp' */
 const VIDEO_SRC = '';
 const VIDEO_AFFICHE = '';
+
+/* Prénom du narrateur, celui du livre « Défi 60 jours ». Il remplit tous les [data-prenom] de la page
+   et parle dans le test. Laisse vide ('') pour un texte neutre (la phrase « Moi, c'est … » disparaît). */
+const PRENOM_NARRATEUR = '[Prénom]';
 
 /* Pour brancher plus tard une collecte (Google Sheets, CRM, WhatsApp…).
    Pour l'instant : NE FAIT RIEN, aucune donnée ne quitte le téléphone. */
@@ -68,34 +72,67 @@ function envoyerLead(donnees) {
     });
   }
 
+  /* ---------------- Le narrateur ---------------- */
+  function narrateur() {
+    var p = String(PRENOM_NARRATEUR || '').trim();
+    return p;
+  }
+  function appliquerNarrateur() {
+    var p = narrateur();
+    document.querySelectorAll('[data-prenom]').forEach(function (el) {
+      el.textContent = p || el.getAttribute('data-repli') || '';
+    });
+    document.querySelectorAll('[data-si-prenom]').forEach(function (el) { el.hidden = !p; });
+  }
+
   /* ---------------- Le test ---------------- */
+  /* Le prénom de la personne, nettoyé (jamais injecté tel quel dans le HTML) */
+  function sonPrenom() {
+    var p = String(R.prenom || '').trim().replace(/\s+/g, ' ').slice(0, 30);
+    return p ? p.charAt(0).toUpperCase() + p.slice(1) : '';
+  }
+  function avecPrenom(avant, apres) { var p = sonPrenom(); return p ? avant + echapper(p) + apres : ''; }
+
   var ETAPES = [
-    { id: 'depuis', type: 'unique', titre: 'Depuis quand tu te trouves trop mince ?',
+    { id: 'prenom', type: 'prenom',
+      titre: function () { return 'Pour commencer, faisons connaissance. Comment tu t\'appelles ?'; },
+      aide: function () { var n = narrateur(); return (n ? 'Moi, c\'est ' + echapper(n) + '. ' : '') + 'C\'est facultatif, mais j\'aime savoir à qui je parle.'; } },
+    { id: 'depuis', type: 'unique',
+      titre: function () { return avecPrenom('Enchanté, ', '. ') + 'Depuis quand tu te trouves mince ?'; },
       options: [['enfance', "Depuis toujours, depuis l'enfance"], ['ado', "Depuis l'adolescence"], ['annees', 'Depuis quelques années'], ['recent', "Depuis peu : j'ai perdu du poids sans savoir pourquoi"]] },
     { id: 'phrases', type: 'multi', titre: "Qu'est-ce qu'on te dit le plus souvent ?", aide: 'Choisis tout ce que tu entends.', citations: true,
       options: [['vent', '« Le vent va t\'emporter. »'], ['mange', '« Mange un peu, toi. »'], ['malade', '« Tu es malade ? »'], ['age', '« Tu as quel âge, 15 ans ? »'], ['maison', '« On ne te donne pas à manger chez toi ? »'], ['rien', "On ne me dit rien, mais je le pense"]] },
-    { id: 'essais', type: 'multi', titre: "Qu'est-ce que tu as déjà essayé ?", aide: 'Choisis tout ce qui te concerne.',
-      encart: '<strong>Ces phrases, Enock les a entendues aussi.</strong> À 24 ans, on lui donnait 14 ans. Tu n\'es pas la seule personne à vivre ça.',
+    { id: 'blessure', type: 'texte',
+      encart: function () { return '<strong>Je comprends.</strong> Moi aussi, j\'ai entendu ces phrases, presque mot pour mot.'; },
+      titre: "Quelle est la remarque la plus blessante qu'on t'ait faite, ou le moment le plus difficile que tu as vécu à cause de ton poids ?",
+      aide: 'Facultatif. Écris-le seulement si tu en as envie, avec tes mots. Ça reste sur ton téléphone : personne d\'autre ne le lira.',
+      placeholder: 'ex. Le jour où…', passer: 'Je préfère passer cette question' },
+    { id: 'essais', type: 'multi', titre: "Qu'est-ce que tu as déjà essayé pour prendre du poids ?", aide: 'Choisis tout ce qui te concerne.',
+      encart: function () { return R.blessure ? '<strong>Merci de m\'avoir confié ça.</strong> Ce n\'est pas rien de l\'écrire. Moi aussi, je l\'ai vécu.' : ''; },
       options: [['forcer', 'Me forcer à manger plus'], ['sirops', 'Des sirops ou des comprimés pour grossir'], ['poudres', 'Des poudres ou des compléments'], ['sport', 'Le sport ou la musculation'], ['rien', "Rien de précis pour l'instant"]] },
     { id: 'miroir', type: 'unique', titre: 'Devant le miroir ou sur une photo, tu…',
       options: [['evite', "J'évite les photos"], ['cache', 'Je cache mon corps sous des habits larges'], ['compare', 'Je me compare aux autres'], ['ok', 'Ça va, mais je veux me sentir mieux']] },
     { id: 'mesures', type: 'mesures', titre: 'Ton âge, ta taille et ton poids',
-      aide: 'Pourquoi on te demande ça : pour calculer ton IMC, un repère indicatif. Rien n\'est envoyé, tout reste sur ton téléphone.' },
-    { id: 'objectif', type: 'unique', titre: 'Ce que tu veux en premier',
-      encart: '<strong>Merci.</strong> Un chiffre n\'est pas un jugement. C\'est juste ton point de départ.',
-      options: [['sain', 'Prendre du poids sans me rendre malade'], ['habits', 'Remplir mes vêtements'], ['energie', "Avoir plus d'énergie dans la journée"], ['photos', 'Me sentir bien sur les photos']] },
-    { id: 'vivre', type: 'vivre', titre: 'Dans 60 jours, tu veux vivre quoi ?', aide: 'Choisis, puis écris-le avec tes mots si tu veux.',
-      options: [['tenue', 'Porter une tenue ajustée sans gêne'], ['enfant', "Qu'on arrête de me prendre pour un enfant"], ['photo', "Une photo de moi que j'ai envie de partager"], ['plage', 'Aller à la plage sans me cacher'], ['remarques', 'Ne plus entendre ces remarques']] },
-    { id: 'pret', type: 'unique', titre: 'Le défi demande de suivre le programme chaque jour, pendant 60 jours. Tu es prêt ou prête ?',
+      aide: 'Pourquoi je te demande ça : pour calculer ton IMC, un repère indicatif. Rien n\'est envoyé, tout reste sur ton téléphone.' },
+    { id: 'image', type: 'unique',
+      encart: function () { return '<strong>' + (avecPrenom('Merci, ', '.') || 'Merci.') + '</strong> Un chiffre n\'est pas un jugement, c\'est juste ton point de départ. Le mien aussi était bas.'; },
+      titre: "Quand tu t'imagines avec ton poids idéal, qu'est-ce que tu remarques en premier ?",
+      options: [['visage', 'Mon visage, plus plein et reposé'], ['epaules', 'Mes épaules et mes bras, plus solides'], ['habits', 'Mes vêtements, enfin à ma taille'], ['silhouette', 'Ma silhouette, plus harmonieuse'], ['regard', 'Mon regard, plus sûr de moi']] },
+    { id: 'vivre', type: 'vivre', titre: 'Comment tu te vois dans 60 jours ?', aide: 'Choisis ce qui te parle, puis dis-le avec tes mots si tu veux.',
+      options: [['tenue', 'Je porte une tenue ajustée, sans gêne'], ['enfant', 'On ne me prend plus pour un enfant'], ['photo', "J'ai une photo de moi que j'ai envie de partager"], ['plage', 'Je vais à la plage sans me cacher'], ['remarques', 'Les remarques ne me touchent plus']] },
+    { id: 'pret', type: 'unique',
+      titre: function () { return 'Dernière question' + avecPrenom(', ', '') + '. Le défi demande de suivre le programme chaque jour, pendant 60 jours. Tu es prêt ou prête ?'; },
       options: [['oui', 'Oui, je suis prêt ou prête'], ['essayer', 'Je veux essayer'], ['sais-pas', 'Je ne sais pas encore']] }
   ];
   var PHRASES_VIVRE = {
-    tenue: 'Dans 60 jours, je porte une tenue ajustée sans gêne.',
-    enfant: "Dans 60 jours, on ne me prend plus pour un enfant.",
+    tenue: 'Dans 60 jours, je porte une tenue ajustée, sans gêne.',
+    enfant: 'Dans 60 jours, on ne me prend plus pour un enfant.',
     photo: "Dans 60 jours, j'ai une photo de moi que j'ai envie de partager.",
     plage: 'Dans 60 jours, je vais à la plage sans me cacher.',
-    remarques: "Dans 60 jours, ces remarques ne me touchent plus."
+    remarques: 'Dans 60 jours, les remarques ne me touchent plus.'
   };
+  var IMAGES = { visage: 'un visage plus plein et reposé', epaules: 'des épaules et des bras plus solides', habits: 'des vêtements enfin à ta taille', silhouette: 'une silhouette plus harmonieuse', regard: 'un regard plus sûr de toi' };
+  function val(x) { return typeof x === 'function' ? x() : (x || ''); }
 
   var carte = document.getElementById('carte-test');
   var R = {}; var etape = -1;
@@ -105,8 +142,8 @@ function envoyerLead(donnees) {
     carte.innerHTML = typo(
       '<div class="intro-test etape-entree">' +
       '<p class="titre-q" style="font-family:var(--serif);font-size:clamp(1.5rem,5.6vw,2rem);line-height:1.18;color:var(--foret);margin:0 0 12px">Prends deux minutes rien que pour toi.</p>' +
-      '<p>Il n\'y a pas de bonne ou de mauvaise réponse. Tu verras ensuite ta situation résumée en une page.</p>' +
-      '<ul><li>' + icone('i-coche') + '<span>8 questions courtes</span></li>' +
+      '<p>Il n\'y a pas de bonne ou de mauvaise réponse. Tu me racontes, et tu verras ensuite ta situation résumée en une page.</p>' +
+      '<ul><li>' + icone('i-coche') + '<span>Une dizaine de questions courtes</span></li>' +
       '<li>' + icone('i-coche') + '<span>Ton IMC indicatif, expliqué simplement</span></li>' +
       '<li>' + icone('i-cadenas') + '<span>Tes réponses restent sur ton téléphone</span></li></ul>' +
       '<button class="bouton bouton--plein" type="button" data-commencer>Commencer le test ' + icone('i-fleche') + '</button></div>');
@@ -114,9 +151,9 @@ function envoyerLead(donnees) {
   }
 
   function htmlOptions(e, multi) {
-    var nom = 'q-' + e.id, val = R[e.id];
+    var nom = 'q-' + e.id, v = R[e.id];
     return '<div class="choix' + (multi ? ' choix--multi' : '') + '">' + e.options.map(function (o) {
-      var coche = multi ? (val || []).indexOf(o[0]) > -1 : val === o[0];
+      var coche = multi ? (v || []).indexOf(o[0]) > -1 : v === o[0];
       return '<label><input type="' + (multi ? 'checkbox' : 'radio') + '" name="' + nom + '" value="' + o[0] + '"' + (coche ? ' checked' : '') + '>' +
         '<span class="case">' + ICONE_COCHE + '</span><span' + (e.citations && o[0] !== 'rien' ? ' class="citation"' : '') + '>' + o[1] + '</span></label>';
     }).join('') + '</div>';
@@ -125,14 +162,22 @@ function envoyerLead(donnees) {
   function aller(n, focus) {
     etape = n;
     var e = ETAPES[n], total = ETAPES.length;
+    var titre = val(e.titre), aide = val(e.aide), encart = val(e.encart);
     var h = '<div class="etape-entree">';
     h += '<div class="progression"><span>' + (n + 1) + ' sur ' + total + '</span><span class="progression__barre" aria-hidden="true"><span style="width:' + Math.round((n / total) * 100) + '%"></span></span></div>';
-    if (e.encart) h += '<p class="encart">' + e.encart + '</p>';
+    if (encart) h += '<p class="encart">' + encart + '</p>';
     if (e.type === 'unique' || e.type === 'multi') {
-      h += '<fieldset class="question"><legend>' + e.titre + '</legend>' + (e.aide ? '<p class="aide">' + e.aide + '</p>' : '') + htmlOptions(e, e.type === 'multi') + '</fieldset>';
+      h += '<fieldset class="question"><legend>' + titre + '</legend>' + (aide ? '<p class="aide">' + aide + '</p>' : '') + htmlOptions(e, e.type === 'multi') + '</fieldset>';
+    } else if (e.type === 'prenom') {
+      h += '<div class="question"><p class="titre-q">' + titre + '</p><p class="aide">' + aide + '</p>' +
+        '<div class="champ champ--large" style="margin-top:16px"><label for="prenom">Ton prénom</label><input id="prenom" autocomplete="given-name" maxlength="30" placeholder="ex. Awa" value="' + echapper(R.prenom || '') + '"></div></div>';
+    } else if (e.type === 'texte') {
+      h += '<div class="question"><p class="titre-q" id="t-' + e.id + '">' + titre + '</p><p class="aide">' + aide + '</p>' +
+        '<div class="champ champ--large" style="margin-top:16px"><label class="sr" for="txt-' + e.id + '">Ta réponse</label><textarea id="txt-' + e.id + '" maxlength="280" placeholder="' + e.placeholder + '">' + echapper(R[e.id] || '') + '</textarea></div>' +
+        '<button class="passer" type="button" data-passer>' + e.passer + '</button></div>';
     } else if (e.type === 'mesures') {
       var m = R.mesures || {};
-      h += '<div class="question"><p class="titre-q" id="t-mes">' + e.titre + '</p><p class="aide">' + e.aide + '</p>' +
+      h += '<div class="question"><p class="titre-q">' + titre + '</p><p class="aide">' + aide + '</p>' +
         '<fieldset class="question" style="margin-top:14px"><legend class="libelle" style="font:700 .9375rem var(--sans);color:var(--encre)">Ton âge</legend>' +
         '<div class="choix puces">' + [['moins18', 'Moins de 18 ans'], ['18-24', '18 à 24 ans'], ['25-34', '25 à 34 ans'], ['35plus', '35 ans et plus']].map(function (o) {
           return '<label><input type="radio" name="q-age" value="' + o[0] + '"' + (m.age === o[0] ? ' checked' : '') + '><span class="case"></span><span>' + o[1] + '</span></label>';
@@ -141,9 +186,9 @@ function envoyerLead(donnees) {
         '<div class="champ"><label for="poids">Poids (kg)</label><input id="poids" inputmode="decimal" autocomplete="off" placeholder="ex. 52" value="' + (m.poids || '') + '"></div></div>' +
         '<button class="passer" type="button" data-passer>Je préfère ne pas donner ma taille et mon poids</button></div>';
     } else if (e.type === 'vivre') {
-      h += '<fieldset class="question"><legend>' + e.titre + '</legend><p class="aide">' + e.aide + '</p>' + htmlOptions(e, true) + '</fieldset>' +
-        '<div class="champ champ--large" style="margin-top:16px"><label for="phrase">En une phrase, avec tes mots (facultatif)</label>' +
-        '<textarea id="phrase" maxlength="140" placeholder="ex. Je veux porter ma chemise sans qu\'elle flotte.">' + echapper(R.phrase || '') + '</textarea></div>';
+      h += '<fieldset class="question"><legend>' + titre + '</legend><p class="aide">' + aide + '</p>' + htmlOptions(e, true) + '</fieldset>' +
+        '<div class="champ champ--large" style="margin-top:16px"><label for="phrase">Ta phrase, avec tes mots (facultatif)</label>' +
+        '<textarea id="phrase" maxlength="140" placeholder="ex. Je porte ma chemise sans qu\'elle flotte.">' + echapper(R.phrase || '') + '</textarea></div>';
     }
     h += '<p class="erreur" role="alert"></p>';
     var auto = e.type === 'unique';
@@ -153,21 +198,22 @@ function envoyerLead(donnees) {
 
     var err = carte.querySelector('.erreur');
     carte.querySelector('[data-retour]').addEventListener('click', function () { n === 0 ? rendreIntro() : aller(n - 1, true); });
+    function suivante() { n === total - 1 ? terminer() : aller(n + 1, true); }
     if (auto) {
       carte.querySelectorAll('input[type=radio]').forEach(function (i) {
-        i.addEventListener('change', function () {
-          R[e.id] = i.value;
-          setTimeout(function () { n === total - 1 ? terminer() : aller(n + 1, true); }, reduit ? 0 : 450);
-        });
+        i.addEventListener('change', function () { R[e.id] = i.value; setTimeout(suivante, reduit ? 0 : 450); });
       });
     }
     var suiv = carte.querySelector('[data-suivant]');
-    if (suiv) suiv.addEventListener('click', function () { valider(e, err) && (n === total - 1 ? terminer() : aller(n + 1, true)); });
+    if (suiv) suiv.addEventListener('click', function () { valider(e, err) && suivante(); });
+    var champ = carte.querySelector('#prenom');
+    if (champ) champ.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); suiv.click(); } });
     var passer = carte.querySelector('[data-passer]');
     if (passer) passer.addEventListener('click', function () {
+      if (e.type === 'texte') { R[e.id] = ''; suivante(); return; }
       var age = carte.querySelector('input[name=q-age]:checked');
       if (!age) { err.textContent = typo('Choisis au moins ta tranche d\'âge, puis continue.'); return; }
-      R.mesures = { age: age.value, passe: true }; aller(n + 1, true);
+      R.mesures = { age: age.value, passe: true }; suivante();
     });
     if (focus) {
       var cible = carte.querySelector('legend, .titre-q');
@@ -179,6 +225,8 @@ function envoyerLead(donnees) {
 
   function valider(e, err) {
     err.textContent = '';
+    if (e.type === 'prenom') { R.prenom = (carte.querySelector('#prenom').value || '').trim().slice(0, 30); return true; }
+    if (e.type === 'texte') { R[e.id] = (carte.querySelector('#txt-' + e.id).value || '').trim().slice(0, 280); return true; }
     if (e.type === 'multi' || e.type === 'vivre') {
       var v = [].map.call(carte.querySelectorAll('input[type=checkbox]:checked'), function (i) { return i.value; });
       if (e.type === 'vivre') {
@@ -213,16 +261,16 @@ function envoyerLead(donnees) {
   }
 
   function terminer() {
-    carte.innerHTML = '<div class="chargement etape-entree" role="status"><div>Je relis tes réponses…<div class="points"><span></span><span></span><span></span></div></div></div>';
+    carte.innerHTML = typo('<div class="chargement etape-entree" role="status"><div>' + (avecPrenom('Je relis tes réponses, ', '…') || 'Je relis tes réponses…') + '<div class="points"><span></span><span></span><span></span></div></div></div>');
     setTimeout(afficherResultat, reduit ? 200 : 1600);
   }
 
   function afficherResultat() {
-    var DEPUIS = { enfance: "Depuis l'enfance, ton corps est le plus mince de la pièce.", ado: "Depuis l'adolescence, tu es « le mince », « la mince ».", annees: 'Depuis quelques années, tu te trouves trop mince.', recent: 'Tu as perdu du poids récemment, sans savoir pourquoi.' };
+    var DEPUIS = { enfance: "Depuis l'enfance, tu es le plus mince de la pièce.", ado: "Depuis l'adolescence, tu es « le mince », « la mince ».", annees: 'Depuis quelques années, tu te trouves trop mince.', recent: 'Tu as perdu du poids récemment, sans savoir pourquoi.' };
     var PHR = { vent: '« Le vent va t\'emporter »', mange: '« Mange un peu »', malade: '« Tu es malade ? »', age: '« Tu as quel âge ? »', maison: '« On ne te donne pas à manger ? »' };
     var MIR = { evite: 'Alors tu évites les photos.', cache: 'Alors tu caches ton corps sous des habits larges.', compare: 'Alors tu te compares aux autres, souvent.', ok: 'Ça va, mais tu sens que tu pourrais être mieux dans ton corps.' };
     var ESS = {
-      forcer: 'Tu as déjà essayé de te forcer à manger plus. Si ça n\'a pas suffi, ce n\'est pas un manque de volonté : manger plus, sans structure, ne marche pas pour tout le monde.',
+      forcer: 'Tu as déjà essayé de te forcer à manger plus. Si ça n\'a pas suffi, ce n\'est pas un manque de volonté : manger plus, sans structure, ne marche pas pour tout le monde. Pour moi non plus, ça n\'a pas marché.',
       sirops: 'Tu as essayé les sirops ou les comprimés. Beaucoup contiennent un médicament, la cyproheptadine, qui ne devrait se prendre que sur avis médical. Le défi n\'en utilise aucun.',
       poudres: 'Tu as essayé les poudres ou les compléments. Le défi n\'en demande aucun : tout passe par les repas d\'ici.',
       sport: 'Tu as essayé le sport. Sans assez d\'énergie dans l\'assiette, l\'effort a du mal à se voir.',
@@ -231,17 +279,17 @@ function envoyerLead(donnees) {
     var phrases = (R.phrases || []).filter(function (k) { return PHR[k]; }).map(function (k) { return '<span class="entendu">' + PHR[k] + '</span>'; });
     var m = R.mesures || {};
 
-    var miroir = '<p>' + (DEPUIS[R.depuis] || '') + '</p>';
+    var miroir = avecPrenom('<p class="resultat__salut">Merci, ', ', d\'avoir répondu franchement. Je t\'ai lu attentivement.</p>');
+    miroir += '<p>' + (DEPUIS[R.depuis] || '') + '</p>';
     if (phrases.length) miroir += '<p>Autour de toi, on te dit encore ' + liste(phrases) + '. ' + (MIR[R.miroir] || '') + '</p>';
     else if (MIR[R.miroir]) miroir += '<p>' + MIR[R.miroir] + '</p>';
+    if (R.blessure) miroir += '<p class="confidence">Tu m\'as confié un moment difficile. Ce que tu as vécu, je l\'ai vécu aussi : ce genre de phrase, on ne l\'oublie pas, même des années après. Tu n\'avais rien fait pour la mériter. Et tu as le droit de vouloir que ça s\'arrête.</p>';
     (R.essais || []).forEach(function (k) { if (ESS[k]) miroir += '<p>' + ESS[k] + '</p>'; });
 
-    /* Alerte santé prioritaire */
     var alerte = '';
     if (R.depuis === 'recent') alerte = '<div class="panneau panneau--alerte"><h3>' + icone('i-sante') + 'D\'abord, ta santé</h3><p>Une perte de poids récente et inexpliquée doit être vérifiée par un médecin, avant tout programme. Le défi pourra venir après, si ton médecin est d\'accord.</p></div>';
     if (m.age === 'moins18') alerte += '<div class="panneau panneau--alerte"><h3>' + icone('i-sante') + 'Tu as moins de 18 ans</h3><p>Le défi s\'adresse aux adultes. Parles-en d\'abord à un parent et à un professionnel de santé : à ton âge, le corps change encore beaucoup.</p></div>';
 
-    /* IMC indicatif */
     var imcHtml = '', imc = 0, horsCible = false;
     if (m.taille && m.poids && m.age !== 'moins18') {
       imc = m.poids / Math.pow(m.taille / 100, 2);
@@ -257,35 +305,38 @@ function envoyerLead(donnees) {
         '<p style="margin-top:14px">' + txt + '</p><p style="font-size:.875rem;color:var(--sauge)">L\'IMC est un repère, pas un diagnostic. Il ne dit rien, à lui seul, de ta santé. En cas de doute, demande l\'avis d\'un professionnel.</p></div>';
     }
 
+    var image = IMAGES[R.image];
     var phrase = phraseFinale();
     var cta = horsCible || R.depuis === 'recent' || m.age === 'moins18'
-      ? '<div class="heros__actions"><a class="lien-discret" href="#histoire">Lire quand même l\'histoire d\'Enock ' + icone('i-bas') + '</a></div>'
-      : '<div class="heros__actions"><a class="bouton bouton--plein" href="' + lienAchat() + '" data-achat>Commencer le défi, 3 999 F ' + icone('i-fleche') + '</a><a class="lien-discret" href="#histoire">D\'abord, lire l\'histoire d\'Enock</a><a class="lien-discret" href="#offre">Voir ce qui est inclus</a></div>';
+      ? '<div class="heros__actions"><a class="lien-discret" href="#histoire">Lire quand même mon histoire ' + icone('i-bas') + '</a></div>'
+      : '<div class="heros__actions"><a class="bouton bouton--plein" href="' + lienAchat() + '" data-achat>Commencer le défi ' + icone('i-fleche') + '</a><a class="lien-discret" href="#histoire">D\'abord, lire mon histoire</a><a class="lien-discret" href="#contenu">Voir ce que tu reçois</a></div>';
 
     var h = '<div class="resultat__grille">' +
-      '<div class="miroir"><p class="etiquette">Ton résultat</p><h2 id="titre-resultat">Ce que tes réponses racontent.</h2>' + miroir +
-      '<div class="cout"><h3>Les 60 prochains jours vont passer de toute façon.</h3>' +
-      '<div class="deux-chemins"><div class="chemin chemin--a"><b>Soit ils ressemblent aux précédents</b>Les mêmes remarques, les mêmes photos évitées, les mêmes habits trop larges.</div>' +
-      '<div class="chemin chemin--b"><b>Soit ce sont 60 jours qui comptent</b>Des repas à heure fixe, une assiette plus riche, une case cochée chaque soir.</div></div>' +
+      '<div class="miroir"><p class="etiquette">Ton résultat</p><h2 id="titre-resultat">Ce que tes réponses nous apprennent.</h2>' + miroir +
+      '<div class="cout"><h3>Dans 60 jours, il existera deux versions de toi.</h3>' +
+      '<div class="deux-chemins"><div class="chemin chemin--a"><b>Celle qui n\'a rien changé</b>Elle entend encore les mêmes remarques, évite encore les photos, et se demande encore comment font les autres. Ce n\'est pas un échec : c\'est juste le même chemin.</div>' +
+      '<div class="chemin chemin--b"><b>Celle qui a suivi le programme</b>Elle a mangé à son rythme, avec des assiettes plus riches, et coché une case chaque soir. Elle a 60 jours d\'habitudes derrière elle' + (image ? ', et elle s\'est donné une vraie chance d\'approcher ce que tu as imaginé : ' + image + '.' : '.') + '</div></div>' +
+      '<p class="choix-doux">Les deux sont possibles. La seule différence, c\'est ce que tu décides ce soir.</p>' +
       cta + '</div></div>' +
       '<div>' + alerte + imcHtml +
       '<div class="panneau"><h3>Ta phrase</h3><p class="phrase-perso">« ' + echapper(phrase) + ' »</p><p style="margin-top:14px">' + (R.phrase ? 'Ce sont tes mots. ' : '') + 'Garde-la. Si tu fais le défi, écris-la sur la première page de ton carnet.</p></div>' +
-      (R.pret === 'sais-pas' ? '<div class="panneau"><h3>Tu hésites</h3><p>C\'est normal. Personne n\'est prêt à 100 %. Le défi ne demande pas d\'être parfait : un jour raté n\'efface pas les autres.</p></div>' : '') +
+      (R.pret === 'sais-pas' ? '<div class="panneau"><h3>Tu hésites</h3><p>C\'est normal. Moi non plus, je n\'étais pas prêt à 100 %. Le défi ne demande pas d\'être parfait : un jour raté n\'efface pas les autres.</p></div>' : '') +
       '</div></div>';
 
     var sec = document.getElementById('resultat');
     document.getElementById('resultat-contenu').innerHTML = typo(h);
     brancherAchats(sec);
     sec.hidden = false;
-    carte.innerHTML = typo('<div class="intro-test etape-entree"><p class="titre-q" style="font-family:var(--serif);font-size:1.75rem;color:var(--foret);margin:0 0 14px">Merci d\'avoir répondu franchement.</p><a class="bouton" href="#resultat">Voir mon résultat ' + icone('i-bas') + '</a><p style="margin:14px 0 0"><button class="passer" type="button" data-refaire>Refaire le test</button></p></div>');
+    carte.innerHTML = typo('<div class="intro-test etape-entree"><p class="titre-q" style="font-family:var(--serif);font-size:1.75rem;color:var(--foret);margin:0 0 14px">C\'est noté' + avecPrenom(', ', '') + '. Ton résultat est prêt.</p><a class="bouton" href="#resultat">Voir mon résultat ' + icone('i-bas') + '</a><p style="margin:14px 0 0"><button class="passer" type="button" data-refaire>Refaire le test</button></p></div>');
     carte.classList.add('fini');
     carte.querySelector('[data-refaire]').addEventListener('click', function () { R = {}; sec.hidden = true; carte.classList.remove('fini'); aller(0, true); });
     sec.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth', block: 'start' });
     setTimeout(function () { sec.focus({ preventScroll: true }); }, reduit ? 0 : 700);
 
-    ecrire('lv_test', { phrase: phrase, date: new Date().toISOString().slice(0, 10) });
+    ecrire('lv_test', { phrase: phrase, prenom: sonPrenom(), date: new Date().toISOString().slice(0, 10) });
     appliquerPhrase(phrase, !!R.phrase || !!(R.vivre || []).length);
-    var donnees = { reponses: R, imc: imc ? Math.round(imc * 10) / 10 : null };
+    /* La confidence (R.blessure) n'est jamais stockée ni envoyée. */
+    var donnees = { reponses: Object.assign({}, R, { blessure: R.blessure ? '(non transmis)' : '' }), imc: imc ? Math.round(imc * 10) / 10 : null };
     suivi.lead({ content_name: 'Test 2 minutes' });
     envoyerLead(donnees);
   }
@@ -358,6 +409,7 @@ function envoyerLead(donnees) {
   /* ---------------- Démarrage ---------------- */
   document.addEventListener('DOMContentLoaded', function () {
     if (reduit) document.documentElement.classList.add('reduit');
+    appliquerNarrateur();
     brancherAchats();
     decor();
     video();
