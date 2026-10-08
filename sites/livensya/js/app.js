@@ -1,0 +1,376 @@
+/* Livensya · Défi 60 jours · logique de la page
+   ------------------------------------------------------------------
+   RÉGLAGES (les seules lignes à modifier) */
+
+/* Lien de paiement Chariow du produit prd_4bisyd7x.
+   Valeur provisoire : la boutique. Lien direct probable (vu sur la boutique, à confirmer par Enock) :
+   https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout */
+const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store';
+
+/* Vidéo faceless (HyperFrames) : laisse vide tant que le fichier n'existe pas.
+   Exemple : 'videos/defi-60-jours.mp4' et 'videos/affiche.webp' */
+const VIDEO_SRC = '';
+const VIDEO_AFFICHE = '';
+
+/* Pour brancher plus tard une collecte (Google Sheets, CRM, WhatsApp…).
+   Pour l'instant : NE FAIT RIEN, aucune donnée ne quitte le téléphone. */
+function envoyerLead(donnees) {
+  // Exemple futur :
+  // fetch('https://ton-service.exemple/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(donnees) });
+  return donnees && false;
+}
+
+/* ------------------------------------------------------------------ */
+(function () {
+  'use strict';
+
+  var APERCU = /[?&]apercu=1/.test(location.search);
+  var reduit = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PRODUIT = { content_ids: ['prd_4bisyd7x'], content_type: 'product', content_name: 'Défi 60 jours', value: 3999, currency: 'XOF' };
+
+  /* Typographie française : espace fine insécable avant ? ! : ; et dans les guillemets */
+  function typo(t) {
+    return String(t)
+      .replace(/ ([?!:;»])/g, ' $1')
+      .replace(/([«]) /g, '$1 ');
+  }
+  function echapper(t) {
+    return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+  }
+  function lire(cle) { try { return JSON.parse(localStorage.getItem(cle)); } catch (e) { return null; } }
+  function ecrire(cle, v) { try { localStorage.setItem(cle, JSON.stringify(v)); } catch (e) {} }
+  var suivi = window.lvSuivi || { suivre: function () {}, lead: function () {}, initiateCheckout: function () { return 'x'; }, actif: false };
+
+  var ICONE_COCHE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  function icone(id) { return '<svg class="icone" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+
+  /* ---------------- Liens d'achat ---------------- */
+  function lienAchat() {
+    var url = LIEN_PAIEMENT;
+    var p = new URLSearchParams(location.search), garder = [];
+    p.forEach(function (v, k) { if (/^utm_|^fbclid$/.test(k)) garder.push(encodeURIComponent(k) + '=' + encodeURIComponent(v)); });
+    if (garder.length) url += (url.indexOf('?') > -1 ? '&' : '?') + garder.join('&');
+    return url;
+  }
+  function brancherAchats(racine) {
+    (racine || document).querySelectorAll('[data-achat]').forEach(function (a) {
+      if (a.dataset.branche) return;
+      a.dataset.branche = '1';
+      a.href = lienAchat();
+      a.addEventListener('click', function (e) {
+        var id = suivi.initiateCheckout(PRODUIT);
+        if (id === null) { e.preventDefault(); return; } /* double-clic ignoré */
+        if (suivi.actif) { /* laisse 300 ms au Pixel pour partir */
+          e.preventDefault(); a.setAttribute('aria-busy', 'true');
+          setTimeout(function () { location.href = a.href; }, 300);
+        }
+      });
+    });
+  }
+
+  /* ---------------- Le test ---------------- */
+  var ETAPES = [
+    { id: 'depuis', type: 'unique', titre: 'Depuis quand tu te trouves trop mince ?',
+      options: [['enfance', "Depuis toujours, depuis l'enfance"], ['ado', "Depuis l'adolescence"], ['annees', 'Depuis quelques années'], ['recent', "Depuis peu : j'ai perdu du poids sans savoir pourquoi"]] },
+    { id: 'phrases', type: 'multi', titre: "Qu'est-ce qu'on te dit le plus souvent ?", aide: 'Choisis tout ce que tu entends.', citations: true,
+      options: [['vent', '« Le vent va t\'emporter. »'], ['mange', '« Mange un peu, toi. »'], ['malade', '« Tu es malade ? »'], ['age', '« Tu as quel âge, 15 ans ? »'], ['maison', '« On ne te donne pas à manger chez toi ? »'], ['rien', "On ne me dit rien, mais je le pense"]] },
+    { id: 'essais', type: 'multi', titre: "Qu'est-ce que tu as déjà essayé ?", aide: 'Choisis tout ce qui te concerne.',
+      encart: '<strong>Ces phrases, Enock les a entendues aussi.</strong> À 24 ans, on lui donnait 14 ans. Tu n\'es pas la seule personne à vivre ça.',
+      options: [['forcer', 'Me forcer à manger plus'], ['sirops', 'Des sirops ou des comprimés pour grossir'], ['poudres', 'Des poudres ou des compléments'], ['sport', 'Le sport ou la musculation'], ['rien', "Rien de précis pour l'instant"]] },
+    { id: 'miroir', type: 'unique', titre: 'Devant le miroir ou sur une photo, tu…',
+      options: [['evite', "J'évite les photos"], ['cache', 'Je cache mon corps sous des habits larges'], ['compare', 'Je me compare aux autres'], ['ok', 'Ça va, mais je veux me sentir mieux']] },
+    { id: 'mesures', type: 'mesures', titre: 'Ton âge, ta taille et ton poids',
+      aide: 'Pourquoi on te demande ça : pour calculer ton IMC, un repère indicatif. Rien n\'est envoyé, tout reste sur ton téléphone.' },
+    { id: 'objectif', type: 'unique', titre: 'Ce que tu veux en premier',
+      encart: '<strong>Merci.</strong> Un chiffre n\'est pas un jugement. C\'est juste ton point de départ.',
+      options: [['sain', 'Prendre du poids sans me rendre malade'], ['habits', 'Remplir mes vêtements'], ['energie', "Avoir plus d'énergie dans la journée"], ['photos', 'Me sentir bien sur les photos']] },
+    { id: 'vivre', type: 'vivre', titre: 'Dans 60 jours, tu veux vivre quoi ?', aide: 'Choisis, puis écris-le avec tes mots si tu veux.',
+      options: [['tenue', 'Porter une tenue ajustée sans gêne'], ['enfant', "Qu'on arrête de me prendre pour un enfant"], ['photo', "Une photo de moi que j'ai envie de partager"], ['plage', 'Aller à la plage sans me cacher'], ['remarques', 'Ne plus entendre ces remarques']] },
+    { id: 'pret', type: 'unique', titre: 'Le défi demande de suivre le programme chaque jour, pendant 60 jours. Tu es prêt ou prête ?',
+      options: [['oui', 'Oui, je suis prêt ou prête'], ['essayer', 'Je veux essayer'], ['sais-pas', 'Je ne sais pas encore']] }
+  ];
+  var PHRASES_VIVRE = {
+    tenue: 'Dans 60 jours, je porte une tenue ajustée sans gêne.',
+    enfant: "Dans 60 jours, on ne me prend plus pour un enfant.",
+    photo: "Dans 60 jours, j'ai une photo de moi que j'ai envie de partager.",
+    plage: 'Dans 60 jours, je vais à la plage sans me cacher.',
+    remarques: "Dans 60 jours, ces remarques ne me touchent plus."
+  };
+
+  var carte = document.getElementById('carte-test');
+  var R = {}; var etape = -1;
+
+  function rendreIntro() {
+    etape = -1;
+    carte.innerHTML = typo(
+      '<div class="intro-test etape-entree">' +
+      '<p class="titre-q" style="font-family:var(--serif);font-size:clamp(1.5rem,5.6vw,2rem);line-height:1.18;color:var(--foret);margin:0 0 12px">Prends deux minutes rien que pour toi.</p>' +
+      '<p>Il n\'y a pas de bonne ou de mauvaise réponse. Tu verras ensuite ta situation résumée en une page.</p>' +
+      '<ul><li>' + icone('i-coche') + '<span>8 questions courtes</span></li>' +
+      '<li>' + icone('i-coche') + '<span>Ton IMC indicatif, expliqué simplement</span></li>' +
+      '<li>' + icone('i-cadenas') + '<span>Tes réponses restent sur ton téléphone</span></li></ul>' +
+      '<button class="bouton bouton--plein" type="button" data-commencer>Commencer le test ' + icone('i-fleche') + '</button></div>');
+    carte.querySelector('[data-commencer]').addEventListener('click', function () { aller(0, true); });
+  }
+
+  function htmlOptions(e, multi) {
+    var nom = 'q-' + e.id, val = R[e.id];
+    return '<div class="choix' + (multi ? ' choix--multi' : '') + '">' + e.options.map(function (o) {
+      var coche = multi ? (val || []).indexOf(o[0]) > -1 : val === o[0];
+      return '<label><input type="' + (multi ? 'checkbox' : 'radio') + '" name="' + nom + '" value="' + o[0] + '"' + (coche ? ' checked' : '') + '>' +
+        '<span class="case">' + ICONE_COCHE + '</span><span' + (e.citations && o[0] !== 'rien' ? ' class="citation"' : '') + '>' + o[1] + '</span></label>';
+    }).join('') + '</div>';
+  }
+
+  function aller(n, focus) {
+    etape = n;
+    var e = ETAPES[n], total = ETAPES.length;
+    var h = '<div class="etape-entree">';
+    h += '<div class="progression"><span>' + (n + 1) + ' sur ' + total + '</span><span class="progression__barre" aria-hidden="true"><span style="width:' + Math.round((n / total) * 100) + '%"></span></span></div>';
+    if (e.encart) h += '<p class="encart">' + e.encart + '</p>';
+    if (e.type === 'unique' || e.type === 'multi') {
+      h += '<fieldset class="question"><legend>' + e.titre + '</legend>' + (e.aide ? '<p class="aide">' + e.aide + '</p>' : '') + htmlOptions(e, e.type === 'multi') + '</fieldset>';
+    } else if (e.type === 'mesures') {
+      var m = R.mesures || {};
+      h += '<div class="question"><p class="titre-q" id="t-mes">' + e.titre + '</p><p class="aide">' + e.aide + '</p>' +
+        '<fieldset class="question" style="margin-top:14px"><legend class="libelle" style="font:700 .9375rem var(--sans);color:var(--encre)">Ton âge</legend>' +
+        '<div class="choix puces">' + [['moins18', 'Moins de 18 ans'], ['18-24', '18 à 24 ans'], ['25-34', '25 à 34 ans'], ['35plus', '35 ans et plus']].map(function (o) {
+          return '<label><input type="radio" name="q-age" value="' + o[0] + '"' + (m.age === o[0] ? ' checked' : '') + '><span class="case"></span><span>' + o[1] + '</span></label>';
+        }).join('') + '</div></fieldset>' +
+        '<div class="champs"><div class="champ"><label for="taille">Taille (cm)</label><input id="taille" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="ex. 175" value="' + (m.taille || '') + '"></div>' +
+        '<div class="champ"><label for="poids">Poids (kg)</label><input id="poids" inputmode="decimal" autocomplete="off" placeholder="ex. 52" value="' + (m.poids || '') + '"></div></div>' +
+        '<button class="passer" type="button" data-passer>Je préfère ne pas donner ma taille et mon poids</button></div>';
+    } else if (e.type === 'vivre') {
+      h += '<fieldset class="question"><legend>' + e.titre + '</legend><p class="aide">' + e.aide + '</p>' + htmlOptions(e, true) + '</fieldset>' +
+        '<div class="champ champ--large" style="margin-top:16px"><label for="phrase">En une phrase, avec tes mots (facultatif)</label>' +
+        '<textarea id="phrase" maxlength="140" placeholder="ex. Je veux porter ma chemise sans qu\'elle flotte.">' + echapper(R.phrase || '') + '</textarea></div>';
+    }
+    h += '<p class="erreur" role="alert"></p>';
+    var auto = e.type === 'unique';
+    h += '<div class="test__nav"><button class="retour" type="button" data-retour' + (n === 0 ? ' hidden' : '') + '>' + icone('i-retour') + 'Retour</button>' +
+      (auto ? '<span class="aide" style="font-size:.875rem;color:var(--sauge)">Choisis une réponse</span>' : '<button class="bouton" type="button" data-suivant>' + (n === total - 1 ? 'Voir mon résultat' : 'Continuer') + ' ' + icone('i-fleche') + '</button>') + '</div></div>';
+    carte.innerHTML = typo(h);
+
+    var err = carte.querySelector('.erreur');
+    carte.querySelector('[data-retour]').addEventListener('click', function () { n === 0 ? rendreIntro() : aller(n - 1, true); });
+    if (auto) {
+      carte.querySelectorAll('input[type=radio]').forEach(function (i) {
+        i.addEventListener('change', function () {
+          R[e.id] = i.value;
+          setTimeout(function () { n === total - 1 ? terminer() : aller(n + 1, true); }, reduit ? 0 : 450);
+        });
+      });
+    }
+    var suiv = carte.querySelector('[data-suivant]');
+    if (suiv) suiv.addEventListener('click', function () { valider(e, err) && (n === total - 1 ? terminer() : aller(n + 1, true)); });
+    var passer = carte.querySelector('[data-passer]');
+    if (passer) passer.addEventListener('click', function () {
+      var age = carte.querySelector('input[name=q-age]:checked');
+      if (!age) { err.textContent = typo('Choisis au moins ta tranche d\'âge, puis continue.'); return; }
+      R.mesures = { age: age.value, passe: true }; aller(n + 1, true);
+    });
+    if (focus) {
+      var cible = carte.querySelector('legend, .titre-q');
+      if (cible) { cible.setAttribute('tabindex', '-1'); cible.focus({ preventScroll: true }); }
+      var haut = carte.getBoundingClientRect().top;
+      if (haut < 0 || haut > window.innerHeight * 0.4) carte.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth', block: 'start' });
+    }
+  }
+
+  function valider(e, err) {
+    err.textContent = '';
+    if (e.type === 'multi' || e.type === 'vivre') {
+      var v = [].map.call(carte.querySelectorAll('input[type=checkbox]:checked'), function (i) { return i.value; });
+      if (e.type === 'vivre') {
+        R.phrase = (carte.querySelector('#phrase').value || '').trim().slice(0, 140);
+        if (!v.length && !R.phrase) { err.textContent = typo('Choisis au moins une réponse, ou écris ta phrase.'); return false; }
+      } else if (!v.length) { err.textContent = typo('Choisis au moins une réponse.'); return false; }
+      R[e.id] = v; return true;
+    }
+    if (e.type === 'mesures') {
+      var age = carte.querySelector('input[name=q-age]:checked');
+      var t = parseFloat((carte.querySelector('#taille').value || '').replace(',', '.'));
+      var p = parseFloat((carte.querySelector('#poids').value || '').replace(',', '.'));
+      if (!age) { err.textContent = typo('Choisis ta tranche d\'âge.'); return false; }
+      if (!(t >= 120 && t <= 220) || !(p >= 25 && p <= 180)) {
+        err.textContent = typo('Vérifie ta taille (en centimètres, ex. 175) et ton poids (en kilos, ex. 52). Ou passe cette question.');
+        return false;
+      }
+      R.mesures = { age: age.value, taille: t, poids: p }; return true;
+    }
+    return true;
+  }
+
+  /* ---------------- Le résultat ---------------- */
+  function liste(mots) {
+    if (mots.length < 2) return mots.join('');
+    return mots.slice(0, -1).join(', ') + ' et ' + mots[mots.length - 1];
+  }
+  function phraseFinale() {
+    if (R.phrase) return R.phrase.replace(/^[«"\s]+|[»"\s]+$/g, '');
+    var c = (R.vivre || [])[0];
+    return PHRASES_VIVRE[c] || 'Dans 60 jours, je me reconnais sur mes photos.';
+  }
+
+  function terminer() {
+    carte.innerHTML = '<div class="chargement etape-entree" role="status"><div>Je relis tes réponses…<div class="points"><span></span><span></span><span></span></div></div></div>';
+    setTimeout(afficherResultat, reduit ? 200 : 1600);
+  }
+
+  function afficherResultat() {
+    var DEPUIS = { enfance: "Depuis l'enfance, ton corps est le plus mince de la pièce.", ado: "Depuis l'adolescence, tu es « le mince », « la mince ».", annees: 'Depuis quelques années, tu te trouves trop mince.', recent: 'Tu as perdu du poids récemment, sans savoir pourquoi.' };
+    var PHR = { vent: '« Le vent va t\'emporter »', mange: '« Mange un peu »', malade: '« Tu es malade ? »', age: '« Tu as quel âge ? »', maison: '« On ne te donne pas à manger ? »' };
+    var MIR = { evite: 'Alors tu évites les photos.', cache: 'Alors tu caches ton corps sous des habits larges.', compare: 'Alors tu te compares aux autres, souvent.', ok: 'Ça va, mais tu sens que tu pourrais être mieux dans ton corps.' };
+    var ESS = {
+      forcer: 'Tu as déjà essayé de te forcer à manger plus. Si ça n\'a pas suffi, ce n\'est pas un manque de volonté : manger plus, sans structure, ne marche pas pour tout le monde.',
+      sirops: 'Tu as essayé les sirops ou les comprimés. Beaucoup contiennent un médicament, la cyproheptadine, qui ne devrait se prendre que sur avis médical. Le défi n\'en utilise aucun.',
+      poudres: 'Tu as essayé les poudres ou les compléments. Le défi n\'en demande aucun : tout passe par les repas d\'ici.',
+      sport: 'Tu as essayé le sport. Sans assez d\'énergie dans l\'assiette, l\'effort a du mal à se voir.',
+      rien: 'Tu n\'as encore rien essayé de précis. Tu pars sans mauvaises habitudes à défaire.'
+    };
+    var phrases = (R.phrases || []).filter(function (k) { return PHR[k]; }).map(function (k) { return '<span class="entendu">' + PHR[k] + '</span>'; });
+    var m = R.mesures || {};
+
+    var miroir = '<p>' + (DEPUIS[R.depuis] || '') + '</p>';
+    if (phrases.length) miroir += '<p>Autour de toi, on te dit encore ' + liste(phrases) + '. ' + (MIR[R.miroir] || '') + '</p>';
+    else if (MIR[R.miroir]) miroir += '<p>' + MIR[R.miroir] + '</p>';
+    (R.essais || []).forEach(function (k) { if (ESS[k]) miroir += '<p>' + ESS[k] + '</p>'; });
+
+    /* Alerte santé prioritaire */
+    var alerte = '';
+    if (R.depuis === 'recent') alerte = '<div class="panneau panneau--alerte"><h3>' + icone('i-sante') + 'D\'abord, ta santé</h3><p>Une perte de poids récente et inexpliquée doit être vérifiée par un médecin, avant tout programme. Le défi pourra venir après, si ton médecin est d\'accord.</p></div>';
+    if (m.age === 'moins18') alerte += '<div class="panneau panneau--alerte"><h3>' + icone('i-sante') + 'Tu as moins de 18 ans</h3><p>Le défi s\'adresse aux adultes. Parles-en d\'abord à un parent et à un professionnel de santé : à ton âge, le corps change encore beaucoup.</p></div>';
+
+    /* IMC indicatif */
+    var imcHtml = '', imc = 0, horsCible = false;
+    if (m.taille && m.poids && m.age !== 'moins18') {
+      imc = m.poids / Math.pow(m.taille / 100, 2);
+      var txt;
+      if (imc < 16) txt = 'Ton IMC est très bas. Avant de commencer, fais un contrôle chez un médecin : c\'est la première étape, pas une option.';
+      else if (imc < 18.5) txt = 'Selon le repère de l\'OMS, c\'est la zone dite d\'insuffisance pondérale. C\'est exactement pour cette situation que le défi a été pensé.';
+      else if (imc < 25) txt = 'Tu es dans la zone dite normale. Tu peux quand même vouloir te sentir plus solide : le défi t\'aide à construire des repas plus riches, sans viser un chiffre.';
+      else { txt = 'Avec cet IMC, le défi n\'est probablement pas ce qu\'il te faut : il est fait pour prendre du poids. Parle de ton objectif à un professionnel de santé.'; horsCible = true; }
+      var pos = Math.max(2, Math.min(98, (imc - 14) / 16 * 100));
+      imcHtml = '<div class="panneau"><h3>Ton IMC indicatif</h3><p class="imc__valeur">' + imc.toFixed(1).replace('.', ',') + '</p>' +
+        '<div class="imc__echelle" aria-hidden="true"><span class="imc__curseur" style="left:' + pos + '%"></span></div>' +
+        '<div class="imc__reperes" aria-hidden="true"><span>moins de 18,5</span><span>18,5 à 25</span><span>plus de 25</span></div>' +
+        '<p style="margin-top:14px">' + txt + '</p><p style="font-size:.875rem;color:var(--sauge)">L\'IMC est un repère, pas un diagnostic. Il ne dit rien, à lui seul, de ta santé. En cas de doute, demande l\'avis d\'un professionnel.</p></div>';
+    }
+
+    var phrase = phraseFinale();
+    var cta = horsCible || R.depuis === 'recent' || m.age === 'moins18'
+      ? '<div class="heros__actions"><a class="lien-discret" href="#histoire">Lire quand même l\'histoire d\'Enock ' + icone('i-bas') + '</a></div>'
+      : '<div class="heros__actions"><a class="bouton bouton--plein" href="' + lienAchat() + '" data-achat>Commencer le défi, 3 999 F ' + icone('i-fleche') + '</a><a class="lien-discret" href="#histoire">D\'abord, lire l\'histoire d\'Enock</a><a class="lien-discret" href="#offre">Voir ce qui est inclus</a></div>';
+
+    var h = '<div class="resultat__grille">' +
+      '<div class="miroir"><p class="etiquette">Ton résultat</p><h2 id="titre-resultat">Ce que tes réponses racontent.</h2>' + miroir +
+      '<div class="cout"><h3>Les 60 prochains jours vont passer de toute façon.</h3>' +
+      '<div class="deux-chemins"><div class="chemin chemin--a"><b>Soit ils ressemblent aux précédents</b>Les mêmes remarques, les mêmes photos évitées, les mêmes habits trop larges.</div>' +
+      '<div class="chemin chemin--b"><b>Soit ce sont 60 jours qui comptent</b>Des repas à heure fixe, une assiette plus riche, une case cochée chaque soir.</div></div>' +
+      cta + '</div></div>' +
+      '<div>' + alerte + imcHtml +
+      '<div class="panneau"><h3>Ta phrase</h3><p class="phrase-perso">« ' + echapper(phrase) + ' »</p><p style="margin-top:14px">' + (R.phrase ? 'Ce sont tes mots. ' : '') + 'Garde-la. Si tu fais le défi, écris-la sur la première page de ton carnet.</p></div>' +
+      (R.pret === 'sais-pas' ? '<div class="panneau"><h3>Tu hésites</h3><p>C\'est normal. Personne n\'est prêt à 100 %. Le défi ne demande pas d\'être parfait : un jour raté n\'efface pas les autres.</p></div>' : '') +
+      '</div></div>';
+
+    var sec = document.getElementById('resultat');
+    document.getElementById('resultat-contenu').innerHTML = typo(h);
+    brancherAchats(sec);
+    sec.hidden = false;
+    carte.innerHTML = typo('<div class="intro-test etape-entree"><p class="titre-q" style="font-family:var(--serif);font-size:1.75rem;color:var(--foret);margin:0 0 14px">Merci d\'avoir répondu franchement.</p><a class="bouton" href="#resultat">Voir mon résultat ' + icone('i-bas') + '</a><p style="margin:14px 0 0"><button class="passer" type="button" data-refaire>Refaire le test</button></p></div>');
+    carte.classList.add('fini');
+    carte.querySelector('[data-refaire]').addEventListener('click', function () { R = {}; sec.hidden = true; carte.classList.remove('fini'); aller(0, true); });
+    sec.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth', block: 'start' });
+    setTimeout(function () { sec.focus({ preventScroll: true }); }, reduit ? 0 : 700);
+
+    ecrire('lv_test', { phrase: phrase, date: new Date().toISOString().slice(0, 10) });
+    appliquerPhrase(phrase, !!R.phrase || !!(R.vivre || []).length);
+    var donnees = { reponses: R, imc: imc ? Math.round(imc * 10) / 10 : null };
+    suivi.lead({ content_name: 'Test 2 minutes' });
+    envoyerLead(donnees);
+  }
+
+  function appliquerPhrase(phrase, sienne) {
+    var cible = document.querySelector('[data-phrase-finale]');
+    if (!cible || !phrase) return;
+    cible.textContent = typo(phrase);
+    var leg = document.querySelector('[data-phrase-legende]');
+    if (leg && sienne) leg.textContent = typo('C\'est toi qui l\'as écrit dans le test. Les mots qu\'on t\'a dits, tu ne les as pas choisis. Ceux-là, si. Le jour 1 peut commencer ce soir.');
+  }
+
+  /* ---------------- Décor : calendrier et trajet ---------------- */
+  function decor() {
+    var cal = document.getElementById('calendrier');
+    if (cal) { var h = ''; for (var i = 1; i <= 60; i++) h += '<span class="' + (i === 9 ? 'rate' : i <= 23 ? 'fait' : '') + '"></span>'; cal.innerHTML = h; }
+    var tr = document.getElementById('trajet');
+    if (tr) { var t = ''; for (var j = 1; j <= 60; j++) t += '<span class="' + (j === 1 || j === 30 || j === 60 ? 'marque-j' : '') + '"></span>'; tr.innerHTML = t; }
+  }
+
+  /* ---------------- Vidéo faceless ---------------- */
+  function video() {
+    var sec = document.querySelector('[data-video]');
+    if (!sec) return;
+    if (!VIDEO_SRC && !APERCU) return; /* reste masquée */
+    sec.hidden = false;
+    var lecteur = document.getElementById('lecteur'), bouton = sec.querySelector('[data-lire-video]');
+    if (VIDEO_AFFICHE) { bouton.style.background = 'center / cover no-repeat url("' + VIDEO_AFFICHE + '")'; }
+    bouton.addEventListener('click', function () {
+      if (!VIDEO_SRC) {
+        if (!lecteur.querySelector('.lecteur__message')) lecteur.insertAdjacentHTML('beforeend', '<p class="lecteur__message" role="status">' + typo('Aperçu : la vidéo n\'est pas encore ajoutée (VIDEO_SRC est vide).') + '</p>');
+        return;
+      }
+      var v = document.createElement('video');
+      v.src = VIDEO_SRC; v.controls = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto';
+      if (VIDEO_AFFICHE) v.poster = VIDEO_AFFICHE;
+      lecteur.innerHTML = ''; lecteur.appendChild(v);
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    });
+  }
+
+  /* ---------------- Observateurs : apparitions, barre d'achat, ViewContent ---------------- */
+  function observateurs() {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.revele').forEach(function (el) { el.classList.add('vu'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('vu'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.revele').forEach(function (el) { io.observe(el); });
+
+    var barre = document.getElementById('barre-achat');
+    var zones = {}, cibles = ['.heros', '#test', '#resultat', '#offre', '.final'];
+    var ob = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { zones[e.target.dataset.zone] = e.isIntersecting; });
+      var montrer = !zones['.heros'] && !zones['#test'] && !zones['#offre'] && !zones['.final'];
+      barre.classList.toggle('visible', montrer);
+      barre.setAttribute('aria-hidden', montrer ? 'false' : 'true');
+      var a = barre.querySelector('a'); if (a) a.tabIndex = montrer ? 0 : -1;
+    });
+    cibles.forEach(function (c) { var el = document.querySelector(c); if (el) { el.dataset.zone = c; ob.observe(el); } });
+
+    var offre = document.getElementById('offre'), vu = false;
+    if (offre) new IntersectionObserver(function (es, o) {
+      if (!vu && es[0].isIntersecting) { vu = true; suivi.suivre('ViewContent', PRODUIT); o.disconnect(); }
+    }, { threshold: 0.35 }).observe(offre);
+  }
+
+  /* ---------------- Démarrage ---------------- */
+  document.addEventListener('DOMContentLoaded', function () {
+    if (reduit) document.documentElement.classList.add('reduit');
+    brancherAchats();
+    decor();
+    video();
+    observateurs();
+    if (carte) rendreIntro();
+    document.querySelectorAll('[data-ouvrir-test]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('test').scrollIntoView({ behavior: reduit ? 'auto' : 'smooth', block: 'start' });
+        if (etape === -1 && document.getElementById('resultat').hidden) setTimeout(function () { aller(0, true); }, reduit ? 0 : 500);
+      });
+    });
+    var memo = lire('lv_test');
+    if (memo && memo.phrase) appliquerPhrase(memo.phrase, true);
+  });
+})();

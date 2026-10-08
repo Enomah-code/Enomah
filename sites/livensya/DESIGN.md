@@ -13,64 +13,72 @@
 
 > **« Les mots qu'on t'a dits, puis les tiens. »**
 
-La page s'ouvre la nuit, sur les phrases que la personne entend depuis des années, posées en grand italique et barrées une à une. Elle se termine au matin, sur la phrase que la personne a écrite elle-même dans le test (« ce que je veux vivre dans 60 jours »), dans le même italique, mais cette fois non barrée. Tout le tunnel est ce passage : de la nuit (le miroir, les remarques) au matin (le jour 1).
+La page s'ouvre sur les phrases que la personne entend depuis des années (« Le vent va t'emporter. », « Mange un peu, toi. », « Tu as quel âge, 14 ans ? »), posées en grand italique, puis barrées lentement par **la vague dorée du logo Livensya**. La même vague revient à la fin pour **souligner** la phrase que la personne a écrite elle-même dans le test (« ce que je veux vivre dans 60 jours »). Le trait qui barrait devient le trait qui souligne : c'est tout le tunnel.
 
-Le choc émotionnel ne vient pas d'un faux compte à rebours : il vient du miroir. Le test renvoie à la personne ses propres réponses, en une page, puis lui montre ce que coûtent 60 jours de plus sans rien changer.
+Le choc émotionnel passe par les mots et le rythme, jamais par des couleurs agressives : pas de rouge, pas de compte à rebours, pas de contraste dur. Le test renvoie à la personne ses propres réponses, en une page, puis lui montre ce que coûtent 60 jours de plus sans rien changer. Le visiteur doit se sentir compris et en sécurité.
 
-## 3. Palette : le branding Chariow d'Enock (contraste vérifié, WCAG 2.2)
+**Ambiance (consigne d'Enock)** : la douceur de ses visuels. Lumière naturelle chaude, crème, lin, bois clair, plantes, ombres de feuillage en filigrane (découpées dans ses bannières), coins arrondis, ombres portées très douces, beaucoup d'air, animations lentes (0,7 à 1,2 s) et fluides.
 
-Construite sur les couleurs déjà choisies par Enock : le vert citron de sa boutique Chariow (`--brand-color: #a5f600`), le vert de ses titres produit (`rgb(0,138,0)`) et le vert forêt de son logo (relevé dans le fichier : `#1E2E25`).
+## 3. Palette : la charte Livensya (contraste vérifié, WCAG 2.2)
+
+Relevée sur le logo et les visuels fournis par Enock (`images/marque/`). Le vert citron `#a5f600` de Chariow était un réglage par défaut : il n'est **pas** utilisé.
 
 | Nom | Hex | Rôle | Contraste |
 |---|---|---|---|
-| Forêt (logo) | `#1E2E25` | fond du héros, du test, du final ; texte sur citron | Lait dessus 12,1:1 |
-| Nuit | `#14211A` | fond le plus profond (cartes du test) | Lait dessus 14:1 |
-| Citron (Chariow) | `#A5F600` | **aplat** des boutons d'action (texte Forêt), surlignage et phrase de la personne **sur fond sombre** | Forêt sur Citron 10,7:1 ; Nuit sur Citron 12,5:1 |
-| Vert Chariow | `#008A00` | grands titres et chiffres sur blanc uniquement (≥ 24 px) | 4,5:1 sur blanc |
-| Vert profond | `#006E00` | liens et petits textes verts sur fond clair | 6:1 sur Matin |
-| Matin | `#F4F7EE` | fond des sections de vente | Encre dessus 15:1 |
-| Encre | `#14231B` | texte principal sur fond clair | 15:1 |
-| Lait | `#E9EEE6` | texte sur fond sombre | 12 à 14:1 |
-| Sauge | `#4A5A50` / `#A9B8AE` | texte secondaire clair / sombre | 6,8:1 / 6,9:1 |
+| Crème | `#F6F0E6` | fond principal | Encre dessus 13,1:1 |
+| Lin | `#FFFCF6` | sections alternées, cartes | Encre dessus 14,5:1 |
+| Encre (lettrage du logo) | `#1C2B21` | texte courant | 13 à 14,5:1 |
+| Forêt (vague des bannières) | `#16402A` | titres, boutons, section finale | Crème sur Forêt 10,3:1 |
+| Feuille (feuilles du logo) | `#216427` | liens, icônes, mots en italique | 6,4:1 sur Crème |
+| Or doux | `#B8913A` | **décor uniquement** : vague, filets, cercles | (2,6:1, jamais pour du texte) |
+| Or texte | `#7A5C1C` | étiquettes et chiffres dorés sur crème | 5,5:1 |
+| Or clair | `#D9B65E` | bouton et vague sur fond Forêt | Forêt sur Or clair 6:1 |
+| Sauge | `#5A6B5F` / `#B9C7B7` | texte secondaire clair / sur forêt | 5:1 / 6,6:1 |
 
-Règle : **jamais de texte citron sur fond clair** (1,3:1). Le citron ne vit que sur la forêt ou en aplat sous un texte foncé. Pas de dégradé violet-bleu, pas de texte en dégradé, pas de néon : le citron est utilisé à plat, en petites surfaces.
+Aucun dégradé violet-bleu, aucun texte en dégradé, aucun néon. Les seuls dégradés sont des halos crème presque invisibles (lumière du matin).
 
 ## 4. Typographies (2 familles, 4 styles, auto-hébergées, 120 Ko)
 
-- **Newsreader** (serif à taille optique) : titres en romain 400/500, et l'**italique** pour les phrases entendues et la phrase de la personne. C'est la voix « parlée » de la page.
-- **Atkinson Hyperlegible Next** (sans) : texte courant 400 et 700. Dessinée pour la lisibilité, pensée pour les petits écrans Android et les yeux fatigués.
-- Échelle (mobile → bureau) : 15 / 17,5 (texte) / 21 / 28 / 38 / 52 → 72 px. Interligne 1,6 pour le texte, 1,05 à 1,15 pour les titres.
-- Français soigné : `lang="fr"`, césure automatique, guillemets « », espaces fines insécables avant ? ! : ; (passe typographique automatique), aucun tiret cadratin.
+- **Newsreader** (serif à taille optique, dans l'esprit du logo et des couvertures) : titres en romain 400/500, et l'**italique** pour les phrases entendues et la phrase de la personne. C'est la voix « parlée » de la page.
+- **Hanken Grotesk** (sans sobre et chaleureuse) : texte courant 400 et 700. Remplace Atkinson Hyperlegible, écartée car son zéro barré rendait « 60 jours » bizarre.
+- Échelle (mobile → bureau) : 14 / 17,5 (texte) / 21 / 28 / 38 / 52 → 60 px. Interligne 1,6 pour le texte, 1,1 à 1,2 pour les titres.
+- Français soigné : `lang="fr"`, césure automatique, guillemets « », espaces fines insécables avant ? ! : ; (passe typographique automatique sur le HTML et dans le JavaScript), aucun tiret cadratin.
 
-## 5. Grille, espacements, formes
+## 5. Grille, espacements, formes, images
 
-- Mobile d'abord : marge latérale 20 px, colonne de lecture 34 em max.
-- Bureau : grille 12 colonnes, 1 200 px max, compositions asymétriques (7/5, 5/7), jamais tout centré.
-- Espacements : échelle 4 / 8 / 12 / 16 / 24 / 32 / 48 / 72 / 112 px. Sections : 72 px mobile, 112 px bureau.
-- Coins : 6 px pour les boutons et champs, 2 px pour les photos (comme un tirage), cercles seulement pour les points du calendrier.
-- Photos : uniquement les 2 vraies photos d'Enock (il n'en a pas d'autres, aucune séance prévue), cadrées 4:5, légendées comme des tirages (date, âge, contexte), légère bordure Lait. Aucune photo de stock, aucune illustration 3D. La couverture Chariow (visuels générés) n'est utilisée que pour l'aperçu de partage (Open Graph).
-- Icônes : un seul jeu, traits SVG 1,75 px dessinés à la main pour le projet (flèche, coche, cadenas, téléphone, plus/moins). Aucun emoji.
-- Mouvement : un seul moment orchestré (les phrases qui se barrent dans le héros), puis des apparitions sobres au défilement (opacité + 12 px). `prefers-reduced-motion` respecté.
+- Mobile d'abord : marge 20 px, colonne de lecture 34 em max. Bureau : 1 200 px max, compositions asymétriques (7/5, 5/7, 6/6 alternées), jamais tout centré.
+- Espacements : 4 / 8 / 12 / 16 / 24 / 32 / 48 / 72 / 112 px. Sections : 72 px mobile, 112 px bureau.
+- Coins : boutons en pilule, cartes 18 à 22 px, photos 12 px avec bord blanc (tirage photo).
+- Ombres : très diffuses et chaudes (`rgba(60,48,20,.35)`, flou 60 px, décalées vers le bas).
+- Photos : uniquement les 2 vraies photos d'Enock (avant à 24 ans, après), légendées. Aucune autre séance prévue.
+- Visuels de marque : le mockup des 3 livres (`pack-3-livres-carre`) pour « Ce que tu reçois » et le ticket de l'offre, toujours légendé « visuel d'illustration ». Les ombres de feuillage sont découpées dans les bannières (`fond-feuillage.webp`, `fond-plante.webp`) et posées en filigrane, fondues par un masque.
+- Illustrations : maison, sobres, au trait ou à plat (journée de repas, deux assiettes, calendrier de 60 cercles). Icônes : un seul jeu SVG au trait 1,75 px. Aucun emoji.
+- Mouvement : un seul moment orchestré (les phrases qui se barrent), puis des apparitions lentes au défilement. `prefers-reduced-motion` respecté.
 
 ## 6. Structure du tunnel (une page + merci.html)
 
 | # | Section | Fond | Objectif |
 |---|---|---|---|
-| 1 | Héros « les mots » | Nuit | Choc de reconnaissance : « c'est moi ». Bouton test visible sans défiler, lien direct vers l'offre. |
-| 2 | Test de 2 minutes (8 écrans, barre de progression) | Nuit | Engagement progressif (modèle Noom) : facile d'abord, sensible ensuite avec le « pourquoi », réassurance après le poids. |
-| 3 | Ton résultat | Nuit → Matin | Le déclic : ses réponses en miroir, IMC indicatif et prudent, coût de 60 jours sans changement, sa phrase gardée. |
-| 4 | « Tu manges, pourtant » | Matin | Recadrer le problème : ce n'est pas la quantité, c'est la structure, la densité, la régularité. |
-| 5 | L'histoire d'Enock | Matin | Preuve vécue : 2 photos légendées, ses mots à la première personne. |
-| 6 | La méthode en 3 leviers | Blanc | Rendre la méthode concrète : une journée de repas, une assiette plus dense, 60 jours cochés. Trois visuels différents, pas trois cartes. |
-| 7 | Ce que tu reçois | Matin | Les 3 documents, les 4 parties du livre, format et poids des fichiers (3G). |
-| 8 | Jour 1, jour 30, jour 60 | Matin | Projeter la personne dans le défi, sans chiffre promis. Ligne de 60 points. |
-| 9 | (Témoignages : emplacement commenté, vide) | | À remplir uniquement avec de vrais retours. |
-| 10 | L'offre + paiement en 5 étapes | Blanc | Prix, contenu, bouton, Mobile Money expliqué, honnêteté (pas de garantie de résultat). |
-| 11 | Questions fréquentes | Matin | Lever les objections près du prix. |
-| 12 | Final « les mots qui comptent » | Nuit | Bouclage du concept : sa phrase à elle, non barrée, et le bouton. |
-| 13 | merci.html | Matin | Rassurer, expliquer l'accès, faire démarrer le jour 1 ce soir. |
+| 1 | Héros « les mots » + photo d'Enock à 24 ans | Crème, feuillage en filigrane | Choc de reconnaissance (« c'est moi »). Bouton test visible sans défiler, lien direct vers l'offre. |
+| 2 | Test de 2 minutes (intro + 8 écrans, barre de progression) | Crème, carte en lin | Engagement progressif : facile d'abord, sensible ensuite avec le « pourquoi », réassurance après les phrases et après le poids. |
+| 3 | Ton résultat (généré) | Lin | Le déclic : ses réponses en miroir, IMC indicatif et prudent, alertes santé douces, les deux chemins des 60 prochains jours, sa phrase soulignée. |
+| 4 | « Tu manges, pourtant. » | Crème | Recadrer : ce n'est pas la quantité, c'est quand, quoi, et chaque jour. |
+| 5 | L'histoire d'Enock | Lin | Preuve vécue : avant/après légendés, récit à la 1re personne (à valider). |
+| 6 | La méthode en 3 leviers | Crème | Trois visuels différents : une journée de repas, deux assiettes, 60 cercles. |
+| 7 | Ce que tu reçois | Lin | Mockup des 3 documents, 4 parties du livre, format et poids (45 Mo). |
+| 8 | Jour 1, jour 30, jour 60 | Crème | Se projeter, sans chiffre promis. Ligne de 60 jours. |
+| 9 | Vidéo faceless (masquée tant que `VIDEO_SRC` est vide) | Lin | Motivation, objections, soutien. Affiche + lecture au clic. |
+| 10 | (Témoignages : emplacement commenté, vide) | | Seulement de vrais retours. |
+| 11 | L'offre + paiement Mobile Money en 5 étapes | Lin | Prix, contenu, bouton, honnêteté (pas de chiffre garanti). |
+| 12 | Questions fréquentes | Crème | Lever les objections près du prix (femmes, sirops, kilos, coût, réception, santé, mineurs). |
+| 13 | Final « les mots qui comptent » | Forêt, ouvert par la vague | Bouclage : sa phrase soulignée d'or, bouton or clair. |
+| 14 | merci.html | Crème et lin | Rassurer, expliquer l'accès, cocher les 4 gestes du jour 1 ce soir. |
 
-Barre d'achat collante sur téléphone, visible après le héros, masquée sur l'offre.
+Barre d'achat collante sur téléphone, visible seulement entre les sections (masquée sur le héros, le test, le résultat, l'offre et le final).
+
+## 6 bis. Suivi Meta (simple, sans doublon)
+
+Un seul fichier `js/tracking.js`, `PIXEL_ID` vide = rien n'est chargé. Pixel standard uniquement : PageView (toutes pages), ViewContent (offre affichée), Lead (fin du test, une fois par visiteur), InitiateCheckout (clic d'achat, anti double-clic). Chaque événement a un `eventID` unique. Pas de Purchase dans le navigateur : il sera envoyé une seule fois côté serveur (voir LISEZMOI.md).
 
 ## 7. Planche de références (recherche du 08/10/2026)
 
@@ -96,8 +104,17 @@ Barre d'achat collante sur téléphone, visible après le héros, masquée sur l
 
 - [x] Aucun dégradé violet-bleu, aucun texte en dégradé, aucun néon.
 - [x] Héros asymétrique et ancré sur une vraie photo, pas de « titre + sous-titre + 2 boutons » centrés.
+- [x] Pas de couleurs d'alerte : la santé est signalée par un cadre doré doux et une icône, jamais en rouge.
 - [x] Pas de grille de 3 cartes identiques : les 3 leviers ont chacun leur visuel (journée, assiette, calendrier).
 - [x] Aucun emoji, aucune illustration 3D, aucune photo de stock.
 - [x] Aucun texte creux ; chaque phrase reprend les mots du public (« le vent va t'emporter », « mange un peu »).
 - [x] Micro-animations sobres, états survol et appui, focus visible, césures, guillemets français, espaces insécables.
 - [x] Rien de faux : pas de compteur, pas d'avis inventé, pas de compte à rebours, pas de garantie inventée.
+
+## 9. Relecture par un directeur artistique indépendant (3 tours, contexte neuf)
+
+| Tour | Design | Texte | Confiance | Conversion | Principales corrections faites ensuite |
+|---|---|---|---|---|---|
+| 1 | 7,5 | 8,5 | 5 | 6 | Photos recadrées sous le bandeau noir, vidéo masquée tant qu'elle n'existe pas, bouton d'achat après l'histoire, héros raccourci, FAQ clés ouvertes, barre d'achat visible sur le résultat |
+| 2 | 8 | 8,5 | 5,5 | 6,5 | Enock signe la carte de l'offre (photo + contact), ligne de réassurance après paiement, bouton d'achat direct dans le résultat, bloc forêt au milieu, assiette de riz dessinée, légende du jour raté, carte « test terminé » remplacée |
+| 3 | 8 | 8,5 | 6 | 7 | Assiettes recolorées dans la palette. Ce qui bloque sous 8 : absence de témoignages, de garantie, de contact direct (e-mail ou WhatsApp) et de vraies pages du PDF. À fournir par Enock. |

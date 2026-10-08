@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bienvenue dans le défi 60 jours · Livensya</title>
+<meta name="description" content="Ton accès au défi 60 jours arrive par e-mail. Voici quoi faire ce soir pour commencer ton jour 1.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F6F0E6">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="preload" href="fonts/newsreader-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.className='js';</script>
+<!-- Suivi : PageView uniquement (js/tracking.js).
+     PAS de « Purchase » envoyé depuis le navigateur ici, volontairement :
+     cette page peut être rechargée, partagée ou ouverte sans achat, ce qui fausserait les chiffres,
+     et un futur envoi serveur (API Conversions déclenchée par le webhook de vente Chariow) ferait doublon.
+     Le Purchase sera envoyé une seule fois, côté serveur. Voir LISEZMOI.md. -->
+<script src="js/tracking.js" defer></script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-coche" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5L12 13l8.5-6.5"/></symbol>
+  <symbol id="i-telechargement" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-telephone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 17.5h2"/></symbol>
+  <symbol id="i-sante" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M12 9v5M9.5 11.5h5"/></symbol>
+</svg>
+
+<header class="entete">
+  <div class="conteneur">
+    <a class="marque" href="index.html" aria-label="Livensya, retour à l'accueil"><img class="marque__l" src="images/logo-mark.webp" alt="" width="34" height="34"><img class="marque__mot" src="images/logo-mot.webp" alt="Livensya" width="104" height="30"></a>
+  </div>
+</header>
+
+<main>
+<section class="heros merci-haut" aria-labelledby="titre-merci">
+  <div class="conteneur">
+    <p class="etiquette">Défi 60 jours</p>
+    <h1 id="titre-merci">Bienvenue dans le défi. <em>Ton jour 1, c'est ce soir.</em></h1>
+    <p>Merci pour ta confiance. Tu viens de faire ce que beaucoup repoussent depuis des années : décider. Ton accès arrive par e-mail dans les minutes qui suivent ton paiement.</p>
+  </div>
+</section>
+
+<section class="section section--lin" aria-labelledby="titre-maintenant">
+  <div class="conteneur merci-grille">
+    <div>
+      <p class="etiquette">Ce qui se passe maintenant</p>
+      <h2 id="titre-maintenant" class="titre-section">Trois gestes pour avoir ton défi sous la main.</h2>
+      <ol class="etapes">
+        <li><div><b>Ouvre l'e-mail de Chariow</b><span>Il contient tes 3 documents. Pas là après 10 minutes ? Regarde dans les spams et l'onglet « Promotions ».</span></div></li>
+        <li><div><b>Télécharge les 3 PDF</b><span>Environ 45 Mo au total : fais-le en Wi-Fi ou avec un forfait suffisant. Tu peux aussi les retrouver à tout moment dans <a href="https://app.ateliat.com" rel="noopener">« Mes achats »</a>, avec ton e-mail.</span></div></li>
+        <li><div><b>Garde-les dans ton téléphone</b><span>Dans le dossier Téléchargements ou dans ton lecteur PDF : tu pourras les lire sans connexion, même en déplacement.</span></div></li>
+      </ol>
+      <div class="honnete">
+        <p><strong>Rien reçu du tout ?</strong> Écris-nous depuis la <a href="https://ykhzgspm.mychariow.store/contact" rel="noopener">page contact</a> avec l'e-mail utilisé pour payer. On te répond au plus vite.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="ce-soir">
+        <p class="etiquette">Ce soir</p>
+        <h2>Ton jour 1, en quatre cases.</h2>
+        <p style="color:var(--sauge)">Coche au fur et à mesure. C'est la première ligne de ton carnet.</p>
+        <ol id="ce-soir">
+          <li><label><input type="checkbox" value="photo"><span><b>Prends ta photo de départ</b>De face et de profil, même lumière, mêmes habits. Tu la compareras au jour 30 et au jour 60.</span></label></li>
+          <li><label><input type="checkbox" value="mesures"><span><b>Note ton point de départ</b>Ta taille, ton poids et la date, sur la première page du carnet.</span></label></li>
+          <li><label><input type="checkbox" value="lire"><span><b>Lis la première partie du livre</b>Comprendre pourquoi tu ne grossis pas, avant de changer quoi que ce soit.</span></label></li>
+          <li><label><input type="checkbox" value="demain"><span><b>Prépare le repas de demain</b>Ouvre le programme au jour 1 et vérifie que tu as ce qu'il faut à la maison.</span></label></li>
+        </ol>
+        <div class="phrase-merci" id="phrase-merci" hidden>
+          <p>Ta phrase, celle du test :</p>
+          <p class="phrase" id="phrase-texte"></p>
+          <p>Écris-la sur la première page du carnet.</p>
+        </div>
+      </div>
+      <p class="micro" style="margin-top:20px"><svg class="icone" aria-hidden="true"><use href="#i-sante"/></svg>Le défi ne remplace pas un avis médical. En cas de perte de poids inexpliquée ou de problème de santé, consulte d'abord un professionnel.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur">
+    <img class="pied__logo" src="images/logo-livensya.webp" alt="Livensya, votre bien-être commence maintenant." width="150" height="120" loading="lazy" decoding="async">
+    <nav class="pied__liens" aria-label="Liens légaux">
+      <a href="https://ykhzgspm.mychariow.store/legal-notice" rel="noopener">Mentions légales</a>
+      <a href="https://ykhzgspm.mychariow.store/terms-of-service" rel="noopener">Conditions d'utilisation</a>
+      <a href="https://ykhzgspm.mychariow.store/privacy-policy" rel="noopener">Confidentialité</a>
+      <a href="https://ykhzgspm.mychariow.store/contact" rel="noopener">Contact</a>
+    </nav>
+    <p>Livensya © 2026 · Cotonou, Bénin</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  function typo(t) { return String(t).replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« '); }
+  try {
+    var memo = JSON.parse(localStorage.getItem('lv_test') || 'null');
+    if (memo && memo.phrase) {
+      document.getElementById('phrase-texte').textContent = typo('« ' + memo.phrase + ' »');
+      document.getElementById('phrase-merci').hidden = false;
+    }
+    var faits = JSON.parse(localStorage.getItem('lv_jour1') || '[]');
+    document.querySelectorAll('#ce-soir input').forEach(function (c) {
+      c.checked = faits.indexOf(c.value) > -1;
+      c.addEventListener('change', function () {
+        var v = [].filter.call(document.querySelectorAll('#ce-soir input'), function (i) { return i.checked; }).map(function (i) { return i.value; });
+        localStorage.setItem('lv_jour1', JSON.stringify(v));
+      });
+    });
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

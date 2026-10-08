@@ -49,6 +49,7 @@
   }
 
   window.lvSuivi = {
+    actif: actif,
     suivre: suivre,
 
     /* Lead : une seule fois par visiteur */
