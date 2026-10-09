@@ -112,7 +112,7 @@ Chaque événement porte un `eventID` unique (ex. `Lead.8f3c…`), prêt pour la
 Un seul envoi, côté serveur, déclenché par la vente réelle :
 
 1. Dans Chariow, crée un **webhook (Pulse) « vente réussie »** vers un petit service à toi (fonction serverless, Make, n8n…). C'est lui, et lui seul, qui garde le jeton API Conversions.
-2. À chaque vente, ce service envoie à Meta un événement `Purchase` avec `value: 3999`, `currency: 'XOF'`, l'e-mail et le téléphone de l'acheteur **hachés en SHA-256** (comme Meta l'exige), `action_source: 'website'`, et un `event_id` stable : l'identifiant de la vente Chariow (ex. `purchase.<id_vente>`), pour qu'un éventuel renvoi du webhook ne compte pas deux fois.
+2. À chaque vente, ce service envoie à Meta un événement `Purchase` avec `value: 3999`, `currency: 'XOF'`, l'e-mail et le téléphone de l'acheteur **hachés en SHA-256** (comme Meta l'exige), `action_source: 'website'`, et un `event_id` stable : l'identifiant de la vente Chariow (le `purchaseId` reçu du widget, identique à celui du webhook : à vérifier sur la première vente), pour qu'un éventuel renvoi du webhook ne compte pas deux fois.
 3. Relier au parcours : le navigateur garde l'`eventID` du dernier `InitiateCheckout` dans `localStorage` (`lv_initiate_checkout_id`). Si Chariow permet de faire passer un paramètre ou un champ personnalisé jusqu'au webhook, on pourra l'y transmettre pour réutiliser ce même identifiant. Sinon, l'identifiant de la vente suffit : il n'y a pas de Purchase navigateur, donc pas de doublon possible.
 4. Pas de `Purchase` dans `merci.html` (expliqué en commentaire dans la page) : elle peut être rechargée ou ouverte sans achat.
 
