@@ -2,6 +2,20 @@
 
 Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de données. Poids mesuré au premier chargement sur téléphone : environ 150 Ko (moins de 500 Ko une fois toutes les images chargées ; limite fixée : 1,5 Mo).
 
+## Version 4 : fidèle au livre et paiement sans quitter la page
+- **Âge et phrases du livre** : David a 26 ans (« J'ai 26 ans, mais on me prend encore pour un lycéen »). Plus aucune mention « 24 ans / 14 ans ». Titre de l'histoire : « On dirait que tu n'as pas changé depuis le lycée. » La 3e phrase barrée du héros devient « Tu es toujours aussi maigre… ». Photos légendées « Avant » / « Aujourd'hui », fichiers renommés `photo-avant-*` et `photo-aujourdhui-*`.
+- **Widget de paiement Chariow (style « tap »)** dans la carte de l'offre, à la place du bouton :
+  - c'est un bouton « Commencer le défi » aux couleurs du site qui ouvre le paiement Chariow dans une fenêtre, par-dessus la page ;
+  - le script (`widget.min.js` + `widget.min.css`, environ 110 Ko) n'est chargé qu'une fois, quand on approche de « Ce que tu reçois », ou au premier clic d'achat ; rien au chargement de la page ;
+  - tous les autres boutons d'achat (héros, histoire, résultat, final, barre collante) font défiler doucement jusqu'à l'offre puis ouvrent le paiement tout seuls ;
+  - si le widget n'a pas pu se charger après 6 s (réseau, bloqueur), on ouvre la page de paiement Chariow (`LIEN_PAIEMENT`, https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout, vérifiée) ;
+  - sans JavaScript, un bouton classique vers cette même page reste visible.
+- **Pourquoi « tap » et pas « frame »** : « frame » affiche directement tout le formulaire de paiement dans la page (un grand cadre, chargé d'office, sans bouton) : plus lourd en 3G et moins rassurant avant d'avoir lu l'offre. « tap » montre un bouton et n'ouvre le paiement qu'au clic, dans une fenêtre (presque plein écran sur téléphone, fermable par une croix).
+- **Réglages du widget** (attributs de `#chariow-widget` dans `index.html`) : `data-style="tap"`, `data-primary-color="#16402A"` (vert forêt, plus de vert citron), `data-background-color="#FFFCF6"`, `data-locale="fr"`, `data-custom-cta-text="Commencer le défi"`, `data-cta-width="md"` (56 px, plus facile à toucher que `xs`), animation « shine » (coupée si le téléphone demande moins d'animations). Le CSS du site retouche seulement le bouton (pilule, police, couleur), rien d'autre.
+- **Suivi** : `InitiateCheckout` part au clic sur le bouton du widget (une fois par clic, clics répétés en moins de 2 s ignorés, `eventID` unique). Toujours **pas de Purchase dans le navigateur**.
+- **Après l'achat** : le widget redirige vers la page d'achat Chariow (`https://ykhzgspm.mychariow.store/purchase/<id>`), **pas vers `merci.html`**. `merci.html` ne servira que si tu configures une redirection Chariow vers elle.
+- **Pour la future API Conversions** : à la fin du paiement, le widget reçoit un message `chariow-purchase-completed` qui contient le `purchaseId`. C'est cet identifiant qui servira d'`event_id` au Purchase envoyé côté serveur (webhook de vente Chariow), pour qu'il ne compte jamais deux fois.
+
 ## Version 2 (retours d'Enock)
 - **Narrateur** : la page ne parle plus d'Enock. Le narrateur est le personnage du livre. Son prénom est dans **une seule constante**, `PRENOM_NARRATEUR` en haut de `js/app.js` (valeur : `'David'`, le narrateur du livre), et la même ligne en bas de `merci.html`. Tous les éléments `data-prenom` se remplissent seuls. Si tu laisses `''`, le texte devient neutre (« L'auteur du défi ») et la phrase « Moi, c'est … » disparaît.
 - **Histoire** : l'histoire de David (préface du livre), réécrite à la 1re personne, avec la mention « L'histoire de David est inspirée de situations réelles. »
@@ -39,13 +53,13 @@ Aperçu de la vidéo et du suivi : ajoute `?apercu=1` à l'adresse (la section v
 Tout est en haut de `js/app.js` :
 
 ```js
-const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store';   // lien de paiement Chariow
+const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout';   // repli si le widget ne charge pas
 const VIDEO_SRC = '';        // ex. 'videos/defi-60-jours.mp4'
 const VIDEO_AFFICHE = '';    // ex. 'videos/affiche.webp'
 ```
 
 - **Prénom du narrateur** : `const PRENOM_NARRATEUR = 'David';` (et la même ligne dans `merci.html`).
-- **Lien de paiement** : remplace par le lien direct du produit. Sur ta boutique, le paiement du produit est à l'adresse `https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout` : vérifie qu'il marche, puis colle-le. Les paramètres publicitaires (`utm_…`, `fbclid`) de l'adresse d'arrivée sont transmis automatiquement à Chariow.
+- **Lien de repli** : `LIEN_PAIEMENT` pointe déjà vers la page de paiement du produit. Les paramètres publicitaires (`utm_…`, `fbclid`) de l'adresse d'arrivée sont transmis automatiquement à Chariow.
 - **Vidéo faceless** : dépose le fichier dans un dossier `videos/` (MP4 H.264, format vertical 9:16, idéalement moins de 8 Mo), puis remplis `VIDEO_SRC`. Tant que c'est vide, la section est invisible pour les visiteurs. Rien ne se charge avant le clic sur « Lire la vidéo ».
 - **Textes** : directement dans `index.html` et `merci.html`. Garde le tutoiement, pas de tiret cadratin, et pas de promesse de kilos.
 - **Prix** : une seule fois, dans la carte de l'offre de `index.html` : cherche `999`.
@@ -79,12 +93,12 @@ Un seul envoi, côté serveur, déclenché par la vente réelle :
 4. Pas de `Purchase` dans `merci.html` (expliqué en commentaire dans la page) : elle peut être rechargée ou ouverte sans achat.
 
 ## Ce qu'Enock doit fournir ou valider
-1. **L'histoire de David** telle qu'écrite sur la page (réécriture à la 1re personne de la préface du livre). Âge non cité dans l'histoire ; le héros garde « 24 ans, on m'en donnait 14 » comme demandé, alors que le livre dit 26 ans.
+1. **L'histoire de David** telle qu'écrite sur la page (réécriture à la 1re personne de la préface du livre). Âge aligné sur le livre : 26 ans.
 2. **La question du miroir** : le livre écrit « sa question n'a pas été : « Qu'est-ce que je fais mal depuis tout ce temps ? » ». J'ai compris « a été » (c'est elle qui mène à la méthode). Vérifie la phrase du livre, elle semble contenir une coquille.
-3. **Les photos avant/après** sont présentées comme celles de David (« Moi, à 24 ans »), alors que David est un personnage « inspiré de situations réelles ». Une partie des visiteurs prendra ces photos pour celles d'un vrai client : à toi de décider si tu gardes cette présentation, ou si tu ajoutes une légende du type « photos réelles d'avant et d'après ».
+3. **Les photos avant/après** sont présentées comme celles de David (« Moi, c'est David… Voici comment j'étais »), alors que David est un personnage « inspiré de situations réelles ». Une partie des visiteurs prendra ces photos pour celles d'un vrai client : à toi de décider si tu gardes cette présentation, ou si tu ajoutes une légende du type « photos réelles d'avant et d'après ».
 4. **Les phrases de David dans le test** (« Moi aussi, j'ai entendu ces phrases », « le jour où une personne que j'appréciais m'a dit qu'elle me voyait comme un frère », « Moi aussi, j'ai eu des jours sans motivation », « Pour moi non plus, ça n'a pas marché ») : alignées sur le livre (préface et carnet du jour 52).
 5. **Le prix barré 12 500 F** : à garder seulement si c'est vraiment le prix prévu après le lancement. Sur Chariow, couper le compte à rebours « renouvelé chaque jour » (fausse urgence).
-6. **Le lien de paiement direct** (`/prd_4bisyd7x/checkout`) : à confirmer puis à coller dans `LIEN_PAIEMENT`.
+6. **Un vrai test de paiement** sur ton téléphone (le paiement s'ouvre bien dans la fenêtre, Mobile Money passe, et tu arrives sur la page d'achat Chariow). Depuis notre environnement de test, le contenu du paiement est bloqué par Cloudflare : on a vérifié l'ouverture de la fenêtre, pas le formulaire.
 7. **Deux vraies captures de pages** des PDF (emplacement `EXTRAIT` prêt).
 8. **Les mockups des livres** (corps générés, « votre », « ENOCK M. ») : légendés « visuel d'illustration ». Pas de torse nu ni d'avant/après dans les pubs Meta.
 9. **L'ID du Pixel Meta** (le jeton API Conversions reste côté serveur).

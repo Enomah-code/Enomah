@@ -58,7 +58,7 @@
       <ul class="mots" aria-label="Phrases qu'on te dit souvent">
         <li>« Le vent va t'emporter. »</li>
         <li>« Mange un peu, toi. »</li>
-        <li>« Tu as quel âge, 14 ans ? »</li>
+        <li>« Tu es toujours aussi maigre… »</li>
       </ul>
       <div class="heros__suite">
         <h1 id="titre-heros">Prends du poids <em>sainement</em> en 60 jours, avec ce programme.</h1>
@@ -71,10 +71,10 @@
       </div>
     </div>
     <div class="heros__photo">
-      <p class="presentation">Avant d'aller plus loin, faisons connaissance. <span data-si-prenom>Moi, c'est <b data-prenom></b>. </span>J'avais 24 ans, mais on m'en donnait 14. Voici comment j'étais.</p>
+      <p class="presentation">Avant d'aller plus loin, faisons connaissance. <span data-si-prenom>Moi, c'est <b data-prenom></b>. </span>J'ai 26 ans, mais on me prend encore pour un lycéen. Voici comment j'étais.</p>
       <figure class="tirage">
-        <img src="images/enock-24-ans-480.webp" srcset="images/enock-24-ans-480.webp 480w, images/enock-24-ans-860.webp 860w" sizes="(min-width: 900px) 420px, 78vw" width="480" height="535" alt="Photo d'avant, à 24 ans, torse nu devant une maison : épaules étroites, bras très fins." fetchpriority="high">
-        <figcaption><strong>Moi, à 24 ans.</strong></figcaption>
+        <img src="images/photo-avant-480.webp" srcset="images/photo-avant-480.webp 480w, images/photo-avant-860.webp 860w" sizes="(min-width: 900px) 420px, 78vw" width="480" height="535" alt="Photo d'avant, torse nu devant une maison : épaules étroites, bras très fins." fetchpriority="high">
+        <figcaption><strong>Avant.</strong></figcaption>
       </figure>
     </div>
   </div>
@@ -116,17 +116,17 @@
   <div class="conteneur histoire__grille">
     <div class="photos-duo revele">
       <figure class="tirage">
-        <img src="images/enock-24-ans-480.webp" width="480" height="535" loading="lazy" decoding="async" alt="Photo d'avant, à 24 ans, très mince.">
-        <figcaption><strong>Avant</strong>À 24 ans, on m'en donnait 14.</figcaption>
+        <img src="images/photo-avant-480.webp" width="480" height="535" loading="lazy" decoding="async" alt="Photo d'avant, très mince.">
+        <figcaption><strong>Avant</strong>« On dirait que tu n'as pas changé depuis le lycée. »</figcaption>
       </figure>
       <figure class="tirage">
-        <img src="images/enock-apres-480.webp" srcset="images/enock-apres-480.webp 480w, images/enock-apres-853.webp 853w" sizes="(min-width: 900px) 280px, 45vw" width="480" height="457" loading="lazy" decoding="async" alt="Photo d'après, souriant, en veste verte et chemise blanche.">
+        <img src="images/photo-aujourdhui-480.webp" srcset="images/photo-aujourdhui-480.webp 480w, images/photo-aujourdhui-853.webp 853w" sizes="(min-width: 900px) 280px, 45vw" width="480" height="457" loading="lazy" decoding="async" alt="Photo d'après, souriant, en veste verte et chemise blanche.">
         <figcaption><strong>Aujourd'hui</strong>Après le programme.</figcaption>
       </figure>
     </div>
     <div class="recit revele">
       <p class="etiquette">Mon histoire</p>
-      <h2 id="titre-histoire" class="titre-section">« On me donnait 14 ans. J'en avais 24. »</h2>
+      <h2 id="titre-histoire" class="titre-section">« On dirait que tu n'as pas changé depuis le lycée. »</h2>
       <!-- Histoire de David, réécrite à la 1re personne d'après la préface du livre « Défi 60 jours ». -->
       <p class="lettrine">Depuis l'adolescence, je suis très mince. De l'extérieur, j'avais une vie normale : un travail, une famille, des amis. Mais les remarques revenaient sans cesse. « Tu ne manges pas assez ou quoi ? » « Tu es toujours aussi maigre… » « On dirait que tu n'as pas changé depuis le lycée. »</p>
       <p>Au début, je souriais. Je répondais avec humour. Mais ces phrases ne disparaissaient pas. Elles restaient. Sans m'en rendre compte, j'ai commencé à choisir des vêtements plus amples, à éviter certaines situations, à me mettre toujours à l'arrière sur les photos.</p>
@@ -314,7 +314,12 @@
         <li><svg class="icone" aria-hidden="true"><use href="#i-coche"/></svg><span>Aliments d'ici, aucun complément à acheter</span></li>
         <li><svg class="icone" aria-hidden="true"><use href="#i-coche"/></svg><span>Accès à vie, sur ton téléphone</span></li>
       </ul>
-      <a class="bouton bouton--plein" href="https://ykhzgspm.mychariow.store" data-achat>Rejoindre le défi maintenant <svg class="icone" aria-hidden="true"><use href="#i-fleche"/></svg></a>
+      <!-- PAIEMENT : widget officiel Chariow (style « tap » : un bouton qui ouvre le paiement dans une fenêtre, sans quitter la page).
+           Le script est chargé une seule fois, en différé, par js/app.js (quand l'offre approche ou au premier clic d'achat). -->
+      <div class="paiement" id="paiement">
+        <div id="chariow-widget" data-product-id="prd_4bisyd7x" data-store-domain="ykhzgspm.mychariow.store" data-style="tap" data-border-style="rounded" data-cta-width="md" data-cta-animation="shine" data-locale="fr" data-primary-color="#16402A" data-background-color="#FFFCF6" data-custom-cta-text="Commencer le défi"></div>
+        <a class="bouton bouton--plein paiement__repli" href="https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout" data-achat-direct>Commencer le défi <svg class="icone" aria-hidden="true"><use href="#i-fleche"/></svg></a>
+      </div>
       
       <p class="micro"><svg class="icone" aria-hidden="true"><use href="#i-cadenas"/></svg>Paiement sécurisé par Chariow. Livensya ne voit jamais ton code Mobile Money. Accès par e-mail en quelques minutes. Pas reçu ? Écris-nous sur WhatsApp.</p>
       <div class="moyens" aria-label="Moyens de paiement acceptés"><span>MTN MoMo</span><span>Moov Money</span><span>Orange Money</span><span>Wave</span><span>Carte bancaire</span></div>
@@ -326,11 +331,11 @@
     <div class="revele">
       <p class="etiquette">Payer avec Mobile Money, en 5 étapes</p>
       <ol class="etapes">
-        <li><div><b>Appuie sur « Rejoindre le défi »</b><span>Tu arrives sur la page de paiement Chariow.</span></div></li>
+        <li><div><b>Appuie sur « Commencer le défi »</b><span>Le paiement Chariow s'ouvre dans une fenêtre, sans quitter la page.</span></div></li>
         <li><div><b>Écris ton nom, ton e-mail et ton numéro</b><span>Mets un e-mail que tu ouvres vraiment : c'est là que tu reçois le défi.</span></div></li>
         <li><div><b>Choisis ton moyen de paiement</b><span>MTN, Moov, Orange, Wave ou carte bancaire.</span></div></li>
         <li><div><b>Valide sur ton téléphone</b><span>Tu reçois une demande de confirmation : tape ton code secret, comme pour un transfert.</span></div></li>
-        <li><div><b>Ouvre ton e-mail</b><span>Ton accès arrive en quelques minutes. Pas là ? Regarde dans les spams ou « Promotions ».</span></div></li>
+        <li><div><b>Ouvre ton e-mail</b><span>Une fois le paiement validé, tu arrives sur ta page d'achat Chariow, et ton accès arrive par e-mail en quelques minutes. Pas là ? Regarde dans les spams ou « Promotions ».</span></div></li>
       </ol>
       <div class="honnete">
         <p><strong>Ce qu'on ne te promettra pas :</strong> un nombre de kilos. Personne ne peut te le garantir honnêtement. Ce qui change les choses, c'est d'appliquer le programme chaque jour pendant 60 jours.</p>

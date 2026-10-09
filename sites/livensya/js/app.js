@@ -2,10 +2,13 @@
    ------------------------------------------------------------------
    RÉGLAGES (les seules lignes à modifier) */
 
-/* Lien de paiement Chariow du produit prd_4bisyd7x.
-   Valeur provisoire : la boutique. Lien direct probable (vu sur la boutique, à confirmer) :
-   https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout */
-const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store';
+/* Paiement : le widget Chariow (dans la carte de l'offre) est la voie principale.
+   LIEN_PAIEMENT ne sert que de repli si le widget n'a pas pu se charger (réseau, bloqueur) :
+   page de paiement Chariow du produit prd_4bisyd7x (vérifiée : elle répond). */
+const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout';
+const WIDGET_JS = 'https://js.chariowcdn.com/v1/widget.min.js';
+const WIDGET_CSS = 'https://js.chariowcdn.com/v1/widget.min.css';
+const DELAI_REPLI_MS = 6000;
 
 /* Vidéo faceless (HyperFrames) : laisse vide tant que le fichier n'existe pas.
    Exemple : 'videos/defi-60-jours.mp4' et 'videos/affiche.webp' */
@@ -48,7 +51,52 @@ function envoyerLead(donnees) {
   var ICONE_COCHE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function icone(id) { return '<svg class="icone" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
 
-  /* ---------------- Liens d'achat ---------------- */
+  /* ---------------- Widget de paiement Chariow ---------------- */
+  var widget = { charge: false, pret: false, attente: [] };
+  function boutonWidget() { var w = document.getElementById('chariow-widget'); return w && w.querySelector('button'); }
+  function chargerWidget() {
+    if (widget.charge) return;
+    widget.charge = true;
+    var w = document.getElementById('chariow-widget');
+    if (!w) return;
+    if (reduit) w.setAttribute('data-cta-animation', 'none');
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = WIDGET_CSS; document.head.appendChild(css);
+    var js = document.createElement('script'); js.src = WIDGET_JS; js.async = true; document.body.appendChild(js);
+    var mo = new MutationObserver(function () {
+      var b = boutonWidget();
+      if (!b || widget.pret) return;
+      widget.pret = true; mo.disconnect();
+      document.getElementById('paiement').classList.add('pret');
+      widget.attente.splice(0).forEach(function (f) { f(); });
+    });
+    mo.observe(w, { childList: true, subtree: true });
+    /* InitiateCheckout : au clic sur le bouton du widget (anti double-clic dans tracking.js) */
+    w.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('button')) suivi.initiateCheckout(PRODUIT);
+    }, true);
+  }
+  function quandWidgetPret(f, siEchec) {
+    if (widget.pret) { f(); return; }
+    var fait = false;
+    widget.attente.push(function () { if (!fait) { fait = true; f(); } });
+    setTimeout(function () { if (!fait) { fait = true; siEchec(); } }, DELAI_REPLI_MS);
+  }
+  function ouvrirPaiement(declencheur) {
+    chargerWidget();
+    var carte = document.getElementById('paiement');
+    if (carte) carte.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth', block: 'center' });
+    if (declencheur) declencheur.setAttribute('aria-busy', 'true');
+    quandWidgetPret(function () {
+      if (declencheur) declencheur.removeAttribute('aria-busy');
+      setTimeout(function () { var b = boutonWidget(); if (b) b.click(); }, reduit ? 0 : 650);
+    }, function () {
+      /* Repli : page de paiement Chariow */
+      suivi.initiateCheckout(PRODUIT);
+      location.href = lienAchat();
+    });
+  }
+
+  /* Liens d'achat : tous mènent au widget (défilement doux puis ouverture du paiement) */
   function lienAchat() {
     var url = LIEN_PAIEMENT;
     var p = new URLSearchParams(location.search), garder = [];
@@ -60,14 +108,17 @@ function envoyerLead(donnees) {
     (racine || document).querySelectorAll('[data-achat]').forEach(function (a) {
       if (a.dataset.branche) return;
       a.dataset.branche = '1';
+      a.href = '#paiement';
+      a.addEventListener('click', function (e) { e.preventDefault(); ouvrirPaiement(a); });
+    });
+    (racine || document).querySelectorAll('[data-achat-direct]').forEach(function (a) {
+      if (a.dataset.branche) return;
+      a.dataset.branche = '1';
       a.href = lienAchat();
       a.addEventListener('click', function (e) {
         var id = suivi.initiateCheckout(PRODUIT);
-        if (id === null) { e.preventDefault(); return; } /* double-clic ignoré */
-        if (suivi.actif) { /* laisse 300 ms au Pixel pour partir */
-          e.preventDefault(); a.setAttribute('aria-busy', 'true');
-          setTimeout(function () { location.href = a.href; }, 300);
-        }
+        if (id === null) { e.preventDefault(); return; }
+        if (suivi.actif) { e.preventDefault(); setTimeout(function () { location.href = a.href; }, 300); }
       });
     });
   }
@@ -101,7 +152,7 @@ function envoyerLead(donnees) {
       titre: function () { return avecPrenom('Enchanté, ', '. ') + 'Depuis quand tu te trouves mince ?'; },
       options: [['enfance', "Depuis toujours, depuis l'enfance"], ['ado', "Depuis l'adolescence"], ['annees', 'Depuis quelques années'], ['recent', "Depuis peu : j'ai perdu du poids sans savoir pourquoi"]] },
     { id: 'phrases', type: 'multi', titre: "Qu'est-ce qu'on te dit le plus souvent ?", aide: 'Choisis tout ce que tu entends.', citations: true,
-      options: [['vent', '« Le vent va t\'emporter. »'], ['mange', '« Mange un peu, toi. »'], ['malade', '« Tu es malade ? »'], ['age', '« Tu as quel âge, 15 ans ? »'], ['maison', '« On ne te donne pas à manger chez toi ? »'], ['rien', "On ne me dit rien, mais je le pense"], ['autre', 'Autre chose']], autre: true },
+      options: [['vent', '« Le vent va t\'emporter. »'], ['mange', '« Mange un peu, toi. »'], ['malade', '« Tu es malade ? »'], ['age', '« On dirait que tu n\'as pas changé depuis le lycée. »'], ['maison', '« On ne te donne pas à manger chez toi ? »'], ['rien', "On ne me dit rien, mais je le pense"], ['autre', 'Autre chose']], autre: true },
     { id: 'blessure', type: 'texte',
       encart: function () { return '<strong>Je comprends.</strong> Moi aussi, j\'ai entendu ces phrases, presque mot pour mot.'; },
       titre: "Quelle est la remarque la plus blessante qu'on t'ait faite, ou le moment le plus gênant que tu as vécu à cause de ton poids ?",
@@ -277,7 +328,7 @@ function envoyerLead(donnees) {
 
   function afficherResultat() {
     var DEPUIS = { enfance: "Depuis l'enfance, tu es le plus mince de la pièce.", ado: "Depuis l'adolescence, tu es « le mince », « la mince ».", annees: 'Depuis quelques années, tu te trouves trop mince.', recent: 'Tu as perdu du poids récemment, sans savoir pourquoi.' };
-    var PHR = { vent: '« Le vent va t\'emporter »', mange: '« Mange un peu »', malade: '« Tu es malade ? »', age: '« Tu as quel âge ? »', maison: '« On ne te donne pas à manger ? »' };
+    var PHR = { vent: '« Le vent va t\'emporter »', mange: '« Mange un peu »', malade: '« Tu es malade ? »', age: '« On dirait que tu n\'as pas changé depuis le lycée »', maison: '« On ne te donne pas à manger ? »' };
     var MIR = { evite: 'Alors tu évites les photos.', cache: 'Alors tu caches ton corps sous des habits larges.', compare: 'Alors tu te compares aux autres, souvent.', ok: 'Ça va, mais tu sens que tu pourrais être mieux dans ton corps.' };
     var ESS = {
       forcer: 'Tu as déjà essayé de te forcer à manger plus. Si ça n\'a pas suffi, ce n\'est pas un manque de volonté : manger plus, sans structure, ne marche pas pour tout le monde. Pour moi non plus, ça n\'a pas marché.',
@@ -411,6 +462,11 @@ function envoyerLead(donnees) {
       var a = barre.querySelector('a'); if (a) a.tabIndex = montrer ? 0 : -1;
     });
     cibles.forEach(function (c) { var el = document.querySelector(c); if (el) { el.dataset.zone = c; ob.observe(el); } });
+
+    var contenu = document.getElementById('contenu');
+    if (contenu) new IntersectionObserver(function (es, o) {
+      if (es[0].isIntersecting) { chargerWidget(); o.disconnect(); }
+    }, { rootMargin: '400px 0px' }).observe(contenu);
 
     var fin = document.querySelector('.final');
     if (fin) new IntersectionObserver(function (es, o) {

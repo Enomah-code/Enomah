@@ -446,6 +446,19 @@ a:hover { text-decoration-thickness: 2px; }
 .pied__contact .icone, .pied__contact .icone-wa { width: 18px; height: 18px; }
 .mention-histoire { font-size: .8125rem; color: var(--sauge); font-style: italic; margin: 4px 0 0; }
 
+/* Widget de paiement Chariow (isolé : seules ces règles le retouchent) */
+.paiement { margin-top: 4px; }
+.paiement.pret .paiement__repli { display: none; }
+#chariow-widget { font-family: var(--sans) !important; }
+#chariow-widget:empty { display: none; }
+#chariow-widget .cw-button-base { font-family: var(--sans) !important; font-weight: 700 !important; font-size: 1.0625rem !important; min-height: 56px !important; height: auto !important; padding: 14px 28px !important; border-radius: 999px !important; box-shadow: 0 8px 20px -10px rgba(22,64,42,.6); transition: background-color .35s ease, transform .2s ease, opacity .35s ease !important; }
+#chariow-widget .cw-button-base span { font-weight: 700 !important; color: var(--creme) !important; }
+#chariow-widget .cw-button-base, #chariow-widget .cw-button-base:hover, #chariow-widget .cw-button-base:active { opacity: 1 !important; }
+#chariow-widget .cw-button-base:hover { background-color: var(--foret-3) !important; }
+#chariow-widget .cw-button-base:active { transform: translateY(1px); background-color: var(--foret-2) !important; }
+#chariow-widget .cw-button-base:focus-visible { outline: 3px solid var(--feuille); outline-offset: 3px; }
+.cw-modal-content { border-radius: 18px !important; }
+
 /* Apparitions au défilement */
 .js .revele { opacity: 0; transform: translateY(18px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1); }
 .js .revele.vu { opacity: 1; transform: none; }
