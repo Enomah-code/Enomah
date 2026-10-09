@@ -39,7 +39,7 @@
     </div>
     <article class="legal__corps">
 
-<div class="legal__note"><p><strong>En bref.</strong> Tes réponses au test restent sur ton téléphone : rien n'est envoyé à nos serveurs. Le site utilise le Pixel Meta pour mesurer les visites et l'efficacité de ses publicités. Le paiement est géré par Chariow. Nous ne vendons jamais tes données.</p></div>
+<div class="legal__note"><p><strong>En bref.</strong> Tes réponses au test restent sur ton téléphone : rien n'est envoyé à nos serveurs. Le site utilise le Pixel Meta pour mesurer les visites et l'efficacité de ses publicités ; après un achat, notre serveur signale aussi cet achat à Meta (avec tes coordonnées hachées). Le paiement est géré par Chariow. Nous ne vendons jamais tes données.</p></div>
 
 <h2>1. Responsable du traitement</h2>
 <ul>
@@ -58,7 +58,7 @@
   <li>un repère indiquant que tu as terminé le test, pour ne le compter qu'une fois ;</li>
   <li>un identifiant technique de ton dernier clic sur « Commencer le défi », et, après un achat, le numéro de ta commande Chariow, pour relier plus tard ta commande à nos mesures sans la compter deux fois.</li>
 </ul>
-<p>Ces informations ne quittent pas ton appareil. Pour les effacer, supprime les données du site dans les réglages de ton navigateur (ou utilise la navigation privée).</p>
+<p>Ces informations ne quittent pas ton appareil, sauf le numéro de ta commande : à la fin d'un paiement, il est envoyé une fois à notre serveur avec tes identifiants publicitaires Meta (voir section 3). Pour les effacer, supprime les données du site dans les réglages de ton navigateur (ou utilise la navigation privée).</p>
 
 <h2>3. Mesure d'audience : le Pixel Meta</h2>
 <p>Le site utilise le <strong>Pixel Meta</strong> (Facebook, Instagram). Sa finalité : <strong>mesurer les visites et l'efficacité de nos publicités</strong>, pour savoir quelles annonces amènent des personnes vraiment intéressées et éviter de montrer nos publicités inutilement.</p>
@@ -69,7 +69,15 @@
   <li>des informations que Meta relève automatiquement sur la page, comme certains clics sur les boutons.</li>
 </ul>
 <p>Meta peut relier ces informations à ton compte Facebook ou Instagram si tu en as un, selon sa propre <a href="https://www.facebook.com/privacy/policy/" rel="noopener">politique de confidentialité</a>. Tu peux limiter ce suivi en bloquant les cookies tiers dans ton navigateur, avec un bloqueur de publicités, ou dans les paramètres publicitaires de ton compte Meta.</p>
-<p>Aucun achat n'est envoyé à Meta depuis ton navigateur.</p>
+<p><strong>Ton achat, transmis à Meta par notre serveur.</strong></p>
+<p>Aucun achat n'est envoyé à Meta depuis ton navigateur. Quand tu achètes, c'est <strong>notre serveur</strong> (un petit programme hébergé chez Google, Google Apps Script) qui prévient Meta, une seule fois par commande, avec la même finalité : mesurer l'efficacité de nos publicités. Il transmet à Meta, par l'API Conversions de Meta :</p>
+<ul>
+  <li>le fait que tu as acheté le Défi 60 jours, le montant, la date et le numéro de la commande ;</li>
+  <li>ton <strong>e-mail, ton numéro de téléphone, ton prénom, ton nom et ton pays, hachés</strong> : ils sont transformés en une suite de caractères illisible (empreinte SHA-256) avant l'envoi, ce qui permet à Meta de reconnaître un compte existant sans recevoir ces informations en clair ;</li>
+  <li>l'<strong>adresse IP</strong> et le <strong>type de navigateur</strong> utilisés au moment du paiement, tels que Chariow les a enregistrés ;</li>
+  <li>tes <strong>identifiants publicitaires Meta</strong> (les cookies <code>_fbp</code> et <code>_fbc</code> du Pixel), si ton navigateur les a, envoyés par la page à notre serveur à la fin du paiement avec le numéro de ta commande.</li>
+</ul>
+<p>Pour cela, notre serveur relit ta commande chez Chariow. Il garde un journal des commandes envoyées (date, numéro de commande, prénom, e-mail, montant, début de l'adresse IP seulement) dans un tableau Google Sheets privé.</p>
 
 <h2>4. Le paiement : géré par Chariow</h2>
 <p>Quand tu achètes, tu saisis ton nom, ton e-mail, ton numéro et tes informations de paiement <strong>dans la fenêtre de paiement Chariow</strong>. Ces données sont traitées par Chariow et ses partenaires de paiement (Mobile Money, carte bancaire). <strong>Livensya ne voit jamais ton code Mobile Money ni les données de ta carte.</strong></p>
@@ -81,8 +89,9 @@
 <h2>6. Qui reçoit tes données</h2>
 <ul>
   <li><strong>Chariow</strong> : vente, paiement et envoi de l'accès ;</li>
-  <li><strong>Meta</strong> : mesure des visites et des publicités (Pixel), et WhatsApp si tu nous écris par ce biais ;</li>
-  <li><strong>LWS</strong> : hébergement du site (journaux techniques du serveur, comme l'adresse IP et la page demandée).</li>
+  <li><strong>Meta</strong> : mesure des visites et des publicités (Pixel, et achat transmis par notre serveur), et WhatsApp si tu nous écris par ce biais ;</li>
+  <li><strong>LWS</strong> : hébergement du site (journaux techniques du serveur, comme l'adresse IP et la page demandée) ;</li>
+  <li><strong>Google</strong> : hébergement de notre serveur (Google Apps Script) et du journal des commandes (Google Sheets).</li>
 </ul>
 <p>Nous ne vendons ni ne louons jamais tes données.</p>
 
@@ -90,7 +99,8 @@
 <ul>
   <li>Stockage local du navigateur : jusqu'à ce que tu l'effaces ;</li>
   <li>cookies du Pixel Meta : selon les durées fixées par Meta (environ 3 mois pour le cookie principal) ;</li>
-  <li>informations de commande : le temps nécessaire à ta commande et à nos obligations comptables ;</li>
+  <li>informations de commande, y compris le journal des commandes transmises à Meta : le temps nécessaire à ta commande et à nos obligations comptables ;</li>
+  <li>identifiants publicitaires Meta reçus par notre serveur : effacés dès l'envoi à Meta, et au plus tard après 24 heures ;</li>
   <li>messages : le temps nécessaire pour te répondre et suivre ta demande.</li>
 </ul>
 

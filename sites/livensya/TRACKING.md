@@ -1,6 +1,6 @@
 # Suivi Meta de Livensya (Pixel 5010730402487338)
 
-Simple, fiable, sans doublon. Navigateur uniquement pour l'instant. Le Purchase viendra plus tard du serveur.
+Simple, fiable, sans doublon. PageView, ViewContent, Lead et InitiateCheckout partent du navigateur. Le Purchase part uniquement du serveur : le « robot achat » (Google Apps Script, dossier `robot-achat/`).
 
 ## 1. Plan des événements
 
@@ -10,9 +10,9 @@ Simple, fiable, sans doublon. Navigateur uniquement pour l'instant. Le Purchase 
 | ViewContent | quand l'offre (`#offre`) apparaît à l'écran, 1 fois par page vue | accueil | navigateur (`js/app.js`) | `ViewContent.<uuid>` | content_ids `prd_4bisyd7x`, content_type `product`, content_name `Défi 60 jours`, value `3999`, currency `XOF` |
 | Lead | fin du test, 1 seule fois par visiteur (drapeau `lv_lead_envoye`) | accueil | navigateur | `Lead.<uuid>` | content_name `Test 2 minutes` |
 | InitiateCheckout | clic sur le bouton d'achat du widget Chariow, ou départ vers la page de paiement Chariow (bouton de repli, ou widget pas prêt après 6 s) | accueil | navigateur | `InitiateCheckout.<uuid>` | mêmes paramètres que ViewContent |
-| Purchase | **jamais dans le navigateur** | aucune | futur : serveur (API Conversions, webhook de vente Chariow) | `purchaseId` Chariow | value `3999`, currency `XOF` |
+| Purchase | vente réussie chez Chariow (Pulse « Vente réussie »), vérifiée par relecture de la fiche Chariow ; envoi dès le signal de la page, ou au plus tard 10 à 15 min après le webhook | aucune (serveur) | **serveur seul** : robot achat (API Conversions v25.0) | ID de la vente Chariow (`sal_…`) | value = montant payé (3999), currency `XOF`, content_ids `prd_4bisyd7x`, content_type `product`, content_name `Défi 60 jours`, order_id ; user_data : em, ph, fn, ln, country, external_id hachés SHA-256, client_ip_address et client_user_agent du paiement (fiche Chariow), fbp et fbc (signal de la page) |
 
-Merci et pages légales : PageView seulement. Le message de fin de paiement (`chariow-purchase-completed`) ne déclenche aucun événement : il range `lv_purchase_id` et envoie vers `merci.html?achat=<id>`.
+Merci et pages légales : PageView seulement. Le message de fin de paiement (`chariow-purchase-completed`) ne déclenche aucun événement Meta : il range `lv_purchase_id`, envoie une fois au robot le signal `{purchaseId, _fbp, _fbc, _userAgent, _eventSourceUrl}` (seulement si `ROBOT_ACHAT` est rempli dans `js/app.js`), puis redirige vers `merci.html?achat=<id>`.
 
 ## 2. Règles anti-doublon (déjà en place)
 
@@ -20,8 +20,9 @@ Merci et pages légales : PageView seulement. Le message de fin de paiement (`ch
 2. `fbq.disablePushState = true` : un clic sur un lien interne (`#offre`, `#contenu`) ou le bouton Retour ne crée plus de PageView en plus. (Option officielle Meta : [doc SPA](https://developers.facebook.com/docs/meta-pixel/implementation/tag_spa).)
 3. InitiateCheckout : seul le bouton d'achat du widget compte (pas la croix qui ferme la fenêtre de paiement) ; les clics répétés en moins de 2 s sont ignorés ; un bouton « Commencer le défi » cliqué deux fois pendant le chargement du widget ne compte qu'une fois ; le repli après 6 s ne part que si le widget n'a pas été ouvert.
 4. Lead : drapeau dans le téléphone, il ne repart pas si le test est refait ou la page rechargée.
-5. Pas de Purchase sur `merci.html` (page rechargeable, partageable).
-6. Pas de deuxième intégration Meta : ni Pixel dans les réglages Chariow, ni plugin, ni Google Tag Manager, ni événements créés avec l'« Outil de configuration des événements » de Meta. À vérifier une fois (voir 3.4).
+5. Pas de Purchase sur `merci.html` (page rechargeable, partageable), ni nulle part dans le navigateur. Le Purchase n'a qu'une source, le robot : pas de déduplication navigateur/serveur à gérer.
+6. Pas de deuxième intégration Meta : ni Pixel dans les réglages Chariow, ni plugin, ni Google Tag Manager, ni événements créés avec l'« Outil de configuration des événements » de Meta. À vérifier une fois (voir 3.4). Avec le robot, c'est encore plus important : un Pixel réglé dans Chariow enverrait son propre Purchase, avec un autre event_id, donc compté deux fois.
+7. Robot achat : une seule entrée par ID de vente dans ses propriétés (`vente_<id>`), sous verrou. Webhook renvoyé, deuxième Pulse, signal répété, rechargement de la page : rien ne repart. Le signal de la page part une seule fois par achat (drapeau `lv_signal_achat` + garde dans la page) et ne crée jamais d'achat à lui seul.
 
 ## 3. Vérifier une fois le site en ligne (lecture seule, rien à modifier)
 
@@ -48,18 +49,44 @@ Clique sur chaque événement : la colonne « Navigateur » doit être seule, et
 1. Dans Chariow, réglages de la boutique (Intégrations ou Pixel) : aucun Pixel Meta renseigné. Sinon Chariow enverrait ses propres InitiateCheckout et Purchase depuis la page de paiement : doublon, et un Purchase navigateur interdit par nos règles. Je n'ai pas pu le vérifier depuis mon environnement.
 2. Dans le Gestionnaire d'événements, « Paramètres » de la source : regarde seulement, ne change rien. Les « événements automatiques » restent comme ils sont.
 
-## 4. Le futur Purchase côté serveur (ce qu'il faudra)
+## 4. Le Purchase côté serveur : le robot achat
 
-1. Un petit service (Apps Script, serverless, Make...) qui reçoit le webhook « vente réussie » de Chariow et envoie un seul Purchase à l'API Conversions. Le jeton reste dans ce service (propriétés du script ou secret), jamais dans le site.
-2. `event_id` = l'identifiant de la vente Chariow, toujours le même pour une vente. Vérifie que le `purchaseId` du widget (`lv_purchase_id`, `merci.html?achat=`) est bien le même que l'identifiant reçu dans le webhook.
-3. Un journal des ventes déjà envoyées : si Chariow renvoie le webhook, on n'envoie pas une deuxième fois (Meta ne garantit la déduplication qu'entre navigateur et serveur, dans les 48 h : [doc déduplication](https://developers.facebook.com/docs/marketing-api/conversions-api/deduplicate-pixel-and-server-events)).
-4. Champs : `event_name: Purchase`, `event_time` en secondes, `action_source: website`, `event_source_url`, `custom_data` (value 3999, currency XOF, content_ids `prd_4bisyd7x`).
-5. Correspondance (EMQ) : e-mail et téléphone hachés en SHA-256 après normalisation (minuscules sans espaces ; téléphone avec indicatif, ex. 229...). En plus si possible : `fbp` (cookie `_fbp`) et `fbc` (cookie `_fbc`, créé depuis `fbclid`), `client_user_agent`, `client_ip_address`. Le webhook Chariow ne les a sans doute pas : il faudra les faire passer (champ personnalisé Chariow, ou envoi depuis `merci.html` avec le `purchaseId`).
-6. Tests uniquement avec un `test_event_code` (onglet « Tester les événements »), jamais de faux achat dans les vraies données. Version de la Graph API à vérifier au moment de coder.
-7. Mettre à jour `confidentialite.html` (section 3) quand ce sera en place.
+Code : `robot-achat/Code.gs`. Installation pas à pas : `robot-achat/LISEZMOI.md`.
+
+**Déroulé d'une vente**
+1. Chariow envoie le Pulse « Vente réussie » (`successful.sale`) à l'adresse `/exec` du robot.
+2. Le robot ignore tout ce qui n'est pas le produit `prd_4bisyd7x` de la boutique `ykhzgspm.mychariow.store`.
+3. Il relit la fiche de la vente (`GET https://api.chariow.com/v1/sales/<id>`, clé `CHARIOW_API_KEY`). Vente inconnue (faux appel), autre produit, autre boutique, vente échouée ou abandonnée : **refus, rien envoyé**. Paiement pas encore confirmé ou Chariow en panne : nouvel essai toutes les 5 min pendant 1 h.
+4. Il attend le signal de la page (cookies `_fbp`, `_fbc`) au plus 10 min, puis envoie le Purchase, avec ou sans fbp/fbc. Déclencheur `envoyerEnAttente` toutes les 5 min.
+5. Réponse de Meta lue (`events_received`). Meta injoignable, 5xx ou 429 : jusqu'à 3 essais. Autre erreur (400…) : pas de relance, « Échec Meta » noté.
+
+**Pourquoi pas la signature du webhook** : Chariow signe chaque Pulse (en-tête `x-chariow-signature`, HMAC-SHA256 du corps brut, [doc Chariow Pulse Security](https://chariow.dev/en/guides/pulse-security)). Mais Apps Script ne transmet pas les en-têtes HTTP à `doPost` ([doc Google, objet événement](https://developers.google.com/apps-script/guides/web)). La relecture de la fiche par l'API remplace donc la signature : un faux appel ne peut au pire que provoquer l'envoi d'une vraie vente Livensya payée, une seule fois.
+
+**Correspondance (EMQ)** : e-mail, prénom, nom (fiche Chariow), téléphone et pays (webhook, gardés seulement si l'e-mail du webhook est celui de la fiche ; pays aussi depuis l'IP de la fiche), hachés SHA-256 après normalisation ([règles Meta](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters)) : e-mail en minuscules sans espaces ; téléphone en chiffres avec indicatif (`+229 01 97 00 00 00` donne `2290197000000`, numéro sans indicatif connu : non envoyé) ; prénom et nom en minuscules sans espaces ni ponctuation ; pays en 2 lettres minuscules. En clair : IP du paiement (validée, publique, sinon écartée), navigateur du paiement, fbp, fbc. `event_time` = heure de la vente en secondes (vente de plus de 7 jours : non envoyée, [limite Meta](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api)).
+
+**Correspondance purchaseId / ID de vente** : le widget envoie `purchaseId` et ouvre `https://<boutique>/purchase/<purchaseId>` (code du widget). L'API Checkout de Chariow appelle `purchase.id` l'identifiant de vente `sal_…` ([doc Checkout](https://chariow.dev/en/guides/checkout)). Les deux devraient donc être identiques, **à confirmer sur la première vraie vente**. Si ce n'est pas le cas : aucun doublon ni perte, le Purchase part sans fbp/fbc après 10 min, et `_Debug` affiche « Signal sans vente » 24 h après. Pas de correspondance par e-mail possible : la page ne connaît pas l'e-mail de l'acheteur.
+
+**Mode test** : si la propriété `META_TEST_EVENT_CODE` est remplie, **tous** les envois partent avec `test_event_code` (y compris de vraies ventes, qui ne compteront alors pas). `testerAchatFictif()` refuse de partir sans ce code.
+
+**Secrets** : `META_ACCESS_TOKEN` et `CHARIOW_API_KEY` dans les Propriétés du script uniquement. Jamais dans le site, jamais écrits dans la feuille (filtre `sansSecret_`), jamais affichés par `verifierConfiguration` (seulement leur longueur). IP masquée (`160.155.x.x`) dans la feuille.
+
+**Ce qui n'est pas fait (choix de simplicité)** : pas d'exclusion des ventes d'affiliés (le robot IABB les exclut ; à ajouter si tu ouvres l'affiliation sur Livensya) ; pas d'IP depuis la page (pas d'ipify) : l'IP vient de la fiche Chariow.
+
+### Procédure de test (une fois installé)
+1. Simulateur sur ordinateur, sans réseau : `node sites/livensya/robot-achat/tests/scenarios.js` (75 vérifications, toutes OK au 9 octobre 2026).
+2. Apps Script : `verifierConfiguration`, puis `testerAchatFictif` avec `META_TEST_EVENT_CODE` rempli ; l'onglet « Tester les événements » doit montrer 1 Purchase, source Serveur, « TEST robot achat (fictif) ».
+3. Pulse Chariow : le bouton de test éventuel doit donner « Refusé : vente inconnue chez Chariow » dans `_Debug`.
+4. Première vraie vente : onglet Ventes, « Envoyé, events_received=1 » et colonne Signal page. Puis, dans le Gestionnaire d'événements, « Vue d'ensemble » > Purchase : source **Serveur** seule, 1 par vente. Si un Purchase **Navigateur** apparaît aussi, c'est une deuxième source (Pixel réglé dans Chariow, ou « événements automatiques » de Meta qui devineraient un achat sur `merci.html`) : ne change rien toi-même, dis-le-moi et on décidera ensemble.
+5. Jamais d'achat réel pour tester.
 
 ## 5. Audit du 9 octobre 2026
 
 Vérifié avec Chromium (Playwright), connect.facebook.net bloqué (aucun événement réel envoyé), widget Chariow et page de paiement simulés en local.
 Corrigé : PageView en double sur liens internes et bouton Retour ; InitiateCheckout à la fermeture de la fenêtre de paiement ; double InitiateCheckout possible pendant le chargement du widget ; InitiateCheckout du repli coupé par la redirection immédiate.
 Verdict : OK pour le navigateur, sous réserve du point 3.4 (aucun Pixel dans Chariow).
+
+## 6. Audit du robot achat (9 octobre 2026)
+
+Vérifié : simulateur Node (75 vérifications : vente valide, webhook renvoyé, signal avant/après/absent, autre produit/boutique, faux webhook, IP invalides, mode test, achat fictif refusé sans code, pannes Chariow et Meta, jeton oublié, secrets absents des journaux), et `js/app.js` dans Chromium sans réseau (tout bloqué, faux widget) : redirection vers `merci.html?achat=…` intacte, 1 seul signal (sendBeacon, ou repli fetch), aucun signal quand `ROBOT_ACHAT` est vide, aucun nouveau signal après rechargement.
+Relecture par un auditeur indépendant : **pas faite dans cette session** (outil de sous-agent indisponible). À faire avant la mise en service.
+Verdict provisoire : OK, sous réserve de la relecture indépendante et de la confirmation purchaseId = ID de vente sur la première vente.

@@ -15,6 +15,12 @@ const DELAI_REPLI_MS = 6000;
    Mets une adresse complète si besoin, ex. 'https://livensya.emkbluediamond.online/merci.html'. */
 const PAGE_APRES_ACHAT = 'merci.html';
 
+/* Robot achat (Google Apps Script, dossier robot-achat/) : adresse /exec de l'application web.
+   Ce n'est pas un secret. Tant que c'est vide (''), rien n'est envoyé.
+   À la fin du paiement, la page lui envoie UNE fois { purchaseId, _fbp, _fbc, _userAgent, _eventSourceUrl }
+   pour améliorer la correspondance du Purchase que le robot envoie à Meta (le robot seul envoie le Purchase). */
+const ROBOT_ACHAT = '';
+
 /* Vidéo faceless (HyperFrames) : laisse vide tant que le fichier n'existe pas.
    Exemple : 'videos/defi-60-jours.mp4' et 'videos/affiche.webp' */
 const VIDEO_SRC = '';
@@ -60,20 +66,42 @@ function envoyerLead(donnees) {
      À la fin du paiement, la fenêtre Chariow envoie { type: 'chariow-purchase-completed', purchaseId }.
      On garde purchaseId (lv_purchase_id, pour le futur Purchase côté serveur) et on redirige vers PAGE_APRES_ACHAT.
      Écoute en phase de capture + stopImmediatePropagation : le widget, qui redirige sinon vers sa propre page
-     d'achat, ne reçoit pas ce message. AUCUN événement Meta n'est envoyé ici (le Purchase partira du serveur). */
+     d'achat, ne reçoit pas ce message. AUCUN événement Meta n'est envoyé ici : le Purchase part du robot achat (serveur).
+     signalerAchat() lui passe seulement les cookies Meta, une seule fois par achat, sans retarder la redirection. */
   function origineChariow(origine) {
     var u;
     try { u = new URL(origine); } catch (e) { return false; }
     return u.protocol === 'https:' && /(^|\.)(mychariow\.store|chariow\.com)$/.test(u.hostname);
   }
+  function cookie(nom) {
+    var m = document.cookie.match(new RegExp('(?:^|; )' + nom + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+  function signalerAchat(id) {
+    if (!ROBOT_ACHAT || !id) return;
+    try { if (localStorage.getItem('lv_signal_achat') === id) return; localStorage.setItem('lv_signal_achat', id); } catch (err) {}
+    var fbc = cookie('_fbc');
+    var clic = /[?&]fbclid=([^&#]+)/.exec(location.search);
+    if (!fbc && clic) fbc = 'fb.1.' + Date.now() + '.' + decodeURIComponent(clic[1]);
+    var corps = JSON.stringify({ purchaseId: id, _fbp: cookie('_fbp'), _fbc: fbc, _userAgent: navigator.userAgent, _eventSourceUrl: location.href.slice(0, 1000) });
+    var parti = false;
+    try { parti = !!(navigator.sendBeacon && navigator.sendBeacon(ROBOT_ACHAT, new Blob([corps], { type: 'text/plain' }))); } catch (err) {}
+    if (!parti) {
+      try { fetch(ROBOT_ACHAT, { method: 'POST', mode: 'no-cors', keepalive: true, headers: { 'Content-Type': 'text/plain' }, body: corps }); } catch (err) {}
+    }
+  }
+  var achatTraite = false;
   window.addEventListener('message', function (e) {
     var d = e.data;
     if (!d || typeof d !== 'object' || d.type !== 'chariow-purchase-completed') return;
     if (!origineChariow(e.origin)) return;
     var id = (typeof d.purchaseId === 'string' || typeof d.purchaseId === 'number') ? String(d.purchaseId) : '';
     if (!/^[A-Za-z0-9_-]{1,100}$/.test(id)) id = '';
-    if (id) { try { localStorage.setItem('lv_purchase_id', id); } catch (err) {} }
     e.stopImmediatePropagation();
+    if (achatTraite) return;
+    achatTraite = true;
+    if (id) { try { localStorage.setItem('lv_purchase_id', id); } catch (err) {} }
+    try { signalerAchat(id); } catch (err) {}
     location.href = PAGE_APRES_ACHAT + (id ? (PAGE_APRES_ACHAT.indexOf('?') > -1 ? '&' : '?') + 'achat=' + encodeURIComponent(id) : '');
   }, true);
 

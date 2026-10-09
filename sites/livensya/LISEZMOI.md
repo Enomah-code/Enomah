@@ -2,6 +2,12 @@
 
 Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de données. Poids mesuré au premier chargement sur téléphone : environ 150 Ko (moins de 500 Ko une fois toutes les images chargées ; limite fixée : 1,5 Mo).
 
+## Version 6 : le robot achat (Purchase côté serveur)
+- **Nouveau dossier `robot-achat/`** : un Google Apps Script qui envoie l'événement **Purchase** à Meta (API Conversions) une seule fois par vente, depuis le webhook « Vente réussie » de Chariow. Installation pas à pas, comme pour un débutant : **`robot-achat/LISEZMOI.md`**. Détails techniques : `TRACKING.md`, section 4.
+- **`js/app.js`** : nouvelle constante en haut, `const ROBOT_ACHAT = '';`. Quand tu y colles l'adresse `/exec` du robot, la page lui envoie à la fin du paiement un petit signal (identifiant d'achat et cookies Meta), une seule fois, sans retarder la redirection vers `merci.html`. Tant que c'est vide, rien n'est envoyé.
+- **`confidentialite.html`** : la section 3 décrit maintenant l'achat transmis à Meta par notre serveur.
+- Les secrets (jeton Meta, clé Chariow) restent dans les « Propriétés du script » d'Apps Script, jamais dans le site.
+
 ## Version 5 : contact discret, pages légales, Pixel actif, retour sur merci.html
 - **Domaine** : https://livensya.emkbluediamond.online/ (adresse canonique et Open Graph de `index.html`, adresse de chaque page légale).
 - **Contact sans coordonnées affichées** : partout (carte de l'offre, FAQ, page merci, pied de page, pages légales), seulement deux petits boutons « WhatsApp » et « E-mail ». Le numéro et l'adresse ne s'affichent plus en texte.
@@ -17,9 +23,9 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
 
 ## Après l'achat : retour sur merci.html
 1. À la fin d'un paiement dans la fenêtre du widget, Chariow envoie à la page un message `chariow-purchase-completed` qui contient le `purchaseId`.
-2. `js/app.js` l'écoute (origine vérifiée : `https://…mychariow.store` ou `https://…chariow.com`, forme du message vérifiée), garde l'identifiant dans le téléphone (`localStorage`, clé `lv_purchase_id`, pour le futur Purchase côté serveur) et envoie l'acheteur vers **`PAGE_APRES_ACHAT`** (en haut de `js/app.js`, valeur : `'merci.html'`), avec `?achat=<purchaseId>`.
-3. Le widget, qui sinon redirigeait vers sa page d'achat Chariow (`…/purchase/<id>`), ne reçoit plus ce message (écoute prioritaire). **Aucun événement Meta n'est envoyé à ce moment.**
-4. **À régler aussi dans Chariow** : si le tableau de bord du produit propose une « URL de redirection après achat » (ou « page de remerciement »), mets `https://livensya.emkbluediamond.online/merci.html`. C'est utile quand le paiement se termine hors du widget, par le lien de repli (`LIEN_PAIEMENT`).
+2. `js/app.js` l'écoute (origine vérifiée : `https://…mychariow.store` ou `https://…chariow.com`, forme du message vérifiée), garde l'identifiant dans le téléphone (`localStorage`, clé `lv_purchase_id`), envoie une fois le signal au robot achat si `ROBOT_ACHAT` est rempli (version 6), et envoie l'acheteur vers **`PAGE_APRES_ACHAT`** (en haut de `js/app.js`, valeur : `'merci.html'`), avec `?achat=<purchaseId>`.
+3. Le widget, qui sinon redirigeait vers sa page d'achat Chariow (`…/purchase/<id>`), ne reçoit plus ce message (écoute prioritaire). **Aucun événement Meta n'est envoyé par la page à ce moment** : le Purchase part du robot achat (serveur).
+4. **Côté Chariow** : pour un produit « téléchargeable », Chariow ne propose pas de redirection après achat ; l'acheteur reçoit l'accès à son espace client Chariow. Quand le paiement se termine hors du widget (lien de repli `LIEN_PAIEMENT`), il reste donc sur Chariow : le robot envoie quand même le Purchase (sans les cookies Meta, après 10 minutes).
 5. À tester avec un vrai paiement : on n'a pas pu payer depuis notre environnement de test. Le comportement a été vérifié avec un message simulé.
 
 ## Version 4 : fidèle au livre et paiement sans quitter la page
@@ -54,6 +60,7 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
 | `css/style.css` | Tout le style (couleurs de la charte en haut du fichier) |
 | `js/app.js` | Le test, le résultat, les boutons d'achat, la vidéo. **Les réglages sont en haut du fichier.** |
 | `js/tracking.js` | Le Pixel Meta. **`PIXEL_ID` est en haut du fichier.** |
+| `robot-achat/` | Le robot achat (Google Apps Script) : envoie le Purchase à Meta depuis le serveur. **Ne pas envoyer sur LWS** : il se colle dans Apps Script (voir son `LISEZMOI.md`) |
 | `fonts/` | Les 2 polices, hébergées sur ton site (pas d'appel à Google) |
 | `images/` | Photos avant/après, logos, mockups et fonds, en WebP. `images/marque/` = les originaux fournis. `images/paiement/` = logos des moyens de paiement |
 | `captures/` | Les captures téléphone (390 px) et ordinateur (1440 px) de chaque page |
@@ -63,7 +70,7 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
 
 1. **Créer le sous-domaine** : espace client LWS → ton hébergement → « Sous-domaines » → ajoute `livensya` sur `emkbluediamond.online`. Note le dossier créé (souvent `/livensya/` ou `/sous-domaines/livensya/` à la racine de l'hébergement).
 2. **Activer le HTTPS** : dans « SSL / Let's Encrypt », coche le sous-domaine `livensya.emkbluediamond.online`. Attends qu'il soit actif (quelques minutes à quelques heures).
-3. **Envoyer les fichiers** : par le gestionnaire de fichiers LWS ou en FTP (FileZilla), copie **le contenu** du dossier `sites/livensya/` dans le dossier du sous-domaine : `index.html`, `merci.html`, `mentions-legales.html`, `cgv.html`, `confidentialite.html`, `css/`, `js/`, `fonts/`, `images/`. Inutile d'envoyer `captures/`, `images/marque/`, `DESIGN.md`, `DONNEES.md` et ce fichier.
+3. **Envoyer les fichiers** : par le gestionnaire de fichiers LWS ou en FTP (FileZilla), copie **le contenu** du dossier `sites/livensya/` dans le dossier du sous-domaine : `index.html`, `merci.html`, `mentions-legales.html`, `cgv.html`, `confidentialite.html`, `css/`, `js/`, `fonts/`, `images/`. Inutile d'envoyer `captures/`, `images/marque/`, `robot-achat/`, `DESIGN.md`, `DONNEES.md`, `TRACKING.md` et ce fichier.
 4. **Vérifier** : ouvre `https://livensya.emkbluediamond.online` sur ton téléphone, fais le test jusqu'au bout, appuie sur un bouton d'achat (tu dois arriver sur Chariow), ouvre `/merci.html` et les trois pages légales (liens du pied de page).
 5. **Brancher la page merci dans Chariow** : dans le produit, réglage « redirection après achat » (ou « page de remerciement »), mets `https://livensya.emkbluediamond.online/merci.html`. Si Chariow ne le propose pas, la page reste utile : mets son lien dans l'e-mail de livraison.
 
@@ -76,6 +83,7 @@ Tout est en haut de `js/app.js` :
 ```js
 const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout';   // repli si le widget ne charge pas
 const PAGE_APRES_ACHAT = 'merci.html';  // où envoyer l'acheteur après un paiement réussi dans le widget
+const ROBOT_ACHAT = '';      // adresse /exec du robot achat (pas un secret) ; vide = aucun signal
 const VIDEO_SRC = '';        // ex. 'videos/defi-60-jours.mp4'
 const VIDEO_AFFICHE = '';    // ex. 'videos/affiche.webp'
 ```
@@ -101,20 +109,18 @@ Plan complet, règles anti-doublon et vérifications : voir `TRACKING.md`.
 | `ViewContent` | quand la section de l'offre s'affiche | une fois par page vue |
 | `Lead` | fin du test | une seule fois par visiteur (drapeau `lv_lead_envoye` dans le téléphone) |
 | `InitiateCheckout` | clic sur un bouton d'achat | un par clic, clics répétés en moins de 2 s ignorés |
-| `Purchase` | **pas envoyé par le navigateur** | voir ci-dessous |
+| `Purchase` | **pas envoyé par le navigateur** : envoyé par le robot achat (serveur) | une fois par vente (journal du robot) |
 
 Chaque événement porte un `eventID` unique (ex. `Lead.8f3c…`), prêt pour la déduplication avec l'API Conversions (même nom d'événement + même `event_id` côté serveur).
 
 3. **Jamais de jeton API Conversions dans ces fichiers** : un site statique est lisible par tout le monde.
 
-### Proposition pour le Purchase (à mettre en place côté serveur)
+### Le Purchase : envoyé par le robot achat (serveur)
 
-Un seul envoi, côté serveur, déclenché par la vente réelle :
-
-1. Dans Chariow, crée un **webhook (Pulse) « vente réussie »** vers un petit service à toi (fonction serverless, Make, n8n…). C'est lui, et lui seul, qui garde le jeton API Conversions.
-2. À chaque vente, ce service envoie à Meta un événement `Purchase` avec `value: 3999`, `currency: 'XOF'`, l'e-mail et le téléphone de l'acheteur **hachés en SHA-256** (comme Meta l'exige), `action_source: 'website'`, et un `event_id` stable : l'identifiant de la vente Chariow (le `purchaseId` reçu du widget, identique à celui du webhook : à vérifier sur la première vente), pour qu'un éventuel renvoi du webhook ne compte pas deux fois.
-3. Relier au parcours : le navigateur garde l'`eventID` du dernier `InitiateCheckout` dans `localStorage` (`lv_initiate_checkout_id`). Si Chariow permet de faire passer un paramètre ou un champ personnalisé jusqu'au webhook, on pourra l'y transmettre pour réutiliser ce même identifiant. Sinon, l'identifiant de la vente suffit : il n'y a pas de Purchase navigateur, donc pas de doublon possible.
-4. Pas de `Purchase` dans `merci.html` (expliqué en commentaire dans la page) : elle peut être rechargée ou ouverte sans achat.
+1. Chariow prévient le robot à chaque vente réussie (Pulse « Vente réussie »). Le robot relit la vente chez Chariow avant tout envoi : un faux appel n'envoie rien.
+2. Il envoie un seul `Purchase` à Meta : `event_id` = identifiant de la vente Chariow, valeur 3999 XOF, e-mail, téléphone, prénom, nom et pays **hachés en SHA-256**, adresse IP et navigateur du paiement, et les cookies Meta (`_fbp`, `_fbc`) si la page les lui a transmis.
+3. Pas de `Purchase` dans `merci.html` (expliqué en commentaire dans la page) : elle peut être rechargée ou ouverte sans achat.
+4. Installation : `robot-achat/LISEZMOI.md`. Tant que le robot n'est pas installé, aucun Purchase n'arrive chez Meta (le reste du suivi marche normalement).
 
 ## Ce qu'Enock doit fournir ou valider
 1. **L'histoire de David** telle qu'écrite sur la page (réécriture à la 1re personne de la préface du livre). Âge aligné sur le livre : 26 ans.
@@ -128,8 +134,9 @@ Un seul envoi, côté serveur, déclenché par la vente réelle :
 9. **Les pages légales** (`mentions-legales.html`, `cgv.html`, `confidentialite.html`) : relis-les, surtout l'absence de remboursement, la phrase sur un double débit, et les durées de conservation. Le Pixel est branché (ID 5010730402487338) ; le jeton API Conversions reste côté serveur.
 10. **La vidéo faceless**, puis de vrais témoignages avec accord.
 11. **Ton ✅** sur l'aperçu avant toute mise en ligne.
+12. **Installer le robot achat** (`robot-achat/LISEZMOI.md`), puis me donner l'adresse `/exec` (ou la coller toi-même dans `ROBOT_ACHAT`). Sur la première vraie vente, regarde la colonne « Signal page » de l'onglet Ventes.
 
-## Prochain Purchase serveur : ce que le navigateur garde
+## Ce que le navigateur garde (téléphone de l'acheteur)
 - `lv_initiate_checkout_id` : eventID du dernier InitiateCheckout.
-- `lv_purchase_id` (version 5) : identifiant d'achat Chariow reçu à la fin du paiement dans le widget. Aussi présent dans l'adresse `merci.html?achat=<id>`.
-Quand le Purchase serveur sera en place, pense à le décrire dans `confidentialite.html` (section 3).
+- `lv_purchase_id` : identifiant d'achat Chariow reçu à la fin du paiement dans le widget. Aussi présent dans l'adresse `merci.html?achat=<id>`.
+- `lv_signal_achat` (version 6) : identifiant du dernier achat déjà signalé au robot, pour ne jamais le signaler deux fois.
