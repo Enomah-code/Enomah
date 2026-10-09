@@ -71,7 +71,8 @@ function envoyerLead(donnees) {
   function origineChariow(origine) {
     var u;
     try { u = new URL(origine); } catch (e) { return false; }
-    return u.protocol === 'https:' && /(^|\.)(mychariow\.store|chariow\.com)$/.test(u.hostname);
+    /* Seule la fenêtre de paiement de la boutique Livensya (adresse lue dans le code du widget : https://<data-store-domain>). */
+    return u.protocol === 'https:' && u.hostname === 'ykhzgspm.mychariow.store';
   }
   function cookie(nom) {
     var m = document.cookie.match(new RegExp('(?:^|; )' + nom + '=([^;]*)'));

@@ -2,7 +2,7 @@
    ------------------------------------------------------------------
    Envoie l'événement Purchase à Meta (API Conversions), UNE SEULE FOIS par vente Chariow.
 
-   1. Chariow (Pulse « vente réussie ») appelle doPost avec la vente.
+   1. Chariow (Pulse « Vente réussie ») appelle doPost avec la vente.
    2. Le robot relit la fiche de la vente chez Chariow (CHARIOW_API_KEY) : c'est sa preuve
       que la vente existe, est payée et concerne bien le produit Livensya. Sans cette preuve, rien ne part.
       (Chariow signe ses Pulses dans un en-tête HTTP, mais Apps Script ne donne pas accès aux en-têtes :
@@ -10,26 +10,33 @@
    3. La page du site envoie un petit signal facultatif (purchaseId + cookies Meta _fbp/_fbc).
       Le robot l'attend au plus ATTENTE_SIGNAL_MIN minutes, puis envoie sans fbp/fbc.
    4. event_id = identifiant de la vente Chariow. Chaque vente est notée dans les propriétés
-      du script : un renvoi du webhook ou un signal répété ne renvoie jamais rien.
+      du script ET dans l'onglet Ventes : un renvoi du webhook ou un signal répété ne renvoie jamais rien.
 
    Propriétés du script (Paramètres du projet > Propriétés du script), jamais dans ce fichier :
    - META_ACCESS_TOKEN    : jeton de l'API Conversions (obligatoire)
    - CHARIOW_API_KEY      : clé API de la boutique Livensya (obligatoire)
-   - META_TEST_EVENT_CODE : code de l'onglet « Tester les événements » (facultatif, à vider après les tests)
+   - META_TEST_EVENT_CODE : code de l'onglet « Tester les événements » (facultatif). Il sert UNIQUEMENT
+                            à testerAchatFictif() : les vraies ventes ne partent jamais avec ce code.
 */
 
 /* ---------------- Réglages (rien de secret ici) ---------------- */
+const ENVOYER_VENTES_AFFILIES = false;   // comme IABB : une vente apportée par un affilié n'est pas envoyée à Meta
 var PIXEL_ID = '5010730402487338';
 var VERSION_API_META = 'v25.0';
 var PRODUIT_ID = 'prd_4bisyd7x';
 var NOM_PRODUIT = 'Défi 60 jours';
-var BOUTIQUE = 'ykhzgspm.mychariow.store';
+var BOUTIQUE_ID = 'store_6is731jk2ybk';
+var BOUTIQUE_URL = 'ykhzgspm.mychariow.store';
 var SITE = 'https://livensya.emkbluediamond.online/';
 var PRIX = 3999;
 var DEVISE = 'XOF';
 var ATTENTE_SIGNAL_MIN = 10;   // attente maximale du signal de la page avant d'envoyer sans fbp/fbc
 var ESSAIS_MAX = 12;           // essais de lecture de la fiche Chariow (un toutes les 5 min, soit 1 h)
-var ESSAIS_META_MAX = 3;       // essais d'envoi à Meta si Meta ne répond pas ou répond 5xx/429
+var ESSAIS_META_MAX = 12;      // essais d'envoi à Meta si Meta ne répond pas, répond 5xx/429 ou events_received 0
+var GARDER_JOURS = 10;         // mémoire des ventes terminées (au-delà de 7 jours, Meta refuse l'achat de toute façon)
+var STATUTS_PAYES = ['completed', 'settled', 'success', 'paid'];
+var STATUTS_REFUSES = ['failed', 'cancelled', 'canceled', 'abandoned', 'refunded', 'expired'];
+var JOUR = 24 * 3600 * 1000;
 
 /* ---------------- Points d'entrée web ---------------- */
 function doGet() { return json_({ status: 'ok' }); }
@@ -53,22 +60,32 @@ function recevoirVente_(p) {
   var id = idValide_(p.sale && p.sale.id);
   if (!id) { journal_('Ignoré', 'vente sans identifiant'); return; }
   if (!(p.product && p.product.id === PRODUIT_ID)) { journal_('Ignoré', id + ' : autre produit'); return; }
-  if (!boutiqueLivensya_(p.store && p.store.url)) { journal_('Ignoré', id + ' : autre boutique'); return; }
-  var c = p.customer || {};
-  var indices = { email: String(c.email || ''), telephone: String(c.phone || ''), pays: String(c.country || '') };
-  if (!avecVerrou_(function () { accepterVente_(id, indices); })) {
-    proprietes_().setProperty('brut_' + id, JSON.stringify(indices));   // repris par envoyerEnAttente()
-    journal_('Occupé', id + ' : sera traitée au prochain passage');
-  }
+  if (!boutiqueLivensya_(p.store)) { journal_('Ignoré', id + ' : autre boutique'); return; }
+  var c = p.customer || {}, tel = telephoneBrut_(c.phone);
+  var indices = { email: String(c.email || ''), telephone: tel.texte, indicatif: tel.indicatif,
+                  pays: String((c.country && c.country.code) || c.country || ''),
+                  affilie: !!(p.affiliate && typeof p.affiliate === 'object') };
+  var res = '';
+  var fait = avecVerrou_(function () { res = accepterVente_(id, indices); });
+  if (!fait || res === 'plein') garderPourPlusTard_(id, indices, fait ? 'trop de ventes à vérifier' : 'robot occupé');
 }
 
-function accepterVente_(id, indices) {
+function garderPourPlusTard_(id, indices, motif) {
+  if (compterPrefixe_('brut_') >= 300) { journal_('Ignoré', id + ' : file d\'attente pleine (' + motif + ')'); return; }
+  proprietes_().setProperty('brut_' + id, JSON.stringify(indices));   // repris par envoyerEnAttente()
+  journal_('Mise en file', id + ' : ' + motif + ', sera traitée au prochain passage');
+}
+
+/* Renvoie 'doublon', 'plein' ou 'ok'. */
+function accepterVente_(id, indices, vus) {
   var etat = lireEtat_(id);
-  if (etat && etat.etape !== 'echec') { journal_('Doublon ignoré', id + ' (' + etat.etape + ')'); return; }
-  if (compterEtapes_('verif') >= 50) { journal_('Ignoré', id + ' : trop de ventes à vérifier en même temps'); return; }
+  if (etat && etat.etape !== 'echec') { journal_('Doublon ignoré', id + ' (' + etat.etape + ')'); return 'doublon'; }
+  if (compterEtapes_('verif') >= 50) return 'plein';
   etat = { id: id, etape: 'verif', recuLe: Date.now(), essais: 0, indices: indices };
   ecrireEtat_(etat);
+  if (vus) vus[id] = true;
   avancer_(etat);
+  return 'ok';
 }
 
 /* ---------------- Signal de la page (app.js) ---------------- */
@@ -99,7 +116,7 @@ function recevoirSignal_(b) {
 function avancer_(etat) {
   var id = etat.id;
   if (etat.etape === 'verif') {
-    var r = verifierVente_(id, etat.indices);
+    var r = verifierVente_(id, etat.indices || {});
     if (r.refus) {
       proprietes_().deleteProperty('vente_' + id);
       journal_('Refusé', id + ' : ' + r.refus + '. Rien envoyé à Meta.');
@@ -107,14 +124,21 @@ function avancer_(etat) {
     }
     if (r.reessayer) {
       if (!r.sansCompter) etat.essais++;
-      if (etat.essais >= ESSAIS_MAX || Date.now() - etat.recuLe > 7 * 24 * 3600 * 1000) {
-        ecrireEtat_({ id: id, etape: 'echec', t: Date.now() });
-        journal_('Abandonné', id + ' : ' + r.reessayer + '. Rejoue la livraison depuis Chariow (Pulses > Livraisons).');
+      if (etat.essais >= ESSAIS_MAX || Date.now() - etat.recuLe > 7 * JOUR) {
+        marquerFin_(id, 'echec');
+        ligneVente_({ id: id, email: (etat.indices || {}).email }, 'Échec : ' + r.reessayer + '. Rejoue la livraison depuis Chariow (Pulses > Livraisons).');
+        journal_('Abandonné', id + ' : ' + r.reessayer);
       } else {
         if (etat.raison !== r.reessayer) journal_('Nouvel essai bientôt', id + ' : ' + r.reessayer);   // une ligne par nouveau motif
         etat.raison = r.reessayer;
         ecrireEtat_(etat);
       }
+      return;
+    }
+    if (r.affilie) {
+      if (r.affilie === 'fiche') marquerFin_(id, 'affilie');
+      else proprietes_().deleteProperty('vente_' + id);   // d'après le seul webhook : aucun état, un faux ne bloque jamais le vrai
+      ligneVente_(r.vente, 'Vente affilié, non envoyée' + (r.affilie === 'webhook' ? ' (d\'après le webhook)' : ''));
       return;
     }
     etat = { id: id, etape: 'attente', recuLe: etat.recuLe, essais: 0, vente: r.vente };
@@ -123,6 +147,10 @@ function avancer_(etat) {
   }
   if (etat.etape !== 'attente') return;
 
+  if (statutVente_(id).indexOf('Envoyé') === 0) {   // déjà envoyé mais l'état n'avait pas pu être noté
+    marquerFin_(id, 'envoye');
+    return;
+  }
   var brut = proprietes_().getProperty('signal_' + id);
   var signal = brut ? JSON.parse(brut) : null;
   if (!signal && Date.now() - etat.recuLe < ATTENTE_SIGNAL_MIN * 60000) return;   // on attend encore
@@ -130,9 +158,9 @@ function avancer_(etat) {
   var res = envoyerPurchase_(etat.vente, signal);
   if (res.attendre) { majStatut_(id, res.message); return; }
   if (res.ok) {
-    ecrireEtat_({ id: id, etape: 'envoye', t: Date.now() });
-    proprietes_().deleteProperty('signal_' + id);
-    majStatut_(id, res.message, signal);
+    try { majStatut_(id, res.message, signal); } catch (err) { journal_('ERREUR', id + ' : onglet Ventes non mis à jour (' + err.message + ')'); }
+    marquerFin_(id, 'envoye');
+    try { proprietes_().deleteProperty('signal_' + id); } catch (err) {}
     return;
   }
   etat.essais++;
@@ -140,12 +168,22 @@ function avancer_(etat) {
     ecrireEtat_(etat);
     majStatut_(id, 'Erreur Meta, nouvel essai dans 5 min : ' + res.message);
   } else {
-    ecrireEtat_({ id: id, etape: 'echec', t: Date.now() });
+    marquerFin_(id, 'echec');
     majStatut_(id, 'Échec Meta : ' + res.message);
   }
 }
 
-/* Lit la fiche de la vente chez Chariow. Renvoie { vente } ou { refus } ou { reessayer }. */
+/* Note l'état final d'une vente. Si l'écriture échoue, essaie une écriture minimale, puis journalise.
+   (Après un envoi réussi, l'onglet Ventes « Envoyé… » empêche de toute façon un renvoi.) */
+function marquerFin_(id, etape) {
+  var court = JSON.stringify({ id: id, etape: etape, t: Date.now() });
+  try { proprietes_().setProperty('vente_' + id, court); return true; } catch (err1) {
+    try { proprietes_().setProperty('vente_' + id, '{"etape":"' + etape + '"}'); journal_('ERREUR', id + ' : état « ' + etape + ' » noté en version minimale'); return true; }
+    catch (err2) { journal_('ERREUR', id + ' : impossible de noter l\'état « ' + etape + ' » (' + err2.message + ')'); return false; }
+  }
+}
+
+/* Lit la fiche de la vente chez Chariow. Renvoie { vente, affilie } ou { refus } ou { reessayer }. */
 function verifierVente_(id, indices) {
   var cle = proprietes_().getProperty('CHARIOW_API_KEY') || '';
   if (!cle) return { reessayer: 'clé CHARIOW_API_KEY absente', sansCompter: true };
@@ -160,43 +198,80 @@ function verifierVente_(id, indices) {
   if (code === 401 || code === 403) return { reessayer: 'clé Chariow refusée (code ' + code + ')', sansCompter: true };
   if (code !== 200) return { reessayer: 'Chariow répond ' + code };
   var f;
-  try { f = JSON.parse(rep.getContentText()); f = f.data || f; } catch (err) { return { reessayer: 'fiche Chariow illisible' }; }
-  if (String(f.id) !== id) return { refus: 'fiche Chariow d\'une autre vente' };
-  if (!(f.product && f.product.id === PRODUIT_ID)) return { refus: 'la fiche Chariow concerne un autre produit' };
-  if (f.store && f.store.url && !boutiqueLivensya_(f.store.url)) return { refus: 'la fiche Chariow concerne une autre boutique' };
-  if (f.status === 'awaiting_payment') return { reessayer: 'paiement pas encore confirmé chez Chariow' };
-  if (f.status !== 'completed' && f.status !== 'settled') return { refus: 'vente au statut « ' + f.status + ' »' };
-  if (f.payment && /^(failed|cancelled)$/.test(f.payment.status)) return { refus: 'paiement au statut « ' + f.payment.status + ' »' };
+  try { f = JSON.parse(rep.getContentText()); f = (f && f.data) || f; } catch (err) { return { reessayer: 'fiche Chariow illisible' }; }
+  if (!f || String(f.id) !== id) return { refus: 'fiche Chariow d\'une autre vente' };
+  if (!f.product || !f.product.id) return { reessayer: 'produit absent de la fiche Chariow' };
+  if (f.product.id !== PRODUIT_ID) return { refus: 'la fiche Chariow concerne un autre produit' };
+  if (!boutiqueLivensya_(f.store)) return { refus: 'la fiche Chariow concerne une autre boutique' };
 
-  var client = f.customer || {}, ctx = f.context || {}, pays = ctx.country || {};
-  var email = String(client.email || '').trim();
-  // Téléphone et pays : absents de la fiche API, repris du webhook seulement si c'est bien le même client.
-  var memeClient = email && email.toLowerCase() === String(indices.email || '').trim().toLowerCase();
-  var montant = f.amount || {};
+  var statut = String(f.status || '').toLowerCase(), paiement = String((f.payment && f.payment.status) || '').toLowerCase();
+  if (STATUTS_REFUSES.indexOf(statut) > -1 || /^(failed|cancelled|canceled)$/.test(paiement)) {
+    return { refus: 'vente au statut « ' + statut + ' » (paiement « ' + paiement + ' »)' };
+  }
+  if (STATUTS_PAYES.indexOf(statut) === -1 && paiement !== 'success') {
+    return { reessayer: 'statut « ' + statut + ' » pas encore payé ou inconnu' };
+  }
   var temps = Date.parse(f.completed_at || '') || Date.now();
-  return { vente: {
+  if (Date.now() - temps > 7 * JOUR) return { refus: 'vente de plus de 7 jours, Meta la refuserait' };
+
+  var client = f.customer || {}, ctx = f.context || {};
+  var email = String(client.email || '').trim();
+  var memeClient = !!email && email.toLowerCase() === String(indices.email || '').trim().toLowerCase();
+  var tel = telephoneBrut_(client.phone);
+  if (!tel.texte && memeClient) tel = { texte: indices.telephone || '', indicatif: indices.indicatif || '' };   // secours : webhook du même client
+  var paysTel = (client.phone && client.phone.country) || {};
+  var montant = f.amount || {};
+  var devise = /^[A-Z]{3}$/.test(String(montant.currency || '')) ? String(montant.currency)
+    : (montant.currency && /^[A-Z]{3}$/.test(String(montant.currency.code || '')) ? String(montant.currency.code) : '');
+  if (!devise) { devise = DEVISE; journal_('Attention', id + ' : devise illisible dans la fiche, ' + DEVISE + ' utilisé'); }
+
+  var vente = {
     id: id,
     temps: temps,
     email: email,
-    telephone: memeClient ? indices.telephone : '',
+    telephone: tel.texte,
+    indicatif: tel.indicatif || String((ctx.country && ctx.country.dial_code) || ''),
     prenom: String(client.first_name || ''),
     nom: String(client.last_name || ''),
-    pays: String(pays.code || (memeClient ? indices.pays : '') || ''),
-    indicatif: String(pays.dial_code || ''),
+    pays: String(paysTel.code || (ctx.country && ctx.country.code) || (memeClient ? indices.pays : '') || ''),
     ip: ipValide_(ctx.ip_address),
     ua: String(ctx.user_agent || '').slice(0, 512),
-    valeur: (typeof montant.value === 'number' && montant.value > 0 && montant.currency) ? montant.value : PRIX,
-    devise: (typeof montant.value === 'number' && montant.value > 0 && montant.currency) ? String(montant.currency) : DEVISE
-  } };
+    valeur: (typeof montant.value === 'number' && montant.value >= 0) ? montant.value : PRIX,
+    devise: devise
+  };
+  var affilie = '';
+  if (!ENVOYER_VENTES_AFFILIES) {
+    var parFiche = affilieFiche_(f);
+    if (parFiche === true) affilie = 'fiche';
+    else if (parFiche === null && indices.affilie) affilie = 'webhook';
+  }
+  return { vente: vente, affilie: affilie };
+}
+
+/* true : vente d'affilié, false : vente directe, null : la fiche ne le dit pas. */
+function affilieFiche_(f) {
+  var a = f.store_affiliate !== undefined ? f.store_affiliate : f.affiliate;
+  if (a && typeof a === 'object') return true;
+  if (f.channel && f.channel.value) return String(f.channel.value) === 'affiliate';
+  if (a === null) return false;
+  return null;
+}
+
+/* Téléphone de Chariow : objet { number, country: { dial_code } } dans la fiche, ou texte. */
+function telephoneBrut_(ph) {
+  if (ph && typeof ph === 'object') {
+    return { texte: ph.number === undefined || ph.number === null ? '' : String(ph.number),
+             indicatif: String((ph.country && ph.country.dial_code) || '') };
+  }
+  return { texte: ph ? String(ph) : '', indicatif: '' };
 }
 
 /* ---------------- Envoi à Meta (API Conversions) ---------------- */
-function envoyerPurchase_(v, signal, nomProduit) {
-  var props = proprietes_();
-  var jeton = props.getProperty('META_ACCESS_TOKEN') || '';
-  var codeTest = (props.getProperty('META_TEST_EVENT_CODE') || '').trim();
+/* codeTest : seulement pour testerAchatFictif(). Les vraies ventes n'ont jamais de test_event_code. */
+function envoyerPurchase_(v, signal, nomProduit, codeTest) {
+  var jeton = proprietes_().getProperty('META_ACCESS_TOKEN') || '';
   if (!jeton) return { attendre: true, message: 'En attente : jeton META_ACCESS_TOKEN absent' };
-  var tempsSec = Math.floor(v.temps / 1000);
+  var tempsSec = Math.floor(Math.min(v.temps, Date.now()) / 1000);
   if (Date.now() / 1000 - tempsSec > 7 * 24 * 3600 - 3600) return { ok: false, message: 'vente de plus de 7 jours, Meta la refuserait' };
 
   var u = {};
@@ -210,6 +285,7 @@ function envoyerPurchase_(v, signal, nomProduit) {
   if (ipValide_(v.ip)) u.client_ip_address = ipValide_(v.ip);
   var ua = v.ua || (signal && signal.ua) || '';
   if (ua) u.client_user_agent = ua;
+  else journal_('Attention', v.id + ' : navigateur (client_user_agent) inconnu, achat envoyé quand même');
   if (signal && signal.fbp) u.fbp = signal.fbp;
   if (signal && signal.fbc) u.fbc = signal.fbc;
 
@@ -235,43 +311,54 @@ function envoyerPurchase_(v, signal, nomProduit) {
   }
   var code = rep.getResponseCode(), texte = sansSecret_(rep.getContentText() || '');
   var r = {};
-  try { r = JSON.parse(texte); } catch (err) {}
+  try { r = JSON.parse(texte) || {}; } catch (err) {}
   journal_('Réponse Meta', v.id + ' : code ' + code + ' ' + texte.slice(0, 300));
   if (code === 200 && r.events_received >= 1) {
-    return { ok: true, message: 'Envoyé' + (codeTest ? ' (mode test)' : '') + ', events_received=' + r.events_received };
+    return { ok: true, message: 'Envoyé' + (codeTest ? ' (test)' : '') + ', events_received=' + r.events_received };
+  }
+  var codeErreur = r.error && r.error.code;
+  if (code === 401 || code === 403 || codeErreur === 190 || codeErreur === 102) {
+    return { attendre: true, message: 'En attente : jeton Meta refusé (code ' + (codeErreur || code) + '). Remplace META_ACCESS_TOKEN.' };
   }
   var msg = 'code ' + code + ' ' + String((r.error && r.error.message) || texte).slice(0, 150);
-  return { ok: false, reessayer: code >= 500 || code === 429, message: msg };
+  return { ok: false, reessayer: code >= 500 || code === 429 || (code === 200 && !(r.events_received >= 1)), message: msg };
 }
 
 /* ---------------- Déclencheur toutes les 5 minutes ---------------- */
 function envoyerEnAttente() {
   var props = proprietes_();
+  var vus = {};   // ventes déjà vérifiées pendant ce passage : pas deux lectures Chariow
   var tout = props.getProperties();
   Object.keys(tout).forEach(function (cle) {
-    if (cle.indexOf('brut_') === 0) {
-      var id = cle.slice(5), indices = JSON.parse(tout[cle]);
-      if (avecVerrou_(function () { accepterVente_(id, indices); })) props.deleteProperty(cle);
-    }
+    if (cle.indexOf('brut_') !== 0) return;
+    try {
+      var id = cle.slice(5), indices = JSON.parse(tout[cle]), res = '';
+      var fait = avecVerrou_(function () { res = accepterVente_(id, indices, vus); });
+      if (fait && res !== 'plein') props.deleteProperty(cle);
+    } catch (err) { journal_('ERREUR', cle + ' : ' + err.message); }
   });
   avecVerrou_(function () {
     var maintenant = Date.now();
     var tout2 = props.getProperties();
     Object.keys(tout2).forEach(function (cle) {
-      var val;
-      try { val = JSON.parse(tout2[cle]); } catch (err) { return; }
-      if (cle.indexOf('vente_') === 0) {
-        if (val.etape === 'verif' || val.etape === 'attente') {
-          try { avancer_(val); } catch (err) { journal_('ERREUR', val.id + ' : ' + err.message); }
-        } else if (maintenant - (val.t || 0) > 180 * 24 * 3600 * 1000) {
-          props.deleteProperty(cle);   // vente envoyée il y a plus de 6 mois : Chariow ne la renverra plus
+      try {
+        if (cle.indexOf('vente_') === 0) {
+          var val = JSON.parse(tout2[cle]);
+          if (val.etape === 'verif' || val.etape === 'attente') {
+            if (!vus[val.id]) avancer_(val);
+          } else if (maintenant - (val.t || 0) > GARDER_JOURS * JOUR) {
+            props.deleteProperty(cle);   // vente terminée depuis plus de 10 jours
+          }
+        } else if (cle.indexOf('signal_') === 0) {
+          var sig = JSON.parse(tout2[cle]);
+          if (maintenant - (sig.t || 0) > JOUR) {
+            props.deleteProperty(cle);
+            if (!props.getProperty('vente_' + cle.slice(7))) {
+              journal_('Signal sans vente', cle.slice(7) + ' : aucun webhook avec cet identifiant en 24 h');
+            }
+          }
         }
-      } else if (cle.indexOf('signal_') === 0 && maintenant - (val.t || 0) > 24 * 3600 * 1000) {
-        props.deleteProperty(cle);
-        if (!props.getProperty('vente_' + cle.slice(7))) {
-          journal_('Signal sans vente', cle.slice(7) + ' : aucun webhook avec cet identifiant en 24 h');
-        }
-      }
+      } catch (err) { journal_('ERREUR', cle + ' : ' + err.message); }
     });
   });
 }
@@ -286,15 +373,15 @@ function verifierConfiguration() {
     : 'MANQUE : META_ACCESS_TOKEN. Sans lui, aucun achat ne part vers Meta (les ventes attendent).');
   lignes.push(cle ? 'OK : CHARIOW_API_KEY est rempli (' + cle.length + ' caractères).'
     : 'MANQUE : CHARIOW_API_KEY. Sans elle, le robot ne peut pas vérifier les ventes : rien ne part.');
-  lignes.push(codeTest ? 'MODE TEST ACTIF : META_TEST_EVENT_CODE est rempli. Les achats partent seulement dans « Tester les événements » et ne comptent pas dans tes pubs. Vide cette propriété après tes tests.'
-    : 'Mode normal : META_TEST_EVENT_CODE est vide (facultatif, seulement pour tester).');
+  lignes.push(codeTest ? 'OK : META_TEST_EVENT_CODE est rempli. Il sert seulement à testerAchatFictif ; les vraies ventes partent toujours normalement.'
+    : 'Info : META_TEST_EVENT_CODE est vide. testerAchatFictif refusera de partir (normal en dehors des tests).');
   var dejaLa = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'envoyerEnAttente'; });
   if (!dejaLa) ScriptApp.newTrigger('envoyerEnAttente').timeBased().everyMinutes(5).create();
   lignes.push(dejaLa ? 'OK : le déclencheur « envoyerEnAttente » (toutes les 5 min) existe.'
     : 'Fait : déclencheur « envoyerEnAttente » (toutes les 5 min) installé.');
   feuille_('Ventes', ENTETES_VENTES); feuille_('_Debug', ENTETES_DEBUG);
   lignes.push('OK : onglets « Ventes » et « _Debug » prêts. Ventes en attente : ' +
-    (compterEtapes_('verif') + compterEtapes_('attente')) + '.');
+    (compterEtapes_('verif') + compterEtapes_('attente') + compterPrefixe_('brut_')) + '.');
   var texte = lignes.join('\n');
   Logger.log(texte);
   return texte;
@@ -311,7 +398,7 @@ function testerAchatFictif() {
   var v = { id: 'TEST-' + Date.now(), temps: Date.now(), email: 'test.robot@livensya.invalid', telephone: '+229 01 00 00 00 00',
             prenom: 'Test', nom: 'Robot', pays: 'BJ', indicatif: '+229', ip: '', ua: 'Mozilla/5.0 (test robot achat Livensya)',
             valeur: PRIX, devise: DEVISE, url: SITE };
-  var res = envoyerPurchase_(v, null, 'TEST robot achat (fictif)');
+  var res = envoyerPurchase_(v, null, 'TEST robot achat (fictif)', codeTest);
   var texte = (res.ok ? 'Achat fictif envoyé avec le code de test. Regarde l\'onglet « Tester les événements ». ' : 'Échec : ') + res.message;
   journal_('Test fictif', texte);
   Logger.log(texte);
@@ -326,10 +413,14 @@ function proprietes_() { return PropertiesService.getScriptProperties(); }
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function idValide_(x) { var s = String(x || ''); return /^[A-Za-z0-9_-]{3,100}$/.test(s) ? s : ''; }
 
-function boutiqueLivensya_(url) {
-  if (!url) return true;   // champ absent : le contrôle du produit et de la fiche Chariow suffit
-  var m = /^https?:\/\/([^\/:?#]+)/i.exec(String(url));
-  return !!m && m[1].toLowerCase() === BOUTIQUE;
+/* Boutique Livensya : on se fie à store.id. L'adresse ne sert que si l'id manque, et ne bloque jamais
+   (la clé API Chariow est celle de la boutique Livensya : une vente d'une autre boutique y est introuvable). */
+function boutiqueLivensya_(store) {
+  store = store || {};
+  if (store.id) return String(store.id) === BOUTIQUE_ID;
+  var m = /^https?:\/\/([^\/:?#]+)/i.exec(String(store.url || ''));
+  if (m && m[1].toLowerCase() !== BOUTIQUE_URL) journal_('Attention', 'adresse de boutique inattendue : ' + m[1]);
+  return true;
 }
 
 function lireEtat_(id) { var b = proprietes_().getProperty('vente_' + id); return b ? JSON.parse(b) : null; }
@@ -443,8 +534,17 @@ function journal_(quoi, detail) {
 }
 
 function ligneVente_(v, statut) {
-  feuille_('Ventes', ENTETES_VENTES).appendRow([new Date(v.temps), v.id, v.prenom, v.email, v.valeur + ' ' + v.devise,
-    masquerIp_(v.ip), 'non', statut, new Date()]);
+  feuille_('Ventes', ENTETES_VENTES).appendRow([new Date(v.temps || Date.now()), v.id, v.prenom || '', v.email || '',
+    (v.valeur === undefined ? '' : v.valeur + ' ' + v.devise), masquerIp_(v.ip), 'non', statut, new Date()]);
+}
+
+/* Statut Meta de la dernière ligne de cette vente dans l'onglet Ventes ('' si aucune). */
+function statutVente_(id) {
+  var f = feuille_('Ventes', ENTETES_VENTES), n = f.getLastRow();
+  if (n < 2) return '';
+  var lignes = f.getRange(2, 2, n - 1, 7).getValues();
+  for (var i = lignes.length - 1; i >= 0; i--) if (String(lignes[i][0]) === id) return String(lignes[i][6]);
+  return '';
 }
 
 function majStatut_(id, statut, signal) {

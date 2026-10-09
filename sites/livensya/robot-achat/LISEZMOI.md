@@ -15,6 +15,8 @@ Fichiers du dossier :
 
 Compte environ 30 minutes. Ne fais aucun vrai achat pour tester.
 
+**Ordre sûr** : on prépare et on teste tout (étapes 1 à 7) **avant** de brancher Chariow (étape 9) et le site (étape 10). Ainsi, aucune vraie vente n'arrive sur un robot à moitié installé.
+
 ---
 
 ## Étape 1. Créer la Google Sheet
@@ -53,7 +55,8 @@ Ces deux valeurs ne vont **que** dans Apps Script. Ne les colle jamais dans un f
 2. Menu **Paramètres** > **Clés API** > **Créer une clé API**. Donne-lui le nom « Robot achat ».
 3. Copie la clé tout de suite : Chariow ne l'affiche qu'une fois.
 
-**C. Le code de test Meta (META_TEST_EVENT_CODE), seulement pour tester**
+**C. Le code de test Meta (META_TEST_EVENT_CODE), facultatif**
+Il sert **uniquement** à la fonction `testerAchatFictif` (étape 6). Les vraies ventes ne partent jamais avec ce code, même s'il reste rempli.
 1. Gestionnaire d'événements > source **Livensya** > onglet **Tester les événements**.
 2. Dans la partie **Événements du serveur** (API Conversions), copie le code de test (il ressemble à `TEST12345`).
 
@@ -67,7 +70,7 @@ Ces deux valeurs ne vont **que** dans Apps Script. Ne les colle jamais dans un f
 |---|---|
 | `META_ACCESS_TOKEN` | le jeton Meta (étape 3A) |
 | `CHARIOW_API_KEY` | la clé Chariow (étape 3B) |
-| `META_TEST_EVENT_CODE` | le code de test (étape 3C), **pendant les tests seulement** |
+| `META_TEST_EVENT_CODE` | le code de test (étape 3C) ; tu peux le laisser, il ne touche pas aux vraies ventes |
 
 4. Clique sur **Enregistrer les propriétés du script**.
 
@@ -80,17 +83,31 @@ Ces deux valeurs ne vont **que** dans Apps Script. Ne les colle jamais dans un f
    - un écran « Google n'a pas validé cette application » peut s'afficher : c'est normal pour un script que tu as créé toi-même. Clique sur **Paramètres avancés** puis **Accéder à Robot achat Livensya (non sécurisé)** ;
    - clique sur **Autoriser**.
    Le robot demande : lire et écrire ta feuille Livensya Suivi, appeler des sites externes (Chariow et Meta), et créer un déclencheur.
-4. En bas, le **Journal d'exécution** affiche le résultat, par exemple :
-   - `OK : META_ACCESS_TOKEN est rempli (…)` ;
-   - `OK : CHARIOW_API_KEY est rempli (…)` ;
-   - `MODE TEST ACTIF …` (normal pendant les tests) ;
+4. En bas, le **Journal d'exécution** affiche par exemple :
+   - `OK : META_ACCESS_TOKEN est rempli (…)` et `OK : CHARIOW_API_KEY est rempli (…)` ;
+   - `OK : META_TEST_EVENT_CODE est rempli. Il sert seulement à testerAchatFictif…` ;
    - `Fait : déclencheur « envoyerEnAttente » (toutes les 5 min) installé.`
    Le robot n'affiche jamais tes clés, seulement leur longueur.
 5. Si une ligne commence par `MANQUE`, ajoute la propriété indiquée (étape 4) et relance.
 
-Le déclencheur « envoyerEnAttente » tourne toutes les 5 minutes : il envoie les achats dont le signal de la page n'est pas arrivé après 10 minutes, et refait les essais si Chariow ou Meta étaient en panne. Tu peux le voir dans l'icône réveil à gauche (**Déclencheurs**). N'en crée pas un deuxième.
+Le déclencheur « envoyerEnAttente » tourne toutes les 5 minutes : il envoie les achats dont le signal de la page n'est pas arrivé après 10 minutes, et refait les essais si Chariow ou Meta étaient en panne. Tu le vois dans l'icône réveil à gauche (**Déclencheurs**). N'en crée pas un deuxième.
 
-## Étape 6. Déployer en application web
+## Étape 6. Tester sans fausse vente : testerAchatFictif
+
+1. Ouvre l'onglet **Tester les événements** du Gestionnaire d'événements, et garde-le ouvert.
+2. Dans Apps Script, choisis la fonction **testerAchatFictif** et clique sur **Exécuter**.
+3. Le journal d'exécution dit : `Achat fictif envoyé avec le code de test…`.
+4. Dans **Tester les événements**, un **Purchase** apparaît en moins d'une minute, source **Serveur**, nommé « TEST robot achat (fictif) », valeur 3999 XOF. Clique dessus : e-mail, téléphone, etc. sont hachés, c'est normal.
+
+Sans code de test, `testerAchatFictif` refuse de partir : un achat fictif n'ira jamais dans tes vraies données. Si le journal dit « jeton Meta refusé », recrée le jeton (étape 3A) et remplace `META_ACCESS_TOKEN`.
+
+## Étape 7. Vérifier qu'aucun Pixel n'est réglé dans Chariow
+
+1. Tableau de bord Chariow de la boutique Livensya > **Paramètres** > **Intégrations** (ou la rubrique où l'on peut renseigner un Pixel Facebook / Meta).
+2. Le champ du Pixel Meta doit être **vide**. Sinon Chariow enverrait son propre Purchase depuis sa page de paiement, avec un autre identifiant : chaque vente compterait deux fois.
+3. Si un Pixel y est renseigné, ne l'enlève pas au hasard : dis-le-moi et on décide ensemble.
+
+## Étape 8. Déployer en application web
 
 1. En haut à droite : **Déployer** > **Nouveau déploiement**.
 2. À côté de « Sélectionner le type », clique sur la roue dentée > **Application Web**.
@@ -101,21 +118,21 @@ Le déclencheur « envoyerEnAttente » tourne toutes les 5 minutes : il envoie l
 4. Clique sur **Déployer**, puis copie l'**URL de l'application Web**. Elle se termine par `/exec`.
 5. Vérification : colle cette adresse dans ton navigateur. Tu dois voir `{"status":"ok"}`.
 
-Si tu modifies `Code.gs` plus tard : **Déployer** > **Gérer les déploiements** > crayon > Version : **Nouvelle version** > **Déployer**. L'adresse `/exec` reste la même.
+**À chaque modification de `Code.gs` plus tard** : **Déployer** > **Gérer les déploiements** > crayon > Version : **Nouvelle version** (toujours, sinon l'ancien code continue de tourner) > **Déployer**. L'adresse `/exec` reste la même. Ne fais pas « Nouveau déploiement » : il créerait une autre adresse.
 
-## Étape 7. Créer le Pulse dans Chariow
+## Étape 9. Créer le Pulse dans Chariow
 
 1. Tableau de bord Chariow de la boutique Livensya > **Automatisations** > onglet **Pulses** > **Créer un pulse**.
-2. **URL du pulse** : colle l'adresse `/exec` de l'étape 6.
+2. **URL du pulse** : colle l'adresse `/exec` de l'étape 8.
 3. **Sélectionner un événement** : **Vente réussie**.
 4. **Appliquer à un produit** : choisis **Défi 60 jours** (prd_4bisyd7x). (Le robot ignore de toute façon les autres produits.)
 5. Clique sur **Créer**.
 
-Si Chariow propose un bouton pour **envoyer un événement de test** : tu peux l'utiliser. Ce test contient une vente imaginaire, donc le robot doit la **refuser** : dans l'onglet `_Debug` de ta feuille, tu verras « Refusé : vente inconnue chez Chariow (faux appel ?). Rien envoyé à Meta. » C'est la preuve que la protection marche.
+Si Chariow propose un bouton pour **envoyer un événement de test** : tu peux l'utiliser. Ce test contient une vente imaginaire, donc le robot ne doit **rien** envoyer à Meta. Dans l'onglet `_Debug`, **toute ligne « Ignoré » ou « Refusé » est normale** pour ce test (par exemple « Refusé : vente inconnue chez Chariow (faux appel ?) » ou « Ignoré : autre produit ») : c'est la preuve que la protection marche.
 
 À propos de la signature Chariow : Chariow signe chaque Pulse (en-tête `x-chariow-signature`), mais Google Apps Script ne permet pas de lire les en-têtes d'un message reçu. Le robot ne peut donc pas vérifier cette signature ; il relit la vente chez Chariow à la place, ce qui protège aussi des faux achats. Tu n'as pas besoin de copier le « secret de signature » (whsec_…) du Pulse.
 
-## Étape 8. Brancher le site
+## Étape 10. Brancher le site
 
 Dans `js/app.js`, tout en haut, remplace :
 
@@ -133,37 +150,26 @@ Puis renvoie `js/app.js` sur ton hébergement LWS. Tu peux aussi me donner l'adr
 
 Tant que `ROBOT_ACHAT` est vide, la page n'envoie aucun signal ; le robot envoie quand même les achats (sans les cookies Meta, après 10 minutes).
 
-## Étape 9. Tester sans fausse vente : testerAchatFictif
-
-1. Vérifie que `META_TEST_EVENT_CODE` est bien rempli (étape 4).
-2. Ouvre l'onglet **Tester les événements** du Gestionnaire d'événements, et garde-le ouvert.
-3. Dans Apps Script, choisis la fonction **testerAchatFictif** et clique sur **Exécuter**.
-4. Le journal d'exécution dit : `Achat fictif envoyé avec le code de test…`.
-5. Dans **Tester les événements**, un événement **Purchase** apparaît en moins d'une minute, source **Serveur**, nommé « TEST robot achat (fictif) », valeur 3999 XOF. Clique dessus pour voir les informations envoyées (e-mail, téléphone, etc. sont hachés : c'est normal).
-
-Sans code de test, `testerAchatFictif` refuse de partir : un achat fictif n'ira jamais dans tes vraies données.
-
-## Étape 10. Passer en vrai
-
-1. **Paramètres du projet** > **Propriétés du script** : supprime `META_TEST_EVENT_CODE` (ou vide sa valeur). Enregistre.
-2. Relance **verifierConfiguration** : la ligne doit dire `Mode normal`.
-
-Attention : tant que `META_TEST_EVENT_CODE` est rempli, **les vraies ventes** partent aussi avec le code de test. Elles s'affichent dans « Tester les événements » mais **ne comptent pas** pour tes publicités, et le robot ne les renverra pas. Ne laisse donc pas le mode test actif plus que le temps des essais.
-
 ## Lire la feuille Livensya Suivi
 
 Onglet **Ventes** (une ligne par vraie vente du Défi 60 jours) :
-- **Statut Meta** : « En attente du signal de la page », puis « Envoyé, events_received=1 » (Meta a bien reçu l'achat). « (mode test) » si le code de test était rempli. « Échec Meta : … » ou « Erreur Meta, nouvel essai… » en cas de souci.
+- **Statut Meta** :
+  - « En attente du signal de la page », puis « Envoyé, events_received=1 » : Meta a bien reçu l'achat ;
+  - « Vente affilié, non envoyée » : vente apportée par un affilié, volontairement pas envoyée à Meta (réglage `ENVOYER_VENTES_AFFILIES` en haut de `Code.gs`) ;
+  - « En attente : jeton Meta refusé… » : recrée le jeton (étape 3A) ; la vente partira toute seule au passage suivant ;
+  - « Erreur Meta, nouvel essai… », « Échec Meta : … » ou « Échec : … » : voir plus bas.
 - **Signal page** : « fbp fbc » si la page a transmis les cookies Meta, « non » sinon (acheteur parti avant la fin, ou `ROBOT_ACHAT` vide).
 - **IP (masquée)** : seulement les deux premiers nombres, par exemple `160.155.x.x`.
 
 Onglet **_Debug** : tout ce que le robot a reçu ou décidé (doublons ignorés, ventes refusées, réponses de Meta). Aucune clé n'y est jamais écrite.
 
-En cas d'échec définitif (Chariow ou Meta en panne plus d'une heure), rejoue la vente depuis Chariow : **Automatisations** > **Pulses** > ton pulse > onglet **Livraisons** > rejouer. Le robot la retraite, et n'envoie toujours qu'une fois.
+En cas d'« Échec » (Chariow ou Meta en panne trop longtemps, statut de vente inconnu), rejoue la vente depuis Chariow : **Automatisations** > **Pulses** > ton pulse > onglet **Livraisons** > rejouer. Le robot la retraite, et n'envoie toujours qu'une fois. Au-delà de 7 jours après la vente, Meta n'accepte plus l'achat : le robot le refuse alors lui-même.
 
 ## À vérifier sur la première vraie vente
 
 Ouvre l'onglet **Ventes** : la colonne **Signal page** doit indiquer « fbp » ou « fbp fbc ». Si elle dit « non » alors que l'acheteur a payé dans la fenêtre du site, regarde `_Debug` : une ligne « Signal sans vente » le lendemain veut dire que l'identifiant envoyé par la fenêtre de paiement n'est pas le même que celui du webhook. Dis-le-moi : l'achat est quand même envoyé à Meta (sans les cookies), on corrigera la correspondance.
+
+Dans le Gestionnaire d'événements, « Vue d'ensemble » > Purchase : la source doit être **Serveur** seulement, un achat par vente.
 
 ## Surveillance
 
