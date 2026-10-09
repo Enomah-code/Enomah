@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piste C · Plan de construction · IA Business Building</title>
+<meta name="description" content="Maquette de branding, piste C : papier de plan, indigo-violet électrique et surligneur or.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fond:#FBFBFF; --trame:#ECEEFA; --carte:#FFFFFF; --encre:#11132E; --texte2:#4B4F6E;
+  --electrique:#4C3AE3; --electrique-2:#3A29C9; --violet:#47218F; --pale:#EDEBFF;
+  --surligneur:#F7CC4F; --or-texte:#80600A; --nuit:#14174A;
+  --sans:"Bricolage Grotesque",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--fond) linear-gradient(var(--trame) 1px,transparent 1px) 0 0/28px 28px,var(--fond);color:var(--encre);font:400 16.5px/1.6 var(--sans);font-variation-settings:"wdth" 100;-webkit-font-smoothing:antialiased;hyphens:auto}
+body{background-image:linear-gradient(var(--trame) 1px,transparent 1px),linear-gradient(90deg,var(--trame) 1px,transparent 1px);background-size:28px 28px}
+img{display:block;max-width:100%}
+h1,h2,h3,h4,button,.btn,li{hyphens:manual}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:3px solid var(--electrique);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.maquette{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#6B6F8E;text-align:center;padding:14px 0;border-top:1px dashed #C8CBE6;background:#F1F2FC}
+.maquette:first-child{border-top:0}
+.note{font:500 12px/1.4 var(--mono);color:var(--texte2)}
+.note b{color:var(--electrique);font-weight:500}
+mark{background:none;color:inherit;position:relative;z-index:0;white-space:nowrap}
+mark::before{content:"";position:absolute;z-index:-1;left:-.08em;right:-.1em;top:.52em;bottom:.02em;background:var(--surligneur);transform:skewX(-8deg) rotate(-1deg);border-radius:3px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:58px;padding:0 26px;border-radius:12px;background:var(--electrique);color:#fff;border:2px solid var(--encre);box-shadow:5px 5px 0 var(--encre);font:700 17.5px/1 var(--sans);text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s,background .2s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--encre);background:var(--electrique-2)}
+.btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--encre)}
+
+/* ÉCRAN 1 */
+header.top{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+header.top img{height:22px;width:auto}
+.hero{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;padding:14px 0 46px}
+.hero>*{min-width:0}
+.hero h1{font-weight:800;font-variation-settings:"wdth" 78;font-size:clamp(44px,12.4vw,92px);line-height:.94;letter-spacing:-.02em;margin:14px 0 18px}
+.hero .sub{font-size:18px;line-height:1.55;color:var(--texte2);max-width:32em}
+.hero .sub strong{color:var(--encre);font-weight:700}
+.cta-zone{margin-top:26px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.cta-zone small{font-size:14px;color:var(--texte2)}
+.planche{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:12px;align-items:end}
+.fiche{background:var(--carte);border:2px solid var(--encre);border-radius:16px;overflow:hidden}
+.fiche .cap{display:flex;justify-content:space-between;padding:8px 10px;border-bottom:2px solid var(--encre);font:500 11px/1.2 var(--mono)}
+.fiche .photo{background:var(--pale);height:290px;position:relative;overflow:hidden}
+.fiche .photo img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:100%;width:auto;max-width:none}
+.fiche .nom{padding:10px 12px}
+.fiche .nom b{display:block;font-weight:800;font-size:16px;line-height:1.2}
+.fiche .nom span{font:500 11.5px/1.3 var(--mono);color:var(--texte2)}
+.cahier{background:var(--carte);border:2px solid var(--encre);border-radius:16px;padding:12px}
+.cahier h3{font:500 11px/1.3 var(--mono);color:var(--texte2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.cahier ul{list-style:none}
+.cahier li{display:flex;gap:9px;align-items:flex-start;padding:9px 0;border-top:1px dashed #C8CBE6;font-weight:700;font-size:14.5px;line-height:1.2}
+.cahier li small{display:block;font:500 11px/1.4 var(--mono);color:var(--texte2);margin-top:2px}
+.case{width:20px;height:20px;border:2px solid var(--encre);border-radius:5px;flex:none;margin-top:1px}
+
+/* ÉCRAN 2 */
+.quiz-wrap{padding-top:28px;padding-bottom:52px}
+.quiz{max-width:760px;margin:0 auto;background:var(--carte);border:2px solid var(--encre);border-radius:20px;box-shadow:8px 8px 0 var(--pale)}
+.qhead{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:2px solid var(--encre)}
+.back{width:44px;height:44px;border-radius:10px;border:2px solid var(--encre);background:#fff;display:grid;place-items:center;color:var(--encre);cursor:pointer}
+.back:hover{background:var(--pale)}
+.regle{flex:1;display:grid;gap:6px}
+.regle .t{display:flex;justify-content:space-between}
+.regle .barre{height:12px;border:2px solid var(--encre);border-radius:4px;position:relative;overflow:hidden;background:repeating-linear-gradient(90deg,transparent 0 calc(100%/13 - 2px),#C8CBE6 calc(100%/13 - 2px) calc(100%/13))}
+.regle .barre::after{content:"";position:absolute;inset:0 auto 0 0;width:calc(100%*6/13);background:var(--electrique)}
+.qbody{padding:20px 18px 22px}
+.quiz h2{font-weight:800;font-variation-settings:"wdth" 82;font-size:clamp(28px,7.6vw,42px);line-height:1.02;letter-spacing:-.01em;margin-bottom:8px}
+.quiz .hint{color:var(--texte2);margin-bottom:18px}
+.reps{display:grid;gap:10px}
+.rep{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:10px 14px;border-radius:12px;border:2px solid #D3D6EE;background:#fff;text-align:left;font:700 16px/1.3 var(--sans);color:var(--encre);cursor:pointer;transition:border-color .2s,transform .15s}
+.rep:hover{border-color:var(--encre)}
+.rep:active{transform:scale(.99)}
+.rep .l{font:500 12px/1 var(--mono);color:var(--texte2);width:16px;flex:none}
+.rep .case{display:grid;place-items:center;color:#fff;margin:0;width:24px;height:24px}
+.rep .case svg.i{width:15px;height:15px;stroke-width:3.2;opacity:0}
+.rep[aria-pressed="true"]{border-color:var(--electrique)}
+.rep[aria-pressed="true"] .case{background:var(--electrique);border-color:var(--electrique)}
+.rep[aria-pressed="true"] .case svg.i{opacity:1}
+.rep[aria-pressed="true"] .txt{background:linear-gradient(transparent 55%,var(--surligneur) 55%,var(--surligneur) 92%,transparent 92%);box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.qfoot{padding:0 18px 22px}
+.qfoot .btn{width:100%}
+
+/* ÉCRAN 3 */
+.offre{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;padding-top:30px;padding-bottom:64px}
+.offre>*{min-width:0}
+.offre h2{font-weight:800;font-variation-settings:"wdth" 80;font-size:clamp(36px,10vw,66px);line-height:.98;letter-spacing:-.015em;margin:12px 0 14px}
+.offre .intro p{color:var(--texte2);max-width:30em}
+.certif{margin-top:24px;max-width:460px}
+.certif .fiche{border-radius:14px}
+.certif .fiche img{border-bottom:2px solid var(--encre)}
+.certif .note{padding:9px 12px}
+.bon{position:relative;background:var(--carte);border:2px solid var(--encre);border-radius:20px;box-shadow:8px 8px 0 var(--pale)}
+.bon .tete{background:var(--nuit);color:#fff;border-radius:17px 17px 0 0;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.bon .tete .note{color:#C9CCF2}
+.bon .tete b{font:700 15px/1.3 var(--sans);color:var(--surligneur)}
+.lignes{list-style:none;padding:14px 18px 4px}
+.lignes li{display:flex;align-items:baseline;gap:8px;padding:7px 0;font-weight:700;font-size:15px;line-height:1.3}
+.lignes li .pts{flex:1;border-bottom:2px dotted #C8CBE6;transform:translateY(-4px);min-width:16px}
+.lignes li .v{font:500 12.5px/1.2 var(--mono);color:var(--texte2);white-space:nowrap;text-align:right}
+.lignes li .v.o{color:var(--or-texte)}
+.lignes li.sous{border-top:2px solid var(--encre);margin-top:6px;padding-top:10px;font-size:13px;font-family:var(--mono);font-weight:500;color:var(--texte2)}
+.paie{position:relative;padding:14px 18px 6px;border-top:2px dashed #C8CBE6;margin-top:8px}
+.paie s{font:500 14px/1 var(--mono);color:var(--texte2)}
+.paie .nb{display:flex;align-items:baseline;gap:10px;margin-top:4px}
+.paie .nb strong{font-weight:800;font-variation-settings:"wdth" 78;font-size:76px;line-height:.95;letter-spacing:-.02em}
+.paie .nb span{font-weight:700;font-size:20px}
+.paie .note{margin-top:6px}
+.une{display:inline-block;margin-top:10px;font:700 14px/1.3 var(--sans)}
+.achat{padding:12px 18px 18px;display:grid;gap:12px}
+.achat .btn{width:100%}
+.achat small{display:flex;gap:8px;justify-content:center;align-items:center;color:var(--texte2);font-size:13.5px;text-align:center}
+.achat small svg.i{width:16px;height:16px}
+.garantie{margin:0 18px 20px;border:2px dashed var(--electrique);border-radius:14px;padding:14px 14px 14px 16px;display:flex;gap:12px;align-items:flex-start}
+.garantie svg.i{width:28px;height:28px;color:var(--electrique)}
+.garantie h4{font-weight:800;font-size:17px;line-height:1.25;margin-bottom:3px}
+.garantie p{font-size:14.5px;line-height:1.5;color:var(--texte2)}
+.tampon{position:absolute;right:14px;top:16px;width:96px;height:96px;transform:rotate(-12deg);color:var(--electrique);background:#fff;border-radius:50%}
+footer{padding:24px 0 42px;display:flex;align-items:center;justify-content:space-between;border-top:2px solid var(--encre);font:500 12px/1 var(--mono);color:var(--texte2)}
+footer img{height:18px;width:auto}
+
+@media (max-width:899px){.certif,.cadre{max-width:68%!important}}
+@media (min-width:900px){
+  .wrap{padding:0 48px}
+  header.top{padding:24px 0}
+  header.top img{height:28px}
+  .hero{grid-template-columns:1.08fr .92fr;gap:60px;align-items:center;padding:30px 0 88px}
+  .fiche .photo{height:430px}
+  .planche{gap:16px}
+  .quiz-wrap{padding-top:64px;padding-bottom:96px}
+  .qhead{padding:16px 26px}
+  .qbody{padding:30px 40px 26px}
+  .reps{grid-template-columns:1fr 1fr}
+  .reps .rep:last-child{grid-column:1/-1}
+  .qfoot{padding:0 40px 32px;display:flex;justify-content:flex-end}
+  .qfoot .btn{width:auto}
+  .offre{grid-template-columns:1fr 500px;gap:76px;align-items:start;padding-top:76px;padding-bottom:104px}
+  .tampon{right:22px;top:14px;width:112px;height:112px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+</svg>
+
+<div class="maquette">Piste C · Plan de construction · écran 1 sur 3 : l’accueil</div>
+<main>
+<section class="wrap" aria-label="Accueil">
+  <header class="top">
+    <img src="assets/logo-emk.webp" alt="EMK Blue Diamond" width="561" height="66">
+    <span class="note">Bilan gratuit · <b>3 min</b></span>
+  </header>
+  <div class="hero">
+    <div>
+      <p class="note"><b>IA Business Building</b> · ton plan sur 8 semaines</p>
+      <h1>Tu utilises l’IA.<br> Le problème, ce n’est <mark>pas toi.</mark></h1>
+      <p class="sub">En 3 minutes, on dessine ton plan sur mesure pour créer <strong>ton agent WhatsApp, ton site pro et ton application</strong>, jusqu’à ta certification.</p>
+      <div class="cta-zone">
+        <a class="btn" href="#quiz">Commencer mon bilan <svg class="i"><use href="#i-arrow"/></svg></a>
+        <small>Aucune bonne ou mauvaise réponse. Juste toi.</small>
+      </div>
+    </div>
+    <div class="planche">
+      <figure class="fiche">
+        <figcaption class="cap"><span>fig. 01</span><span>Ton formateur</span></figcaption>
+        <div class="photo"><img src="assets/enock.webp" alt="Enock Mahougnan, bras croisés, en costume bleu nuit" width="524" height="720"></div>
+        <div class="nom"><b>Enock Mahougnan</b><span>EMK Blue Diamond · Cotonou</span></div>
+      </figure>
+      <div class="cahier">
+        <h3>Ce que tu vas construire</h3>
+        <ul>
+          <li><span class="case"></span><span>Ton agent WhatsApp<small>module 3</small></span></li>
+          <li><span class="case"></span><span>Ton site pro<small>module 4</small></span></li>
+          <li><span class="case"></span><span>Ton application<small>module 6</small></span></li>
+          <li><span class="case"></span><span>Ta certification<small>à la fin du parcours</small></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="maquette">Écran 2 sur 3 : une question du quiz</div>
+<section class="wrap quiz-wrap" id="quiz" aria-label="Question du quiz">
+  <div class="quiz">
+    <div class="qhead">
+      <button class="back" type="button" aria-label="Question précédente"><svg class="i"><use href="#i-left"/></svg></button>
+      <div class="regle">
+        <div class="t note"><span>Ton bilan</span><span><b>06</b> / 13</span></div>
+        <div class="barre" role="progressbar" aria-valuemin="0" aria-valuemax="13" aria-valuenow="6" aria-label="Avancement du bilan"></div>
+      </div>
+    </div>
+    <div class="qbody">
+      <h2>Si tu pouvais maîtriser une seule chose, ce serait <mark>laquelle ?</mark></h2>
+      <p class="hint">Celle qui changerait vraiment ton quotidien.</p>
+      <div class="reps" role="group" aria-label="Réponses">
+        <button class="rep" type="button" aria-pressed="true"><span class="l">A</span><span class="case"><svg class="i"><use href="#i-check"/></svg></span><span class="txt">Créer mon agent IA qui bosse pour moi 24h/24</span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="l">B</span><span class="case"><svg class="i"><use href="#i-check"/></svg></span><span class="txt">Automatiser mes tâches et libérer mes journées</span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="l">C</span><span class="case"><svg class="i"><use href="#i-check"/></svg></span><span class="txt">Vendre en ligne, même pendant que je dors</span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="l">D</span><span class="case"><svg class="i"><use href="#i-check"/></svg></span><span class="txt">Créer des sites et applis sans savoir coder</span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="l">E</span><span class="case"><svg class="i"><use href="#i-check"/></svg></span><span class="txt">Vendre des prestations IA à des clients</span></button>
+      </div>
+    </div>
+    <div class="qfoot"><a class="btn" href="#offre">Continuer <svg class="i"><use href="#i-arrow"/></svg></a></div>
+  </div>
+</section>
+
+<div class="maquette">Écran 3 sur 3 : la carte de l’offre</div>
+<section class="wrap offre" id="offre" aria-label="Offre">
+  <div class="intro">
+    <p class="note"><b>Offre débloquée</b> par ton bilan</p>
+    <h2>Le prix d’un dîner pour <mark>changer ton année.</mark></h2>
+    <p>8 modules, des livrables réels, et une certification qui prouve à tout le monde, y compris à toi, que tu maîtrises.</p>
+    <figure class="certif"><div class="fiche"><img src="assets/certificat.webp" alt="Modèle du certificat IA Business Building délivré par EMK Blue Diamond" width="900" height="600" loading="lazy"><figcaption class="note"><b>fig. 03</b> · Ton certificat, avec numéro unique et page de vérification</figcaption></div></figure>
+  </div>
+  <div class="bon">
+    <div class="tete"><span class="note">Bon de commande · IA Business Building</span><b>Tarif de lancement, accès à vie</b></div>
+    <ul class="lignes">
+      <li>Formation complète, 8 modules<span class="pts"></span><span class="v">35 000 F</span></li>
+      <li>Certification IA Business Builder<span class="pts"></span><span class="v">incluse</span></li>
+      <li>106 prompts professionnels<span class="pts"></span><span class="v o">offert</span></li>
+      <li>10 automatisations prêtes<span class="pts"></span><span class="v o">offert</span></li>
+      <li>4 checklists de lancement<span class="pts"></span><span class="v o">offert</span></li>
+      <li>Tes documents business<span class="pts"></span><span class="v o">offert</span></li>
+      <li>Mises à jour à vie<span class="pts"></span><span class="v o">offert</span></li>
+      <li class="sous">Valeur des 5 bonus<span class="pts"></span><span class="v">47 000 F</span></li>
+    </ul>
+    <div class="paie">
+      <svg class="tampon" viewBox="0 0 120 120" aria-hidden="true">
+        <defs><path id="cercle" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"/></defs>
+        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="60" cy="60" r="34" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text font-family="JetBrains Mono, monospace" font-size="10.5" font-weight="500" fill="currentColor" letter-spacing="2.2"><textPath href="#cercle">GARANTIE · REMBOURSÉ · GARANTIE ·</textPath></text>
+        <text x="60" y="58" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="24" fill="currentColor">7</text>
+        <text x="60" y="74" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="500" fill="currentColor">JOURS</text>
+      </svg>
+      <s>35 000 F CFA</s>
+      <div class="nb"><strong>4 999</strong><span>F CFA</span></div>
+      <p class="note">soit environ 7,60 € · 10,50 CAD · 8,50 $</p>
+      <span class="une"><mark>Un seul paiement</mark>, aucun prélèvement.</span>
+    </div>
+    <div class="achat">
+      <a class="btn" href="#offre">Je décroche ma certification <svg class="i"><use href="#i-arrow"/></svg></a>
+      <small><svg class="i"><use href="#i-lock"/></svg>Mobile Money (MTN, Moov, Orange Money, Wave) ou carte bancaire</small>
+    </div>
+    <div class="garantie">
+      <svg class="i"><use href="#i-shield"/></svg>
+      <div><h4>7 jours pour changer d’avis</h4><p>Suis le premier module, teste la méthode. Si ce n’est pas pour toi, un simple email suffit. Remboursement intégral, sans justification.</p></div>
+    </div>
+  </div>
+</section>
+<div class="wrap"><footer><img src="assets/logo-emk.webp" alt="EMK Blue Diamond" width="561" height="66" loading="lazy"><span>© 2026 EMK Blue Diamond</span></footer></div>
+</main>
+<script>
+document.querySelectorAll('.rep').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.rep').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true')})});
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piste A · Écran clair · IA Business Building</title>
+<meta name="description" content="Maquette de branding, piste A : indigo, bleu électrique et or sur écran clair.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fond:#F5F7FE; --carte:#FFFFFF; --encre:#0C1446; --texte2:#4A5178;
+  --bleu:#3A47D5; --indigo:#121A57; --or:#E8B53A; --or-fonce:#DDA623; --or-texte:#8A6410;
+  --lavande:#E4E8FC; --lavande-2:#EEF1FD;
+  --sans:"Plus Jakarta Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--fond);color:var(--encre);font:500 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;hyphens:auto}
+img{display:block;max-width:100%}
+h1,h2,h3,h4,button,.btn,.rep,li{hyphens:manual}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--bleu);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.maquette{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#6B7194;text-align:center;padding:14px 0;border-top:1px dashed #C9CEEA;background:#ECEFFB}
+.maquette:first-child{border-top:0}
+
+/* fil d'or : la barre de progression de la vidéo */
+.fil{height:4px;background:var(--lavande);position:relative;overflow:hidden}
+.fil::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--p,30%);background:var(--or);border-radius:0 4px 4px 0;animation:fil 1.2s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fil{from{width:0}}
+
+.eyebrow{font:500 12.5px/1.2 var(--mono);color:var(--texte2);letter-spacing:.02em;display:flex;gap:8px;align-items:center}
+.eyebrow b{color:var(--bleu);font-weight:500}
+
+/* boutons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 28px;border-radius:999px;background:var(--or);color:var(--encre);font:800 17px/1 var(--sans);text-decoration:none;border:0;cursor:pointer;box-shadow:0 10px 24px -10px rgba(232,181,58,.9);transition:background .2s,transform .2s,box-shadow .2s}
+.btn:hover{background:var(--or-fonce);transform:translateY(-1px);box-shadow:0 14px 28px -10px rgba(221,166,35,.95)}
+.btn:active{transform:scale(.98)}
+.btn svg.i{transition:transform .2s}
+.btn:hover svg.i{transform:translateX(3px)}
+
+/* ÉCRAN 1 */
+header.top{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+header.top img{height:22px;width:auto}
+header.top span{font:500 12px/1 var(--mono);color:var(--texte2)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:18px 0 40px}
+.hero h1{font-weight:800;font-size:clamp(36px,9.6vw,70px);line-height:1.02;letter-spacing:-.035em;margin:14px 0 16px}
+.hero h1 em{font-style:normal;color:var(--bleu);background:linear-gradient(var(--or),var(--or)) 0 92%/100% .12em no-repeat;padding-bottom:.04em}
+.hero p.sub{font-size:17px;color:var(--texte2);max-width:34em}
+.hero p.sub strong{color:var(--encre);font-weight:700}
+.cta-zone{margin-top:22px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.cta-zone small{font-size:13.5px;color:var(--texte2)}
+.livrables{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.livrables span{display:inline-flex;align-items:center;gap:7px;font:700 13.5px/1 var(--sans);padding:9px 12px;border-radius:999px;background:var(--carte);border:1px solid var(--lavande);color:var(--encre)}
+.livrables svg.i{width:16px;height:16px;color:var(--bleu)}
+
+.scene{position:relative;border-radius:28px;background:radial-gradient(120% 80% at 30% 15%,#2B37A8 0%,var(--indigo) 55%,#0A0F3A 100%);min-height:380px;overflow:hidden}
+.scene img.enock{position:absolute;z-index:1;right:-20%;bottom:0;height:96%;width:auto;filter:drop-shadow(0 20px 30px rgba(5,8,40,.5))}
+.scene .legende{position:absolute;z-index:2;left:16px;bottom:16px;color:#fff;font:500 12px/1.4 var(--mono);max-width:46%}
+.scene .legende b{display:block;font:800 15px/1.2 var(--sans);margin-bottom:2px}
+.chat{position:absolute;z-index:2;left:14px;top:16px;width:min(250px,58%);background:var(--fond);border-radius:16px;overflow:hidden;box-shadow:0 20px 40px -12px rgba(0,0,0,.45)}
+.chat .bar{background:var(--indigo);color:#fff;display:flex;align-items:center;gap:9px;padding:10px 12px}
+.chat .av{width:28px;height:28px;border-radius:50%;background:var(--or);color:var(--encre);display:grid;place-items:center;font:800 11px var(--sans)}
+.chat .bar b{font:800 13px/1.1 var(--sans);display:block}
+.chat .bar i{font:500 10.5px/1.2 var(--sans);font-style:normal;color:#9FE3B5}
+.chat .msgs{padding:10px;display:grid;gap:7px}
+.chat .m{font-size:12.5px;line-height:1.35;padding:8px 10px;border-radius:12px;max-width:88%}
+.chat .m.in{background:#fff;color:var(--encre)}
+.chat .m.out{background:var(--bleu);color:#fff;justify-self:end}
+.badge24{position:absolute;z-index:3;left:14px;bottom:64px;background:var(--or);color:var(--encre);font:800 14px/1 var(--sans);padding:9px 13px;border-radius:999px;transform:rotate(-6deg)}
+
+/* ÉCRAN 2 */
+.quiz-wrap{padding-top:28px;padding-bottom:48px}
+.quiz{background:var(--carte);border:1px solid var(--lavande);border-radius:26px;box-shadow:0 30px 60px -40px rgba(18,26,87,.45);max-width:720px;margin:0 auto;overflow:hidden}
+.quiz .fil{--p:54%}
+.quiz-head{display:flex;align-items:center;gap:12px;padding:14px 16px 0}
+.back{width:44px;height:44px;border-radius:50%;border:1px solid var(--lavande);background:#fff;display:grid;place-items:center;color:var(--encre);cursor:pointer;transition:background .2s}
+.back:hover{background:var(--lavande-2)}
+.quiz-head .eyebrow{margin-left:auto}
+.quiz-body{padding:14px 20px 22px}
+.quiz h2{font-weight:800;font-size:clamp(24px,6.4vw,34px);line-height:1.12;letter-spacing:-.025em;margin:6px 0 6px}
+.quiz h2 em{font-style:normal;color:var(--bleu)}
+.quiz .hint{color:var(--texte2);font-size:15px;margin-bottom:18px}
+.reps{display:grid;gap:10px}
+.rep{display:flex;align-items:center;gap:14px;width:100%;text-align:left;min-height:62px;padding:10px 14px;border-radius:16px;border:1.5px solid var(--lavande);background:#fff;font:700 15.5px/1.3 var(--sans);color:var(--encre);cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.rep:hover{border-color:#B9C0F3;background:#FAFBFF}
+.rep:active{transform:scale(.99)}
+.rep .ic{width:40px;height:40px;border-radius:12px;background:var(--lavande-2);color:var(--bleu);display:grid;place-items:center;flex:none}
+.rep .ok{margin-left:auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--lavande);display:grid;place-items:center;flex:none;color:#fff}
+.rep .ok svg.i{width:15px;height:15px;stroke-width:3;opacity:0}
+.rep[aria-pressed="true"]{border-color:var(--bleu);background:#F0F2FF}
+.rep[aria-pressed="true"] .ic{background:var(--bleu);color:#fff}
+.rep[aria-pressed="true"] .ok{background:var(--bleu);border-color:var(--bleu)}
+.rep[aria-pressed="true"] .ok svg.i{opacity:1}
+.quiz-foot{display:flex;justify-content:flex-end;padding:0 20px 22px}
+.quiz-foot .btn{width:100%}
+
+/* ÉCRAN 3 */
+.offre{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;padding-top:30px;padding-bottom:56px}
+.hero>*,.offre>*{min-width:0}
+.offre h2{font-weight:800;font-size:clamp(30px,8vw,52px);line-height:1.05;letter-spacing:-.03em;margin:12px 0 12px}
+.offre h2 em{font-style:normal;color:var(--bleu)}
+.offre .intro p{color:var(--texte2);font-size:16.5px;max-width:30em}
+.certif{margin-top:22px;border-radius:16px;overflow:hidden;box-shadow:0 30px 50px -30px rgba(18,26,87,.55);transform:rotate(-2deg);border:6px solid #fff;width:94%;max-width:440px;margin-left:3%}
+.carte{background:var(--carte);border:1px solid var(--lavande);border-radius:28px;overflow:hidden;box-shadow:0 40px 70px -45px rgba(18,26,87,.6)}
+.carte .bandeau{background:var(--indigo);color:#fff;display:flex;align-items:center;gap:10px;padding:14px 20px;font:700 14px/1.3 var(--sans)}
+.carte .bandeau svg.i{color:var(--or)}
+.carte .bandeau span{margin-left:auto;font:500 11.5px/1 var(--mono);color:#C6CBF3}
+.prix{padding:22px 20px 6px}
+.prix s{font:500 15px/1 var(--mono);color:var(--texte2)}
+.prix .nb{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+.prix .nb strong{font-weight:800;font-size:64px;line-height:1;letter-spacing:-.04em}
+.prix .nb span{font:800 20px/1 var(--sans)}
+.prix .eq{font:500 12.5px/1.4 var(--mono);color:var(--texte2);margin-top:6px}
+.prix .une{display:inline-flex;margin-top:12px;font:700 13px/1.2 var(--sans);color:var(--or-texte);background:#FBF3DC;padding:7px 11px;border-radius:999px}
+.inclus{list-style:none;padding:14px 20px;display:grid;gap:10px}
+.inclus li{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:15.5px;line-height:1.35}
+.inclus svg.i{color:var(--bleu);margin-top:1px}
+.bonus{margin:4px 20px 18px;border:1px solid var(--lavande);border-radius:16px;overflow:hidden}
+.bonus h3{font:500 12px/1 var(--mono);letter-spacing:.04em;color:var(--texte2);padding:12px 14px;background:var(--lavande-2);display:flex;justify-content:space-between}
+.bonus h3 b{color:var(--encre);font-weight:500}
+.bonus ul{list-style:none}
+.bonus li{display:flex;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid var(--lavande);font-size:14.5px;line-height:1.3;font-weight:700}
+.bonus li .v{margin-left:auto;text-align:right;font:500 12px/1.2 var(--mono);color:var(--texte2);white-space:nowrap}
+.bonus li .v s{display:block}
+.bonus li .v em{font-style:normal;color:var(--or-texte);font-weight:500}
+.achat{padding:0 20px 18px;display:grid;gap:10px}
+.achat .btn{width:100%}
+.achat small{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--texte2);font-size:13px;text-align:center}
+.achat small svg.i{width:16px;height:16px}
+.garantie{display:flex;gap:14px;align-items:flex-start;margin:0 20px 22px;background:var(--lavande-2);border-radius:18px;padding:16px}
+.garantie .ic{width:44px;height:44px;border-radius:12px;background:#fff;color:var(--bleu);display:grid;place-items:center;flex:none}
+.garantie h4{font:800 16px/1.2 var(--sans);margin-bottom:4px}
+.garantie p{font-size:14px;line-height:1.5;color:var(--texte2)}
+footer{padding:22px 0 40px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--texte2);font-size:13px;border-top:1px solid var(--lavande)}
+footer img{height:18px;width:auto}
+
+@media (max-width:899px){.certif,.cadre{max-width:68%!important}}
+@media (min-width:900px){
+  .wrap{padding:0 48px}
+  header.top{padding:24px 0}
+  header.top img{height:28px}
+  .hero{grid-template-columns:1.12fr .88fr;align-items:center;gap:56px;padding:36px 0 80px}
+  .scene{min-height:560px}
+  .chat{width:270px;left:24px;top:28px}
+  .scene img.enock{right:-8%}
+  .badge24{left:auto;right:20px;bottom:auto;top:20px}
+  .quiz-wrap{padding-top:64px;padding-bottom:90px}
+  .quiz-body{padding:20px 40px 26px}
+  .quiz-head{padding:18px 28px 0}
+  .reps{grid-template-columns:1fr 1fr}
+  .reps .rep:last-child{grid-column:1/-1}
+  .quiz-foot{padding:0 40px 32px}
+  .quiz-foot .btn{width:auto}
+  .offre{grid-template-columns:1fr 480px;gap:72px;align-items:start;padding-top:72px;padding-bottom:100px}
+  .offre .intro{position:sticky;top:40px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C9.5 3 11 5 12 8c1-3 2.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><path d="m15.48 12.89 1.51 8.53a.5.5 0 0 1-.81.47l-3.58-2.69a1 1 0 0 0-1.2 0l-3.59 2.69a.5.5 0 0 1-.81-.47l1.51-8.53"/><circle cx="12" cy="8" r="6"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 13H8M16 17H8"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4M3 7l2 2 4-4M13 6h8M13 12h8M13 18h8"/></symbol>
+</svg>
+
+<div class="maquette">Piste A · Écran clair · écran 1 sur 3 : l’accueil</div>
+<div class="fil" style="--p:12%"></div>
+<main>
+<section class="wrap" aria-label="Accueil">
+  <header class="top">
+    <img src="assets/logo-emk.webp" alt="EMK Blue Diamond" width="561" height="66">
+    <span>Bilan gratuit · 3 min</span>
+  </header>
+  <div class="hero">
+    <div>
+      <p class="eyebrow"><b>01</b> · Ton bilan IA Business Builder</p>
+      <h1>Tu utilises l’IA.<br> Le problème, ce n’est <em>pas toi.</em></h1>
+      <p class="sub">En 3 minutes, on construit ton parcours sur mesure pour créer <strong>ton agent WhatsApp, ton site pro et ton application</strong>, jusqu’à ta certification.</p>
+      <div class="cta-zone">
+        <a class="btn" href="#quiz">Commencer mon bilan <svg class="i"><use href="#i-arrow"/></svg></a>
+        <small>Aucune bonne ou mauvaise réponse. Juste toi.</small>
+      </div>
+      <div class="livrables" aria-label="Ce que tu vas construire">
+        <span><svg class="i"><use href="#i-msg"/></svg>Agent WhatsApp</span>
+        <span><svg class="i"><use href="#i-globe"/></svg>Site pro</span>
+        <span><svg class="i"><use href="#i-phone"/></svg>Application</span>
+        <span><svg class="i"><use href="#i-award"/></svg>Certification</span>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="chat" aria-label="Exemple d'agent WhatsApp">
+        <div class="bar"><span class="av">IA</span><span><b>Ta Boutique</b><i>Agent IA · en ligne</i></span></div>
+        <div class="msgs">
+          <p class="m in">Bonsoir, la robe bleue est encore dispo ?</p>
+          <p class="m out">Oui ! Il reste du M et du L. Je te la réserve ?</p>
+        </div>
+      </div>
+      <span class="badge24">24h/24</span>
+      <img class="enock" src="assets/enock.webp" alt="Enock Mahougnan, bras croisés, en costume bleu nuit" width="524" height="720">
+      <p class="legende"><b>Enock Mahougnan</b>Ton formateur · Cotonou</p>
+    </div>
+  </div>
+</section>
+
+<div class="maquette">Écran 2 sur 3 : une question du quiz</div>
+<section class="wrap quiz-wrap" id="quiz" aria-label="Question du quiz">
+  <div class="quiz">
+    <div class="fil"></div>
+    <div class="quiz-head">
+      <button class="back" type="button" aria-label="Question précédente"><svg class="i"><use href="#i-left"/></svg></button>
+      <p class="eyebrow"><b>02</b> · Ton bilan · 54 %</p>
+    </div>
+    <div class="quiz-body">
+      <h2>Si tu pouvais maîtriser <em>une seule</em> chose, ce serait laquelle ?</h2>
+      <p class="hint">Celle qui changerait vraiment ton quotidien.</p>
+      <div class="reps" role="group" aria-label="Réponses">
+        <button class="rep" type="button" aria-pressed="true"><span class="ic"><svg class="i"><use href="#i-bot"/></svg></span>Créer mon agent IA qui bosse pour moi 24h/24<span class="ok"><svg class="i"><use href="#i-check"/></svg></span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="ic"><svg class="i"><use href="#i-zap"/></svg></span>Automatiser mes tâches et libérer mes journées<span class="ok"><svg class="i"><use href="#i-check"/></svg></span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="ic"><svg class="i"><use href="#i-bag"/></svg></span>Vendre en ligne, même pendant que je dors<span class="ok"><svg class="i"><use href="#i-check"/></svg></span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="ic"><svg class="i"><use href="#i-globe"/></svg></span>Créer des sites et applis sans savoir coder<span class="ok"><svg class="i"><use href="#i-check"/></svg></span></button>
+        <button class="rep" type="button" aria-pressed="false"><span class="ic"><svg class="i"><use href="#i-brief"/></svg></span>Vendre des prestations IA à des clients<span class="ok"><svg class="i"><use href="#i-check"/></svg></span></button>
+      </div>
+    </div>
+    <div class="quiz-foot"><a class="btn" href="#offre">Continuer <svg class="i"><use href="#i-arrow"/></svg></a></div>
+  </div>
+</section>
+
+<div class="maquette">Écran 3 sur 3 : la carte de l’offre</div>
+<section class="wrap offre" id="offre" aria-label="Offre">
+  <div class="intro">
+    <p class="eyebrow"><b>03</b> · Ton offre</p>
+    <h2>Le prix d’un dîner pour <em>changer ton année.</em></h2>
+    <p>8 modules, des livrables réels, et une certification qui prouve à tout le monde, y compris à toi, que tu maîtrises.</p>
+    <img class="certif" src="assets/certificat.webp" alt="Modèle du certificat IA Business Building délivré par EMK Blue Diamond" width="900" height="600" loading="lazy">
+  </div>
+  <div class="carte">
+    <div class="bandeau"><svg class="i"><use href="#i-gift"/></svg>Offre débloquée par ton bilan<span>Tarif de lancement</span></div>
+    <div class="prix">
+      <s>35 000 F CFA</s>
+      <div class="nb"><strong>4 999</strong><span>F CFA</span></div>
+      <p class="eq">soit environ 7,60 € · 10,50 CAD · 8,50 $</p>
+      <span class="une">Un seul paiement · aucun prélèvement · accès à vie</span>
+    </div>
+    <ul class="inclus">
+      <li><svg class="i"><use href="#i-check"/></svg>La certification IA Business Builder</li>
+      <li><svg class="i"><use href="#i-check"/></svg>8 modules, accès à vie</li>
+      <li><svg class="i"><use href="#i-check"/></svg>Les 5 bonus, offerts</li>
+      <li><svg class="i"><use href="#i-check"/></svg>Toutes les mises à jour futures</li>
+    </ul>
+    <div class="bonus">
+      <h3>Tes 5 bonus <b>valeur 47 000 F</b></h3>
+      <ul>
+        <li>106 prompts professionnels prêts à l’emploi<span class="v"><s>15 000 F</s><em>Offert</em></span></li>
+        <li>10 automatisations prêtes<span class="v"><s>12 000 F</s><em>Offert</em></span></li>
+        <li>4 checklists de lancement<span class="v"><s>8 000 F</s><em>Offert</em></span></li>
+        <li>Tes documents business<span class="v"><s>7 000 F</s><em>Offert</em></span></li>
+        <li>Mises à jour à vie<span class="v"><s>5 000 F/an</s><em>Offert</em></span></li>
+      </ul>
+    </div>
+    <div class="achat">
+      <a class="btn" href="#offre">Je décroche ma certification <svg class="i"><use href="#i-arrow"/></svg></a>
+      <small><svg class="i"><use href="#i-lock"/></svg>Mobile Money (MTN, Moov, Orange Money, Wave) ou carte bancaire</small>
+    </div>
+    <div class="garantie">
+      <span class="ic"><svg class="i"><use href="#i-shield"/></svg></span>
+      <div><h4>7 jours pour changer d’avis</h4><p>Suis le premier module, teste la méthode. Si ce n’est pas pour toi, un simple email suffit. Remboursement intégral, sans justification.</p></div>
+    </div>
+  </div>
+</section>
+<div class="wrap"><footer><img src="assets/logo-emk.webp" alt="EMK Blue Diamond" width="561" height="66" loading="lazy"><span>© 2026 EMK Blue Diamond</span></footer></div>
+</main>
+<script>
+document.querySelectorAll('.rep').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.rep').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true')})});
+</script>
+</body>
+</html>

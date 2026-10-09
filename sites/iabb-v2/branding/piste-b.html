@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piste B · Diamant taillé · IA Business Building</title>
+<meta name="description" content="Maquette de branding, piste B : violet du logo et or sur blanc teinté.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&family=Lora:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fond:#FAF8FD; --carte:#FFFFFF; --encre:#1A1430; --texte2:#554C6E;
+  --violet:#47218F; --violet-2:#5A2DB0; --violet-pale:#EFE9FB; --bord:#E6DFF3;
+  --or:#E3B65A; --or-2:#C9973A; --or-texte:#7A5512; --aubergine:#2A1650;
+  --serif:"Lora",Georgia,serif; --sans:"Figtree",system-ui,sans-serif;
+  --c:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--fond);color:var(--encre);font:400 16.5px/1.6 var(--sans);-webkit-font-smoothing:antialiased;hyphens:auto}
+img{display:block;max-width:100%}
+h1,h2,h3,h4,button,.btn,.rep,li{hyphens:manual}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.maquette{font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#7A7190;text-align:center;padding:14px 0;border-top:1px dashed #D5CBEA;background:#F2EEF9}
+.maquette:first-child{border-top:0}
+
+/* la facette : coins taillés haut-gauche et bas-droit */
+.facet{clip-path:polygon(var(--c) 0,100% 0,100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,0 100%,0 var(--c))}
+.serti{background:linear-gradient(135deg,#EBD39A,var(--or) 30%,var(--or-2) 60%,#EBD39A);padding:1.5px}
+.serti>.facet{--c:15.4px}
+.ombre{filter:drop-shadow(0 26px 34px rgba(42,22,80,.16))}
+
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:700 12.5px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--or-texte)}
+.losange{width:9px;height:9px;background:var(--or);transform:rotate(45deg);display:inline-block;flex:none}
+
+.btn{--c:12px;display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:56px;padding:0 30px;background:var(--violet);color:#fff;font:700 17px/1 var(--sans);text-decoration:none;border:0;cursor:pointer;transition:background .2s,transform .15s}
+.btn:hover{background:var(--violet-2)}
+.btn:active{transform:translateY(1px)}
+.btn .gem{color:var(--or)}
+
+/* ÉCRAN 1 */
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+header.top img{height:22px;width:auto}
+header.top span{font:700 13px/1 var(--sans);color:var(--texte2)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;padding:16px 0 44px}
+.hero>*{min-width:0}
+.hero h1{font:600 clamp(36px,9.4vw,68px)/1.06 var(--serif);letter-spacing:-.02em;margin:16px 0 18px}
+.hero h1 em{color:var(--violet);font-style:italic}
+.hero .sub{color:var(--texte2);font-size:17.5px;max-width:33em}
+.hero .sub strong{color:var(--encre);font-weight:700}
+.cta-zone{margin-top:24px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.cta-zone small{font-size:14px;color:var(--texte2)}
+.livrables{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-top:26px;padding-top:20px;border-top:1px solid var(--bord)}
+.livrables li{display:flex;align-items:center;gap:10px;font:700 15px/1.2 var(--sans)}
+.livrables svg.i{color:var(--violet)}
+
+.vitrine{position:relative}
+.vitrine .panneau{--c:28px;background:linear-gradient(170deg,#F3EEFC 0%,#E7DDF9 100%);height:420px;position:relative;overflow:hidden}
+.vitrine .gemme{position:absolute;inset:6% 4% auto auto;width:78%;height:auto;color:var(--or-2);opacity:.9}
+.vitrine img{position:absolute;bottom:0;left:50%;transform:translateX(-46%);height:94%;width:auto}
+.vitrine .nom{position:absolute;left:14px;bottom:14px;z-index:2}
+.vitrine .nom .facet{--c:10px;background:#fff;padding:11px 14px}
+.vitrine .nom b{display:block;font:600 17px/1.2 var(--serif)}
+.vitrine .nom span{font-size:13px;color:var(--texte2)}
+
+/* ÉCRAN 2 */
+.quiz-wrap{padding-top:28px;padding-bottom:52px}
+.quiz{max-width:760px;margin:0 auto}
+.quiz .facet.int{display:flow-root;--c:22px;background:#fff;padding:20px 20px 24px}
+.serti.q{--c:24px}
+.qhead{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.back{width:44px;height:44px;border:1px solid var(--bord);background:#fff;display:grid;place-items:center;color:var(--encre);cursor:pointer;border-radius:50%}
+.back:hover{background:var(--violet-pale)}
+.gemmes{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.gemmes i{width:10px;height:10px;transform:rotate(45deg);border:1.5px solid #CFC3E8;display:block}
+.gemmes i.fait{background:var(--violet);border-color:var(--violet)}
+.gemmes i.ici{background:var(--or);border-color:var(--or-2);width:13px;height:13px}
+.qhead small{margin-left:auto;font:700 13px/1 var(--sans);color:var(--texte2)}
+.quiz h2{font:600 clamp(25px,6.6vw,36px)/1.15 var(--serif);letter-spacing:-.01em;margin-bottom:8px}
+.quiz h2 em{color:var(--violet)}
+.quiz .hint{color:var(--texte2);margin-bottom:20px}
+.reps{display:grid;gap:10px}
+.rep{--c:12px;position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:12px 16px;text-align:left;background:var(--fond);border:0;box-shadow:inset 0 0 0 1.5px var(--bord);font:700 16px/1.3 var(--sans);color:var(--encre);cursor:pointer;transition:background .2s,box-shadow .2s}
+.rep:hover{background:#F4F0FB}
+.rep svg.i{color:var(--violet)}
+.rep .ok{margin-left:auto;width:18px;height:18px;transform:rotate(45deg);border:1.5px solid #CFC3E8;flex:none;transition:background .2s}
+.rep[aria-pressed="true"]{background:var(--violet-pale);box-shadow:inset 0 0 0 2px var(--violet)}
+.rep[aria-pressed="true"] .ok{background:var(--or);border-color:var(--or-2)}
+.qfoot{margin-top:20px}
+.qfoot .btn{width:100%}
+
+/* ÉCRAN 3 */
+.offre{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;padding-top:30px;padding-bottom:60px}
+.offre>*{min-width:0}
+.offre h2{font:600 clamp(31px,8.2vw,54px)/1.08 var(--serif);letter-spacing:-.015em;margin:14px 0 14px}
+.offre h2 em{color:var(--violet)}
+.offre .intro p{color:var(--texte2);max-width:30em}
+.cadre{margin-top:24px;max-width:460px}
+.cadre .facet{--c:18px;background:#fff;padding:10px}
+.cadre img{clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+.carte .facet.int{--c:26px;background:#fff;display:flow-root}
+.serti.k{--c:27.5px}
+.carte .tete{padding:22px 22px 4px}
+.prix s{font-size:15px;color:var(--texte2)}
+.prix .nb{display:flex;align-items:baseline;gap:10px;margin-top:2px}
+.prix .nb strong{font:600 70px/1 var(--serif);color:var(--violet);letter-spacing:-.02em}
+.prix .nb span{font:700 19px/1 var(--sans)}
+.prix .eq{font-size:13.5px;color:var(--texte2);margin-top:6px}
+.une{margin-top:14px;font:700 13.5px/1.3 var(--sans);color:var(--or-texte);display:flex;gap:8px;align-items:center}
+.inclus{list-style:none;padding:16px 22px;display:grid;gap:10px;border-top:1px solid var(--bord);margin-top:16px}
+.inclus li{display:flex;gap:10px;font-weight:700;line-height:1.35}
+.inclus svg.i{color:var(--violet)}
+.bonus{margin:0 22px 20px;background:var(--fond);--c:14px;padding:6px 16px 8px}
+.bonus h3{font:600 italic 18px/1.3 var(--serif);display:flex;justify-content:space-between;align-items:baseline;padding:10px 0 8px;color:var(--violet)}
+.bonus h3 small{font:700 13px/1 var(--sans);font-style:normal;color:var(--or-texte)}
+.bonus ul{list-style:none}
+.bonus li{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--bord);font-size:15px;line-height:1.3;font-weight:700}
+.bonus li .losange{width:7px;height:7px}
+.bonus li .v{margin-left:auto;text-align:right;font:400 12.5px/1.25 var(--sans);color:var(--texte2);white-space:nowrap}
+.bonus li .v b{display:block;color:var(--or-texte)}
+.achat{padding:0 22px 18px;display:grid;gap:10px}
+.achat .btn{width:100%}
+.achat .ombre{display:block}
+.achat small{display:flex;gap:8px;justify-content:center;align-items:center;font-size:13.5px;color:var(--texte2);text-align:center}
+.achat small svg.i{width:16px;height:16px}
+.garantie{--c:14px;margin:0 22px 24px;background:var(--violet-pale);padding:16px;display:flex;gap:14px;align-items:flex-start}
+.garantie svg.i{width:30px;height:30px;color:var(--violet)}
+.garantie h4{font:600 18px/1.25 var(--serif);margin-bottom:4px}
+.garantie p{font-size:14.5px;line-height:1.5;color:var(--texte2)}
+footer{padding:24px 0 42px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--bord);font-size:13px;color:var(--texte2)}
+footer img{height:18px;width:auto}
+
+@media (max-width:899px){.certif,.cadre{max-width:68%!important}}
+@media (min-width:900px){
+  .wrap{padding:0 48px}
+  header.top{padding:26px 0}
+  header.top img{height:28px}
+  .hero{grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;padding:30px 0 84px}
+  .vitrine .panneau{height:580px}
+  .quiz-wrap{padding-top:64px;padding-bottom:96px}
+  .quiz .facet.int{padding:30px 44px 36px}
+  .reps{grid-template-columns:1fr 1fr}
+  .reps .rep:last-child{grid-column:1/-1}
+  .qfoot{display:flex;justify-content:flex-end}
+  .qfoot .btn{width:auto}
+  .offre{grid-template-columns:1fr 490px;gap:76px;align-items:start;padding-top:76px;padding-bottom:104px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6M2 9h20"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><path d="m15.48 12.89 1.51 8.53a.5.5 0 0 1-.81.47l-3.58-2.69a1 1 0 0 0-1.2 0l-3.59 2.69a.5.5 0 0 1-.81-.47l1.51-8.53"/><circle cx="12" cy="8" r="6"/></symbol>
+</svg>
+
+<div class="maquette">Piste B · Diamant taillé · écran 1 sur 3 : l’accueil</div>
+<main>
+<section class="wrap" aria-label="Accueil">
+  <header class="top">
+    <img src="assets/logo-emk.webp" alt="EMK Blue Diamond" width="561" height="66">
+    <span>Bilan gratuit, 3 minutes</span>
+  </header>
+  <div class="hero">
+    <div>
+      <p class="eyebrow"><span class="losange"></span>IA Business Builder</p>
+      <h1>Tu utilises l’IA.<br> Le problème, <em>ce n’est pas toi.</em></h1>
+      <p class="sub">En 3 minutes, on construit ton parcours sur mesure pour créer <strong>ton agent WhatsApp, ton site pro et ton application</strong>, jusqu’à ta certification.</p>
+      <div class="cta-zone">
+        <span class="ombre"><a class="btn facet" href="#quiz">Commencer mon bilan <svg class="i gem"><use href="#i-gem"/></svg></a></span>
+        <small>Aucune bonne ou mauvaise réponse. Juste toi.</small>
+      </div>
+      <ul class="livrables" aria-label="Ce que tu vas construire">
+        <li><svg class="i"><use href="#i-msg"/></svg>Ton agent WhatsApp</li>
+        <li><svg class="i"><use href="#i-globe"/></svg>Ton site pro</li>
+        <li><svg class="i"><use href="#i-phone"/></svg>Ton application</li>
+        <li><svg class="i"><use href="#i-award"/></svg>Ta certification</li>
+      </ul>
+    </div>
+    <div class="vitrine ombre">
+      <div class="panneau facet">
+        <svg class="gemme" viewBox="0 0 200 170" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M50 10h100l40 50-90 100L10 60Z"/><path d="M90 10 70 60l30 100 30-100-20-50M10 60h180M50 10l20 50M150 10l-20 50"/></svg>
+        <img src="assets/enock.webp" alt="Enock Mahougnan, bras croisés, en costume bleu nuit" width="524" height="720">
+      </div>
+      <div class="nom"><div class="facet"><b>Enock Mahougnan</b><span>Ton formateur, Cotonou</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="maquette">Écran 2 sur 3 : une question du quiz</div>
+<section class="wrap quiz-wrap" id="quiz" aria-label="Question du quiz">
+  <div class="quiz ombre">
+    <div class="serti q facet"><div class="facet int">
+      <div class="qhead">
+        <button class="back" type="button" aria-label="Question précédente"><svg class="i"><use href="#i-left"/></svg></button>
+        <div class="gemmes" aria-hidden="true"><i class="fait"></i><i class="fait"></i><i class="fait"></i><i class="fait"></i><i class="fait"></i><i class="ici"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <small>6 sur 13</small>
+      </div>
+      <h2>Si tu pouvais maîtriser <em>une seule</em> chose, ce serait laquelle ?</h2>
+      <p class="hint">Celle qui changerait vraiment ton quotidien.</p>
+      <div class="reps" role="group" aria-label="Réponses">
+        <button class="rep facet" type="button" aria-pressed="true"><svg class="i"><use href="#i-bot"/></svg>Créer mon agent IA qui bosse pour moi 24h/24<span class="ok"></span></button>
+        <button class="rep facet" type="button" aria-pressed="false"><svg class="i"><use href="#i-zap"/></svg>Automatiser mes tâches et libérer mes journées<span class="ok"></span></button>
+        <button class="rep facet" type="button" aria-pressed="false"><svg class="i"><use href="#i-bag"/></svg>Vendre en ligne, même pendant que je dors<span class="ok"></span></button>
+        <button class="rep facet" type="button" aria-pressed="false"><svg class="i"><use href="#i-globe"/></svg>Créer des sites et applis sans savoir coder<span class="ok"></span></button>
+        <button class="rep facet" type="button" aria-pressed="false"><svg class="i"><use href="#i-brief"/></svg>Vendre des prestations IA à des clients<span class="ok"></span></button>
+      </div>
+      <div class="qfoot"><a class="btn facet" href="#offre">Continuer <svg class="i gem"><use href="#i-gem"/></svg></a></div>
+    </div></div>
+  </div>
+</section>
+
+<div class="maquette">Écran 3 sur 3 : la carte de l’offre</div>
+<section class="wrap offre" id="offre" aria-label="Offre">
+  <div class="intro">
+    <p class="eyebrow"><span class="losange"></span>Offre débloquée par ton bilan</p>
+    <h2>Le prix d’un dîner pour <em>changer ton année.</em></h2>
+    <p>8 modules, des livrables réels, et une certification qui prouve à tout le monde, y compris à toi, que tu maîtrises.</p>
+    <div class="cadre ombre"><div class="serti facet" style="--c:20px"><div class="facet" style="--c:18.5px"><img src="assets/certificat.webp" alt="Modèle du certificat IA Business Building délivré par EMK Blue Diamond" width="900" height="600" loading="lazy"></div></div></div>
+  </div>
+  <div class="carte ombre">
+    <div class="serti k facet"><div class="facet int">
+      <div class="tete prix">
+        <p class="eyebrow"><span class="losange"></span>Tarif de lancement</p>
+        <p style="margin-top:12px"><s>35 000 F CFA</s></p>
+        <div class="nb"><strong>4 999</strong><span>F CFA</span></div>
+        <p class="eq">soit environ 7,60 € · 10,50 CAD · 8,50 $</p>
+        <p class="une"><span class="losange"></span>Un seul paiement, aucun prélèvement, accès à vie</p>
+      </div>
+      <ul class="inclus">
+        <li><svg class="i"><use href="#i-check"/></svg>La certification IA Business Builder</li>
+        <li><svg class="i"><use href="#i-check"/></svg>8 modules, accès à vie</li>
+        <li><svg class="i"><use href="#i-check"/></svg>Les 5 bonus, offerts</li>
+        <li><svg class="i"><use href="#i-check"/></svg>Toutes les mises à jour futures</li>
+      </ul>
+      <div class="bonus facet">
+        <h3>Tes 5 bonus <small>valeur 47 000 F</small></h3>
+        <ul>
+          <li><span class="losange"></span>106 prompts professionnels prêts à l’emploi<span class="v"><s>15 000 F</s><b>Offert</b></span></li>
+          <li><span class="losange"></span>10 automatisations prêtes<span class="v"><s>12 000 F</s><b>Offert</b></span></li>
+          <li><span class="losange"></span>4 checklists de lancement<span class="v"><s>8 000 F</s><b>Offert</b></span></li>
+          <li><span class="losange"></span>Tes documents business<span class="v"><s>7 000 F</s><b>Offert</b></span></li>
+          <li><span class="losange"></span>Mises à jour à vie<span class="v"><s>5 000 F/an</s><b>Offert</b></span></li>
+        </ul>
+      </div>
+      <div class="achat">
+        <span class="ombre"><a class="btn facet" href="#offre">Je décroche ma certification <svg class="i gem"><use href="#i-gem"/></svg></a></span>
+        <small><svg class="i"><use href="#i-lock"/></svg>Mobile Money (MTN, Moov, Orange Money, Wave) ou carte bancaire</small>
+      </div>
+      <div class="garantie facet">
+        <svg class="i"><use href="#i-shield"/></svg>
+        <div><h4>7 jours pour changer d’avis</h4><p>Suis le premier module, teste la méthode. Si ce n’est pas pour toi, un simple email suffit. Remboursement intégral, sans justification.</p></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+<div class="wrap"><footer><img src="assets/logo-emk.webp" alt="EMK Blue Diamond" width="561" height="66" loading="lazy"><span>© 2026 EMK Blue Diamond</span></footer></div>
+</main>
+<script>
+document.querySelectorAll('.rep').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.rep').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true')})});
+</script>
+</body>
+</html>
