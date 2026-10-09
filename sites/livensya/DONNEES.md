@@ -28,3 +28,10 @@
 - Mélange de « tu » et de « vous » ; fautes (« malgré ton efforts », « toute votre vie »).
 - Les photos avant/après conviennent sur la page, mais sont interdites dans les pubs Meta.
 - Pas de témoignage client, pas de garantie de remboursement affichée.
+
+## Coordonnées publiques du site (octobre 2026)
+- Site : https://livensya.emkbluediamond.online/
+- E-mail de contact : livensya@emkbluediamond.online (remplace l'ancienne adresse « contact@ » sur le site).
+- WhatsApp : même numéro béninois qu'avant, uniquement via un bouton (plus affiché en texte).
+- Pixel Meta : 5010730402487338.
+- À vérifier côté Chariow : l'e-mail et le téléphone de contact affichés par la boutique, et la redirection après achat vers https://livensya.emkbluediamond.online/merci.html.

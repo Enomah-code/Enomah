@@ -1,6 +1,6 @@
 /* Livensya · suivi Meta (Pixel standard uniquement)
    ------------------------------------------------------------------
-   1. Colle ton identifiant de Pixel entre les guillemets ci-dessous.
+   1. L'identifiant du Pixel Meta de Livensya est renseigné ci-dessous (PIXEL_ID).
    2. Tant que PIXEL_ID est vide, RIEN n'est chargé (aucun script Meta, aucun cookie).
    3. Aucun jeton de l'API Conversions ici : un site statique est public,
       le jeton doit rester sur un serveur (voir LISEZMOI.md).
@@ -17,7 +17,7 @@
 (function () {
   'use strict';
 
-  var PIXEL_ID = ''; // ex. '123456789012345' : à fournir
+  var PIXEL_ID = '5010730402487338'; // Pixel Meta de Livensya (laisser vide '' pour tout couper)
 
   function nouvelId(nom) {
     var alea = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()

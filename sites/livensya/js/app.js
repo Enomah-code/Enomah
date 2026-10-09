@@ -10,6 +10,11 @@ const WIDGET_JS = 'https://js.chariowcdn.com/v1/widget.min.js';
 const WIDGET_CSS = 'https://js.chariowcdn.com/v1/widget.min.css';
 const DELAI_REPLI_MS = 6000;
 
+/* Après un achat réussi dans le widget Chariow : page où l'on envoie l'acheteur
+   (au lieu de la page d'achat Chariow). L'identifiant de l'achat est ajouté : merci.html?achat=<purchaseId>.
+   Mets une adresse complète si besoin, ex. 'https://livensya.emkbluediamond.online/merci.html'. */
+const PAGE_APRES_ACHAT = 'merci.html';
+
 /* Vidéo faceless (HyperFrames) : laisse vide tant que le fichier n'existe pas.
    Exemple : 'videos/defi-60-jours.mp4' et 'videos/affiche.webp' */
 const VIDEO_SRC = '';
@@ -50,6 +55,27 @@ function envoyerLead(donnees) {
 
   var ICONE_COCHE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   function icone(id) { return '<svg class="icone" aria-hidden="true"><use href="#' + id + '"/></svg>'; }
+
+  /* ---------------- Après l'achat (message du widget Chariow) ----------------
+     À la fin du paiement, la fenêtre Chariow envoie { type: 'chariow-purchase-completed', purchaseId }.
+     On garde purchaseId (lv_purchase_id, pour le futur Purchase côté serveur) et on redirige vers PAGE_APRES_ACHAT.
+     Écoute en phase de capture + stopImmediatePropagation : le widget, qui redirige sinon vers sa propre page
+     d'achat, ne reçoit pas ce message. AUCUN événement Meta n'est envoyé ici (le Purchase partira du serveur). */
+  function origineChariow(origine) {
+    var u;
+    try { u = new URL(origine); } catch (e) { return false; }
+    return u.protocol === 'https:' && /(^|\.)(mychariow\.store|chariow\.com)$/.test(u.hostname);
+  }
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (!d || typeof d !== 'object' || d.type !== 'chariow-purchase-completed') return;
+    if (!origineChariow(e.origin)) return;
+    var id = (typeof d.purchaseId === 'string' || typeof d.purchaseId === 'number') ? String(d.purchaseId) : '';
+    if (!/^[A-Za-z0-9_-]{1,100}$/.test(id)) id = '';
+    if (id) { try { localStorage.setItem('lv_purchase_id', id); } catch (err) {} }
+    e.stopImmediatePropagation();
+    location.href = PAGE_APRES_ACHAT + (id ? (PAGE_APRES_ACHAT.indexOf('?') > -1 ? '&' : '?') + 'achat=' + encodeURIComponent(id) : '');
+  }, true);
 
   /* ---------------- Widget de paiement Chariow ---------------- */
   var widget = { charge: false, pret: false, attente: [] };

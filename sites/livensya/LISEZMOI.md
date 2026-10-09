@@ -2,6 +2,26 @@
 
 Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de données. Poids mesuré au premier chargement sur téléphone : environ 150 Ko (moins de 500 Ko une fois toutes les images chargées ; limite fixée : 1,5 Mo).
 
+## Version 5 : contact discret, pages légales, Pixel actif, retour sur merci.html
+- **Domaine** : https://livensya.emkbluediamond.online/ (adresse canonique et Open Graph de `index.html`, adresse de chaque page légale).
+- **Contact sans coordonnées affichées** : partout (carte de l'offre, FAQ, page merci, pied de page, pages légales), seulement deux petits boutons « WhatsApp » et « E-mail ». Le numéro et l'adresse ne s'affichent plus en texte.
+  - WhatsApp (22995726957) avec un message déjà écrit : « Bonjour, je vous écris au sujet du programme Défi 60 Jours (Livensya). J'ai une question : ».
+  - E-mail : **livensya@emkbluediamond.online** (remplace l'ancienne adresse « contact@ »), objet prérempli « Question sur le Défi 60 Jours (Livensya) ».
+  - Les liens sont écrits en dur dans le HTML, déjà encodés. Pour changer le message, encode le nouveau texte (par ex. avec `encodeURIComponent` dans la console du navigateur) et remplace-le dans **toutes** les pages (cherche `wa.me` et `mailto`).
+- **Pied de page** (toutes les pages) : « © 2026 Livensya by EMK Blue Diamond · Cotonou, Bénin », liens vers les pages légales du site et les deux boutons de contact.
+- **Pages légales** : `mentions-legales.html`, `cgv.html`, `confidentialite.html`, au style du site, non indexées (`noindex, follow`), « Dernière mise à jour : octobre 2026 ». Elles chargent `js/tracking.js` (PageView seulement). Pas de garantie « satisfait ou remboursé » : produit numérique livré tout de suite, pas de remboursement après l'envoi de l'accès, accès renvoyé en cas de problème technique. Si tu changes le prix, change-le aussi dans `cgv.html` (cherche `3 999`).
+- **Logos des moyens de paiement** (`images/paiement/`) sous le prix : MTN MoMo, Moov Money, Orange Money, Wave, Visa, Mastercard, en couleurs d'origine.
+- **Bouton du widget plus calme** : `data-cta-animation="none"` (valeur lue dans le code du widget Chariow : avec `none`, aucune animation n'est lancée ; sans l'attribut, le widget peut appliquer son animation par défaut).
+- **Pixel Meta actif** : `PIXEL_ID = '5010730402487338'` dans `js/tracking.js`. Logique inchangée (voir plus bas).
+- **Après l'achat dans le widget** : voir « Après l'achat » ci-dessous.
+
+## Après l'achat : retour sur merci.html
+1. À la fin d'un paiement dans la fenêtre du widget, Chariow envoie à la page un message `chariow-purchase-completed` qui contient le `purchaseId`.
+2. `js/app.js` l'écoute (origine vérifiée : `https://…mychariow.store` ou `https://…chariow.com`, forme du message vérifiée), garde l'identifiant dans le téléphone (`localStorage`, clé `lv_purchase_id`, pour le futur Purchase côté serveur) et envoie l'acheteur vers **`PAGE_APRES_ACHAT`** (en haut de `js/app.js`, valeur : `'merci.html'`), avec `?achat=<purchaseId>`.
+3. Le widget, qui sinon redirigeait vers sa page d'achat Chariow (`…/purchase/<id>`), ne reçoit plus ce message (écoute prioritaire). **Aucun événement Meta n'est envoyé à ce moment.**
+4. **À régler aussi dans Chariow** : si le tableau de bord du produit propose une « URL de redirection après achat » (ou « page de remerciement »), mets `https://livensya.emkbluediamond.online/merci.html`. C'est utile quand le paiement se termine hors du widget, par le lien de repli (`LIEN_PAIEMENT`).
+5. À tester avec un vrai paiement : on n'a pas pu payer depuis notre environnement de test. Le comportement a été vérifié avec un message simulé.
+
 ## Version 4 : fidèle au livre et paiement sans quitter la page
 - **Âge et phrases du livre** : David a 26 ans (« J'ai 26 ans, mais on me prend encore pour un lycéen »). Plus aucune mention « 24 ans / 14 ans ». Titre de l'histoire : « On dirait que tu n'as pas changé depuis le lycée. » La 3e phrase barrée du héros devient « Tu es toujours aussi maigre… ». Photos légendées « Avant » / « Aujourd'hui », fichiers renommés `photo-avant-*` et `photo-aujourdhui-*`.
 - **Widget de paiement Chariow (style « tap »)** dans la carte de l'offre, à la place du bouton :
@@ -11,16 +31,16 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
   - si le widget n'a pas pu se charger après 6 s (réseau, bloqueur), on ouvre la page de paiement Chariow (`LIEN_PAIEMENT`, https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout, vérifiée) ;
   - sans JavaScript, un bouton classique vers cette même page reste visible.
 - **Pourquoi « tap » et pas « frame »** : « frame » affiche directement tout le formulaire de paiement dans la page (un grand cadre, chargé d'office, sans bouton) : plus lourd en 3G et moins rassurant avant d'avoir lu l'offre. « tap » montre un bouton et n'ouvre le paiement qu'au clic, dans une fenêtre (presque plein écran sur téléphone, fermable par une croix).
-- **Réglages du widget** (attributs de `#chariow-widget` dans `index.html`) : `data-style="tap"`, `data-primary-color="#16402A"` (vert forêt, plus de vert citron), `data-background-color="#FFFCF6"`, `data-locale="fr"`, `data-custom-cta-text="Commencer le défi"`, `data-cta-width="md"` (56 px, plus facile à toucher que `xs`), animation « shine » (coupée si le téléphone demande moins d'animations). Le CSS du site retouche seulement le bouton (pilule, police, couleur), rien d'autre.
+- **Réglages du widget** (attributs de `#chariow-widget` dans `index.html`) : `data-style="tap"`, `data-primary-color="#16402A"` (vert forêt, plus de vert citron), `data-background-color="#FFFCF6"`, `data-locale="fr"`, `data-custom-cta-text="Commencer le défi"`, `data-cta-width="md"` (56 px, plus facile à toucher que `xs`), animation `none` depuis la version 5 (avant : « shine »). Le CSS du site retouche seulement le bouton (pilule, police, couleur), rien d'autre.
 - **Suivi** : `InitiateCheckout` part au clic sur le bouton du widget (une fois par clic, clics répétés en moins de 2 s ignorés, `eventID` unique). Toujours **pas de Purchase dans le navigateur**.
-- **Après l'achat** : le widget redirige vers la page d'achat Chariow (`https://ykhzgspm.mychariow.store/purchase/<id>`), **pas vers `merci.html`**. `merci.html` ne servira que si tu configures une redirection Chariow vers elle.
+- **Après l'achat** : depuis la version 5, l'acheteur est renvoyé vers `merci.html?achat=<id>` (voir « Après l'achat » plus haut). Avant, le widget redirigeait vers la page d'achat Chariow.
 - **Pour la future API Conversions** : à la fin du paiement, le widget reçoit un message `chariow-purchase-completed` qui contient le `purchaseId`. C'est cet identifiant qui servira d'`event_id` au Purchase envoyé côté serveur (webhook de vente Chariow), pour qu'il ne compte jamais deux fois.
 
 ## Version 2 (retours d'Enock)
 - **Narrateur** : la page ne parle plus d'Enock. Le narrateur est le personnage du livre. Son prénom est dans **une seule constante**, `PRENOM_NARRATEUR` en haut de `js/app.js` (valeur : `'David'`, le narrateur du livre), et la même ligne en bas de `merci.html`. Tous les éléments `data-prenom` se remplissent seuls. Si tu laisses `''`, le texte devient neutre (« L'auteur du défi ») et la phrase « Moi, c'est … » disparaît.
 - **Histoire** : l'histoire de David (préface du livre), réécrite à la 1re personne, avec la mention « L'histoire de David est inspirée de situations réelles. »
 - **Prix** : il n'apparaît que dans la carte de l'offre (3 999 F, barré 12 500 F), après « Ce que tu reçois ». Tous les autres boutons disent « Commencer le défi » ou « Faire le défi avec moi ».
-- **Contact** : WhatsApp https://wa.me/22995726957 (+229 95 72 69 57) et contact@emkbluediamond.online, en pastilles avec icônes (logo WhatsApp, enveloppe), sans prénom ni signature, dans la carte de l'offre, la FAQ, la page merci et le pied de page.
+- **Contact** : depuis la version 5, deux boutons « WhatsApp » et « E-mail » (livensya@emkbluediamond.online), sans coordonnées affichées en texte (voir plus haut).
 - **Aucune garantie** de remboursement n'est mentionnée nulle part.
 - **La confidence du test** (question sur la remarque la plus blessante) n'est jamais enregistrée ni envoyée : elle sert seulement à adapter le résultat sur le téléphone.
 
@@ -30,11 +50,12 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
 |---|---|
 | `index.html` | La page du tunnel : héros, test de 2 minutes, résultat, histoire, méthode, contenu, jours 1/30/60, vidéo, offre, FAQ, final |
 | `merci.html` | La page après paiement (non indexée par Google) |
+| `mentions-legales.html`, `cgv.html`, `confidentialite.html` | Les pages légales (non indexées) |
 | `css/style.css` | Tout le style (couleurs de la charte en haut du fichier) |
 | `js/app.js` | Le test, le résultat, les boutons d'achat, la vidéo. **Les réglages sont en haut du fichier.** |
 | `js/tracking.js` | Le Pixel Meta. **`PIXEL_ID` est en haut du fichier.** |
 | `fonts/` | Les 2 polices, hébergées sur ton site (pas d'appel à Google) |
-| `images/` | Photos avant/après, logos, mockups et fonds, en WebP. `images/marque/` = les originaux fournis |
+| `images/` | Photos avant/après, logos, mockups et fonds, en WebP. `images/marque/` = les originaux fournis. `images/paiement/` = logos des moyens de paiement |
 | `captures/` | Les captures téléphone (390 px) et ordinateur (1440 px) de chaque page |
 | `DESIGN.md` | La direction artistique et la planche de références |
 
@@ -42,8 +63,8 @@ Site statique (HTML, CSS, un peu de JavaScript). Aucun serveur, aucune base de d
 
 1. **Créer le sous-domaine** : espace client LWS → ton hébergement → « Sous-domaines » → ajoute `livensya` sur `emkbluediamond.online`. Note le dossier créé (souvent `/livensya/` ou `/sous-domaines/livensya/` à la racine de l'hébergement).
 2. **Activer le HTTPS** : dans « SSL / Let's Encrypt », coche le sous-domaine `livensya.emkbluediamond.online`. Attends qu'il soit actif (quelques minutes à quelques heures).
-3. **Envoyer les fichiers** : par le gestionnaire de fichiers LWS ou en FTP (FileZilla), copie **le contenu** du dossier `sites/livensya/` dans le dossier du sous-domaine : `index.html`, `merci.html`, `css/`, `js/`, `fonts/`, `images/`. Inutile d'envoyer `captures/`, `images/marque/`, `DESIGN.md`, `DONNEES.md` et ce fichier.
-4. **Vérifier** : ouvre `https://livensya.emkbluediamond.online` sur ton téléphone, fais le test jusqu'au bout, appuie sur un bouton d'achat (tu dois arriver sur Chariow), ouvre `/merci.html`.
+3. **Envoyer les fichiers** : par le gestionnaire de fichiers LWS ou en FTP (FileZilla), copie **le contenu** du dossier `sites/livensya/` dans le dossier du sous-domaine : `index.html`, `merci.html`, `mentions-legales.html`, `cgv.html`, `confidentialite.html`, `css/`, `js/`, `fonts/`, `images/`. Inutile d'envoyer `captures/`, `images/marque/`, `DESIGN.md`, `DONNEES.md` et ce fichier.
+4. **Vérifier** : ouvre `https://livensya.emkbluediamond.online` sur ton téléphone, fais le test jusqu'au bout, appuie sur un bouton d'achat (tu dois arriver sur Chariow), ouvre `/merci.html` et les trois pages légales (liens du pied de page).
 5. **Brancher la page merci dans Chariow** : dans le produit, réglage « redirection après achat » (ou « page de remerciement »), mets `https://livensya.emkbluediamond.online/merci.html`. Si Chariow ne le propose pas, la page reste utile : mets son lien dans l'e-mail de livraison.
 
 Aperçu de la vidéo et du suivi : ajoute `?apercu=1` à l'adresse (la section vidéo s'affiche même vide, et les événements du Pixel s'écrivent dans la console du navigateur).
@@ -54,6 +75,7 @@ Tout est en haut de `js/app.js` :
 
 ```js
 const LIEN_PAIEMENT = 'https://ykhzgspm.mychariow.store/prd_4bisyd7x/checkout';   // repli si le widget ne charge pas
+const PAGE_APRES_ACHAT = 'merci.html';  // où envoyer l'acheteur après un paiement réussi dans le widget
 const VIDEO_SRC = '';        // ex. 'videos/defi-60-jours.mp4'
 const VIDEO_AFFICHE = '';    // ex. 'videos/affiche.webp'
 ```
@@ -68,12 +90,12 @@ const VIDEO_AFFICHE = '';    // ex. 'videos/affiche.webp'
 
 ## Suivi Meta (Pixel), simple et sans doublon
 
-1. Ouvre `js/tracking.js`, colle ton identifiant : `var PIXEL_ID = '123456789012345';`. Tant qu'il est vide, **rien** n'est chargé.
+1. Le Pixel est **actif** : `var PIXEL_ID = '5010730402487338';` dans `js/tracking.js`. Pour tout couper, mets `''` : plus rien n'est chargé. Les « événements automatiques » de Meta restent sur le réglage par défaut. La politique de confidentialité décrit ce suivi : si tu ajoutes un autre outil, mets-la à jour.
 2. Événements envoyés (Pixel standard, rien d'autre) :
 
 | Événement | Quand | Garde-fou |
 |---|---|---|
-| `PageView` | chaque page (accueil et merci) | |
+| `PageView` | chaque page (accueil, merci, pages légales) | |
 | `ViewContent` | quand la section de l'offre s'affiche | une fois par page vue |
 | `Lead` | fin du test | une seule fois par visiteur (drapeau `lv_lead_envoye` dans le téléphone) |
 | `InitiateCheckout` | clic sur un bouton d'achat | un par clic, clics répétés en moins de 2 s ignorés |
@@ -101,6 +123,11 @@ Un seul envoi, côté serveur, déclenché par la vente réelle :
 6. **Un vrai test de paiement** sur ton téléphone (le paiement s'ouvre bien dans la fenêtre, Mobile Money passe, et tu arrives sur la page d'achat Chariow). Depuis notre environnement de test, le contenu du paiement est bloqué par Cloudflare : on a vérifié l'ouverture de la fenêtre, pas le formulaire.
 7. **Deux vraies captures de pages** des PDF (emplacement `EXTRAIT` prêt).
 8. **Les mockups des livres** (corps générés, « votre », « ENOCK M. ») : légendés « visuel d'illustration ». Pas de torse nu ni d'avant/après dans les pubs Meta.
-9. **L'ID du Pixel Meta** (le jeton API Conversions reste côté serveur).
+9. **Les pages légales** (`mentions-legales.html`, `cgv.html`, `confidentialite.html`) : relis-les, surtout l'absence de remboursement, la phrase sur un double débit, et les durées de conservation. Le Pixel est branché (ID 5010730402487338) ; le jeton API Conversions reste côté serveur.
 10. **La vidéo faceless**, puis de vrais témoignages avec accord.
 11. **Ton ✅** sur l'aperçu avant toute mise en ligne.
+
+## Prochain Purchase serveur : ce que le navigateur garde
+- `lv_initiate_checkout_id` : eventID du dernier InitiateCheckout.
+- `lv_purchase_id` (version 5) : identifiant d'achat Chariow reçu à la fin du paiement dans le widget. Aussi présent dans l'adresse `merci.html?achat=<id>`.
+Quand le Purchase serveur sera en place, pense à le décrire dans `confidentialite.html` (section 3).
