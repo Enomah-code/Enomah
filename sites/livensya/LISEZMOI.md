@@ -90,6 +90,8 @@ const VIDEO_AFFICHE = '';    // ex. 'videos/affiche.webp'
 
 ## Suivi Meta (Pixel), simple et sans doublon
 
+Plan complet, règles anti-doublon et vérifications : voir `TRACKING.md`.
+
 1. Le Pixel est **actif** : `var PIXEL_ID = '5010730402487338';` dans `js/tracking.js`. Pour tout couper, mets `''` : plus rien n'est chargé. Les « événements automatiques » de Meta restent sur le réglage par défaut. La politique de confidentialité décrit ce suivi : si tu ajoutes un autre outil, mets-la à jour.
 2. Événements envoyés (Pixel standard, rien d'autre) :
 

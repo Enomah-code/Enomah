@@ -98,7 +98,9 @@ function envoyerLead(donnees) {
     mo.observe(w, { childList: true, subtree: true });
     /* InitiateCheckout : au clic sur le bouton du widget (anti double-clic dans tracking.js) */
     w.addEventListener('click', function (e) {
-      if (e.target.closest && e.target.closest('button')) suivi.initiateCheckout(PRODUIT);
+      /* Seulement le bouton d'achat : pas la croix de fermeture ni les autres boutons de la fenêtre de paiement */
+      var b = e.target.closest && e.target.closest('button');
+      if (b && !b.closest('.cw-modal-wrapper')) suivi.initiateCheckout(PRODUIT);
     }, true);
   }
   function quandWidgetPret(f, siEchec) {
@@ -111,14 +113,18 @@ function envoyerLead(donnees) {
     chargerWidget();
     var carte = document.getElementById('paiement');
     if (carte) carte.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth', block: 'center' });
+    if (widget.ouverture) return; /* une ouverture attend déjà le widget : pas de 2e InitiateCheckout */
+    widget.ouverture = true;
     if (declencheur) declencheur.setAttribute('aria-busy', 'true');
     quandWidgetPret(function () {
+      widget.ouverture = false;
       if (declencheur) declencheur.removeAttribute('aria-busy');
       setTimeout(function () { var b = boutonWidget(); if (b) b.click(); }, reduit ? 0 : 650);
     }, function () {
       /* Repli : page de paiement Chariow */
+      widget.ouverture = false;
       suivi.initiateCheckout(PRODUIT);
-      location.href = lienAchat();
+      setTimeout(function () { location.href = lienAchat(); }, suivi.actif ? 300 : 0); /* laisse partir l'événement */
     });
   }
 
