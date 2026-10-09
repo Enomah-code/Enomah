@@ -6,9 +6,9 @@
 <title>Bienvenue chez les IA Business Builders — EMK Blue Diamond</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:ital,wght@0,500;0,700;0,800;1,700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:ital,wght@0,500;0,700;0,800;1,700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:ital,wght@0,500;0,700;0,800;1,700&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,700;0,800;1,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,700;0,800;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,700;0,800;1,700&display=swap"></noscript>
 
 <!-- ============ META PIXEL — Purchase dédupliqué ============
      L'événement Purchase est envoyé PAR LES 2 canaux (Pixel + CAPI Apps Script)
@@ -50,7 +50,6 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
   --indigo:#121A57; --or:#E8B53A; --or-fonce:#DDA623; --lavande:#E4E8FC; --lavande-2:#EEF1FD;
   --vert:#1E7A4C; --vert-pale:#E6F4EC;
   --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
@@ -74,7 +73,7 @@ nav.top{background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(14px);back
 main{flex:1;padding:48px 20px 72px}
 .wrap{max-width:640px;margin:0 auto;text-align:left}
 
-.success-badge{width:72px;height:72px;margin:0 0 26px;border-radius:22px;background:var(--indigo);display:flex;align-items:center;justify-content:center;position:relative;animation:popIn .6s cubic-bezier(.34,1.56,.64,1)}
+.success-badge{width:72px;height:72px;margin:0 0 26px;border-radius:22px;background:radial-gradient(120% 90% at 20% 0%,#2B37A8 0%,var(--indigo) 58%,#0A0F3A 100%);display:flex;align-items:center;justify-content:center;position:relative;animation:popIn .6s cubic-bezier(.34,1.56,.64,1)}
 .success-badge svg{width:38px;height:38px;stroke:var(--or);z-index:2}
 .success-badge svg path{stroke-dasharray:64;stroke-dashoffset:64;animation:draw .6s .3s ease-out forwards}
 @keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
@@ -84,7 +83,7 @@ main{flex:1;padding:48px 20px 72px}
 .kicker svg.i{width:17px;height:17px}
 
 h1{font-size:clamp(34px,9vw,56px);line-height:1.06;margin-bottom:18px}
-h1 .hl{color:var(--bleu);background:linear-gradient(var(--or),var(--or)) 0 94%/100% .1em no-repeat;padding-bottom:.02em}
+h1 .hl{color:var(--bleu)}
 
 .lede{font-size:clamp(17px,2vw,19px);color:#2B3263;max-width:34em;margin:0 0 16px;line-height:1.6}
 .lede strong{color:var(--encre);font-weight:800}
