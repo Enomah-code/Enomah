@@ -64,7 +64,8 @@ e = s.charger();
 s.post(e, s.webhook('SALEE5', { product: { id: 'prd_qh7md6nj' } }));
 s.post(e, s.webhook('SALEE6', { store: { id: 'store_xfu1kqhyz8ds', url: 'https://emkbluediamond.mychariow.shop' } }));
 s.post(e, s.webhook('SALEE9', { product: undefined }));
-s.verifier(s.purchases(e).length === 0 && e.lecturesChariow.length === 0 && s.ventes(e).length === 0, 'webhooks ignorés sans lecture Chariow');
+s.verifier(s.purchases(e).length === 0 && s.ventes(e).length === 0, 'autre produit, autre boutique, produit absent : aucun achat');
+s.verifier(e.lecturesChariow.length === 1 && String(e.lecturesChariow[0].id).indexOf('SALEE6') !== -1, 'seule la boutique douteuse est vérifiée par la fiche (pas les autres produits)');
 e.fiches.SALEE7 = s.fiche('SALEE7', { product: { id: 'prd_autre' } });
 s.post(e, s.webhook('SALEE7'));
 s.verifier(s.purchases(e).length === 0 && s.debug(e).some(l => l.includes('autre produit')), 'fiche d\'un autre produit : refusée');
@@ -222,7 +223,7 @@ s.verifier(e.envoisMeta.length === 1, 'aucun renvoi en boucle (l\'onglet Ventes 
 e = s.charger(); e.fiches.SALEW2 = s.fiche('SALEW2');
 e.pannes.bloquerEcriture = (k, v) => k === 'vente_SALEW2' && v.includes('"envoye"') && v.includes('"id"');
 s.post(e, s.webhook('SALEW2')); s.post(e, s.signal('SALEW2'));
-s.verifier(e.props.get('vente_SALEW2') === '{"etape":"envoye"}' && s.debug(e).some(l => l.includes('version minimale')), 'écriture complète refusée : écriture minimale faite');
+s.verifier((function(){ try { var o = JSON.parse(e.props.get('vente_SALEW2')); return o.etape === 'envoye' && typeof o.t === 'number'; } catch (x) { return false; } })() && s.debug(e).some(l => l.includes('version minimale')), 'écriture complète refusée : écriture minimale faite');
 passage(e, 3); s.post(e, s.webhook('SALEW2'));
 s.verifier(e.envoisMeta.length === 1, 'pas de renvoi');
 e = s.charger(); e.fiches.SALEZ1 = s.fiche('SALEZ1'); e.fiches.SALEZ2 = s.fiche('SALEZ2');

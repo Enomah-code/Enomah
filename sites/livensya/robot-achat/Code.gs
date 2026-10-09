@@ -60,7 +60,8 @@ function recevoirVente_(p) {
   var id = idValide_(p.sale && p.sale.id);
   if (!id) { journal_('Ignoré', 'vente sans identifiant'); return; }
   if (!(p.product && p.product.id === PRODUIT_ID)) { journal_('Ignoré', id + ' : autre produit'); return; }
-  if (!boutiqueLivensya_(p.store)) { journal_('Ignoré', id + ' : autre boutique'); return; }
+  // La boutique est vérifiée de façon sûre sur la fiche Chariow ; ici, un simple signalement.
+  if (!boutiqueLivensya_(p.store)) journal_('Attention', id + ' : boutique du webhook non reconnue, vérification par la fiche');
   var c = p.customer || {}, tel = telephoneBrut_(c.phone);
   var indices = { email: String(c.email || ''), telephone: tel.texte, indicatif: tel.indicatif,
                   pays: String((c.country && c.country.code) || c.country || ''),
@@ -178,7 +179,7 @@ function avancer_(etat) {
 function marquerFin_(id, etape) {
   var court = JSON.stringify({ id: id, etape: etape, t: Date.now() });
   try { proprietes_().setProperty('vente_' + id, court); return true; } catch (err1) {
-    try { proprietes_().setProperty('vente_' + id, '{"etape":"' + etape + '"}'); journal_('ERREUR', id + ' : état « ' + etape + ' » noté en version minimale'); return true; }
+    try { proprietes_().setProperty('vente_' + id, '{"etape":"' + etape + '","t":' + Date.now() + '}'); journal_('ERREUR', id + ' : état « ' + etape + ' » noté en version minimale'); return true; }
     catch (err2) { journal_('ERREUR', id + ' : impossible de noter l\'état « ' + etape + ' » (' + err2.message + ')'); return false; }
   }
 }
@@ -211,7 +212,7 @@ function verifierVente_(id, indices) {
   if (STATUTS_PAYES.indexOf(statut) === -1 && paiement !== 'success') {
     return { reessayer: 'statut « ' + statut + ' » pas encore payé ou inconnu' };
   }
-  var temps = Date.parse(f.completed_at || '') || Date.now();
+  var temps = Date.parse(f.completed_at || '') || Date.parse(f.created_at || '') || Date.now();
   if (Date.now() - temps > 7 * JOUR) return { refus: 'vente de plus de 7 jours, Meta la refuserait' };
 
   var client = f.customer || {}, ctx = f.context || {};
