@@ -19,8 +19,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--fond);color:var(--encre);font:400 16.5px/1.6 var(--sans);-webkit-font-smoothing:antialiased;hyphens:auto}
-img{display:block;max-width:100%}
+body{background:var(--fond);color:var(--encre);font:400 16.5px/1.6 var(--sans);-webkit-font-smoothing:antialiased;hyphens:manual}
+img{display:block;max-width:100%;height:auto}
 h1,h2,h3,h4,button,.btn,.rep,li{hyphens:manual}
 svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 :focus-visible{outline:3px solid var(--violet);outline-offset:3px}
@@ -134,7 +134,7 @@ header.top span{font:700 13px/1 var(--sans);color:var(--texte2)}
 footer{padding:24px 0 42px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--bord);font-size:13px;color:var(--texte2)}
 footer img{height:18px;width:auto}
 
-@media (max-width:899px){.certif,.cadre{max-width:68%!important}}
+@media (max-width:899px){.certif,.cadre{max-width:68%!important}.achat .btn{padding:0 14px;font-size:16px;gap:8px}}
 @media (min-width:900px){
   .wrap{padding:0 48px}
   header.top{padding:26px 0}

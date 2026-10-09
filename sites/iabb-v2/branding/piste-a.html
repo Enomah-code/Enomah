@@ -19,8 +19,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--fond);color:var(--encre);font:500 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;hyphens:auto}
-img{display:block;max-width:100%}
+body{background:var(--fond);color:var(--encre);font:500 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;hyphens:manual}
+img{display:block;max-width:100%;height:auto}
 h1,h2,h3,h4,button,.btn,.rep,li{hyphens:manual}
 svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 a{color:inherit}
@@ -140,14 +140,14 @@ header.top span{font:500 12px/1 var(--mono);color:var(--texte2)}
 footer{padding:22px 0 40px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--texte2);font-size:13px;border-top:1px solid var(--lavande)}
 footer img{height:18px;width:auto}
 
-@media (max-width:899px){.certif,.cadre{max-width:68%!important}}
+@media (max-width:899px){.certif,.cadre{max-width:68%!important}.achat .btn{padding:0 14px;font-size:16px;gap:8px}}
 @media (min-width:900px){
   .wrap{padding:0 48px}
   header.top{padding:24px 0}
   header.top img{height:28px}
   .hero{grid-template-columns:1.12fr .88fr;align-items:center;gap:56px;padding:36px 0 80px}
   .scene{min-height:560px}
-  .chat{width:270px;left:24px;top:28px}
+  .chat{width:260px;left:22px;top:auto;bottom:92px}
   .scene img.enock{right:-8%}
   .badge24{left:auto;right:20px;bottom:auto;top:20px}
   .quiz-wrap{padding-top:64px;padding-bottom:90px}
