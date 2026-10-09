@@ -118,6 +118,7 @@ a:hover { text-decoration-thickness: 2px; }
 .tirage figcaption strong { color: var(--encre); display: block; font-family: var(--serif); font-style: italic; font-size: 1.25rem; font-weight: 400; }
 .heros__photo { width: 84%; justify-self: end; position: relative; }
 .heros__photo .tirage { transform: rotate(1.5deg); }
+.heros__photo .tirage figcaption { margin-top: 26px; }
 .presentation { font-family: var(--serif); font-style: italic; font-size: 1.1875rem; line-height: 1.4; color: var(--foret); margin: 0 0 18px; max-width: 22em; }
 .presentation b { font-weight: 500; font-style: italic; }
 .amorce { margin: 20px 0 4px; color: var(--sauge); letter-spacing: .14em; }
@@ -368,9 +369,15 @@ a:hover { text-decoration-thickness: 2px; }
 .final::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 56px; background: var(--creme); clip-path: path("M0 0 L 2400 0 L 2400 10 C 1900 60, 1300 70, 800 30 S 200 0, 0 34 Z"); }
 @media (min-width: 900px) { .final::before { height: 80px; clip-path: path("M0 0 L 2400 0 L 2400 10 C 1900 80, 1300 90, 800 40 S 200 0, 0 50 Z"); } }
 .final .barre-vieux { font-family: var(--serif); font-style: italic; color: var(--sauge-clair); font-size: 1.375rem; margin-bottom: 20px; }
-.final .barre-vieux s { text-decoration: none; background: var(--vague-claire) no-repeat center 60% / 100% .45em; }
+.final .barre-vieux s { text-decoration: none; background: var(--vague-claire) no-repeat left 60% / 100% .45em; }
 .final .mots-finaux { font-family: var(--serif); font-style: italic; font-size: clamp(2.25rem, 8.6vw, 4.25rem); line-height: 1.15; color: #fff; margin: 0 0 24px; max-width: 14em; }
-.final .mots-finaux span { background: var(--vague-claire) no-repeat left 100% / 100% .28em; padding-bottom: .12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.final .souligne-live { background: var(--vague-claire) no-repeat left 100% / 100% .28em; padding-bottom: .12em; }
+/* Effets en direct quand la section entre à l'écran (classe .anime posée par js/app.js) */
+.js .final .barre-live { background-size: 0% .45em; transition: background-size 1.2s cubic-bezier(.45,0,.2,1) .3s; }
+.js .final .souligne-live { background-size: 0% .28em; transition: background-size 2s cubic-bezier(.45,0,.2,1) 1.6s; }
+.js .final.anime .barre-live { background-size: 100% .45em; }
+.js .final.anime .souligne-live { background-size: 100% .28em; }
+@media (prefers-reduced-motion: reduce) { .js .final .barre-live { background-size: 100% .45em; } .js .final .souligne-live { background-size: 100% .28em; } }
 .final p { color: #D5DED5; max-width: 32em; }
 .final .heros__actions { margin-top: 28px; }
 
@@ -402,10 +409,8 @@ a:hover { text-decoration-thickness: 2px; }
 .calendrier__legende { align-items: center; gap: 8px; }
 .calendrier__rate { display: inline-flex; align-items: center; gap: 6px; }
 .calendrier__rate i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px dashed #CDBFA6; display: inline-block; }
-.signe { display: grid; grid-template-columns: 56px 1fr; gap: 14px; align-items: center; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--trait); }
-.signe img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: 50% 0; border: 2px solid #fff; box-shadow: 0 6px 14px -8px rgba(28,43,33,.5); }
+.signe { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--trait); }
 .signe p { margin: 0; font-size: .9375rem; }
-.signe span { display: block; font-family: var(--serif); font-style: italic; color: var(--sauge); margin-top: 2px; }
 @media (max-width: 599px) {
   .photos-duo { gap: 10px; margin: 0 -8px; }
   .photos-duo .tirage:nth-child(2) { margin-top: 32px; }
@@ -428,6 +433,18 @@ a:hover { text-decoration-thickness: 2px; }
 .choix-doux { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--foret); margin: 0 0 20px; }
 
 .lien-whatsapp { margin-top: 6px; }
+
+/* Contacts (WhatsApp + e-mail) */
+.contacts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.contact { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 16px; border: 1px solid var(--trait); border-radius: 16px; background: var(--lin); color: var(--encre); text-decoration: none; transition: border-color .3s ease, background-color .3s ease, box-shadow .3s ease; }
+.contact:hover { border-color: #C9B996; background: #fff; box-shadow: 0 8px 18px -12px rgba(60,48,20,.35); text-decoration: none; }
+.contact span { font-size: .8125rem; color: var(--sauge); line-height: 1.3; overflow-wrap: anywhere; min-width: 0; }
+.contact b { display: block; font-size: clamp(.875rem, 3.7vw, 1rem); color: var(--encre); letter-spacing: -.005em; }
+.contact .icone { width: 22px; height: 22px; color: var(--feuille); }
+.icone-wa { width: 22px; height: 22px; flex: none; fill: var(--feuille); }
+.pied__contact { gap: 8px; }
+.pied__contact .icone, .pied__contact .icone-wa { width: 18px; height: 18px; }
+.mention-histoire { font-size: .8125rem; color: var(--sauge); font-style: italic; margin: 4px 0 0; }
 
 /* Apparitions au défilement */
 .js .revele { opacity: 0; transform: translateY(18px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1); }
