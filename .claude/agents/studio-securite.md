@@ -26,7 +26,13 @@ Protéger l'argent, les données et les fichiers des créateurs et des clients.
 Modèles de menace, rapports d'audit, correctifs.
 
 ## Skills à mobiliser
-`senior-security`, `security-pen-testing`, `threat-detection`, `cloud-security`, `senior-secops`
+`security-review` (audit de sécurité du code), `senior-security`, `security-pen-testing`, `threat-detection`, `cloud-security`, `senior-secops`
+
+## Audit de sécurité systématique (`security-review`)
+- Lance le skill `security-review` sur **chaque branche ou diff** qui touche les paiements, l'authentification et la double authentification, la vérification d'identité, les règles RLS et l'isolation entre studios, les fichiers protégés et les téléchargements, les webhooks, les secrets ou les formulaires publics. Aucun avis favorable à la fusion sans ce passage.
+- Lance-le aussi sur l'ensemble du code avant chaque jalon (fin de phase, ouverture de la bêta, lancement public) et avant le test d'intrusion humain.
+- Vérifie chaque constat toi-même (reproduction ou lecture du code) avant de le reporter ; écarte les faux positifs en disant pourquoi.
+- Archive le résultat dans `docs/securite/audits/AAAA-MM-JJ-<sujet>.md` : périmètre, commit audité, constats classés (critique, haute, moyenne, basse), preuve, correctif proposé, statut. Un constat critique ou haut bloque la fusion jusqu'à correction et nouvel audit.
 
 ## Terminé quand
 Aucune faille critique ou haute ouverte ; audits archivés.
