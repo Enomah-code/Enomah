@@ -51,3 +51,17 @@ function remplirCertificat(){
   new MutationObserver(function(){ if (page.classList.contains('active')) remplirCertificat(); })
     .observe(page, {attributes: true, attributeFilter: ['class']});
 })();
+
+/* ============ BANDEAU DE REPRISE (ajout v3.1) ============
+   Le bandeau « Bon retour… » est fixé en haut de l'écran. S'il n'est ni accepté ni refusé,
+   il restait affiché pendant tout le quiz puis sur l'offre (la bande orange « figée »).
+   On le retire dès que le visiteur choisit un chemin sur l'accueil ou que l'offre s'affiche.
+   Simple retrait d'un élément affiché : aucune donnée ni aucun événement ne change. */
+(function(){
+  function retirerReprise(){ var b = document.getElementById('resumeBanner'); if (b) b.remove(); }
+  var bilan = document.querySelector('#welcomeScreen .welcome-btn');
+  if (bilan) bilan.addEventListener('click', retirerReprise);
+  var page = document.getElementById('productPage');
+  if (page && 'MutationObserver' in window) new MutationObserver(function(){ if (page.classList.contains('active')) retirerReprise(); })
+    .observe(page, {attributes: true, attributeFilter: ['class']});
+})();

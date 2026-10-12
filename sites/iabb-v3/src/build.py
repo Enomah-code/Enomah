@@ -184,22 +184,16 @@ def html_index(h, U):
     if '<div id="welcomeScreen">' in h:
         ancien = re.search(r'  <div class="welcome-content">.*?\n  </div>\n</div>', h, re.S).group(0)
         h = h.replace(ancien, f'''  <div class="welcome-content">
-    <div class="welcome-text">
-      <div class="welcome-auteur"><img src="assets/enock.webp" alt="" width="48" height="48" decoding="async"><span><b>Enock Mahougnan</b>Ton formateur</span></div>
-      <h1 class="welcome-title">3 minutes pour <em>te connaître</em></h1>
-      <p class="welcome-sub">Et concevoir un programme sur mesure adapté à ton profil.</p>
-      <div class="welcome-paths">
-        <button class="welcome-btn" onclick="startQuizFromWelcome()">Faire mon bilan personnalisé {ic('arrow-right', U)}</button>
-        <p class="welcome-footnote">Aucune bonne ou mauvaise réponse. Juste toi.</p>
-        <div class="welcome-or">ou</div>
-        <button type="button" class="welcome-alt" onclick="voirOffreDirectement()">Voir directement l'offre de lancement {ic('arrow-right', U)}</button>
-        <p class="welcome-alt-note">Tu connais déjà la formation ? Le tarif de lancement t'attend.</p>
-      </div>
+    <div class="welcome-icon" aria-hidden="true">{ic('sparkles', U)}</div>
+    <h1 class="welcome-title">3 minutes pour te connaître</h1>
+    <p class="welcome-sub">Et concevoir un programme sur mesure adapté à ton profil.</p>
+    <div class="welcome-paths">
+      <button class="welcome-btn" onclick="startQuizFromWelcome()">Faire mon bilan personnalisé {ic('arrow-right', U)}</button>
+      <p class="welcome-footnote">Aucune bonne ou mauvaise réponse. Juste toi.</p>
+      <div class="welcome-or">ou</div>
+      <button type="button" class="welcome-alt" onclick="voirOffreDirectement()">Voir directement l'offre de lancement {ic('arrow-right', U)}</button>
+      <p class="welcome-alt-note">Tu connais déjà la formation ? Le tarif de lancement t'attend.</p>
     </div>
-    <figure class="welcome-visuel">
-      <img src="assets/enock.webp" alt="Enock Mahougnan, bras croisés, en costume bleu nuit" width="524" height="720" loading="lazy" decoding="async">
-      <figcaption><b>Enock Mahougnan</b>Ton formateur, à Cotonou</figcaption>
-    </figure>
   </div>
 </div>''')
     # ---- icônes ----
@@ -283,12 +277,8 @@ def construire_index():
             out.append(retoucher_script_principal(p) if 'const screens=' in p else p)
             continue
         if FONTS_OLD in p:
-            p = p.replace(PRECONNECT + FONTS_OLD, FONTS_NEW) if PRECONNECT + FONTS_OLD in p else p.replace(FONTS_OLD, FONTS_NEW)
-            p = re.sub(r'<style>\n  :root\{.*?</style>', lambda m: '<style>\n' + (ICI / 'tunnel.css').read_text() + '</style>', p, count=1, flags=re.S)
-            assert '--section:' in p
-        if '.emk-notif-widget{' in p:
-            p = p.replace("font-family:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;", "font-family:var(--font);")
-            p = p.replace("text-transform:uppercase;color:#D97706;", "text-transform:uppercase;color:#B45309;")
+            i = p.index('</style>') + len('</style>')
+            p = p[:i] + '\n<!-- Retouches v3.1 (présentation seulement) -->\n<style>\n' + (ICI / 'retouches.css').read_text() + '</style>' + p[i:]
         out.append(html_index(p, U))
     html = ''.join(out)
     html = html.replace('<body>\n', '<body>\n' + sprite(U) + '\n', 1)
@@ -313,8 +303,9 @@ def construire_merci():
     for k, p in decouper(src):
         if k == 'js':
             out.append(retoucher_script_principal(p, textes.MERCI_JS if 'leadData' in p and 'getElementById(\'lede\')' in p else [])); continue
-        p = p.replace(PRECONNECT + FONTS_OLD, FONTS_NEW).replace(FONTS_OLD, FONTS_NEW)
-        p = re.sub(r'<style>.*?</style>', lambda m: '<style>\n' + (ICI / 'merci.css').read_text() + '</style>', p, count=1, flags=re.S)
+        if '</style>' in p:
+            i = p.index('</style>') + len('</style>')
+            p = p[:i] + '\n<style>\n' + (ICI / 'merci-retouches.css').read_text() + '</style>' + p[i:]
         for a, b in textes.MERCI:
             if a in p:
                 APPLIQUES['merci:' + a] += 1

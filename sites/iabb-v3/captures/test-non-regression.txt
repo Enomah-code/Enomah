@@ -20,12 +20,12 @@
   OK    un seul envoi POST au /exec de chaque côté (1 / 1)
   OK    corps du lead identique hors date
   OK    lead complet (IP 2c0f:f0f8:1:2::3, source test)
-     corps du lead (copie) : {"prenom": "Aminata", "email": "Test.Local@Example.com", "age": "25-34", "situation": "entrepreneur", "frustration": "argent", "niveau_ia": "entendu", "objectif": "automatiser", "niveau_code": "curieux", "deja_essaye": "youtube", "temps_dispo": "30", "blocage": "temps", "projection": "client", "engagement": "essayer", "source": "test", "campagne": "regression", "page": "https://quizcertification.e
+     corps du lead (copie) : {"prenom": "David", "email": "Test.Local@Example.com", "age": "25-34", "situation": "entrepreneur", "frustration": "argent", "niveau_ia": "entendu", "objectif": "automatiser", "niveau_code": "curieux", "deja_essaye": "youtube", "temps_dispo": "30", "blocage": "temps", "projection": "client", "engagement": "essayer", "source": "test", "campagne": "regression", "page": "https://quizcertification.emk
   OK    mêmes lectures GET du /exec : ['action=recent-sales']
   OK    localStorage emk_lead identique (hors ts)
   OK    ipify appelé une fois (simulé) (1 / 1)
   OK    aucune erreur JS ([] / [])
-  OK    certificat de la copie rempli : Aminata | Délivré le 7 décembre 2026
+  OK    certificat de la copie rempli : David | Délivré le 7 décembre 2026
 == index.html COPIE : raccourci « Je connais déjà la formation »
      appels fbq : ['3393043107543742', 'PageView', 'OfferReveal', 'PricingView', 'InitiateCheckout']
   OK    l'offre s'affiche, l'accueil est masqué
@@ -47,7 +47,7 @@
   OK    un seul signal d'enrichissement chacun (1 / 1)
   OK    signal identique hors _timestamp (_enrichment_ping, _fbc, _fbp, _clientIp)
      signal (copie) : {"_enrichment_ping": true, "email": "Test.Local@Example.com", "_fbc": "fb.1.1.abc", "_fbp": "fb.1.1.def", "_userAgent": "Mozilla/5.0 (Linux; Android 13) TestEMK", "_eventSourceUrl": "https://quizcertification.emkbluediamond.online/merci.html", "_clientIp": "2c0f:f0f8:1:2::3"}
-  OK    prénom personnalisé identique, seule la typographie change : 'Félicitations Aminata, tu l’as fait\u202f!'
+  OK    prénom personnalisé identique, seule la typographie change : 'Félicitations David, tu l’as fait\u202f!'
   OK    aucune erreur JS ([] / [])
 
 Requêtes coupées (jamais parties) : ['https://fonts.googleapis.com/css2', 'https://js.chariowcdn.com/v1/proof.min.js', 'https://js.chariowcdn.com/v1/widget.min.css', 'https://js.chariowcdn.com/v1/widget.min.js']

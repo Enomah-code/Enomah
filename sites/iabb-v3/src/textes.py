@@ -6,7 +6,7 @@ La typographie (apostrophe ’, espaces insécables, guillemets) est ajoutée en
 HTML = [
     # --- en-tête et accueil ---
     ("<title>Certification IA Business Builder — Ton parcours personnalisé</title>",
-     "<title>Certification IA Business Builder : ton parcours personnalisé</title>"),
+     "<title>Certification AI Business Building : ton parcours personnalisé</title>"),
     # --- quiz ---
     ('<div class="q-kicker">Salut!!!😊 Ravi de te retrouver. Avant de commencer</div>',
      '<div class="q-kicker">Salut, ravi de te retrouver. Avant de commencer :</div>'),
@@ -28,13 +28,13 @@ HTML = [
      "8 semaines, 8 livrables réels et une certification qui prouve à tout le monde, y compris à toi, que tu maîtrises."),
     ("Choisis ton profil — les bénéfices ne sont pas les mêmes.", "Choisis ton profil : les bénéfices ne sont pas les mêmes."),
     ("« Certifié IA Business Builder » — la crédibilité qui justifie tes nouveaux tarifs.",
-     "« Certifié IA Business Builder » : la crédibilité qui justifie tes nouveaux tarifs."),
+     "« Certifié AI Business Builder » : la crédibilité qui justifie tes nouveaux tarifs."),
     ("Ce n'est plus « je m'intéresse à l'IA » — c'est « je suis certifié ».",
      "Tu ne dis plus « je m'intéresse à l'IA », tu dis « je suis certifié »."),
     ("Elles t'appartiennent dès ton inscription — sans un centime de plus.", "Elles t'appartiennent dès ton inscription, sans un centime de plus."),
     ("Ta formation évolue avec — sans jamais repayer un centime.", "Ta formation évolue avec elle, sans jamais repayer un centime."),
     ('<div class="price-forever">🎉 Tarif de lancement — accès à vie garanti</div>', '<div class="price-forever">Tarif de lancement, accès à vie garanti</div>'),
-    ("8 modules · 57 leçons — accès à vie", "8 modules · 57 leçons · accès à vie"),
+    ("8 modules · 57 leçons — accès à vie", "8 modules · 65 leçons · accès à vie"),
     ("Les 5 bonus (valeur 47 000 F) — offerts", "Les 5 bonus offerts (valeur 47 000 F)"),
     ("<b>✨ Ce n'est pas un abonnement.</b>", "<b>Ce n'est pas un abonnement.</b>"),
     ("Zéro complication, zéro attente. Tu es opérationnel dans les 60 secondes qui suivent ton paiement.",
@@ -57,9 +57,21 @@ HTML = [
     ("Un seul paiement, une seule fois. Aucune reconduction. Aucune surprise sur ta carte le mois prochain. C'est précisément le point sur lequel nous refusons de suivre les autres programmes du marché.",
      "Un seul paiement, sans reconduction ni surprise sur ta carte le mois prochain."),
     # certificat : titre affiché en IA, nom et date remplis par un petit script (textes affichés seulement)
-    ('<div class="cert-title-main">AI BUSINESS BUILDING</div>', '<div class="cert-title-main">IA BUSINESS BUILDING</div>'),
     ('<div class="cert-name">Prénom NOM</div>', '<div class="cert-name" id="certNom">Ton nom ici</div>'),
     ("DÉLIVRÉ LE JJ MOIS 2026 — <span", "<span id=\"certDate\">DÉLIVRÉ À LA FIN DE TA FORMATION</span> · <span"),
+    # nom : la formation = AI Business Building, la personne certifiée = AI Business Builder (tracking non modifié)
+    ("OFFICIELLEMENT RECONNU(E) <b>IA BUSINESS BUILDER</b>", "OFFICIELLEMENT RECONNU(E) <b>AI BUSINESS BUILDER</b>"),
+    ('<div class="compare-tag">Certifié IA Business Builder</div>', '<div class="compare-tag">Certifié AI Business Builder</div>'),
+    ("<span>La certification IA Business Builder</span>", "<span>La certification AI Business Building</span>"),
+    ("formation%20IA%20Business%20Building", "formation%20AI%20Business%20Building"),
+    ("subject=Question%20sur%20IA%20Business%20Building", "subject=Question%20sur%20AI%20Business%20Building"),
+    ('<span class="emk-notif-action">a rejoint IA Business Building</span>', '<span class="emk-notif-action">a rejoint AI Business Building</span>'),
+    # leçons (source Chariow, cours prd_qh7md6nj)
+    ("8 MODULES &nbsp;|&nbsp; 57 LEÇONS", "8 MODULES &nbsp;|&nbsp; 65 LEÇONS"),
+    ("8 modules progressifs, 49 leçons vidéo et 7 évaluations.", "8 modules progressifs, 55 leçons vidéo et 7 évaluations."),
+    # accès après achat : email, mot de passe facultatif
+    ("Tu accèdes à ton espace personnel en entrant simplement l'adresse email utilisée lors du paiement. Aucun mot de passe à créer.",
+     "Tu te connectes à ton espace avec l'adresse email utilisée lors de ton inscription. Tu peux définir un mot de passe si tu le souhaites, mais ce n'est pas obligatoire."),
     # majuscules au milieu des titres de modules
     ("Module 1 : Les Fondations de l'IA", "Module 1 : Les fondations de l'IA"),
     ("Module 2 : L'Automatisation des Tâches", "Module 2 : L'automatisation des tâches"),
@@ -69,6 +81,10 @@ HTML = [
     ("Module 6 : Créer des Applications avec l'IA", "Module 6 : Créer des applications avec l'IA"),
     ("Module 7 : La Monétisation", "Module 7 : La monétisation"),
     ("Module 8 : Bonus et Ressources", "Module 8 : Bonus et ressources"),
+    ("Module 2 : L'automatisation des tâches</span>\n              <span class=\"module-meta\">9 leçons</span>",
+     "Module 2 : L'automatisation des tâches</span>\n              <span class=\"module-meta\">10 leçons</span>"),
+    ("Module 8 : Bonus et ressources</span>\n              <span class=\"module-meta\">5 bonus offerts</span>",
+     "Module 8 : Bonus et ressources</span>\n              <span class=\"module-meta\">7 leçons</span>"),
     # le programme passe au tutoiement, comme le reste du tunnel
     ("Devenez un pilote, pas un spectateur.", "Deviens un pilote, pas un spectateur."),
     ("Votre business travaille pendant que vous dormez.", "Ton business travaille pendant que tu dors."),
@@ -81,6 +97,7 @@ HTML = [
     ("Vos 10 premiers prompts professionnels", "Tes 10 premiers prompts professionnels"),
     ("Votre chef d'orchestre", "Ton chef d'orchestre"),
     ("Construire votre système d'exploitation business", "Construire ton système d'exploitation business"),
+    ("Construire ton système d'exploitation business</span></li>", "Construire ton système d'exploitation business</span></li>\n              <li><span class=\"lesson-icon icon-eval\">📝</span><span>Cas pratique</span></li>"),
     ("Votre premier agent. L'assistant qui connaît votre business par cœur", "Ton premier agent. L'assistant qui connaît ton business par cœur"),
     ("Connecter l'agent à vos documents", "Connecter l'agent à tes documents"),
     ("Donner des outils à votre employé numérique", "Donner des outils à ton employé numérique"),
@@ -137,16 +154,18 @@ JS = [
 ]
 
 MERCI = [
-    ("<title>Bienvenue chez les IA Business Builders — EMK Blue Diamond</title>", "<title>Bienvenue chez les IA Business Builders | EMK Blue Diamond</title>"),
+    ("<title>Bienvenue chez les IA Business Builders — EMK Blue Diamond</title>", "<title>Bienvenue chez les AI Business Builders | EMK Blue Diamond</title>"),
     ('<div class="kicker">✨ Paiement confirmé</div>', '<div class="kicker">Paiement confirmé</div>'),
     ("Chaque semaine, une nouvelle compétence — chaque module, un livrable réel. Tu ne seras jamais seul devant ton écran, et tu vas y arriver.",
      "Chaque semaine, tu apprends une compétence et tu construis un livrable réel. Tu ne seras jamais seul devant ton écran."),
     ("Tu viens de prendre <strong>la meilleure décision</strong> pour ton avenir avec l'IA.\n      Bienvenue officiellement dans les <strong>IA Business Builders</strong>.",
-     "Bienvenue. Ton accès est prêt.\n      Tu fais maintenant partie des <strong>IA Business Builders</strong>."),
+     "Bienvenue. Ton accès est prêt.\n      Tu fais maintenant partie des <strong>AI Business Builders</strong>."),
     ("<h3>Connecte-toi à ton portail</h3>", '<h3><span class="insecable">Connecte-toi</span> à ton portail</h3>'),
     ("Démarre par le Module 1 dès aujourd'hui", "Démarre par le module 1 dès aujourd'hui"),
     ('<div class="sig">— Enock</div>', '<div class="sig">Enock</div>'),
-    ("(et le dossier <b>spam</b> au cas où) — tu vas recevoir", "(et le dossier <b>spam</b> au cas où) : tu vas recevoir"),
+    ("(et le dossier <b>spam</b> au cas où) — tu vas recevoir tes identifiants d'accès à ton espace apprenant dans les prochaines minutes.",
+     "(et le dossier <b>spam</b> au cas où) : tu vas recevoir le lien d'accès à ton espace apprenant dans les prochaines minutes."),
+    ("Utilise l'email et le mot de passe reçus par mail", "Connecte-toi avec l'adresse email utilisée lors de ton inscription. Tu peux définir un mot de passe si tu le souhaites, mais ce n'est pas obligatoire."),
     ("depuis ton espace personnel — <b>disponible", "depuis ton espace personnel, <b>disponible"),
     ("C'est tout ce dont tu as besoin pour lancer le mouvement — la suite viendra naturellement.", "C'est tout ce qu'il faut pour te lancer."),
     ("Réponds simplement à l'email de bienvenue — on est là et on répond vite. Pas de robot, un vrai humain.", "Réponds simplement à l'email de bienvenue, on te répond vite."),
@@ -157,5 +176,5 @@ MERCI = [
 # merci.html, chaînes affichées par le JS (même contrôle que pour index.html)
 MERCI_JS = [
     ("', tu viens de prendre <strong>la meilleure décision</strong> pour ton avenir avec l\\'IA. Bienvenue officiellement dans les <strong>IA Business Builders</strong>.'",
-     "', bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>IA Business Builders</strong>.'", 1),
+     "', bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>AI Business Builders</strong>.'", 1),
 ]
