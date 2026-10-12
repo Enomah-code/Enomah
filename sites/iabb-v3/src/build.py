@@ -161,8 +161,9 @@ def liens_pied(html):
                   lambda m: '<p class="liens-pied">' + m.group(1).replace('</a> · <a', '</a><a') + '</p>', html)
 
 
-def typo(html):
-    html = liens_pied(html)
+def typo(html, pied=True):
+    if pied:
+        html = liens_pied(html)
     morceaux = re.split(r'(<style\b.*?</style>|<!--.*?-->|<[^>]+>)', html, flags=re.S)
     return ''.join(m if (m.startswith('<') or not m) else typo_texte(m) for m in morceaux)
 
@@ -191,7 +192,7 @@ def html_index(h, U):
       <button class="welcome-btn" onclick="startQuizFromWelcome()">Faire mon bilan personnalisé {ic('arrow-right', U)}</button>
       <p class="welcome-footnote">Aucune bonne ou mauvaise réponse. Juste toi.</p>
       <div class="welcome-or">ou</div>
-      <button type="button" class="welcome-alt" onclick="voirOffreDirectement()">Voir directement l'offre de lancement {ic('arrow-right', U)}</button>
+      <button type="button" class="welcome-alt" onclick="voirOffreDirectement()">Voir l'offre de lancement {ic('arrow-right', U)}</button>
       <p class="welcome-alt-note">Tu connais déjà la formation ? Le tarif de lancement t'attend.</p>
     </div>
   </div>
@@ -242,7 +243,7 @@ def html_index(h, U):
                                               ('orange-money.svg', 'Orange Money', 67, 18), ('wave.webp', 'Wave', 55, 24),
                                               ('visa.svg', 'Visa', 55, 18), ('mastercard.svg', 'Mastercard', 36, 22)])
         h = h.replace(a, f'<ul class="moyens" aria-label="Moyens de paiement acceptés">{logos}</ul>\n'
-                         f'        <div class="price-payment">{ic("lock", U)}<span>Carte bancaire · Mobile Money · paiement 100 % sécurisé</span></div>')
+                         f'        <div class="price-payment">{ic("lock", U)}<span>Carte bancaire ou Mobile Money, paiement 100 % sécurisé</span></div>')
     a = '      <div class="price-nono">'
     if a in h:
         APPLIQUES[a] += 1
@@ -312,13 +313,14 @@ def construire_merci():
                 p = p.replace(a, b)
         p = p.replace('ICONE:message-circle', ic('message-circle', U))
         p = p.replace('<div class="kicker">Paiement confirmé</div>', f'<div class="kicker">{ic("badge-check", U)}Paiement confirmé</div>')
-        p = p.replace('\n      Accéder à mon espace apprenant\n', f'\n      Accéder à mon espace apprenant {ic("arrow-right", U)}\n')
-        out.append(typo(p))
+        p = p.replace('\n      Mon espace apprenant\n', f'\n      Mon espace apprenant {ic("arrow-right", U)}\n')
+        out.append(typo(p, pied=False))
     html = ''.join(out).replace('<body>\n', '<body>\n' + sprite(U) + '\n', 1)
+    html = html.replace('\n</body>', '\n<script>\n' + (ICI / 'merci-texte.js').read_text() + '</script>\n</body>', 1)
     manquants = [a for a, _ in textes.MERCI if not APPLIQUES['merci:' + a]]
     assert not manquants, f'merci : textes non trouvés {manquants}'
     o = [p for k, p in decouper(src) if k == 'js']; n = [p for k, p in decouper(html) if k == 'js']
-    assert len(o) == len(n) and all(squelette(a) == squelette(b) and lignes_tracking(a) == lignes_tracking(b) for a, b in zip(o, n)), 'merci.html : code ou tracking modifié'
+    assert len(n) == len(o) + 1 and all(squelette(a) == squelette(b) and lignes_tracking(a) == lignes_tracking(b) for a, b in zip(o, n)), 'merci.html : code ou tracking modifié'
     return html
 
 

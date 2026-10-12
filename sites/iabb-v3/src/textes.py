@@ -34,11 +34,11 @@ HTML = [
     ("Elles t'appartiennent dès ton inscription — sans un centime de plus.", "Elles t'appartiennent dès ton inscription, sans un centime de plus."),
     ("Ta formation évolue avec — sans jamais repayer un centime.", "Ta formation évolue avec elle, sans jamais repayer un centime."),
     ('<div class="price-forever">🎉 Tarif de lancement — accès à vie garanti</div>', '<div class="price-forever">Tarif de lancement, accès à vie garanti</div>'),
-    ("8 modules · 57 leçons — accès à vie", "8 modules · 65 leçons · accès à vie"),
+    ("8 modules · 57 leçons — accès à vie", "8 modules · 65 leçons, accès à vie"),
     ("Les 5 bonus (valeur 47 000 F) — offerts", "Les 5 bonus offerts (valeur 47 000 F)"),
     ("<b>✨ Ce n'est pas un abonnement.</b>", "<b>Ce n'est pas un abonnement.</b>"),
     ("Zéro complication, zéro attente. Tu es opérationnel dans les 60 secondes qui suivent ton paiement.",
-     "Ton accès arrive dans les 60 secondes qui suivent ton paiement."),
+     "Ton accès arrive dans les minutes qui suivent ton paiement."),
     ("Le premier module part de zéro absolu — pas de prérequis, pas de jargon.", "Le premier module part de zéro : pas de prérequis, pas de jargon."),
     ("tu sécurises ton poste — et si tu veux, tu montes", "tu sécurises ton poste. Et si tu veux, tu montes"),
     ("Il n'émane pas d'un ministère — comme la quasi-totalité des certifications en ligne — mais il atteste",
@@ -58,7 +58,7 @@ HTML = [
      "Un seul paiement, sans reconduction ni surprise sur ta carte le mois prochain."),
     # certificat : titre affiché en IA, nom et date remplis par un petit script (textes affichés seulement)
     ('<div class="cert-name">Prénom NOM</div>', '<div class="cert-name" id="certNom">Ton nom ici</div>'),
-    ("DÉLIVRÉ LE JJ MOIS 2026 — <span", "<span id=\"certDate\">DÉLIVRÉ À LA FIN DE TA FORMATION</span> · <span"),
+    ('DÉLIVRÉ LE JJ MOIS 2026 — <span class="x">×</span><br>', '<span id="certDate">DÉLIVRÉ À LA FIN DE TA FORMATION</span><br>'),
     # nom : la formation = AI Business Building, la personne certifiée = AI Business Builder (tracking non modifié)
     ("OFFICIELLEMENT RECONNU(E) <b>IA BUSINESS BUILDER</b>", "OFFICIELLEMENT RECONNU(E) <b>AI BUSINESS BUILDER</b>"),
     ('<div class="compare-tag">Certifié IA Business Builder</div>', '<div class="compare-tag">Certifié AI Business Builder</div>'),
@@ -68,10 +68,18 @@ HTML = [
     ('<span class="emk-notif-action">a rejoint IA Business Building</span>', '<span class="emk-notif-action">a rejoint AI Business Building</span>'),
     # leçons (source Chariow, cours prd_qh7md6nj)
     ("8 MODULES &nbsp;|&nbsp; 57 LEÇONS", "8 MODULES &nbsp;|&nbsp; 65 LEÇONS"),
-    ("8 modules progressifs, 49 leçons vidéo et 7 évaluations.", "8 modules progressifs, 55 leçons vidéo et 7 évaluations."),
+    ("8 modules progressifs, 49 leçons vidéo et 7 évaluations.", "8 modules progressifs, 65 leçons, dont 55 vidéos et 7 évaluations."),
     # accès après achat : email, mot de passe facultatif
     ("Tu accèdes à ton espace personnel en entrant simplement l'adresse email utilisée lors du paiement. Aucun mot de passe à créer.",
      "Tu te connectes à ton espace avec l'adresse email utilisée lors de ton inscription. Tu peux définir un mot de passe si tu le souhaites, mais ce n'est pas obligatoire."),
+    # délais d'accès : un seul message
+    ("Si l'email met plus de 5 min à arriver, vérifie", "Si l'email n'arrive pas dans les minutes qui suivent, vérifie"),
+    ("Ton accès est débloqué immédiatement après paiement.", "Ton accès arrive dans les minutes qui suivent ton paiement."),
+    # date du bilan : « d'ici le 7 décembre »
+    ('<div class="result-summary-label">Ta certification obtenue d\'ici</div>', '<div class="result-summary-label">Ta certification obtenue d\'ici le</div>'),
+    # points médians en texte courant -> virgules
+    ("Un seul paiement · aucun prélèvement · tarif bloqué à vie", "Un seul paiement, aucun prélèvement, tarif bloqué à vie"),
+    ('<div class="price-currencies">soit <b>~7,60 €</b> · <b>~10,50 CAD</b> · <b>~8,50 $</b></div>', '<div class="price-currencies">soit environ <b>7,60 €</b>, <b>10,50 CAD</b> ou <b>8,50 $</b></div>'),
     # majuscules au milieu des titres de modules
     ("Module 1 : Les Fondations de l'IA", "Module 1 : Les fondations de l'IA"),
     ("Module 2 : L'Automatisation des Tâches", "Module 2 : L'automatisation des tâches"),
@@ -164,12 +172,12 @@ MERCI = [
     ("Démarre par le Module 1 dès aujourd'hui", "Démarre par le module 1 dès aujourd'hui"),
     ('<div class="sig">— Enock</div>', '<div class="sig">Enock</div>'),
     ("(et le dossier <b>spam</b> au cas où) — tu vas recevoir tes identifiants d'accès à ton espace apprenant dans les prochaines minutes.",
-     "(et le dossier <b>spam</b> au cas où) : tu vas recevoir le lien d'accès à ton espace apprenant dans les prochaines minutes."),
+     "(et le dossier <b>spam</b> au cas où) : tu vas recevoir le lien d'accès à ton espace apprenant dans les minutes qui suivent ton paiement."),
     ("Utilise l'email et le mot de passe reçus par mail", "Connecte-toi avec l'adresse email utilisée lors de ton inscription. Tu peux définir un mot de passe si tu le souhaites, mais ce n'est pas obligatoire."),
     ("depuis ton espace personnel — <b>disponible", "depuis ton espace personnel, <b>disponible"),
     ("C'est tout ce dont tu as besoin pour lancer le mouvement — la suite viendra naturellement.", "C'est tout ce qu'il faut pour te lancer."),
     ("Réponds simplement à l'email de bienvenue — on est là et on répond vite. Pas de robot, un vrai humain.", "Réponds simplement à l'email de bienvenue, on te répond vite."),
-    ("\n      🚀 Accéder à mon espace apprenant\n", "\n      Accéder à mon espace apprenant\n"),
+    ("\n      🚀 Accéder à mon espace apprenant\n", "\n      Mon espace apprenant\n"),
     ('<div class="reassure-icon">💬</div>', '<div class="reassure-icon">ICONE:message-circle</div>'),
 ]
 

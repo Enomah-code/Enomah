@@ -36,7 +36,7 @@
   OK    InitiateCheckout au clic sur le widget, comme d'habitude
   OK    InitiateCheckout identique au parcours normal (mêmes paramètres)
   OK    aucun envoi POST au /exec
-     textes affichés : {'bandeau': 'Offre de lancement en cours', 'prix': 'Offre de lancement', 'bonus': '5 bonus offerts avec l’offre de lancement', 'certif': 'Ton nom ici | DÉLIVRÉ À LA FIN DE TA FORMATION', 'hero': 'Le programme complet', 'bilan': []}
+     textes affichés : {'bandeau': '4\u202f999\xa0F CFA au lieu de 35\u202f000\xa0F', 'prix': 'Offre de lancement', 'bonus': '5 bonus offerts avec l’offre de lancement', 'certif': 'Ton nom ici | DÉLIVRÉ À LA FIN DE TA FORMATION', 'hero': 'Le programme complet', 'bilan': []}
   OK    certificat neutre sans prénom : Ton nom ici | DÉLIVRÉ À LA FIN DE TA FORMATION
   OK    textes neutres : plus aucun « ton bilan » visible sur l'offre
   OK    aucune erreur JS []

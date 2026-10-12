@@ -7,7 +7,7 @@ function texteOffreDirecte(){
   document.body.classList.add('arrivee-directe');
   document.querySelectorAll('[data-direct]').forEach(function(el){ el.textContent = el.getAttribute('data-direct'); });
   var nom = document.getElementById('heroName'); if (nom) nom.textContent = 'Le programme complet';
-  var bandeau = document.getElementById('unlockText'); if (bandeau) bandeau.textContent = 'Offre de lancement en cours';
+  var bandeau = document.getElementById('unlockText'); if (bandeau) bandeau.textContent = '4\u202f999\u00a0F CFA au lieu de 35\u202f000\u00a0F';
 }
 function voirOffreDirectement(){
   var reprise = document.getElementById('resumeBanner');

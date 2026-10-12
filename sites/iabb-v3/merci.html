@@ -248,7 +248,7 @@ h1,h3{text-wrap:balance}
         <div class="step-num">1</div>
         <div>
           <h3>Un email t’attend déjà</h3>
-          <p>Regarde ta boîte mail (et le dossier <b>spam</b> au cas où) : tu vas recevoir le lien d’accès à ton espace apprenant dans les prochaines minutes.</p>
+          <p>Regarde ta boîte mail (et le dossier <b>spam</b> au cas où) : tu vas recevoir le lien d’accès à ton espace apprenant dans les minutes qui suivent ton paiement.</p>
         </div>
       </div>
       <div class="step">
@@ -268,7 +268,7 @@ h1,h3{text-wrap:balance}
     </div>
 
     <a href="https://portal.chariow.com/login" class="portal-cta">
-      Accéder à mon espace apprenant <svg class="i" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+      Mon espace apprenant <svg class="i" aria-hidden="true"><use href="#i-arrow-right"/></svg>
     </a>
     <div class="portal-hint">
       Connecte-toi avec l’adresse email utilisée lors de ton inscription. Tu peux définir un mot de passe si tu le souhaites, mais ce n’est pas obligatoire.
@@ -291,7 +291,7 @@ h1,h3{text-wrap:balance}
     <span class="logo-diamond">Blue Diamond</span>
   </div>
   <p>© 2026 EMK Blue Diamond</p>
-  <p class="liens-pied"><a href="#">Mentions légales</a><a href="#">CGV</a><a href="#">Confidentialité</a><a href="#">Contact</a></p>
+  <p style="margin-top:8px"><a href="#">Mentions légales</a> · <a href="#">CGV</a> · <a href="#">Confidentialité</a> · <a href="#">Contact</a></p>
 </footer>
 
 <script>
@@ -457,6 +457,15 @@ h1,h3{text-wrap:balance}
       setTimeout(()=>c.remove(),4600);
     }
   })();
+</script>
+<script>
+/* ============ Ajout v3.2 : accueil sans second prénom ============
+   Le prénom figure déjà dans le titre « Félicitations David… ». Le paragraphe d'accueil,
+   réécrit par le script d'origine avec le prénom, redevient neutre. Texte affiché seulement. */
+(function(){
+  var l = document.getElementById('lede');
+  if (l) l.innerHTML = 'Bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>AI Business Builders</strong>.';
+})();
 </script>
 </body>
 </html>

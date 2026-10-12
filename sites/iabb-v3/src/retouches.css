@@ -116,3 +116,18 @@ body.checkout-open .garantie-simple{z-index:auto !important;position:static !imp
 }
 /* bouton désactivé : teinte pleine (l'opacité d'origine dessinait un rectangle autour du texte et de l'icône) */
 .continue-btn:disabled{opacity:1;background:#F3D3A8;color:#fff;box-shadow:none}
+
+/* ---- v3.2 ---- */
+/* sélecteur de profil : chaque onglet prend la largeur de son mot, sans icône sur téléphone */
+.profile-switch{display:flex;gap:4px}
+.profile-tab{flex:1 1 auto;padding:0 10px;white-space:nowrap}
+@media (max-width:414px){.profile-tab svg.i{display:none}.profile-tab{font-size:13px;padding:0 8px}}
+/* lueurs : la brillance du bandeau passe deux fois puis s'arrête hors champ ; plus de halo sous la pastille */
+.unlock-banner::after{animation:sweep 3.2s ease-in-out 2 forwards}
+.bonus-flash::after{animation:sweep 2.6s ease-in-out 2 forwards}
+.price-unlock-tag,.bonus-flash{box-shadow:none!important}
+/* en-têtes collants opaques : plus de texte fantôme dessous */
+nav.product-top,nav.tunnel-top,.welcome-nav{background:var(--cream)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* accueil : bloc remonté, pas de grand vide en haut */
+.welcome-content{justify-content:flex-start;padding-top:40px}
+@media (min-width:900px){.welcome-content{padding-top:72px}}

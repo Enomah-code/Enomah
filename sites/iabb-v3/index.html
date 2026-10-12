@@ -622,6 +622,21 @@ body.checkout-open .garantie-simple{z-index:auto !important;position:static !imp
 }
 /* bouton désactivé : teinte pleine (l'opacité d'origine dessinait un rectangle autour du texte et de l'icône) */
 .continue-btn:disabled{opacity:1;background:#F3D3A8;color:#fff;box-shadow:none}
+
+/* ---- v3.2 ---- */
+/* sélecteur de profil : chaque onglet prend la largeur de son mot, sans icône sur téléphone */
+.profile-switch{display:flex;gap:4px}
+.profile-tab{flex:1 1 auto;padding:0 10px;white-space:nowrap}
+@media (max-width:414px){.profile-tab svg.i{display:none}.profile-tab{font-size:13px;padding:0 8px}}
+/* lueurs : la brillance du bandeau passe deux fois puis s'arrête hors champ ; plus de halo sous la pastille */
+.unlock-banner::after{animation:sweep 3.2s ease-in-out 2 forwards}
+.bonus-flash::after{animation:sweep 2.6s ease-in-out 2 forwards}
+.price-unlock-tag,.bonus-flash{box-shadow:none!important}
+/* en-têtes collants opaques : plus de texte fantôme dessous */
+nav.product-top,nav.tunnel-top,.welcome-nav{background:var(--cream)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* accueil : bloc remonté, pas de grand vide en haut */
+.welcome-content{justify-content:flex-start;padding-top:40px}
+@media (min-width:900px){.welcome-content{padding-top:72px}}
 </style>
 <!-- ============ META PIXEL — code de base ============ -->
 <script>
@@ -797,7 +812,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
       <button class="welcome-btn" onclick="startQuizFromWelcome()">Faire mon bilan personnalisé <svg class="i" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
       <p class="welcome-footnote">Aucune bonne ou mauvaise réponse. Juste toi.</p>
       <div class="welcome-or">ou</div>
-      <button type="button" class="welcome-alt" onclick="voirOffreDirectement()">Voir directement l’offre de lancement <svg class="i" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+      <button type="button" class="welcome-alt" onclick="voirOffreDirectement()">Voir l’offre de lancement <svg class="i" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
       <p class="welcome-alt-note">Tu connais déjà la formation ? Le tarif de lancement t’attend.</p>
     </div>
   </div>
@@ -1076,7 +1091,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
         </div>
         <div class="result-summary-item">
           <div class="result-summary-emoji"><svg class="i" aria-hidden="true"><use href="#i-trophy"/></svg></div>
-          <div><div class="result-summary-label">Ta certification obtenue d’ici</div><div class="result-summary-value" id="sumDate">—</div></div>
+          <div><div class="result-summary-label">Ta certification obtenue d’ici le</div><div class="result-summary-value" id="sumDate">—</div></div>
         </div>
       </div>
 
@@ -1170,7 +1185,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
                 <div class="cert-foot-col right">
                   <div class="cert-foot-num">N° EMK-IABB-2026-0001</div>
                   <div class="cert-foot-meta">
-                    <span id="certDate">DÉLIVRÉ À LA FIN DE TA FORMATION</span> · <span class="x">×</span><br>
+                    <span id="certDate">DÉLIVRÉ À LA FIN DE TA FORMATION</span><br>
                     VÉRIFIER · <span class="link">EMKBLUEDIAMOND.ONLINE/VERIFIER</span>
                   </div>
                 </div>
@@ -1350,7 +1365,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
       <div class="center-heading">
         <div class="section-eyebrow">Ton parcours</div>
         <h2 class="section-title" style="margin:0 auto 14px">Le programme <span class="hl">complet</span></h2>
-        <p class="section-lede" style="margin:0 auto">8 modules progressifs, 55 leçons vidéo et 7 évaluations. Chaque semaine, une nouvelle compétence et un livrable qui existe pour de vrai.</p>
+        <p class="section-lede" style="margin:0 auto">8 modules progressifs, 65 leçons, dont 55 vidéos et 7 évaluations. Chaque semaine, une nouvelle compétence et un livrable qui existe pour de vrai.</p>
       </div>
 
       <div class="modules-list">
@@ -1619,7 +1634,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
   <section class="price-section" id="offre">
     <div class="wrap">
       <div class="price-header">
-        <div class="price-differentiator"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Un seul paiement · aucun prélèvement · tarif bloqué à vie</div>
+        <div class="price-differentiator"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Un seul paiement, aucun prélèvement, tarif bloqué à vie</div>
         <h2 class="section-title" style="margin:0 auto 12px">Le prix d’un dîner<br>pour <span class="hl">changer ton année</span></h2>
       </div>
 
@@ -1629,12 +1644,12 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
         <div class="price-was">35 000 F CFA</div>
         <div class="price-now">4 999</div>
         <div class="price-now-unit">F CFA</div>
-        <div class="price-currencies">soit <b>~7,60 €</b> · <b>~10,50 CAD</b> · <b>~8,50 $</b></div>
+        <div class="price-currencies">soit environ <b>7,60 €</b>, <b>10,50 CAD</b> ou <b>8,50 $</b></div>
 
         <div class="price-includes">
           <div class="price-includes-title">Tout ce qui t’appartient</div>
           <div class="item"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>La certification AI Business Building</span></div>
-          <div class="item"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>8 modules · 65 leçons · accès à vie</span></div>
+          <div class="item"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>8 modules · 65 leçons, accès à vie</span></div>
           <div class="item"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Les 5 bonus offerts (valeur 47 000 F)</span></div>
           <div class="item"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Toutes les mises à jour futures</span></div>
           <div class="item"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg><span>Garantie satisfait ou remboursé 7 jours</span></div>
@@ -1654,7 +1669,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
                data-primary-color="#d97706"></div>
         </div>
         <ul class="moyens" aria-label="Moyens de paiement acceptés"><li><img src="assets/paiement/mtn-momo.webp" alt="MTN MoMo" width="24" height="24" loading="lazy" decoding="async"></li><li><img src="assets/paiement/moov-money.webp" alt="Moov Money" width="27" height="24" loading="lazy" decoding="async"></li><li><img src="assets/paiement/orange-money.svg" alt="Orange Money" width="67" height="18" loading="lazy" decoding="async"></li><li><img src="assets/paiement/wave.webp" alt="Wave" width="55" height="24" loading="lazy" decoding="async"></li><li><img src="assets/paiement/visa.svg" alt="Visa" width="55" height="18" loading="lazy" decoding="async"></li><li><img src="assets/paiement/mastercard.svg" alt="Mastercard" width="36" height="22" loading="lazy" decoding="async"></li></ul>
-        <div class="price-payment"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span>Carte bancaire · Mobile Money · paiement 100 % sécurisé</span></div>
+        <div class="price-payment"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span>Carte bancaire ou Mobile Money, paiement 100 % sécurisé</span></div>
       </div>
 
       <div class="garantie-simple">
@@ -1679,7 +1694,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
       <div class="center-heading">
         <div class="section-eyebrow">La suite</div>
         <h2 class="section-title" style="margin:0 auto 14px">Comment ça se passe <span class="hl">après ton achat</span></h2>
-        <p class="section-lede" style="margin:0 auto 32px">Ton accès arrive dans les 60 secondes qui suivent ton paiement.</p>
+        <p class="section-lede" style="margin:0 auto 32px">Ton accès arrive dans les minutes qui suivent ton paiement.</p>
       </div>
 
       <div class="after-payment-steps">
@@ -1706,7 +1721,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
         </div>
       </div>
 
-      <p class="note-centre"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg><span>Si l’email met plus de 5 min à arriver, vérifie tes spams ou écris-nous.</span></p>
+      <p class="note-centre"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg><span>Si l’email n’arrive pas dans les minutes qui suivent, vérifie tes spams ou écris-nous.</span></p>
 
 
     </div>
@@ -1733,7 +1748,7 @@ src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
       </details>
       <details>
         <summary>Comment je paie depuis mon pays ?</summary>
-        <p>Carte bancaire (Visa, Mastercard) pour l’Europe, le Canada et le reste du monde. Mobile Money (MTN, Moov, Orange Money, Wave) pour l’Afrique de l’Ouest. Ton accès est débloqué immédiatement après paiement.</p>
+        <p>Carte bancaire (Visa, Mastercard) pour l’Europe, le Canada et le reste du monde. Mobile Money (MTN, Moov, Orange Money, Wave) pour l’Afrique de l’Ouest. Ton accès arrive dans les minutes qui suivent ton paiement.</p>
       </details>
       <details>
         <summary>Le certificat est-il reconnu officiellement ?</summary>
@@ -2667,7 +2682,7 @@ function texteOffreDirecte(){
   document.body.classList.add('arrivee-directe');
   document.querySelectorAll('[data-direct]').forEach(function(el){ el.textContent = el.getAttribute('data-direct'); });
   var nom = document.getElementById('heroName'); if (nom) nom.textContent = 'Le programme complet';
-  var bandeau = document.getElementById('unlockText'); if (bandeau) bandeau.textContent = 'Offre de lancement en cours';
+  var bandeau = document.getElementById('unlockText'); if (bandeau) bandeau.textContent = '4\u202f999\u00a0F CFA au lieu de 35\u202f000\u00a0F';
 }
 function voirOffreDirectement(){
   var reprise = document.getElementById('resumeBanner');
