@@ -30,3 +30,24 @@ function voirOffreDirectement(){
     }, 0);
   });
 })();
+
+/* ============ APERÇU DU CERTIFICAT (ajout v3) ============
+   Remplace « Ton nom ici » par le prénom saisi et la mention de date par la date de fin
+   calculée au bilan. Ne lit que des données déjà présentes dans la page, n'envoie rien. */
+function remplirCertificat(){
+  var nom = (typeof state !== 'undefined' && state.name) ? state.name : '';
+  if (!nom) { try { nom = JSON.parse(localStorage.getItem('emk_lead') || '{}').name || ''; } catch(e) {} }
+  var elNom = document.getElementById('certNom');
+  if (elNom) elNom.textContent = nom ? nom : 'Ton nom ici';
+  var fin = document.getElementById('sumDate');
+  var date = fin ? fin.textContent.trim() : '';
+  var elDate = document.getElementById('certDate');
+  if (elDate && date && date !== '—') elDate.textContent = 'Délivré le ' + date;
+  if (typeof scaleCert === 'function') requestAnimationFrame(scaleCert);
+}
+(function(){
+  var page = document.getElementById('productPage');
+  if (!page || !('MutationObserver' in window)) return;
+  new MutationObserver(function(){ if (page.classList.contains('active')) remplirCertificat(); })
+    .observe(page, {attributes: true, attributeFilter: ['class']});
+})();

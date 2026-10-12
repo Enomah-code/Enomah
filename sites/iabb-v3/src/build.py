@@ -19,7 +19,8 @@ FONTS_NEW = '<link rel="preload" href="assets/fonts/manrope-latin.woff2" as="fon
 PRECONNECT = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
 JETONS_TRACKING = ['fbq', 'track', 'content_name', 'ENDPOINT', 'payload', 'eventID', 'eventId', '_fbc', '_fbp', '_clientIp',
                    'ipify', 'emk_lead', 'localStorage', 'fetch(', 'generatePixel', 'saveLead', 'crypto', 'sendBeacon', '_tr.',
-                   'API_URL', 'recent-sales', 'prd_', 'chariow', 'Chariow']
+                   'API_URL', 'recent-sales', 'prd_', 'chariow', 'Chariow', 'Purchase', 'purchase', 'enrich', 'ENRICH',
+                   'flagKey', 'console.', 'initParams', 'envoyerPing', 'pingEnvoye']
 
 EMOJI_ICONE = {
     '💼': 'briefcase', '🚀': 'rocket', '💻': 'laptop', '🎓': 'graduation-cap', '🌱': 'sprout',
@@ -110,7 +111,7 @@ def typo_js_chaine(s):
     corps = re.sub(r' :', NBSP + ':', corps)
     corps = corps.replace('« ', '«' + NNBSP)
     corps = re.sub(r'(\d) (\d{3})(?!\d)', '\\1' + NNBSP + '\\2', corps)
-    corps = re.sub(r'(\d) (F|€|ans|jours|heures|minutes|semaines)\b', '\\1' + NBSP + '\\2', corps)
+    corps = re.sub(r'(\d) (F|€|ans|jours|heures|minutes|semaines)(?!\w)', '\\1' + NBSP + '\\2', corps)
     return q + corps + q
 
 
@@ -118,9 +119,9 @@ def lignes_tracking(code):
     return collections.Counter(l for l in code.split('\n') if any(t in l for t in JETONS_TRACKING))
 
 
-def retoucher_script_principal(js):
+def retoucher_script_principal(js, paires=None):
     nouveau = js
-    for avant, apres, nb in textes.JS:
+    for avant, apres, nb in (textes.JS if paires is None else paires):
         c = nouveau.count(avant)
         assert c == nb, f'JS : {nb} attendu(s), {c} trouvé(s) : {avant!r}'
         nouveau = nouveau.replace(avant, apres)
@@ -148,12 +149,20 @@ def typo_texte(t):
     t = re.sub(r' ([?!;»])', NNBSP + r'\1', t)
     t = re.sub(r' :', NBSP + ':', t)
     t = re.sub(r'(\d) (\d{3})(?!\d)', '\\1' + NNBSP + '\\2', t)
-    t = re.sub(r'(\d) (F|€|CAD|\$|ans|jours|heures|minutes|min|semaines|leçons|modules|bonus)\b', '\\1' + NBSP + '\\2', t)
+    t = re.sub(r'(\d) (F|€|CAD|\$|ans|jours|heures|minutes|min|semaines|leçons|modules|bonus)(?!\w)', '\\1' + NBSP + '\\2', t)
+    t = re.sub(r' ·', NBSP + '·', t)
     t = re.sub(r'(\d) %', '\\1' + NNBSP + '%', t)
     return t.replace('« ', '«' + NNBSP)
 
 
+def liens_pied(html):
+    """Pied de page : les séparateurs « · » entre liens disparaissent, l'espacement est fait en CSS (jamais orphelin)."""
+    return re.sub(r'<p style="margin-top:8px">((?:<a [^>]*>[^<]*</a>(?: · )?)+)</p>',
+                  lambda m: '<p class="liens-pied">' + m.group(1).replace('</a> · <a', '</a><a') + '</p>', html)
+
+
 def typo(html):
+    html = liens_pied(html)
     morceaux = re.split(r'(<style\b.*?</style>|<!--.*?-->|<[^>]+>)', html, flags=re.S)
     return ''.join(m if (m.startswith('<') or not m) else typo_texte(m) for m in morceaux)
 
@@ -246,13 +255,17 @@ def html_index(h, U):
         h = h.replace(a, f'''      <div class="garantie-simple">
         <div class="gs-tete"><span class="gs-ic">{ic("shield-check", U)}</span><h3>La garantie 7 jours, simplement</h3></div>
         <ol>
-          <li><span><b>Tu as 7 jours pour essayer,</b> comptés à partir du jour de ton achat.</span></li>
+          <li><span><b>Tu as 7 jours pour essayer,</b> comptés à partir du jour de ton achat. Suis le premier module, teste la méthode.</span></li>
           <li><span><b>Ça ne te convient pas ?</b> Écris à <a href="mailto:contact@emkbluediamond.online?subject=Demande%20de%20remboursement">contact@emkbluediamond.online</a> avec pour objet « Demande de remboursement » et l'email utilisé pour l'achat.</span></li>
           <li><span><b>Tu es remboursé en entier,</b> sans avoir à te justifier, sous 3 à 5 jours ouvrables, sur le moyen de paiement que tu as utilisé.</span></li>
         </ol>
       </div>
 
 ''' + a)
+    bloc = re.search(r'\n      <div class="guarantee">.*?\n      </div>\n', h, re.S)
+    if bloc and '7 jours pour changer' in bloc.group(0):
+        APPLIQUES['guarantee'] += 1
+        h = h.replace(bloc.group(0), '\n')
     for lib in ['Je continue', 'Continuer', 'Montre-moi ça', 'Je veux être du bon côté']:
         h = h.replace(f'<button class="continue-btn" onclick="next()">{lib}</button>',
                       f'<button class="continue-btn" onclick="next()">{lib} {ic("arrow-right", U)}</button>')
@@ -282,6 +295,7 @@ def construire_index():
     html = html.replace('\n</body>', '\n<script>\n' + (ICI / 'raccourci.js').read_text() + '</script>\n\n</body>', 1)
     # contrôles
     tous = textes.HTML + [(a, None) for a in []]
+    assert APPLIQUES['guarantee'] == 1, 'encadré garantie non trouvé'
     manquants = [a for a, _ in textes.HTML if not APPLIQUES[a]]
     assert not manquants, f'textes non trouvés : {manquants}'
     o = [p for k, p in decouper(src) if k == 'js']
@@ -298,7 +312,7 @@ def construire_merci():
     U, out = set(), []
     for k, p in decouper(src):
         if k == 'js':
-            out.append(p); continue
+            out.append(retoucher_script_principal(p, textes.MERCI_JS if 'leadData' in p and 'getElementById(\'lede\')' in p else [])); continue
         p = p.replace(PRECONNECT + FONTS_OLD, FONTS_NEW).replace(FONTS_OLD, FONTS_NEW)
         p = re.sub(r'<style>.*?</style>', lambda m: '<style>\n' + (ICI / 'merci.css').read_text() + '</style>', p, count=1, flags=re.S)
         for a, b in textes.MERCI:
@@ -312,7 +326,8 @@ def construire_merci():
     html = ''.join(out).replace('<body>\n', '<body>\n' + sprite(U) + '\n', 1)
     manquants = [a for a, _ in textes.MERCI if not APPLIQUES['merci:' + a]]
     assert not manquants, f'merci : textes non trouvés {manquants}'
-    assert [p for k, p in decouper(html) if k == 'js'] == [p for k, p in decouper(src) if k == 'js'], 'un script de merci.html a changé'
+    o = [p for k, p in decouper(src) if k == 'js']; n = [p for k, p in decouper(html) if k == 'js']
+    assert len(o) == len(n) and all(squelette(a) == squelette(b) and lignes_tracking(a) == lignes_tracking(b) for a, b in zip(o, n)), 'merci.html : code ou tracking modifié'
     return html
 
 

@@ -487,3 +487,5 @@ footer.product-footer .logo-diamond{color:var(--sun)}
   .unlock-banner-inner{flex-direction:row;align-items:center;gap:14px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+.liens-pied{display:flex;flex-wrap:wrap;justify-content:center;gap:0 14px;margin-top:6px}
+.insecable{white-space:nowrap}

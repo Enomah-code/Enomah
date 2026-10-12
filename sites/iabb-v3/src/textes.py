@@ -26,7 +26,6 @@ HTML = [
     # --- page produit ---
     ("8 semaines. 8 livrables réels. Et une certification qui prouve à tout le monde — y compris à toi — que tu maîtrises.",
      "8 semaines, 8 livrables réels et une certification qui prouve à tout le monde, y compris à toi, que tu maîtrises."),
-    ("DÉLIVRÉ LE JJ MOIS 2026 — <span", "DÉLIVRÉ LE JJ MOIS 2026 · <span"),
     ("Choisis ton profil — les bénéfices ne sont pas les mêmes.", "Choisis ton profil : les bénéfices ne sont pas les mêmes."),
     ("« Certifié IA Business Builder » — la crédibilité qui justifie tes nouveaux tarifs.",
      "« Certifié IA Business Builder » : la crédibilité qui justifie tes nouveaux tarifs."),
@@ -39,14 +38,28 @@ HTML = [
     ("Les 5 bonus (valeur 47 000 F) — offerts", "Les 5 bonus offerts (valeur 47 000 F)"),
     ("<b>✨ Ce n'est pas un abonnement.</b>", "<b>Ce n'est pas un abonnement.</b>"),
     ("Zéro complication, zéro attente. Tu es opérationnel dans les 60 secondes qui suivent ton paiement.",
-     "Pas de complication, pas d'attente : tu es opérationnel dans les 60 secondes qui suivent ton paiement."),
+     "Ton accès arrive dans les 60 secondes qui suivent ton paiement."),
     ("Le premier module part de zéro absolu — pas de prérequis, pas de jargon.", "Le premier module part de zéro : pas de prérequis, pas de jargon."),
     ("tu sécurises ton poste — et si tu veux, tu montes", "tu sécurises ton poste. Et si tu veux, tu montes"),
     ("Il n'émane pas d'un ministère — comme la quasi-totalité des certifications en ligne — mais il atteste",
      "Comme la quasi-totalité des certifications en ligne, il n'émane pas d'un ministère, mais il atteste"),
-    ("Cette fenêtre ne restera pas ouverte éternellement.", "Plus tu commences tôt, plus tu en profites."),
+    ("Cette fenêtre ne restera pas ouverte éternellement.", "C'est le bon moment pour t'y mettre."),
     ("dans la section juste en dessous 👇</p>", "dans la section juste en dessous.</p>"),
     ('<span class="emk-notif-title">Nouvelle inscription 🎉</span>', '<span class="emk-notif-title">Nouvelle inscription</span>'),
+    # anaphores et formules creuses
+    ("Tu paies <b>une seule fois</b>. Pas de prélèvement le mois prochain. Pas de reconduction cachée. Pas de désabonnement à chercher dans les paramètres. Tu gardes tout, à vie.",
+     "Tu paies <b>une seule fois</b>, sans prélèvement ni reconduction. Tu gardes tout, à vie."),
+    ("à elle seule. Voilà exactement ce que tu vas devenir.</p>", "à elle seule.</p>"),
+    ("Ton domaine, ta page de vente, ton design.", "Avec ton domaine, ta page de vente et ton design."),
+    ("Contenu publié, prospects relancés, factures envoyées, paiements suivis. Automatiquement.",
+     "Contenu publié, prospects relancés, factures envoyées et paiements suivis, automatiquement."),
+    ("Tu remplaces les crochets, tu lances, tu encaisses.", "Tu remplaces les crochets et tu lances."),
+    ("Un seul paiement, une seule fois. Aucune reconduction. Aucune surprise sur ta carte le mois prochain. C'est précisément le point sur lequel nous refusons de suivre les autres programmes du marché.",
+     "Un seul paiement, sans reconduction ni surprise sur ta carte le mois prochain."),
+    # certificat : titre affiché en IA, nom et date remplis par un petit script (textes affichés seulement)
+    ('<div class="cert-title-main">AI BUSINESS BUILDING</div>', '<div class="cert-title-main">IA BUSINESS BUILDING</div>'),
+    ('<div class="cert-name">Prénom NOM</div>', '<div class="cert-name" id="certNom">Ton nom ici</div>'),
+    ("DÉLIVRÉ LE JJ MOIS 2026 — <span", "<span id=\"certDate\">DÉLIVRÉ À LA FIN DE TA FORMATION</span> · <span"),
     # majuscules au milieu des titres de modules
     ("Module 1 : Les Fondations de l'IA", "Module 1 : Les fondations de l'IA"),
     ("Module 2 : L'Automatisation des Tâches", "Module 2 : L'automatisation des tâches"),
@@ -116,17 +129,33 @@ JS = [
     ("ni ta volonté — c\\'est simplement que", "ni ta volonté. C\\'est simplement que", 1),
     ("<strong>un doute</strong> — et le doute recule", "<strong>un doute</strong>, et le doute recule", 1),
     ("'🎯 Programme personnalisé pour '", "'Programme personnalisé pour '", 1),
+    ("tout ce qui se répète peut être automatisé. Absolument tout. Et tu vas", "tout ce qui se répète peut être automatisé, et tu vas", 1),
+    ("'Tes réponses le montrent clairement : '", "'D\\'après tes réponses, '", 1),
+    ("'10 minutes par jour · format court'", "'10 minutes par jour'", 1),
+    ("'30 minutes par jour · format standard'", "'30 minutes par jour'", 1),
+    ("'1 heure par jour · format intensif'", "'1 heure par jour'", 1),
 ]
 
 MERCI = [
     ("<title>Bienvenue chez les IA Business Builders — EMK Blue Diamond</title>", "<title>Bienvenue chez les IA Business Builders | EMK Blue Diamond</title>"),
     ('<div class="kicker">✨ Paiement confirmé</div>', '<div class="kicker">Paiement confirmé</div>'),
-    ("Chaque semaine, une nouvelle compétence — chaque module, un livrable réel.", "Chaque semaine, une nouvelle compétence. Chaque module, un livrable réel."),
+    ("Chaque semaine, une nouvelle compétence — chaque module, un livrable réel. Tu ne seras jamais seul devant ton écran, et tu vas y arriver.",
+     "Chaque semaine, tu apprends une compétence et tu construis un livrable réel. Tu ne seras jamais seul devant ton écran."),
+    ("Tu viens de prendre <strong>la meilleure décision</strong> pour ton avenir avec l'IA.\n      Bienvenue officiellement dans les <strong>IA Business Builders</strong>.",
+     "Bienvenue. Ton accès est prêt.\n      Tu fais maintenant partie des <strong>IA Business Builders</strong>."),
+    ("<h3>Connecte-toi à ton portail</h3>", '<h3><span class="insecable">Connecte-toi</span> à ton portail</h3>'),
+    ("Démarre par le Module 1 dès aujourd'hui", "Démarre par le module 1 dès aujourd'hui"),
     ('<div class="sig">— Enock</div>', '<div class="sig">Enock</div>'),
     ("(et le dossier <b>spam</b> au cas où) — tu vas recevoir", "(et le dossier <b>spam</b> au cas où) : tu vas recevoir"),
     ("depuis ton espace personnel — <b>disponible", "depuis ton espace personnel, <b>disponible"),
-    ("pour lancer le mouvement — la suite viendra naturellement.", "pour lancer le mouvement. La suite viendra naturellement."),
-    ("Réponds simplement à l'email de bienvenue — on est là et on répond vite.", "Réponds simplement à l'email de bienvenue : on est là et on répond vite."),
+    ("C'est tout ce dont tu as besoin pour lancer le mouvement — la suite viendra naturellement.", "C'est tout ce qu'il faut pour te lancer."),
+    ("Réponds simplement à l'email de bienvenue — on est là et on répond vite. Pas de robot, un vrai humain.", "Réponds simplement à l'email de bienvenue, on te répond vite."),
     ("\n      🚀 Accéder à mon espace apprenant\n", "\n      Accéder à mon espace apprenant\n"),
     ('<div class="reassure-icon">💬</div>', '<div class="reassure-icon">ICONE:message-circle</div>'),
+]
+
+# merci.html, chaînes affichées par le JS (même contrôle que pour index.html)
+MERCI_JS = [
+    ("', tu viens de prendre <strong>la meilleure décision</strong> pour ton avenir avec l\\'IA. Bienvenue officiellement dans les <strong>IA Business Builders</strong>.'",
+     "', bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>IA Business Builders</strong>.'", 1),
 ]

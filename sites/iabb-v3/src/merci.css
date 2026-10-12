@@ -61,3 +61,5 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.1}}
 @media (min-width:900px){main{padding:72px 24px 96px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.liens-pied{display:flex;flex-wrap:wrap;justify-content:center;gap:0 14px;margin-top:6px}
+.insecable{white-space:nowrap}

@@ -25,6 +25,7 @@
   OK    localStorage emk_lead identique (hors ts)
   OK    ipify appelé une fois (simulé) (1 / 1)
   OK    aucune erreur JS ([] / [])
+  OK    certificat de la copie rempli : Aminata | Délivré le 7 décembre 2026
 == index.html COPIE : raccourci « Je connais déjà la formation »
      appels fbq : ['3393043107543742', 'PageView', 'OfferReveal', 'PricingView', 'InitiateCheckout']
   OK    l'offre s'affiche, l'accueil est masqué
@@ -35,7 +36,8 @@
   OK    InitiateCheckout au clic sur le widget, comme d'habitude
   OK    InitiateCheckout identique au parcours normal (mêmes paramètres)
   OK    aucun envoi POST au /exec
-     textes affichés : {'bandeau': 'Offre de lancement en cours', 'prix': 'Offre de lancement', 'bonus': '5 bonus offerts avec l’offre de lancement', 'hero': 'Le programme complet', 'bilan': []}
+     textes affichés : {'bandeau': 'Offre de lancement en cours', 'prix': 'Offre de lancement', 'bonus': '5 bonus offerts avec l’offre de lancement', 'certif': 'Ton nom ici | DÉLIVRÉ À LA FIN DE TA FORMATION', 'hero': 'Le programme complet', 'bilan': []}
+  OK    certificat neutre sans prénom : Ton nom ici | DÉLIVRÉ À LA FIN DE TA FORMATION
   OK    textes neutres : plus aucun « ton bilan » visible sur l'offre
   OK    aucune erreur JS []
 == merci.html (avec localStorage emk_lead)
@@ -45,7 +47,7 @@
   OK    un seul signal d'enrichissement chacun (1 / 1)
   OK    signal identique hors _timestamp (_enrichment_ping, _fbc, _fbp, _clientIp)
      signal (copie) : {"_enrichment_ping": true, "email": "Test.Local@Example.com", "_fbc": "fb.1.1.abc", "_fbp": "fb.1.1.def", "_userAgent": "Mozilla/5.0 (Linux; Android 13) TestEMK", "_eventSourceUrl": "https://quizcertification.emkbluediamond.online/merci.html", "_clientIp": "2c0f:f0f8:1:2::3"}
-  OK    prénom personnalisé identique : "Félicitations Aminata, tu l'as fait !"
+  OK    prénom personnalisé identique, seule la typographie change : 'Félicitations Aminata, tu l’as fait\u202f!'
   OK    aucune erreur JS ([] / [])
 
 Requêtes coupées (jamais parties) : ['https://fonts.googleapis.com/css2', 'https://js.chariowcdn.com/v1/proof.min.js', 'https://js.chariowcdn.com/v1/widget.min.css', 'https://js.chariowcdn.com/v1/widget.min.js']

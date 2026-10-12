@@ -103,6 +103,8 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.1}}
 @media (min-width:900px){main{padding:72px 24px 96px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.liens-pied{display:flex;flex-wrap:wrap;justify-content:center;gap:0 14px;margin-top:6px}
+.insecable{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -135,12 +137,12 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
     <h1 id="greeting">Félicitations, <span class="hl">tu l’as fait</span> !</h1>
 
     <p class="lede" id="lede">
-      Tu viens de prendre <strong>la meilleure décision</strong> pour ton avenir avec l’IA.
-      Bienvenue officiellement dans les <strong>IA Business Builders</strong>.
+      Bienvenue. Ton accès est prêt.
+      Tu fais maintenant partie des <strong>IA Business Builders</strong>.
     </p>
 
     <p class="lede" id="lede2">
-      À partir de maintenant, on avance ensemble. Chaque semaine, une nouvelle compétence. Chaque module, un livrable réel. Tu ne seras jamais seul devant ton écran, et tu vas y arriver.
+      À partir de maintenant, on avance ensemble. Chaque semaine, tu apprends une compétence et tu construis un livrable réel. Tu ne seras jamais seul devant ton écran.
     </p>
 
     <div class="sig">Enock</div>
@@ -156,15 +158,15 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
       <div class="step">
         <div class="step-num">2</div>
         <div>
-          <h3>Connecte-toi à ton portail</h3>
+          <h3><span class="insecable">Connecte-toi</span> à ton portail</h3>
           <p>Tu accèdes à toutes tes leçons, tes bonus et tes ressources depuis ton espace personnel, <b>disponible 24h/24, à vie</b>.</p>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div>
-          <h3>Démarre par le Module 1 dès aujourd’hui</h3>
-          <p>Prends 15 minutes pour la première leçon. C’est tout ce dont tu as besoin pour lancer le mouvement. La suite viendra naturellement.</p>
+          <h3>Démarre par le module 1 dès aujourd’hui</h3>
+          <p>Prends 15 minutes pour la première leçon. C’est tout ce qu’il faut pour te lancer.</p>
         </div>
       </div>
     </div>
@@ -180,7 +182,7 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
       <div class="reassure-icon"><svg class="i" aria-hidden="true"><use href="#i-message-circle"/></svg></div>
       <div>
         <h4>Une question, un blocage ?</h4>
-        <p>Réponds simplement à l’email de bienvenue : on est là et on répond vite. Pas de robot, un vrai humain.</p>
+        <p>Réponds simplement à l’email de bienvenue, on te répond vite.</p>
       </div>
     </div>
 
@@ -193,7 +195,7 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
     <span class="logo-diamond">Blue Diamond</span>
   </div>
   <p>© 2026 EMK Blue Diamond</p>
-  <p style="margin-top:8px"><a href="#">Mentions légales</a> · <a href="#">CGV</a> · <a href="#">Confidentialité</a> · <a href="#">Contact</a></p>
+  <p class="liens-pied"><a href="#">Mentions légales</a><a href="#">CGV</a><a href="#">Confidentialité</a><a href="#">Contact</a></p>
 </footer>
 
 <script>
@@ -206,9 +208,9 @@ footer a{display:inline-block;padding:6px 4px;color:inherit;text-decoration:unde
   // Personnaliser le message avec le prénom
   if(leadData.name){
     var n = leadData.name;
-    document.getElementById('greeting').innerHTML = 'Félicitations '+n+', <span class="hl">tu l\'as fait</span> !';
+    document.getElementById('greeting').innerHTML = 'Félicitations '+n+', <span class="hl">tu l’as fait</span> !';
     document.getElementById('lede').innerHTML =
-      n+', tu viens de prendre <strong>la meilleure décision</strong> pour ton avenir avec l\'IA. Bienvenue officiellement dans les <strong>IA Business Builders</strong>.';
+      n+', bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>IA Business Builders</strong>.';
   }
 
   // ===== TRACKING Purchase avec eventID déterministe =====
