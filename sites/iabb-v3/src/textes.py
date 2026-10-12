@@ -60,7 +60,7 @@ HTML = [
     ('<div class="cert-name">Prénom NOM</div>', '<div class="cert-name" id="certNom">Ton nom ici</div>'),
     ('DÉLIVRÉ LE JJ MOIS 2026 — <span class="x">×</span><br>', '<span id="certDate">DÉLIVRÉ À LA FIN DE TA FORMATION</span><br>'),
     # nom : la formation = AI Business Building, la personne certifiée = AI Business Builder (tracking non modifié)
-    ("OFFICIELLEMENT RECONNU(E) <b>IA BUSINESS BUILDER</b>", "OFFICIELLEMENT RECONNU(E) <b>AI BUSINESS BUILDER</b>"),
+    ("OFFICIELLEMENT RECONNU(E) <b>IA BUSINESS BUILDER</b> PAR EMK BLUE DIAMOND", "DÉLIVRÉ PAR EMK BLUE DIAMOND"),
     ('<div class="compare-tag">Certifié IA Business Builder</div>', '<div class="compare-tag">Certifié AI Business Builder</div>'),
     ("<span>La certification IA Business Builder</span>", "<span>La certification AI Business Building</span>"),
     ("formation%20IA%20Business%20Building", "formation%20AI%20Business%20Building"),
