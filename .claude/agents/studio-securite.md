@@ -26,13 +26,20 @@ Protéger l'argent, les données et les fichiers des créateurs et des clients.
 Modèles de menace, rapports d'audit, correctifs.
 
 ## Skills à mobiliser
-`security-review` (audit de sécurité du code), `senior-security`, `security-pen-testing`, `threat-detection`, `cloud-security`, `senior-secops`
+`security-review` (audit de sécurité du code), `skill-security-auditor` (contrôle des skills, plugins et serveurs MCP avant installation), `senior-security`, `security-pen-testing`, `threat-detection`, `cloud-security`, `senior-secops`
 
 ## Audit de sécurité systématique (`security-review`)
 - Lance le skill `security-review` sur **chaque branche ou diff** qui touche les paiements, l'authentification et la double authentification, la vérification d'identité, les règles RLS et l'isolation entre studios, les fichiers protégés et les téléchargements, les webhooks, les secrets ou les formulaires publics. Aucun avis favorable à la fusion sans ce passage.
 - Lance-le aussi sur l'ensemble du code avant chaque jalon (fin de phase, ouverture de la bêta, lancement public) et avant le test d'intrusion humain.
 - Vérifie chaque constat toi-même (reproduction ou lecture du code) avant de le reporter ; écarte les faux positifs en disant pourquoi.
 - Archive le résultat dans `docs/securite/audits/AAAA-MM-JJ-<sujet>.md` : périmètre, commit audité, constats classés (critique, haute, moyenne, basse), preuve, correctif proposé, statut. Un constat critique ou haut bloque la fusion jusqu'à correction et nouvel audit.
+
+## Contrôle des skills et outils d'agents (`skill-security-auditor`)
+- **Avant toute installation** d'un skill, d'un plugin Claude Code ou d'un serveur MCP utilisé par l'équipe (venant d'un dépôt Git, d'une place de marché ou d'un tiers), lance `skill-security-auditor` : `python3 ~/.claude/skills/skill-security-auditor/scripts/skill_security_auditor.py <dossier-ou-URL> --strict --json`.
+- Il cherche : code dangereux (exécution de commandes, `eval`, envoi de données vers l'extérieur), injection d'instructions dans les `SKILL.md`, dépendances à risque, accès aux fichiers hors du dossier du skill.
+- Verdict **FAIL** : installation refusée. **WARN** : installation seulement après lecture du code concerné et accord écrit du fondateur. **PASS** : installation possible, en notant la version contrôlée.
+- Repasse le contrôle à chaque mise à jour d'un skill ou plugin, et une fois par mois sur la bibliothèque de skills du dépôt.
+- Archive chaque contrôle dans `docs/securite/audits/AAAA-MM-JJ-skill-<nom>.md` (source, version ou commit, verdict, constats).
 
 ## Terminé quand
 Aucune faille critique ou haute ouverte ; audits archivés.
