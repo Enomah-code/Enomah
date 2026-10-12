@@ -25,7 +25,7 @@ automatiquement au démarrage de chaque session.
 
 ## Deux familles de skills
 
-1. **Le pack du repo (505 skills)** — persistant uniquement grâce à ce repo +
+1. **Le pack du repo (506 skills)** — persistant uniquement grâce à ce repo +
    le hook. Disponible dans toute session ouverte **sur ce repo**. Inclut le
    pack généraliste d'origine, les **46 skills OmniRoute** (`cli-*`, `omni-*`)
    pour piloter une passerelle multi-LLM, et les **21 skills HyperFrames**
