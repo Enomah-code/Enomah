@@ -1,0 +1,17 @@
+{
+  "_doc": "Liste de montage. audio: vo = voix off (plage dans voixoff.aac), sync = son direct du rush. Les plans vidéo (src/in/out/speed) sont traités par cine.py.",
+  "segments": [
+    {"id": "s01", "kind": "photo", "img": "IMG_125045.jpg", "dur": 3.3, "audio": null, "note": "ouverture collines + titre"},
+    {"id": "s02", "audio": "vo", "vo": [3.0, 8.5], "shots": [{"id": "p02a", "src": "VID_150844.mp4", "in": 0.6, "out": 6.1, "speed": 1.0}]},
+    {"id": "s03", "audio": "vo", "vo": [8.8, 13.5], "shots": [{"id": "p03a", "src": "VID_153521.mp4", "in": 6.1, "out": 7.7, "speed": 0.6}, {"id": "p03b", "src": "VID_151011.mp4", "in": 0.3, "out": 2.4, "speed": 1.0}]},
+    {"id": "s04", "kind": "photo", "img": "IMG_125024.jpg", "audio": "vo", "vo": [13.8, 16.9], "note": "titre AGOUAGON"},
+    {"id": "s05", "audio": "sync", "shots": [{"id": "p05", "src": "VID_151243.mp4", "in": 6.2, "out": 14.45, "speed": 1.0}]},
+    {"id": "s06", "audio": "sync", "shots": [{"id": "p06", "src": "VID_151915.mp4", "in": 4.7, "out": 14.15, "speed": 1.0}], "note": "mots qui sortent des mains"},
+    {"id": "s07", "audio": "vo", "vo": [37.9, 42.3], "photo": "IMG_125030.jpg", "photo_dur": 2.0, "shots": [{"id": "p07", "src": "VID_152050.mp4", "in": 0.2, "out": 2.6, "speed": 1.0}]},
+    {"id": "s08", "audio": "vo", "vo": [42.8, 46.4], "shots": [{"id": "p08a", "src": "VID_151204.mp4", "in": 9.3, "out": 11.3, "speed": 1.0}, {"id": "p08b", "src": "VID_153127.mp4", "in": 13.0, "out": 14.6, "speed": 1.0}]},
+    {"id": "s09", "audio": "vo", "vo": [46.8, 54.2], "shots": [{"id": "p09a", "src": "VID_152808.mp4", "in": 0.3, "out": 3.9, "speed": 1.0}, {"id": "p09b", "src": "VID_153521.mp4", "in": 0.0, "out": 3.8, "speed": 1.0}]},
+    {"id": "s10", "audio": "sync", "shots": [{"id": "p10", "src": "VID_152946.mp4", "in": 6.9, "out": 18.95, "speed": 1.0}], "note": "voix / regard / valeurs (zooms) puis mercis"},
+    {"id": "s11", "audio": "vo", "vo": [71.9, 79.3], "shots": [{"id": "p11", "src": "VID_152946.mp4", "in": 25.6, "out": 32.0, "speed": 1.0}], "note": "bisou, demi-tour, s'éloigne → panoramique vers le ciel"},
+    {"id": "s12", "kind": "end", "dur": 7.0, "audio": null, "note": "logo Origines puis affiche de vote"}
+  ]
+}

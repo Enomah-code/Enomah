@@ -1,0 +1,77 @@
+{
+ "duration": 76.15,
+ "segments": [
+  {
+   "id": "s01",
+   "start": 0.0,
+   "dur": 3.3,
+   "audio": null
+  },
+  {
+   "id": "s02",
+   "start": 3.3,
+   "dur": 5.5,
+   "audio": "vo"
+  },
+  {
+   "id": "s03",
+   "start": 8.8,
+   "dur": 4.7,
+   "audio": "vo"
+  },
+  {
+   "id": "s04",
+   "start": 13.5,
+   "dur": 3.1,
+   "audio": "vo"
+  },
+  {
+   "id": "s05",
+   "start": 16.6,
+   "dur": 8.25,
+   "audio": "sync"
+  },
+  {
+   "id": "s06",
+   "start": 24.85,
+   "dur": 9.45,
+   "audio": "sync"
+  },
+  {
+   "id": "s07",
+   "start": 34.3,
+   "dur": 4.4,
+   "audio": "vo"
+  },
+  {
+   "id": "s08",
+   "start": 38.7,
+   "dur": 3.6,
+   "audio": "vo"
+  },
+  {
+   "id": "s09",
+   "start": 42.3,
+   "dur": 7.4,
+   "audio": "vo"
+  },
+  {
+   "id": "s10",
+   "start": 49.7,
+   "dur": 12.05,
+   "audio": "sync"
+  },
+  {
+   "id": "s11",
+   "start": 61.75,
+   "dur": 7.4,
+   "audio": "vo"
+  },
+  {
+   "id": "s12",
+   "start": 69.15,
+   "dur": 7.0,
+   "audio": null
+  }
+ ]
+}

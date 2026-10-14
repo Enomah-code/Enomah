@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- « Fière d'Agouagon » — Cendrine LOUGBEGNON, candidate n°100, concours Origines 2026.
+         Généré par scripts/build_hf.py à partir de scripts/template.html : modifier le template, pas index.html. -->
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-700-normal.woff") format("woff"); font-weight: 700; }
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-900-normal.woff") format("woff"); font-weight: 900; }
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-400-italic.woff") format("woff"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-700-italic.woff") format("woff"); font-weight: 700; font-style: italic; }
+      @font-face { font-family: "Cinzel"; src: url("assets/fonts/cinzel-latin-400-normal.woff") format("woff"); font-weight: 400; }
+      @font-face { font-family: "Cinzel"; src: url("assets/fonts/cinzel-latin-700-normal.woff") format("woff"); font-weight: 700; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; color: #fff; font-family: "Montserrat", sans-serif; }
+      .wrap { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 45%; }
+      #w-p10 { transform-origin: 0 0; }
+      .wrap video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .gold { background: linear-gradient(180deg, #fff4c8 0%, #f3cd63 42%, #c98f26 78%, #f6d77c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .behind { position: absolute; left: 0; right: 0; text-align: center; font-family: "Playfair"; font-style: italic; font-weight: 700; letter-spacing: -0.01em;
+        background: linear-gradient(180deg, #fff4c8 0%, #f3cd63 42%, #c98f26 80%); -webkit-background-clip: text; background-clip: text; color: transparent;
+        filter: drop-shadow(0 10px 30px rgba(0,0,0,0.45)); opacity: 0; }
+      #txt-fg05 { top: 210px; font-size: 300px; }
+      #txt-fg10 { top: 300px; font-size: 230px; font-family: "Cinzel"; font-style: normal; letter-spacing: 0.04em; }
+      .hw { position: absolute; left: 0; top: 0; opacity: 0; transform-origin: 50% 50%; }
+      .hw span { display: block; transform: translate(-50%, -50%); font-family: "Cinzel"; font-weight: 700; font-size: 104px; letter-spacing: 0.10em; white-space: nowrap;
+        background: linear-gradient(180deg, #fff4c8 0%, #f3cd63 45%, #c98f26 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+        filter: drop-shadow(0 6px 16px rgba(0,0,0,0.7)) drop-shadow(0 0 22px rgba(243,205,99,0.45)); }
+      .burst { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+      .burst i { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: #ffe08a; box-shadow: 0 0 18px #ffd04d; opacity: 0; }
+      #leak { position: absolute; left: -500px; top: -200px; width: 1300px; height: 2400px; mix-blend-mode: screen; opacity: 0; z-index: 30;
+        background: radial-gradient(45% 40% at 50% 45%, rgba(255,170,70,0.85), rgba(255,110,30,0.35) 45%, rgba(255,80,0,0) 70%); }
+      #flash { position: absolute; inset: 0; background: #fff6e6; opacity: 0; z-index: 31; }
+      #vig { position: absolute; inset: 0; z-index: 29; pointer-events: none; background: radial-gradient(120% 80% at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.38) 100%); }
+      /* titres */
+      .t { position: absolute; left: 0; right: 0; text-align: center; z-index: 40; opacity: 0; }
+      #t-intro { top: 520px; }
+      #t-intro .k { font-family: "Cinzel"; font-weight: 700; font-size: 34px; letter-spacing: 0.5em; color: #f3d27a; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+      #t-intro .n1 { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 170px; line-height: 1; margin-top: 26px; }
+      #t-intro .n2 { font-family: "Cinzel"; font-weight: 700; font-size: 74px; letter-spacing: 0.12em; color: #fff; text-shadow: 0 4px 22px rgba(0,0,0,0.75); margin-top: 6px; }
+      #t-intro .c { display: inline-block; margin-top: 36px; padding: 14px 36px; border: 2px solid rgba(243,210,122,0.85); border-radius: 999px; font-family: "Cinzel"; font-size: 32px; letter-spacing: 0.25em; color: #fff3d0; background: rgba(20,10,0,0.25); }
+      #t-ago { top: 640px; }
+      #t-ago .a { font-family: "Cinzel"; font-weight: 700; font-size: 150px; letter-spacing: 0.10em; text-shadow: 0 0 1px transparent; }
+      #t-ago .a span { display: inline-block; }
+      #t-ago .line { width: 520px; height: 3px; margin: 26px auto 0; background: linear-gradient(90deg, rgba(243,205,99,0), #f3cd63, rgba(243,205,99,0)); transform-origin: 50% 50%; }
+      #t-ago .b { margin-top: 26px; font-family: "Cinzel"; font-size: 40px; letter-spacing: 0.32em; color: #fff3d0; text-shadow: 0 2px 14px rgba(0,0,0,0.8); }
+      #t-quote { top: 300px; padding: 0 70px; }
+      #t-quote .q { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 118px; line-height: 1.02; text-shadow: none; }
+      #t-quote .m { margin-top: 26px; font-family: "Cinzel"; font-size: 42px; letter-spacing: 0.3em; color: #fff3d0; text-shadow: 0 2px 14px rgba(0,0,0,0.85); opacity: 0; }
+      #t-name { top: 1200px; text-align: left; left: 80px; right: 80px; }
+      #t-name .line { width: 140px; height: 4px; background: linear-gradient(90deg, #f3cd63, #c98f26); transform-origin: 0 50%; }
+      #t-name .n1 { margin-top: 20px; font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 96px; line-height: 1; text-shadow: 0 6px 26px rgba(0,0,0,0.7); }
+      #t-name .n2 { margin-top: 14px; font-family: "Cinzel"; font-size: 36px; letter-spacing: 0.25em; color: #fff3d0; text-shadow: 0 2px 14px rgba(0,0,0,0.85); }
+      #logo { position: absolute; left: 90px; top: 560px; width: 900px; height: 900px; z-index: 41; mix-blend-mode: screen; opacity: 0; }
+      #logo img { width: 100%; height: 100%; display: block; }
+      #shade { position: absolute; inset: 0; background: #06030a; opacity: 0; z-index: 40; }
+      #poster { position: absolute; left: 115px; top: 260px; width: 850px; height: 1022px; z-index: 42; opacity: 0; border-radius: 26px; overflow: hidden;
+        box-shadow: 0 50px 120px rgba(0,0,0,0.7), 0 0 0 3px rgba(243,205,99,0.55); }
+      #poster img { width: 100%; height: 100%; display: block; }
+      #vote { position: absolute; left: 0; right: 0; top: 1350px; text-align: center; z-index: 43; opacity: 0; }
+      #vote .v1 { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 92px; line-height: 1; }
+      #vote .v2 { margin-top: 18px; font-family: "Cinzel"; font-weight: 700; font-size: 38px; letter-spacing: 0.2em; color: #fff3d0; }
+      #black { position: absolute; inset: 0; background: #000; opacity: 0; z-index: 60; }
+      /* sous-titres */
+      #caps { position: absolute; left: 70px; right: 70px; top: 1560px; height: 220px; z-index: 50; }
+      .cap { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; opacity: 0; font-weight: 600; font-size: 50px; line-height: 1.22;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.9); }
+      .cap .hl { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 58px; color: #f6d77c; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+<!--CLIPS-->
+      <div id="vig"></div>
+      <div id="leak"></div>
+      <div id="flash"></div>
+      <div class="t" id="t-intro"><div class="k">ORIGINES 2026</div><div class="n1 gold">Cendrine</div><div class="n2">LOUGBEGNON</div><div class="c">CANDIDATE N°100</div></div>
+      <div class="t" id="t-ago"><div class="a gold"><span>A</span><span>G</span><span>O</span><span>U</span><span>A</span><span>G</span><span>O</span><span>N</span></div><div class="line"></div><div class="b">VILLAGE MAHI · BÉNIN</div></div>
+      <div class="t" id="t-quote"><div class="q gold">« Je suis d'Agouagon »</div><div class="m">UN VILLAGE MAHI</div></div>
+      <div class="t" id="t-name"><div class="line"></div><div class="n1 gold">Cendrine LOUGBEGNON</div><div class="n2">FILLE D'AGOUAGON</div></div>
+      <div id="shade"></div>
+      <div id="logo"><img src="assets/img/logo-origines.jpg" alt="Origines" /></div>
+      <div id="poster"><img src="assets/img/affiche-vote.jpg" alt="Votez Cendrine LOUGBEGNON" /></div>
+      <div id="vote"><div class="v1 gold">Votez Cendrine !</div><div class="v2">CANDIDATE N°100 · AGOUAGON</div></div>
+      <div id="caps">
+<!--CAPS-->
+      </div>
+      <div id="black"></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="__DUR__" data-track-index="10" data-volume="1"></audio>
+<!--MUSIC-->
+<!--SFX-->
+    </div>
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        const D = /*DATA*/;
+        const tl = gsap.timeline({ paused: true });
+        const S = (id) => D.seg[id].start, L = (id) => D.seg[id].dur;
+        const E = { o3: "power3.out", o4: "power4.out", io: "power2.inOut" };
+
+        // ---------- mouvements de caméra par plan : entrée « zoom-flou » puis lente avancée ----------
+        const cuts = [];
+        D.clips.forEach((c, i) => {
+          const w = "#w-" + c.id;
+          if (c.id === "p10" || c.id === "sky") return;          // p10 : zooms sur le visage ; ciel : géré par le panoramique
+          const pushTo = c.kind === "photo" ? 1.0 : 1.06;
+          if (i > 0) {
+            tl.fromTo(w, { scale: 1.14, filter: "blur(12px)" }, { scale: 1.0, filter: "blur(0px)", duration: 0.38, ease: E.o3 }, c.start);
+            tl.fromTo(w, { scale: 1.0 }, { scale: pushTo, duration: Math.max(0.3, c.dur - 0.38), ease: "none", immediateRender: false }, c.start + 0.38);
+            cuts.push(c.start);
+          } else {
+            tl.fromTo(w, { scale: 1.0, filter: "blur(0px)" }, { scale: 1.0, duration: c.dur, ease: "none" }, 0);
+          }
+        });
+        // p10 : entrée floue seulement (la position/zoom vient du suivi du visage)
+        tl.fromTo("#w-p10", { filter: "blur(12px)" }, { filter: "blur(0px)", duration: 0.38, ease: E.o3 }, S("s10"));
+        tl.set("#w-p10", { x: 0, y: 0, scale: 1 }, 0);
+        D.zoom.forEach(([t, x, y, z]) => tl.set("#w-p10", { x: x, y: y, scale: z }, t));
+        if (!D.zoom.length) tl.fromTo("#w-p10", { scale: 1.0 }, { scale: 1.08, duration: L("s10"), ease: "none", immediateRender: false }, S("s10"));
+
+        // ---------- lumière : fuite de lumière chaude + flash sur les coupes fortes ----------
+        tl.set("#leak", { autoAlpha: 0 }, 0);
+        cuts.forEach((t, i) => {
+          tl.fromTo("#leak", { autoAlpha: 0, x: i % 2 ? 700 : -700 }, { autoAlpha: 0.75, x: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, t - 0.12);
+          tl.to("#leak", { autoAlpha: 0, x: i % 2 ? -500 : 500, duration: 0.45, ease: "power2.in" }, t + 0.1);
+        });
+        tl.set("#flash", { autoAlpha: 0 }, 0);
+        [S("s05"), S("s10"), D.village[0], S("s11")].forEach((t) => {
+          tl.fromTo("#flash", { autoAlpha: 0 }, { autoAlpha: 0.75, duration: 0.06, immediateRender: false }, t - 0.04);
+          tl.to("#flash", { autoAlpha: 0, duration: 0.32, ease: "power2.out" }, t + 0.02);
+        });
+
+        // ---------- ouverture : titre candidate ----------
+        tl.fromTo("#t-intro", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.35);
+        tl.fromTo("#t-intro .k", { autoAlpha: 0, y: -30 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: E.o3 }, 0.35);
+        tl.fromTo("#t-intro .n1", { autoAlpha: 0, scale: 1.25, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.7, ease: E.o4 }, 0.6);
+        tl.fromTo("#t-intro .n2", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.55, ease: E.o3 }, 0.95);
+        tl.fromTo("#t-intro .c", { autoAlpha: 0, scale: 0.8 }, { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 1.35);
+        tl.to("#t-intro", { autoAlpha: 0, y: -60, filter: "blur(8px)", duration: 0.4, ease: "power2.in" }, S("s02") - 0.35);
+
+        // ---------- AGOUAGON ----------
+        tl.fromTo("#t-ago", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, S("s04") + 0.1);
+        tl.fromTo("#t-ago .a span", { autoAlpha: 0, y: 80, filter: "blur(8px)" }, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: E.o4, stagger: 0.06 }, S("s04") + 0.15);
+        tl.fromTo("#t-ago .line", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: E.io }, S("s04") + 0.75);
+        tl.fromTo("#t-ago .b", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, S("s04") + 1.0);
+        tl.to("#t-ago", { autoAlpha: 0, scale: 1.08, duration: 0.35, ease: "power2.in" }, S("s05") - 0.3);
+
+        // ---------- « Fierté » derrière elle ----------
+        tl.fromTo("#txt-fg05", { autoAlpha: 0, scale: 1.5, filter: "blur(14px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: E.o4 }, 21.25);
+        tl.fromTo("#txt-fg05", { scale: 1 }, { scale: 1.08, duration: S("s06") - 21.8, ease: "none", immediateRender: false }, 21.8);
+
+        // ---------- mots qui sortent de ses mains ----------
+        D.hand.forEach((h, i) => {
+          const el = "#hw" + i, bu = "#bu" + i;
+          tl.set(el, { x: h.px, y: h.py, scale: 0.15, autoAlpha: 0 }, 0);
+          tl.set(bu, { x: h.px, y: h.py }, 0);
+          tl.to(el, { autoAlpha: 1, scale: 1.12, y: h.py - 60, duration: 0.18, ease: "power2.out" }, h.t - 0.04);
+          tl.to(el, { x: h.sx, y: h.sy, scale: 1, duration: 0.65, ease: E.o3 }, h.t + 0.14);
+          tl.to(el, { autoAlpha: 0, y: h.sy - 40, duration: 0.4, ease: "power2.in" }, S("s07") - 0.45);
+          document.querySelectorAll(bu + " i").forEach((p, k) => {
+            const a = (k / 10) * Math.PI * 2 + i, r = 70 + (k % 3) * 35;
+            tl.fromTo(p, { x: 0, y: 0, autoAlpha: 1, scale: 1 }, { x: Math.cos(a) * r, y: Math.sin(a) * r - 40, autoAlpha: 0, scale: 0.4, duration: 0.55, ease: "power2.out", immediateRender: false }, h.t - 0.02);
+          });
+        });
+        document.querySelectorAll(".burst i").forEach((p) => tl.set(p, { autoAlpha: 0 }, 0));
+
+        // ---------- « Je suis d'Agouagon » ----------
+        tl.fromTo("#t-quote", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 46.6);
+        tl.fromTo("#t-quote .q", { autoAlpha: 0, scale: 1.2, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: E.o4 }, 46.6);
+        tl.fromTo("#t-quote .m", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: E.o3 }, 48.6);
+        tl.to("#t-quote", { autoAlpha: 0, y: -40, duration: 0.3, ease: "power2.in" }, S("s10") - 0.3);
+
+        // ---------- « ORIGINES » derrière elle ----------
+        tl.fromTo("#txt-fg10", { autoAlpha: 0, scale: 1.5, filter: "blur(14px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: E.o4 }, 60.85);
+
+        // ---------- nom + panoramique vers le ciel ----------
+        tl.fromTo("#t-name", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 62.0);
+        tl.fromTo("#t-name .line", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: E.io }, 62.0);
+        tl.fromTo("#t-name .n1", { autoAlpha: 0, x: -60 }, { autoAlpha: 1, x: 0, duration: 0.6, ease: E.o3 }, 62.2);
+        tl.fromTo("#t-name .n2", { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: E.o3 }, 64.85);
+        tl.to("#t-name", { autoAlpha: 0, y: 40, duration: 0.4, ease: "power2.in" }, D.tilt - 0.6);
+        tl.set("#w-sky", { y: -1920 }, 0);
+        tl.fromTo("#w-p11", { y: 0, filter: "blur(0px)" }, { y: 1920, filter: "blur(18px)", duration: 1.0, ease: "power2.in", immediateRender: false }, D.tilt);
+        tl.fromTo("#w-sky", { y: -1920, filter: "blur(18px)" }, { y: 0, filter: "blur(0px)", duration: 1.0, ease: "power2.out", immediateRender: false }, D.tilt + 0.05);
+        tl.fromTo("#w-sky", { scale: 1.0 }, { scale: 1.06, duration: D.dur - D.tilt - 1, ease: "none", immediateRender: false }, D.tilt + 1.05);
+
+        // ---------- fin : logo Origines puis affiche de vote ----------
+        const e0 = S("s12");
+        tl.fromTo("#logo", { autoAlpha: 0, scale: 0.85, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.9, ease: E.o3 }, e0 + 0.2);
+        tl.to("#logo", { scale: 1.06, duration: 1.6, ease: "none" }, e0 + 1.1);
+        tl.to("#logo", { autoAlpha: 0, scale: 1.15, filter: "blur(10px)", duration: 0.45, ease: "power2.in" }, e0 + 2.6);
+        tl.fromTo("#shade", { autoAlpha: 0 }, { autoAlpha: 0.55, duration: 0.6 }, e0 + 2.7);
+        tl.fromTo("#poster", { autoAlpha: 0, y: 220, rotation: -4, scale: 0.92 }, { autoAlpha: 1, y: 0, rotation: 0, scale: 1, duration: 0.8, ease: E.o4 }, e0 + 2.9);
+        tl.to("#poster", { scale: 1.03, duration: D.dur - e0 - 3.7, ease: "none" }, e0 + 3.7);
+        tl.fromTo("#vote", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, e0 + 3.5);
+        tl.fromTo("#black", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "none" }, D.dur - 0.5);
+
+        // ---------- sous-titres ----------
+        D.caps.forEach(([a, b], i) => {
+          tl.fromTo("#cap" + i, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.18, ease: E.o3 }, a);
+          tl.to("#cap" + i, { autoAlpha: 0, duration: 0.12 }, Math.max(a + 0.3, b - 0.1));
+        });
+
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>
