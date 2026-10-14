@@ -35,6 +35,8 @@
       .burst i { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: #ffe08a; box-shadow: 0 0 18px #ffd04d; opacity: 0; }
       #leak { position: absolute; left: -500px; top: -200px; width: 1300px; height: 2400px; mix-blend-mode: screen; opacity: 0; z-index: 30;
         background: radial-gradient(45% 40% at 50% 45%, rgba(255,170,70,0.85), rgba(255,110,30,0.35) 45%, rgba(255,80,0,0) 70%); }
+      #glow { position: absolute; left: -900px; top: -300px; width: 700px; height: 2600px; z-index: 32; mix-blend-mode: screen; opacity: 0; transform: rotate(18deg);
+        background: linear-gradient(90deg, rgba(255,214,140,0) 0%, rgba(255,226,170,0.55) 42%, rgba(255,250,235,0.85) 50%, rgba(255,226,170,0.55) 58%, rgba(255,214,140,0) 100%); filter: blur(18px); }
       #flash { position: absolute; inset: 0; background: #fff6e6; opacity: 0; z-index: 31; }
       #vig { position: absolute; inset: 0; z-index: 29; pointer-events: none; background: radial-gradient(120% 80% at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.38) 100%); }
       /* titres */
@@ -80,10 +82,11 @@
       <div id="vig"></div>
       <div id="leak"></div>
       <div id="flash"></div>
-      <div class="t" id="t-intro"><div class="scrim"></div><div class="k">ORIGINES 2026</div><div class="n1 gold">Cendrine Tameyon</div><div class="n2">LOUGBEGNON</div><div class="c">CANDIDATE N°100</div></div>
+      <div id="glow"></div>
+      <div class="t" id="t-intro"><div class="scrim"></div><div class="k">ORIGINES 2026</div><div class="n1 gold">Cendrine Tamegnon</div><div class="n2">LOUGBEGNON</div><div class="c">CANDIDATE N°100</div></div>
       <div class="t" id="t-ago"><div class="scrim"></div><div class="a"><span class="gold">A</span><span class="gold">G</span><span class="gold">O</span><span class="gold">U</span><span class="gold">A</span><span class="gold">G</span><span class="gold">O</span><span class="gold">N</span></div><div class="line"></div><div class="b">VILLAGE MAHI · BÉNIN</div></div>
       <div class="t" id="t-quote"><div class="q gold">« Je suis d'Agouagon »</div><div class="m">UN VILLAGE MAHI</div></div>
-      <div class="t" id="t-name"><div class="line"></div><div class="n1 gold">Cendrine Tameyon</div><div class="n1b">LOUGBEGNON</div><div class="n2">FILLE D'AGOUAGON · VILLAGE MAHI</div></div>
+      <div class="t" id="t-name"><div class="line"></div><div class="n1 gold">Cendrine Tamegnon</div><div class="n1b">LOUGBEGNON</div><div class="n2">FILLE D'AGOUAGON · VILLAGE MAHI</div></div>
       <div id="shade"></div>
       <div id="logo"><img src="assets/img/logo-origines.jpg" alt="Origines" /></div>
       <div id="poster"><img src="assets/img/affiche-vote.jpg" alt="Votez Cendrine LOUGBEGNON" /></div>
@@ -135,6 +138,12 @@
           tl.fromTo("#flash", { autoAlpha: 0 }, { autoAlpha: 0.75, duration: 0.06, immediateRender: false }, t - 0.04);
           tl.to("#flash", { autoAlpha: 0, duration: 0.32, ease: "power2.out" }, t + 0.02);
         });
+
+        // ---------- reflet de lumière pendant le ralenti du coucou ----------
+        tl.set("#glow", { autoAlpha: 0, x: 0 }, 0);
+        tl.fromTo("#glow", { autoAlpha: 0, x: 0 }, { autoAlpha: 1, duration: 0.3, ease: "none", immediateRender: false }, S("s02") + 2.6);
+        tl.to("#glow", { x: 2300, duration: 2.4, ease: "sine.inOut" }, S("s02") + 2.6);
+        tl.to("#glow", { autoAlpha: 0, duration: 0.4, ease: "none" }, S("s02") + 4.6);
 
         // ---------- ouverture : titre candidate ----------
         tl.fromTo("#t-intro", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.35);

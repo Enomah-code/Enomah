@@ -34,24 +34,25 @@ def add(cid, src, start, dur, kind="shot"):
 
 
 add("ph01", "assets/photos/ph01.mp4", 0, SEG["s01"]["dur"] + 0.3, "photo")
-add("p02a", "assets/shots/p02a.mp4", st("s02"), SEG["s02"]["dur"])
+A2 = 2.5                                           # coucou en vitesse réelle, puis même prise au ralenti
+add("p02a", "assets/shots/p02a.mp4", st("s02"), A2)
+add("p02b", "assets/shots/p02b.mp4", st("s02") + A2, SEG["s02"]["dur"] - A2)
 a3 = (7.7 - 6.1) / 0.6
 add("p03a", "assets/shots/p03a.mp4", st("s03"), a3)
 add("p03b", "assets/shots/p03b.mp4", st("s03") + a3, SEG["s03"]["dur"] - a3)
 add("ph04", "assets/photos/ph04.mp4", st("s04"), SEG["s04"]["dur"], "photo")
 add("p05", "assets/shots/p05.mp4", st("s05"), SEG["s05"]["dur"])
 add("p06", "assets/shots/p06.mp4", st("s06"), SEG["s06"]["dur"])
-add("ph07", "assets/photos/ph07.mp4", st("s07"), 2.0, "photo")
-add("p07", "assets/shots/p07.mp4", st("s07") + 2.0, SEG["s07"]["dur"] - 2.0)
-add("p08a", "assets/shots/p08a.mp4", st("s08"), 2.0)
-add("p08b", "assets/shots/p08b.mp4", st("s08") + 2.0, SEG["s08"]["dur"] - 2.0)
-add("p09a", "assets/shots/p09a.mp4", st("s09"), 3.6)
-add("p09b", "assets/shots/p09b.mp4", st("s09") + 3.6, SEG["s09"]["dur"] - 3.6)
+add("ph07", "assets/photos/ph07.mp4", st("s07"), SEG["s07"]["dur"], "photo")       # « …a commencé là-bas »
+add("p08", "assets/shots/p08.mp4", st("s08"), SEG["s08"]["dur"])                     # « où que j'aille » : elle s'éloigne
+add("p09", "assets/shots/p09.mp4", st("s09"), 4.0)                                    # bisous / rire au ralenti
+add("ph09", "assets/photos/ph09.mp4", st("s09") + 4.0, SEG["s09"]["dur"] - 4.0, "photo")  # citation sur les collines
 add("p10", "assets/shots/p10.mp4", st("s10"), SEG["s10"]["dur"])
 VILLAGE = (56.75 - 49.7 + st("s10"), 2.2)          # plan de coupe « merci à mon village »
 add("ph10", "assets/photos/ph10.mp4", VILLAGE[0], VILLAGE[1], "photo")
-TILT = st("s11") + 5.35                             # départ du panoramique vers le ciel
-add("p11", "assets/shots/p11.mp4", st("s11"), 6.4)
+TILT = st("s11") + 5.85                             # départ du panoramique vers le ciel
+add("p11", "assets/shots/p11.mp4", st("s11"), 2.3)                                   # bisou pendant « Moi, c'est… »
+add("p11b", "assets/shots/p11b.mp4", st("s11") + 2.3, 4.9)                           # demi-tour (rush des boucles d'oreilles)
 add("sky", "assets/photos/sky.mp4", TILT - 0.1, DUR - TILT + 0.1, "photo")
 FG = [  # sujets détourés (alpha) pour les mots placés DERRIÈRE elle
     {"id": "fg05", "src": "assets/shots/p05-fg.webm", "start": st("s05"), "dur": SEG["s05"]["dur"], "host": "p05", "label": "Fierté"},

@@ -26,6 +26,30 @@ def load(path, t0, t1, extra=""):
     return np.frombuffer(raw, np.float32).astype(np.float64)
 
 
+SYNC_CHAIN = ("highpass=f=90,equalizer=f=320:t=q:w=1.2:g=-3,equalizer=f=2800:t=q:w=1.4:g=3.5,"
+              "equalizer=f=9000:t=q:w=1.5:g=2,deesser=i=0.35,"
+              "acompressor=threshold=-24dB:ratio=3.5:attack=6:release=110:makeup=3,alimiter=limit=0.9")
+
+
+def sync_voice(path, t0, t1):
+    """Son direct d'un rush : réduction de bruit spectrale (profil pris sur le passage le plus calme du rush),
+    puis égalisation « voix » (présence, clarté), de-esser et compression pour l'amener au niveau de la voix off."""
+    import noisereduce as nr
+    full = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-ac", "1", "-ar", str(SR), "-af", "highpass=f=80",
+                           "-f", "f32le", "-"], capture_output=True, check=True).stdout
+    full = np.frombuffer(full, np.float32).astype(np.float64)
+    win = int(0.6 * SR)
+    hop = int(0.1 * SR)
+    rms = [np.sqrt(np.mean(full[i:i + win] ** 2)) for i in range(0, len(full) - win, hop)]
+    i0 = int(np.argmin(rms)) * hop
+    noise = full[i0:i0 + win]
+    seg = full[int(t0 * SR):int(t1 * SR)]
+    den = nr.reduce_noise(y=seg, sr=SR, y_noise=noise, stationary=True, prop_decrease=0.85, n_fft=2048)
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-f", "f64le", "-ar", str(SR), "-ac", "1", "-i", "-", "-af", SYNC_CHAIN,
+                          "-f", "f32le", "-"], input=den.astype(np.float64).tobytes(), capture_output=True, check=True).stdout
+    return np.frombuffer(raw, np.float32).astype(np.float64)
+
+
 def loud(x):
     """niveau RMS des passages parlés (dBFS) — pour aligner voix off et son direct"""
     win = int(0.05 * SR)
@@ -53,11 +77,13 @@ def main():
             x = load(os.path.join(rush, "voixoff.aac"), *seg["vo"])
         elif seg.get("audio") == "sync":
             sh = seg["shots"][0]
-            x = load(os.path.join(rush, sh["src"]), sh["in"], sh["out"], "equalizer=f=180:t=q:w=1:g=-2")
+            x = sync_voice(os.path.join(rush, sh["src"]), sh["in"], sh["out"])
         else:
             x = None
         if x is not None:
-            x = fade(x * 10 ** ((target - loud(x)) / 20))
+            # son direct un peu plus présent que la voix off (+2 dB), comme demandé
+            tgt = target + (2.0 if seg.get("audio") == "sync" else 0.0)
+            x = fade(x * 10 ** ((tgt - loud(x)) / 20))
             dur = len(x) / SR
         else:
             dur = seg["dur"]
