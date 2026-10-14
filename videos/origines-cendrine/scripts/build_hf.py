@@ -107,7 +107,7 @@ def face_zoom_sets():
     keys = [  # (temps de sortie, zoom, cible) — la cible bascule bouche → yeux → plan large
         (49.7, 1.06, "eyes"), (50.25, 1.06, "eyes"), (50.55, 1.75, "mouth"), (51.35, 1.75, "mouth"),
         (51.75, 2.05, "eyes"), (52.75, 2.05, "eyes"), (53.25, 1.0, "wide"), (54.0, 1.0, "wide"),
-        (56.6, 1.18, "eyes"), (59.0, 1.12, "eyes"), (61.75, 1.22, "eyes")]
+        (56.6, 1.18, "eyes"), (59.0, 1.1, "eyes"), (60.45, 1.0, "wide"), (61.75, 1.03, "wide")]
     out = []
     n = len(fr)
     for i in range(0, n, 1):
@@ -133,7 +133,8 @@ def face_zoom_sets():
             return W / 2, H * 0.45
         (ax, ay), (bx, by) = pt(a[2]), pt(b[2])
         tx, ty = ax + (bx - ax) * u, ay + (by - ay) * u
-        cxs, cys = W / 2, H * 0.40               # où placer la cible à l'écran
+        cxs = W / 2                              # où placer la cible à l'écran : yeux haut, bouche au centre
+        cys = H * (0.34 if b[2] == "eyes" and u > 0.5 or a[2] == "eyes" and u <= 0.5 else 0.42)
         x = cxs - z * tx; y = cys - z * ty
         x = min(0, max(W - W * z, x)); y = min(0, max(H - H * z, y))
         if i % 2 == 0:
