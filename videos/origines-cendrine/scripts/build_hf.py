@@ -55,6 +55,7 @@ add("p11", "assets/shots/p11.mp4", st("s11"), 6.4)
 add("sky", "assets/photos/sky.mp4", TILT - 0.1, DUR - TILT + 0.1, "photo")
 FG = [  # sujets détourés (alpha) pour les mots placés DERRIÈRE elle
     {"id": "fg05", "src": "assets/shots/p05-fg.webm", "start": st("s05"), "dur": SEG["s05"]["dur"], "host": "p05", "label": "Fierté"},
+    {"id": "fg06", "src": "assets/shots/p06-fg.webm", "start": st("s06"), "dur": SEG["s06"]["dur"], "host": "p06", "label": ""},
     {"id": "fg10", "src": "assets/shots/p10-fg.webm", "start": st("s10"), "dur": SEG["s10"]["dur"], "host": "p10", "label": "ORIGINES"},
 ]
 
@@ -146,7 +147,7 @@ def hand_words():
     fr = json.load(open(hj)) if os.path.exists(hj) else []
     s0, rush_in = st("s06"), 4.7
     words = [("PARTAGE", 29.27), ("RESPECT", 30.65), ("FORCE", 31.97)]
-    slots = [(W * 0.5, H * 0.105), (W * 0.5, H * 0.165), (W * 0.5, H * 0.225)]
+    slots = [(W * 0.5, H * 0.058), (W * 0.5, H * 0.103), (W * 0.5, H * 0.148)]
     res = []
     for (w, t), (sx, sy) in zip(words, slots):
         lt = t - s0 + rush_in
@@ -175,7 +176,8 @@ def build():
             f'      <div class="wrap" id="w-{c["id"]}"><video id="v-{c["id"]}" class="clip" src="{c["src"]}" data-start="{c["start"]}" '
             f'data-duration="{c["dur"]}" data-track-index="{1 if c["kind"] == "shot" else 2}" muted playsinline></video>'
             + "".join(
-                f'<div class="behind" id="txt-{f["id"]}">{f["label"]}</div><video id="v-{f["id"]}" class="clip fg" src="{f["src"]}" data-start="{f["start"]}" '
+                (f'<div class="behind" id="txt-{f["id"]}">{f["label"]}</div>' if f["label"] else
+                 "".join(f'<div class="hw hwb" id="hwb{i}"><span>{w["w"]}</span></div>' for i, w in enumerate(hand_words()))) + f'<video id="v-{f["id"]}" class="clip fg" src="{f["src"]}" data-start="{f["start"]}" '
                 f'data-duration="{f["dur"]}" data-track-index="3" muted playsinline></video>' for f in FG if f["host"] == c["id"])
             + ("".join(f'<div class="hw" id="hw{i}"><span>{w["w"]}</span></div><div class="burst" id="bu{i}">' +
                        "".join('<i></i>' for _ in range(10)) + '</div>' for i, w in enumerate(hand_words())) if c["id"] == "p06" else "")

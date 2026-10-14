@@ -159,8 +159,16 @@
           tl.set(el, { x: h.px, y: h.py, scale: 0.15, autoAlpha: 0 }, 0);
           tl.set(bu, { x: h.px, y: h.py }, 0);
           tl.to(el, { autoAlpha: 1, scale: 1.12, y: h.py - 60, duration: 0.18, ease: "power2.out" }, h.t - 0.04);
-          tl.to(el, { x: h.sx, y: h.sy, scale: 1, duration: 0.65, ease: E.o3 }, h.t + 0.14);
-          tl.to(el, { autoAlpha: 0, y: h.sy - 40, duration: 0.4, ease: "power2.in" }, S("s07") - 0.45);
+          // trajectoire en arc par le côté (le mot ne traverse pas son visage)
+          const side = i % 2 ? 860 : 220;
+          tl.to(el, { keyframes: [{ x: side, y: (h.py + h.sy) / 2 + 40, scale: 1.0, duration: 0.3, ease: "power2.out" },
+                                  { x: h.sx, y: h.sy, scale: 0.82, duration: 0.38, ease: "power2.inOut" }] }, h.t + 0.14);
+          // arrivé en haut, le mot passe DERRIÈRE elle (copie posée sous la vidéo détourée)
+          const eb = "#hwb" + i;
+          tl.set(eb, { x: h.sx, y: h.sy, scale: 0.82, autoAlpha: 0 }, 0);
+          tl.to(eb, { autoAlpha: 1, duration: 0.16, ease: "none" }, h.t + 0.68);
+          tl.to(el, { autoAlpha: 0, duration: 0.16, ease: "none" }, h.t + 0.7);
+          tl.to(eb, { autoAlpha: 0, y: h.sy - 40, duration: 0.4, ease: "power2.in" }, S("s07") - 1.0);
           document.querySelectorAll(bu + " i").forEach((p, k) => {
             const a = (k / 10) * Math.PI * 2 + i, r = 70 + (k % 3) * 35;
             tl.fromTo(p, { x: 0, y: 0, autoAlpha: 1, scale: 1 }, { x: Math.cos(a) * r, y: Math.sin(a) * r - 40, autoAlpha: 0, scale: 0.4, duration: 0.55, ease: "power2.out", immediateRender: false }, h.t - 0.02);
