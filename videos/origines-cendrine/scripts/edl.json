@@ -21,18 +21,18 @@
      "id": "p02a",
      "src": "VID_153521.mp4",
      "in": 0.0,
-     "out": 2.5,
+     "out": 0.8,
      "speed": 1.0
     },
     {
      "id": "p02b",
      "src": "VID_153521.mp4",
-     "in": 2.5,
-     "out": 3.65,
-     "speed": 0.38
+     "in": 0.8,
+     "out": 1.55,
+     "speed": 0.18
     }
    ],
-   "note": "coucou naturel puis même prise au ralenti + reflet de lumière"
+   "note": "collines jusqu'à « Hello la famille », coucou naturel jusqu'aux mains jointes, puis ralenti + reflet"
   },
   {
    "id": "s03",
@@ -116,14 +116,15 @@
    ],
    "shots": [
     {
-     "id": "p08",
-     "src": "VID_152946.mp4",
-     "in": 28.0,
-     "out": 31.6,
-     "speed": 1.0
+     "id": "p11b",
+     "src": "VID_153521.mp4",
+     "in": 7.7,
+     "out": 12.6,
+     "speed": 1.0,
+     "media_start": 0.3
     }
    ],
-   "note": "« où que j'aille » : elle s'éloigne dans l'allée"
+   "note": "« où que j'aille » : elle marche dans l'allée fleurie (verdure)"
   },
   {
    "id": "s09",
@@ -132,17 +133,8 @@
     46.8,
     54.2
    ],
-   "shots": [
-    {
-     "id": "p09",
-     "src": "VID_153127.mp4",
-     "in": 11.0,
-     "out": 13.4,
-     "speed": 0.6
-    }
-   ],
    "photo": "IMG_125045.jpg",
-   "note": "bisous / rire au ralenti puis citation sur les collines"
+   "note": "« tu viens d'où ? » : collines + citation (évite de répéter les bisous de la fin)"
   },
   {
    "id": "s10",
@@ -174,14 +166,14 @@
      "speed": 1.0
     },
     {
-     "id": "p11b",
-     "src": "VID_153521.mp4",
-     "in": 7.7,
-     "out": 12.6,
+     "id": "p11c",
+     "src": "VID_153127.mp4",
+     "in": 10.8,
+     "out": 15.95,
      "speed": 1.0
     }
    ],
-   "note": "bisou (nom) puis demi-tour du rush des boucles d'oreilles → ciel"
+   "note": "bisou (nom) puis plein de bisous, applaudit, se retourne et s'éloigne → ciel"
   },
   {
    "id": "s12",

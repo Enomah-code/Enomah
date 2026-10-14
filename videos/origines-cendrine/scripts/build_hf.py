@@ -29,14 +29,15 @@ def st(sid):
 clips = []   # (id, src, start, dur, kind)
 
 
-def add(cid, src, start, dur, kind="shot"):
-    clips.append({"id": cid, "src": src, "start": round(start, 3), "dur": round(dur, 3), "kind": kind})
+def add(cid, src, start, dur, kind="shot", media_start=0.0):
+    clips.append({"id": cid, "src": src, "start": round(start, 3), "dur": round(dur, 3), "kind": kind, "ms": media_start})
 
 
-add("ph01", "assets/photos/ph01.mp4", 0, SEG["s01"]["dur"] + 0.3, "photo")
+HER = st("s02") + 1.1                              # les collines restent jusqu'à « Hello la famille »
+add("ph01", "assets/photos/ph01.mp4", 0, HER + 0.1, "photo")
 # coucou en vitesse réelle, puis même prise au ralenti
-add("p02a", "assets/shots/p02a.mp4", st("s02") - 0.07, 2.53)      # durées réelles des plans traités (76 + 87 images)
-add("p02b", "assets/shots/p02b.mp4", st("s02") + 2.46, 2.9)
+add("p02a", "assets/shots/p02a.mp4", HER, 0.8)                     # geste naturel jusqu'aux mains jointes
+add("p02b", "assets/shots/p02b.mp4", HER + 0.8, st("s03") - HER - 0.8)   # puis ralenti (s'arrête avant la bise)
 a3 = (7.7 - 6.1) / 0.6
 add("p03a", "assets/shots/p03a.mp4", st("s03"), a3)
 add("p03b", "assets/shots/p03b.mp4", st("s03") + a3, SEG["s03"]["dur"] - a3)
@@ -44,15 +45,14 @@ add("ph04", "assets/photos/ph04.mp4", st("s04"), SEG["s04"]["dur"], "photo")
 add("p05", "assets/shots/p05.mp4", st("s05"), SEG["s05"]["dur"])
 add("p06", "assets/shots/p06.mp4", st("s06"), SEG["s06"]["dur"])
 add("ph07", "assets/photos/ph07.mp4", st("s07"), SEG["s07"]["dur"], "photo")       # « …a commencé là-bas »
-add("p08", "assets/shots/p08.mp4", st("s08"), SEG["s08"]["dur"])                     # « où que j'aille » : elle s'éloigne
-add("p09", "assets/shots/p09.mp4", st("s09"), 3.93)                                   # bisous / rire au ralenti
-add("ph09", "assets/photos/ph09.mp4", st("s09") + 3.93, SEG["s09"]["dur"] - 3.93, "photo")  # citation sur les collines
+add("p08", "assets/shots/p11b.mp4", st("s08"), SEG["s08"]["dur"], media_start=0.3)  # « où que j'aille » : allée fleurie
+add("ph09", "assets/photos/ph09.mp4", st("s09"), SEG["s09"]["dur"], "photo")          # « tu viens d'où ? » + citation sur les collines
 add("p10", "assets/shots/p10.mp4", st("s10"), SEG["s10"]["dur"])
 VILLAGE = (56.75 - 49.7 + st("s10"), 2.2)          # plan de coupe « merci à mon village »
 add("ph10", "assets/photos/ph10.mp4", VILLAGE[0], VILLAGE[1], "photo")
 TILT = st("s11") + 5.85                             # départ du panoramique vers le ciel
 add("p11", "assets/shots/p11.mp4", st("s11"), 2.3)                                   # bisou pendant « Moi, c'est… »
-add("p11b", "assets/shots/p11b.mp4", st("s11") + 2.3, 4.9)                           # demi-tour (rush des boucles d'oreilles)
+add("p11c", "assets/shots/p11c.mp4", st("s11") + 2.3, SEG["s11"]["dur"] - 2.3)        # plein de bisous, applaudit, se retourne, s'éloigne
 add("sky", "assets/photos/sky.mp4", TILT - 0.1, DUR - TILT + 0.1, "photo")
 FG = [  # sujets détourés (alpha) pour les mots placés DERRIÈRE elle
     {"id": "fg05", "src": "assets/shots/p05-fg.webm", "start": st("s05"), "dur": SEG["s05"]["dur"], "host": "p05", "label": "Fierté"},
@@ -165,10 +165,14 @@ def hand_words():
 
 
 SFX = [("whoosh-cinematic", 0.0, 0.35), ("whoosh-short", st("s02") - 0.15, 0.25), ("whoosh-short", st("s04") - 0.12, 0.25),
-       ("whoosh-short", st("s05") - 0.12, 0.22), ("impact-bass-1", 21.4, 0.32), ("sparkle", 29.27, 0.3), ("sparkle", 30.65, 0.3),
-       ("sparkle", 31.97, 0.3), ("whoosh-short", st("s07") - 0.12, 0.22), ("whoosh-short", st("s09") - 0.12, 0.22),
+       ("whoosh-short", st("s05") - 0.12, 0.22), ("impact-bass-1", 21.4, 0.32), ("sparkle", 29.27, 0.12), ("sparkle", 30.65, 0.12),
+       ("sparkle", 31.97, 0.12), ("whoosh-short", st("s07") - 0.12, 0.22), ("whoosh-short", st("s09") - 0.12, 0.22),
        ("whoosh-short", VILLAGE[0] - 0.1, 0.22), ("impact-bass-1", 60.9, 0.3), ("whoosh-cinematic", TILT - 0.2, 0.35),
        ("chime", st("s12") + 0.25, 0.3), ("sparkle", st("s12") + 2.6, 0.25)]
+
+
+def ms_attr(c):
+    return f' data-media-start="{c["ms"]}"' if c["ms"] else ""
 
 
 def build():
@@ -176,7 +180,7 @@ def build():
     for c in clips:
         vids.append(
             f'      <div class="wrap" id="w-{c["id"]}"><video id="v-{c["id"]}" class="clip" src="{c["src"]}" data-start="{c["start"]}" '
-            f'data-duration="{c["dur"]}" data-track-index="{1 if c["kind"] == "shot" else 2}" muted playsinline></video>'
+            f'data-duration="{c["dur"]}"{ms_attr(c)} data-track-index="{1 if c["kind"] == "shot" else 2}" muted playsinline></video>'
             + "".join(
                 (f'<div class="behind" id="txt-{f["id"]}">{f["label"]}</div>' if f["label"] else
                  "".join(f'<div class="hw hwb" id="hwb{i}"><span>{w["w"]}</span></div>' for i, w in enumerate(hand_words()))) + f'<video id="v-{f["id"]}" class="clip fg" src="{f["src"]}" data-start="{f["start"]}" '
