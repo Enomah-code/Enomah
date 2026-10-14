@@ -50,7 +50,7 @@ add("p09b", "assets/shots/p09b.mp4", st("s09") + 3.6, SEG["s09"]["dur"] - 3.6)
 add("p10", "assets/shots/p10.mp4", st("s10"), SEG["s10"]["dur"])
 VILLAGE = (56.75 - 49.7 + st("s10"), 2.2)          # plan de coupe « merci à mon village »
 add("ph10", "assets/photos/ph10.mp4", VILLAGE[0], VILLAGE[1], "photo")
-TILT = st("s11") + 6.0                             # départ du panoramique vers le ciel
+TILT = st("s11") + 5.35                             # départ du panoramique vers le ciel
 add("p11", "assets/shots/p11.mp4", st("s11"), 6.4)
 add("sky", "assets/photos/sky.mp4", TILT - 0.1, DUR - TILT + 0.1, "photo")
 FG = [  # sujets détourés (alpha) pour les mots placés DERRIÈRE elle

@@ -195,8 +195,9 @@
         tl.fromTo("#t-name .n2", { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: E.o3 }, 64.85);
         tl.to("#t-name", { autoAlpha: 0, y: 40, duration: 0.4, ease: "power2.in" }, D.tilt - 0.6);
         tl.set("#w-sky", { y: -1920 }, 0);
-        tl.fromTo("#w-p11", { y: 0, filter: "blur(0px)" }, { y: 1920, filter: "blur(18px)", duration: 1.0, ease: "power2.in", immediateRender: false }, D.tilt);
-        tl.fromTo("#w-sky", { y: -1920, filter: "blur(18px)" }, { y: 0, filter: "blur(0px)", duration: 1.0, ease: "power2.out", immediateRender: false }, D.tilt + 0.05);
+        // les deux plans glissent ensemble (même durée, même courbe) : aucun trou entre eux
+        tl.fromTo("#w-p11", { y: 0, filter: "blur(0px)" }, { y: 1920, filter: "blur(16px)", duration: 1.0, ease: "power2.inOut", immediateRender: false }, D.tilt);
+        tl.fromTo("#w-sky", { y: -1920, filter: "blur(16px)" }, { y: 0, filter: "blur(0px)", duration: 1.0, ease: "power2.inOut", immediateRender: false }, D.tilt);
         tl.fromTo("#w-sky", { scale: 1.0 }, { scale: 1.06, duration: D.dur - D.tilt - 1, ease: "none", immediateRender: false }, D.tilt + 1.05);
 
         // ---------- fin : logo Origines puis affiche de vote ----------
@@ -204,7 +205,7 @@
         tl.fromTo("#logo", { autoAlpha: 0, scale: 0.85, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.9, ease: E.o3 }, e0 + 0.2);
         tl.to("#logo", { scale: 1.06, duration: 1.6, ease: "none" }, e0 + 1.1);
         tl.to("#logo", { autoAlpha: 0, scale: 1.15, filter: "blur(10px)", duration: 0.45, ease: "power2.in" }, e0 + 2.6);
-        tl.fromTo("#shade", { autoAlpha: 0 }, { autoAlpha: 0.55, duration: 0.6 }, e0 + 2.7);
+        tl.fromTo("#shade", { autoAlpha: 0 }, { autoAlpha: 0.62, duration: 0.6 }, e0 - 0.2);
         tl.fromTo("#poster", { autoAlpha: 0, y: 220, rotation: -4, scale: 0.92 }, { autoAlpha: 1, y: 0, rotation: 0, scale: 1, duration: 0.8, ease: E.o4 }, e0 + 2.9);
         tl.to("#poster", { scale: 1.03, duration: D.dur - e0 - 3.7, ease: "none" }, e0 + 3.7);
         tl.fromTo("#vote", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, e0 + 3.5);
