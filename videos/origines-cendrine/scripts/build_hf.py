@@ -45,8 +45,8 @@ add("p05", "assets/shots/p05.mp4", st("s05"), SEG["s05"]["dur"])
 add("p06", "assets/shots/p06.mp4", st("s06"), SEG["s06"]["dur"])
 add("ph07", "assets/photos/ph07.mp4", st("s07"), SEG["s07"]["dur"], "photo")       # « …a commencé là-bas »
 add("p08", "assets/shots/p08.mp4", st("s08"), SEG["s08"]["dur"])                     # « où que j'aille » : elle s'éloigne
-add("p09", "assets/shots/p09.mp4", st("s09"), 4.0)                                    # bisous / rire au ralenti
-add("ph09", "assets/photos/ph09.mp4", st("s09") + 4.0, SEG["s09"]["dur"] - 4.0, "photo")  # citation sur les collines
+add("p09", "assets/shots/p09.mp4", st("s09"), 3.93)                                   # bisous / rire au ralenti
+add("ph09", "assets/photos/ph09.mp4", st("s09") + 3.93, SEG["s09"]["dur"] - 3.93, "photo")  # citation sur les collines
 add("p10", "assets/shots/p10.mp4", st("s10"), SEG["s10"]["dur"])
 VILLAGE = (56.75 - 49.7 + st("s10"), 2.2)          # plan de coupe « merci à mon village »
 add("ph10", "assets/photos/ph10.mp4", VILLAGE[0], VILLAGE[1], "photo")
