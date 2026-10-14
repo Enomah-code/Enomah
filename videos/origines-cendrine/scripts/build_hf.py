@@ -34,9 +34,9 @@ def add(cid, src, start, dur, kind="shot"):
 
 
 add("ph01", "assets/photos/ph01.mp4", 0, SEG["s01"]["dur"] + 0.3, "photo")
-A2 = 2.5                                           # coucou en vitesse réelle, puis même prise au ralenti
-add("p02a", "assets/shots/p02a.mp4", st("s02"), A2)
-add("p02b", "assets/shots/p02b.mp4", st("s02") + A2, SEG["s02"]["dur"] - A2)
+# coucou en vitesse réelle, puis même prise au ralenti
+add("p02a", "assets/shots/p02a.mp4", st("s02") - 0.07, 2.53)      # durées réelles des plans traités (76 + 87 images)
+add("p02b", "assets/shots/p02b.mp4", st("s02") + 2.46, 2.9)
 a3 = (7.7 - 6.1) / 0.6
 add("p03a", "assets/shots/p03a.mp4", st("s03"), a3)
 add("p03b", "assets/shots/p03b.mp4", st("s03") + a3, SEG["s03"]["dur"] - a3)
