@@ -52,7 +52,9 @@ VILLAGE = (56.75 - 49.7 + st("s10"), 2.2)          # plan de coupe « merci à m
 add("ph10", "assets/photos/ph10.mp4", VILLAGE[0], VILLAGE[1], "photo")
 TILT = st("s11") + 5.85                             # départ du panoramique vers le ciel
 add("p11", "assets/shots/p11.mp4", st("s11"), 2.3)                                   # bisou pendant « Moi, c'est… »
-add("p11c", "assets/shots/p11c.mp4", st("s11") + 2.3, SEG["s11"]["dur"] - 2.3)        # plein de bisous, applaudit, se retourne, s'éloigne
+MAHI = 65.65                                       # « et mahi » : on quitte les bisous pour le gros plan boucle d'oreille
+add("p11c", "assets/shots/p11c.mp4", st("s11") + 2.3, MAHI - st("s11") - 2.3)          # plein de bisous
+add("p11d", "assets/shots/p11d.mp4", MAHI, 3.03)                                         # boucle d'oreille, elle se retourne → ciel
 add("sky", "assets/photos/sky.mp4", TILT - 0.1, DUR - TILT + 0.1, "photo")
 FG = [  # sujets détourés (alpha) pour les mots placés DERRIÈRE elle
     {"id": "fg05", "src": "assets/shots/p05-fg.webm", "start": st("s05"), "dur": SEG["s05"]["dur"], "host": "p05", "label": "Fierté"},
