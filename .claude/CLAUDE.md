@@ -29,3 +29,8 @@ Quand tu proposes des skills, utilise ce format concis :
 - Utilisateur parle de LLM/IA → proposer `/rag-architect`, `/claude-api`, `/llm-cost-optimizer`
 - Utilisateur parle de base de données → proposer `/sql-database-assistant`, `/database-schema-designer`
 - Utilisateur parle de revue de code → proposer `/code-reviewer`, `/karpathy-coder`
+- Utilisateur parle de motion design / vidéo / animation → proposer `/brand-launch-video-star`, les skills `vibe-motion`, HyperFrames
+
+## Motion design — références d'inspiration
+
+Pour **tout travail de motion design** (vidéo, animation, promo, explainer, carte offre…), consulter d'abord **`.claude/MOTION-REFERENCES.md`** et s'inspirer de ces références (style, rythme, transitions, finition) pour produire des rendus **professionnels, dynamiques et propres** — en adaptant à la marque, jamais en copiant.
