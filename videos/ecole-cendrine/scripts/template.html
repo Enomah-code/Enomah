@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- « L'école de Joachim Branco » — Cendrine LOUGBEGNON, concours Origines 2026.
+         Généré par scripts/build_hf.py à partir de scripts/template.html : modifier le template, pas index.html. -->
+    <script src="assets/vendor/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-700-normal.woff") format("woff"); font-weight: 700; }
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-900-normal.woff") format("woff"); font-weight: 900; }
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-400-italic.woff") format("woff"); font-weight: 400; font-style: italic; }
+      @font-face { font-family: "Playfair"; src: url("assets/fonts/playfair-display-latin-700-italic.woff") format("woff"); font-weight: 700; font-style: italic; }
+      @font-face { font-family: "Cinzel"; src: url("assets/fonts/cinzel-latin-400-normal.woff") format("woff"); font-weight: 400; }
+      @font-face { font-family: "Cinzel"; src: url("assets/fonts/cinzel-latin-700-normal.woff") format("woff"); font-weight: 700; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; color: #fff; font-family: "Montserrat", sans-serif; }
+      .wrap { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 45%; }
+      .wrap video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .gold { background: linear-gradient(180deg, #fff4c8 0%, #f3cd63 42%, #c98f26 78%, #f6d77c 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.65)) drop-shadow(0 0 2px rgba(0,0,0,0.5)); }
+      .scrim { position: absolute; left: -200px; right: -200px; top: -240px; bottom: -240px; z-index: -1; background: radial-gradient(50% 50% at 50% 50%, rgba(10,6,0,0.55), rgba(10,6,0,0) 75%); }
+      #leak { position: absolute; left: -500px; top: -200px; width: 1300px; height: 2400px; mix-blend-mode: screen; opacity: 0; z-index: 30;
+        background: radial-gradient(45% 40% at 50% 45%, rgba(255,170,70,0.85), rgba(255,110,30,0.35) 45%, rgba(255,80,0,0) 70%); }
+      #flash { position: absolute; inset: 0; background: #fff6e6; opacity: 0; z-index: 31; }
+      #vig { position: absolute; inset: 0; z-index: 29; pointer-events: none; background: radial-gradient(120% 80% at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.38) 100%); }
+
+      /* ---------- scènes « parchemin » (carte de la traite, 1888) ---------- */
+      .parch { position: absolute; inset: 0; overflow: hidden; z-index: 5; opacity: 0; }
+      .parch .bg { position: absolute; inset: -40px; background: url("assets/img/parchment.jpg") center / cover; transform-origin: 50% 50%; }
+      .parch .flick { position: absolute; inset: 0; background: #1a0f05; opacity: 0; }
+      .ink { color: #3a2716; }
+      #map .ttl { position: absolute; left: 0; right: 0; top: 210px; text-align: center; font-family: "Cinzel"; font-weight: 700; font-size: 42px; letter-spacing: 0.16em; color: #3a2716; opacity: 0; }
+      #map .ttl2 { position: absolute; left: 0; right: 0; top: 280px; text-align: center; font-family: "Playfair"; font-style: italic; font-size: 40px; color: #5a3d22; opacity: 0; }
+      #map svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #map .lbl { position: absolute; font-family: "Cinzel"; font-weight: 700; font-size: 44px; letter-spacing: 0.14em; color: #3a2716; opacity: 0; white-space: nowrap; }
+      #map .sub { display: block; font-family: "Playfair"; font-style: italic; font-weight: 400; font-size: 32px; letter-spacing: 0; color: #5a3d22; margin-top: 4px; }
+      #map .ocean { position: absolute; left: 400px; top: 990px; text-align: left; font-size: 40px !important; font-family: "Playfair"; font-style: italic; letter-spacing: 0.22em; color: rgba(58,39,22,0.55); opacity: 0; line-height: 1.3; }
+      #map #ship { position: absolute; left: 0; top: 0; width: 110px; height: 110px; opacity: 0; }
+      .stamp { position: absolute; left: 0; right: 0; text-align: center; opacity: 0; }
+      .stamp span { display: inline-block; padding: 14px 34px; border: 7px solid #8e1d14; border-radius: 12px; color: #8e1d14; font-family: "Cinzel"; font-weight: 700;
+        letter-spacing: 0.12em; mix-blend-mode: multiply; }
+      #st-vendu { top: 1300px; }
+      #st-vendu span { font-size: 58px; transform: rotate(-7deg); }
+      #y1888 .abol { position: absolute; left: 0; right: 0; top: 520px; text-align: center; }
+      #y1888 .abol span { font-size: 64px; transform: rotate(-5deg); }
+      #y1888 .num { position: absolute; left: 0; right: 0; top: 760px; text-align: center; font-family: "Playfair"; font-weight: 900; font-size: 330px; line-height: 1; color: #3a2716; opacity: 0;
+        text-shadow: 0 2px 0 rgba(255,240,210,0.4); }
+      #y1888 .cap2 { position: absolute; left: 0; right: 0; top: 1120px; text-align: center; font-family: "Playfair"; font-style: italic; font-size: 54px; color: #4a3019; opacity: 0; }
+      #y1888 .line { position: absolute; left: 290px; width: 500px; top: 1095px; height: 4px; background: #3a2716; opacity: 0.8; transform-origin: 50% 50%; transform: scaleX(0); }
+
+      /* ---------- titres ---------- */
+      .t { position: absolute; left: 0; right: 0; text-align: center; z-index: 40; opacity: 0; }
+      #t-hook { top: 300px; padding: 0 60px; }
+      #t-hook .k { font-family: "Cinzel"; font-weight: 700; font-size: 34px; letter-spacing: 0.45em; color: #f3d27a; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
+      #t-hook .a { margin-top: 24px; font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 128px; line-height: 1.0; }
+      #t-hook .b { margin-top: 26px; font-family: "Cinzel"; font-weight: 700; font-size: 50px; letter-spacing: 0.06em; color: #fff; text-shadow: 0 4px 22px rgba(0,0,0,0.85); }
+      #t-name { top: 300px; }
+      #t-name .n1 { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 112px; line-height: 1; color: #f1e2c2; text-shadow: 0 4px 20px rgba(0,0,0,0.75); }
+      #t-name .n2 { margin-top: 18px; font-family: "Cinzel"; font-weight: 700; font-size: 46px; letter-spacing: 0.35em; color: #f1e2c2; text-shadow: 0 2px 14px rgba(0,0,0,0.85); }
+      #t-ne, #t-mahi, #t-branco, #t-1927, #t-auj, #t-cent, #t-2025 { top: 300px; }
+      .big { font-family: "Playfair"; font-weight: 900; font-size: 190px; line-height: 1; color: #f1e2c2; text-shadow: 0 6px 30px rgba(0,0,0,0.75); }
+      .mid { font-family: "Cinzel"; font-weight: 700; font-size: 64px; letter-spacing: 0.12em; color: #f1e2c2; text-shadow: 0 4px 22px rgba(0,0,0,0.85); }
+      .sm { margin-top: 18px; font-family: "Cinzel"; font-size: 38px; letter-spacing: 0.3em; color: #f6e6c4; text-shadow: 0 2px 14px rgba(0,0,0,0.9); }
+      .it { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 84px; color: #f1e2c2; text-shadow: 0 4px 20px rgba(0,0,0,0.75); }
+      #t-sign { top: 1010px; text-align: left; left: 80px; right: 80px; }
+      #t-sign .line { width: 140px; height: 4px; background: linear-gradient(90deg, #f3cd63, #c98f26); transform-origin: 0 50%; }
+      #t-sign .n1 { margin-top: 20px; font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 96px; line-height: 1; text-shadow: 0 6px 26px rgba(0,0,0,0.7); }
+      #t-sign .n1b { margin-top: 8px; font-family: "Cinzel"; font-weight: 700; font-size: 60px; letter-spacing: 0.1em; text-shadow: 0 4px 20px rgba(0,0,0,0.75); }
+      #t-sign .n2 { margin-top: 14px; font-family: "Cinzel"; font-size: 36px; letter-spacing: 0.25em; color: #fff3d0; text-shadow: 0 2px 14px rgba(0,0,0,0.85); }
+      #logo { position: absolute; left: 90px; top: 560px; width: 900px; height: 900px; z-index: 41; mix-blend-mode: screen; opacity: 0; }
+      #logo img { width: 100%; height: 100%; display: block; }
+      #shade { position: absolute; inset: 0; background: #06030a; opacity: 0; z-index: 40; }
+      #poster { position: absolute; left: 165px; top: 200px; width: 750px; height: 902px; z-index: 42; opacity: 0; border-radius: 26px; overflow: hidden;
+        box-shadow: 0 50px 120px rgba(0,0,0,0.7), 0 0 0 3px rgba(243,205,99,0.55); }
+      #poster img { width: 100%; height: 100%; display: block; }
+      #vote { position: absolute; left: 0; right: 0; top: 1160px; text-align: center; z-index: 43; opacity: 0; }
+      #vote .v1 { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 92px; line-height: 1; }
+      #vote .v2 { margin-top: 18px; font-family: "Cinzel"; font-weight: 700; font-size: 38px; letter-spacing: 0.2em; color: #fff3d0; }
+      #black { position: absolute; inset: 0; background: #000; opacity: 0; z-index: 60; }
+      /* sous-titres */
+      #caps { position: absolute; left: 70px; right: 130px; top: 1290px; height: 230px; z-index: 50; }
+      .cap { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; opacity: 0; font-weight: 600; font-size: 52px; line-height: 1.22;
+        text-shadow: 0 3px 12px rgba(0,0,0,0.95), 0 1px 3px rgba(0,0,0,0.95); }
+      .cap .hl { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 60px; color: #f6d77c; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
+<!--CLIPS-->
+      <div class="parch" id="map" data-a="27.4" data-d="7.5">
+        <div class="bg"></div>
+        <div class="ttl">LA TRAITE TRANSATLANTIQUE</div>
+        <div class="ttl2">XIXᵉ siècle</div>
+        <svg viewBox="0 0 1080 1920">
+          <defs>
+            <mask id="draw"><path id="route-m" d="M 800 820 Q 560 520 270 1150" fill="none" stroke="#fff" stroke-width="14" stroke-dasharray="900" stroke-dashoffset="900" /></mask>
+          </defs>
+          <g id="rose" opacity="0" transform="translate(880 1190)">
+            <circle r="74" fill="none" stroke="#3a2716" stroke-width="3" /><circle r="56" fill="none" stroke="#3a2716" stroke-width="1.5" />
+            <path d="M0 -100 L14 0 L0 100 L-14 0 Z" fill="#3a2716" /><path d="M-100 0 L0 -14 L100 0 L0 14 Z" fill="#5a3d22" />
+            <text x="0" y="-112" text-anchor="middle" font-family="Cinzel" font-size="34" fill="#3a2716">N</text>
+          </g>
+          <path d="M 800 820 Q 560 520 270 1150" fill="none" stroke="#7a1a12" stroke-width="7" stroke-dasharray="20 16" stroke-linecap="round" mask="url(#draw)" />
+          <g id="pin-b" opacity="0"><circle cx="800" cy="820" r="20" fill="#7a1a12" /><circle cx="800" cy="820" r="34" fill="none" stroke="#7a1a12" stroke-width="3" /></g>
+          <g id="pin-r" opacity="0"><circle cx="270" cy="1150" r="20" fill="#7a1a12" /><circle cx="270" cy="1150" r="34" fill="none" stroke="#7a1a12" stroke-width="3" /></g>
+        </svg>
+        <div class="lbl" id="lbl-b" style="left: 610px; top: 860px;">AGOUAGON<span class="sub">Bénin · Afrique de l'Ouest</span></div>
+        <div class="lbl" id="lbl-r" style="left: 150px; top: 1200px;">BRÉSIL<span class="sub">Amérique du Sud</span></div>
+        <div class="ocean">OCÉAN<br />ATLANTIQUE</div>
+        <svg id="ship" viewBox="0 0 100 100"><path d="M10 70 L90 70 L78 86 L22 86 Z" fill="#3a2716" /><path d="M50 14 L50 68 L22 66 Z" fill="#5a3d22" /><path d="M54 22 L54 68 L78 66 Z" fill="#3a2716" /><rect x="49" y="10" width="3" height="60" fill="#3a2716" /></svg>
+        <div class="stamp" id="st-vendu"><span>VENDU COMME ESCLAVE</span></div>
+        <div class="flick"></div>
+      </div>
+      <div class="parch" id="y1888" data-a="39.7" data-d="5.6">
+        <div class="bg"></div>
+        <div class="stamp abol"><span>ABOLITION</span></div>
+        <div class="num">1888</div>
+        <div class="line"></div>
+        <div class="cap2">de l'esclavage au Brésil</div>
+        <div class="flick"></div>
+      </div>
+      <div id="vig"></div>
+      <div id="leak"></div>
+      <div id="flash"></div>
+      <div class="t" id="t-hook"><div class="scrim"></div><div class="k">AGOUAGON · BÉNIN</div><div class="a gold">Il était esclave.</div><div class="b">Aujourd'hui, il a sa statue.</div></div>
+      <div class="t" id="t-name"><div class="scrim"></div><div class="n1">Joachim Branco</div><div class="n2">1855 — 1932</div></div>
+      <div class="t" id="t-ne"><div class="scrim"></div><div class="sm">NÉ À</div><div class="mid">AGOUAGON</div></div>
+      <div class="t" id="t-mahi"><div class="scrim"></div><div class="it">village mahi</div><div class="sm">DÉPARTEMENT DES COLLINES</div></div>
+      <div class="t" id="t-branco"><div class="scrim"></div><div class="sm">IL PREND LE NOM DE</div><div class="mid" style="font-size: 96px">BRANCO</div></div>
+      <div class="t" id="t-1927"><div class="scrim"></div><div class="sm">MAI</div><div class="big">1927</div></div>
+      <div class="t" id="t-auj"><div class="scrim"></div><div class="sm">ET AUJOURD'HUI ENCORE</div></div>
+      <div class="t" id="t-cent"><div class="scrim"></div><div class="it">des centaines</div><div class="mid">D'ÉLÈVES</div></div>
+      <div class="t" id="t-2025"><div class="scrim"></div><div class="sm">STATUE DÉVOILÉE LE</div><div class="mid" style="font-size: 92px">20 AVRIL 2025</div></div>
+      <div class="t" id="t-sign"><div class="line"></div><div class="n1 gold">Cendrine Tamegnon</div><div class="n1b">LOUGBEGNON</div><div class="n2">FILLE D'AGOUAGON · FIÈRE DE L'ÊTRE</div></div>
+      <div id="shade"></div>
+      <div id="logo"><img src="assets/img/logo-origines.jpg" alt="Origines" /></div>
+      <div id="poster"><img src="assets/img/affiche-vote.jpg" alt="Votez Cendrine LOUGBEGNON" /></div>
+      <div id="vote"><div class="v1 gold">Votez Cendrine !</div><div class="v2">CANDIDATE N°100 · AGOUAGON</div></div>
+      <div id="caps">
+<!--CAPS-->
+      </div>
+      <div id="black"></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="__DUR__" data-track-index="10" data-volume="1"></audio>
+<!--SFX-->
+    </div>
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        const D = /*DATA*/;
+        const T = D.t;
+        const tl = gsap.timeline({ paused: true });
+        const E = { o3: "power3.out", o4: "power4.out", io: "power2.inOut" };
+
+        // ---------- entrées de plans : zoom-flou (les mouvements 3D sont dans les vidéos) ----------
+        const cuts = [];
+        D.clips.forEach((c, i) => {
+          const w = "#w-" + c.id;
+          if (c.id === "s05r" || c.id === "s12") return;            // couches de fondu, gérées plus bas
+          if (i === 0) return;
+          tl.fromTo(w, { scale: 1.12, filter: "blur(10px)" }, { scale: 1.0, filter: "blur(0px)", duration: 0.36, ease: E.o3 }, c.start);
+          cuts.push(c.start);
+        });
+        // fondus couleur ↔ film ancien (même mouvement de caméra, deux traitements)
+        D.xfade.forEach(([a, b, t, d]) => {
+          tl.set("#w-" + b, { autoAlpha: 0 }, 0);
+          tl.to("#w-" + b, { autoAlpha: 1, duration: d, ease: "sine.inOut" }, t);
+        });
+        // scènes parchemin : entrée/sortie en fondu + scintillement de projection
+        ["#map", "#y1888"].forEach((s) => {
+          const el = document.querySelector(s), a = +el.dataset.a, d = +el.dataset.d;
+          tl.set(s, { autoAlpha: 0 }, 0);
+          tl.set(s, { autoAlpha: 1 }, a);
+          tl.set(s, { autoAlpha: 0 }, a + d);
+          tl.fromTo(s + " .bg", { scale: 1.0 }, { scale: 1.07, duration: d, ease: "none" }, a);
+          tl.set(s + " .flick", { autoAlpha: 0 }, 0);
+          for (let k = 0; k < Math.floor(d / 0.5); k++) {
+            tl.to(s + " .flick", { autoAlpha: [0.06, 0.0, 0.1, 0.03, 0.08][k % 5], duration: 0.5, ease: "sine.inOut" }, a + k * 0.5);
+          }
+          cuts.push(a);
+        });
+
+        // ---------- lumière : fuite chaude sur les coupes, flash sur les révélations ----------
+        tl.set("#leak", { autoAlpha: 0 }, 0);
+        cuts.forEach((t, i) => {
+          tl.fromTo("#leak", { autoAlpha: 0, x: i % 2 ? 700 : -700 }, { autoAlpha: 0.6, x: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, t - 0.12);
+          tl.to("#leak", { autoAlpha: 0, x: i % 2 ? -500 : 500, duration: 0.45, ease: "power2.in" }, t + 0.1);
+        });
+        tl.set("#flash", { autoAlpha: 0 }, 0);
+        [9.45, 16.4, T.ecole - 0.1, 96.5].forEach((t) => {
+          tl.fromTo("#flash", { autoAlpha: 0 }, { autoAlpha: 0.85, duration: 0.06, immediateRender: false }, t - 0.04);
+          tl.to("#flash", { autoAlpha: 0, duration: 0.4, ease: "power2.out" }, t + 0.02);
+        });
+
+        // ---------- hook ----------
+        tl.fromTo("#t-hook", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.15);
+        tl.fromTo("#t-hook .k", { autoAlpha: 0, y: -24 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: E.o3 }, 0.15);
+        tl.fromTo("#t-hook .a", { autoAlpha: 0, scale: 1.35, filter: "blur(8px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.55, ease: E.o4 }, 0.35);
+        tl.fromTo("#t-hook .b", { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, 1.15);
+        tl.to("#t-hook", { autoAlpha: 0, y: -50, duration: 0.4, ease: "power2.in" }, 3.1);
+
+        // ---------- passé : nom, naissance, village ----------
+        const show = (sel, a, b, from) => {
+          tl.fromTo(sel, Object.assign({ autoAlpha: 0, y: 30, scale: 1.06 }, from || {}), { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: E.o3 }, a);
+          tl.to(sel, { autoAlpha: 0, y: -30, duration: 0.35, ease: "power2.in" }, b);
+        };
+        show("#t-name", 16.6, T.ne - 0.45);
+        show("#t-ne", T.ne - 0.1, T.mahi - 0.6);
+        show("#t-mahi", T.mahi - 0.2, 27.1);
+
+        // ---------- carte : la traite ----------
+        const M = 27.4;
+        tl.fromTo("#map .ttl", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, M + 0.15);
+        tl.fromTo("#map .ttl2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, M + 0.45);
+        tl.fromTo("#rose", { opacity: 0, rotation: -40, svgOrigin: "0 0" }, { opacity: 0.85, rotation: 0, duration: 1.2, ease: E.o3 }, M + 0.2);
+        tl.fromTo("#map .ocean", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, M + 0.6);
+        tl.fromTo("#pin-b", { opacity: 0 }, { opacity: 1, duration: 0.3 }, M + 0.3);
+        tl.fromTo("#lbl-b", { autoAlpha: 0, x: 30 }, { autoAlpha: 1, x: 0, duration: 0.45, ease: E.o3 }, M + 0.35);
+        // la route se dessine de « vendu » à « Brésil », le navire la suit
+        const rt = T.vendu - 0.2, rd = Math.max(1.2, T.bresil - rt + 0.2);
+        tl.to("#route-m", { attr: { "stroke-dashoffset": 0 }, duration: rd, ease: "power1.inOut" }, rt);
+        const P = (u) => { const a = 1 - u; return [a * a * 800 + 2 * a * u * 560 + u * u * 270, a * a * 820 + 2 * a * u * 520 + u * u * 1150]; };
+        const kf = [];
+        for (let k = 0; k <= 16; k++) { const [x, y] = P(k / 16); kf.push({ x: x - 55, y: y - 95, duration: rd / 16, ease: "none" }); }
+        tl.set("#ship", { x: 745, y: 725 }, 0);
+        tl.to("#ship", { autoAlpha: 1, duration: 0.2 }, rt);
+        tl.to("#ship", { keyframes: kf }, rt);
+        tl.fromTo("#pin-r", { opacity: 0 }, { opacity: 1, duration: 0.3 }, T.bresil - 0.1);
+        tl.fromTo("#lbl-r", { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.45, ease: E.o3 }, T.bresil - 0.05);
+        tl.fromTo("#st-vendu", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 0.92, scale: 1, duration: 0.22, ease: "power4.in" }, T.traite - 0.3);
+
+        // ---------- 1888 : abolition ----------
+        tl.fromTo("#y1888 .abol", { autoAlpha: 0, scale: 2.4 }, { autoAlpha: 0.92, scale: 1, duration: 0.22, ease: "power4.in" }, T.abolition);
+        tl.fromTo("#y1888 .num", { autoAlpha: 0, scale: 1.6, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: E.o4 }, T.y1888 - 0.1);
+        tl.to("#y1888 .line", { scaleX: 1, duration: 0.5, ease: E.io }, T.y1888 + 0.3);
+        tl.fromTo("#y1888 .cap2", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, T.y1888 + 0.5);
+        show("#t-branco", T.nomme - 0.1, 51.5);
+
+        // ---------- 1927 → aujourd'hui ----------
+        show("#t-1927", T.y1927 - 0.15, 57.6, { scale: 1.5 });
+        show("#t-auj", T.ecole + 0.1, 71.6);
+        show("#t-cent", T.centaines - 0.1, 79.8);
+        show("#t-2025", T.y2025 - 0.2, 96.3, { scale: 1.4 });
+
+        // ---------- signature ----------
+        tl.fromTo("#t-sign", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, T.cetait);
+        tl.fromTo("#t-sign .line", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: E.io }, T.cetait);
+        tl.fromTo("#t-sign .n1", { autoAlpha: 0, x: -60 }, { autoAlpha: 1, x: 0, duration: 0.6, ease: E.o3 }, T.cetait + 0.2);
+        tl.fromTo("#t-sign .n1b", { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: E.o3 }, T.cetait + 0.45);
+        tl.fromTo("#t-sign .n2", { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: E.o3 }, T.cetait + 2.6);
+        tl.to("#t-sign", { autoAlpha: 0, y: 40, duration: 0.4, ease: "power2.in" }, 104.6);
+
+        // ---------- fin : logo Origines puis affiche de vote ----------
+        const e0 = 104.9;
+        tl.fromTo("#shade", { autoAlpha: 0 }, { autoAlpha: 0.62, duration: 0.6 }, e0 - 0.3);
+        tl.fromTo("#logo", { autoAlpha: 0, scale: 0.85, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.9, ease: E.o3 }, e0 + 0.1);
+        tl.to("#logo", { scale: 1.06, duration: 1.35, ease: "none" }, e0 + 1.0);
+        tl.to("#logo", { autoAlpha: 0, scale: 1.15, filter: "blur(10px)", duration: 0.45, ease: "power2.in" }, e0 + 2.4);
+        tl.fromTo("#poster", { autoAlpha: 0, y: 220, rotation: -4, scale: 0.92 }, { autoAlpha: 1, y: 0, rotation: 0, scale: 1, duration: 0.8, ease: E.o4 }, e0 + 2.7);
+        tl.to("#poster", { scale: 1.03, duration: D.dur - e0 - 3.5, ease: "none" }, e0 + 3.5);
+        tl.fromTo("#vote", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, e0 + 3.3);
+        tl.fromTo("#black", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: "none" }, D.dur - 0.5);
+
+        // ---------- sous-titres ----------
+        D.caps.forEach(([a, b], i) => {
+          tl.fromTo("#cap" + i, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.18, ease: E.o3 }, a);
+          tl.to("#cap" + i, { autoAlpha: 0, duration: 0.12 }, Math.max(a + 0.3, b - 0.1));
+        });
+
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

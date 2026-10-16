@@ -1,4 +1,8 @@
-assets/
+assets/src/
+assets/up/
+assets/shots/
+assets/audio/
+assets/img/
 index.html
 renders/
 snapshots/
