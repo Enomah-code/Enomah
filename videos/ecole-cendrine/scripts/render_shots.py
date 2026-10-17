@@ -15,6 +15,10 @@ for sid, ph, a, b, c0, c1, opts in json.load(open(os.path.join(ROOT, "scripts/sh
     if not os.path.exists(src):
         print("attente agrandissement :", sid, ph, flush=True)
         continue
+    if opts == "framed":   # photo presque carrée : image entière encadrée sur fond flou
+        subprocess.run(["python3", os.path.join(ROOT, "scripts/framed.py"), src, dst, f"{b - a + 0.3:.2f}"], check=True, stdout=subprocess.DEVNULL)
+        print("ok", sid, flush=True)
+        continue
     subprocess.run(["python3", os.path.join(ROOT, "scripts/cam.py"), src, dst, f"{b - a + 0.3:.2f}", c0, c1] + opts.split(),
                    check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print("ok", sid, flush=True)
