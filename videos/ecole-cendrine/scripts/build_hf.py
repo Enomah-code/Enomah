@@ -37,6 +37,8 @@ T = {  # repères de synchronisation (s)
     "emancip": at(16, "outil"), "y2017": at(19, "2017"), "ans90": at(19, "90e"),
     "ada": at(20, "ADA"), "ajap": at(20, "AJAP"),
     "lien": at(21, "lien"), "conclure": at(24, "Enfin"), "centaines": at(25, "centaines"),
+    "dept": at(7, "département"), "adopte": at(9, "adopté"), "societe": at(10, "société"), "economique": at(10, "économique"),
+    "alpha": at(18, "d'alphabétisation"), "elite": at(18, "élite"), "identite": at(18, "l'identité"), "voisins": at(22, "élèves"),
     "cles": at(27, "rappelant"), "statue": at(28, "statue"), "y2025": at(29, "2025"), "cetait": at(31, "C'était"),
 }
 
@@ -48,14 +50,16 @@ LAYERS = ("s05r", "v14")          # couches posées au-dessus pour les fondus co
 XFADE = [("s05", "s05r", T["change"] - 0.15, 0.6), ("v14r", "v14", T["ecole"] - 0.35, 0.7)]
 FLASH = [9.45, 16.4, T["ecole"] - 0.1, 333.1]
 
-# scènes « parchemin » : id → (début, durée) ; elles comblent les trous entre plans photo
-PARCH = {"map": (64.3, 12.0), "y1888": (76.3, 5.7), "casc": (94.8, 6.6), "map2": (101.4, 17.4),
-         "c2017": (211.07, 7.33), "cada": (228.86, 7.44), "ctl": (284.01, 8.59), "cq": (320.2, 8.23)}
+T["mahi2"] = T["dept"] + 1.9
+
+# scènes animées (motion design 2D/3D) : id → (début, durée) ; elles comblent les trous entre plans photo
+PARCH = {"rewind": (16.4, 3.16), "resil": (40.3, 6.6), "zoom": (58.3, 6.0), "map": (64.3, 12.0), "y1888": (76.3, 12.4),
+         "stairs": (88.7, 12.7), "map2": (101.4, 17.4), "net": (118.8, 6.9), "obj": (156.73, 5.48), "pillars": (202.31, 8.76),
+         "c2017": (211.07, 7.33), "cada": (228.86, 7.44), "villages": (260.1, 14.85), "ctl": (284.01, 15.56), "cq": (312.85, 15.58)}
 
 # titres posés sur les plans : id, entrée, sortie
-TITLES = [("t-name", T["nom1"] - 0.1, 45.6), ("t-ne", T["ne"] - 0.1, T["mahi"] - 0.7), ("t-mahi", T["mahi"] - 0.2, 64.0),
-          ("t-branco", T["nomme"] - 0.1, 88.4), ("t-1927", T["y1927"] - 0.15, 132.8), ("t-auj", T["ecole"] + 0.1, 146.8),
-          ("t-emancip", T["emancip"] - 0.1, 188.8), ("t-lien", T["lien"] - 0.1, 268.4), ("t-cent", T["centaines"] - 0.1, 306.4),
+TITLES = [("t-name", T["nom1"] - 0.1, 40.1), ("t-ne", T["ne"] - 0.1, 58.1), ("t-1927", T["y1927"] - 0.15, 132.8), ("t-auj", T["ecole"] + 0.1, 146.8),
+          ("t-emancip", T["emancip"] - 0.1, 188.8), ("t-cent", T["centaines"] - 0.1, 306.4),
           ("t-2025", T["y2025"] - 0.2, 344.7)]
 
 HL = {"esclave", "esclave.", "Brésil,", "1888,", "Branco", "Branco,", "1927,", "école", "Agouagon,", "statue", "2025,", "centaines",
@@ -103,7 +107,9 @@ SFX = [("whoosh-cinematic", 0.0, 0.3), ("impact-bass-1", 9.4, 0.45), ("riser", T
        ("impact-bass-1", T["vendu"] + 0.05, 0.3), ("impact-bass-1", T["abolition"] + 0.1, 0.3), ("impact-bass-1", T["y1888"], 0.4),
        ("impact-bass-1", T["y1927"], 0.35), ("whoosh-cinematic", 138.7, 0.22), ("sparkle", T["ecole"], 0.2),
        ("impact-bass-1", T["y2017"], 0.3), ("sparkle", T["ans90"], 0.2), ("impact-bass-1", T["y2025"], 0.35),
-       ("whoosh-cinematic", 333.0, 0.25), ("chime", END + 0.4, 0.3), ("sparkle", END + 3.0, 0.25)]
+       ("whoosh-cinematic", 333.0, 0.25), ("riser", 16.0, 0.16), ("impact-bass-1", 88.7 + 8.4, 0.3), ("impact-bass-1", T["nomme"], 0.35),
+       ("impact-bass-1", 260.1 + 7.4, 0.3), ("sparkle", T["alpha"], 0.15), ("sparkle", T["elite"], 0.15), ("sparkle", T["identite"], 0.15),
+       ("impact-bass-1", T["mahi2"] + 0.4, 0.3), ("chime", END + 0.4, 0.3), ("sparkle", END + 3.0, 0.25)]
 # un souffle discret sur chaque coupe
 CUTS = sorted({c["start"] for c in clips if c["start"] > 0 and c["id"] not in LAYERS} | {a for a, d in PARCH.values()})
 SFX += [("whoosh-short", t - 0.1, 0.14) for t in CUTS if all(abs(t - s[1]) > 0.6 for s in SFX)]
