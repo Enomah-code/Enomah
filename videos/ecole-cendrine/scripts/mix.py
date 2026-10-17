@@ -12,7 +12,7 @@ import soundfile as sf
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SR = 48000
-DUR = 110.6
+DUR = 369.8
 MUSIC_IN = 11.0       # la musique entre sur « Alors, laissez-moi vous raconter… »
 
 

@@ -1,4 +1,4 @@
-"""Montage de la voix off (version courte ~1 min 45) à partir des deux enregistrements nettoyés (voice.py).
+"""Montage de la voix off INTÉGRALE à partir des deux enregistrements nettoyés (voice.py).
 Chaque segment = suite de morceaux (fichier, début, fin) ; les silences internes > 0,55 s sont ramenés à 0,35 s,
 0,45 s de respiration entre segments. Sorties : assets/audio/voice.wav, scripts/timeline.json
 (début/durée de chaque segment + mots recalés sur la sortie pour les sous-titres).
@@ -15,16 +15,9 @@ SR = 48000
 GAP = 0.45
 TEMPO = 1.06          # débit légèrement accéléré (inaudible), voix posée et lente à l'origine
 
-EDL = [  # id, [(fichier, début, fin)], rôle
-    ("A", [("wa86", 0.95, 12.75)], "hook : statue d'un ancien esclave ?"),
-    ("B", [("wa86", 13.40, 18.45)], "laissez-moi vous raconter"),
-    ("C", [("wa86", 58.85, 65.80), ("wa86", 68.00, 72.30)], "né à Agouagon, village mahi des Collines"),
-    ("D", [("wa87", 1.15, 13.65)], "vendu comme esclave au Brésil"),
-    ("E", [("wa87", 13.85, 26.40)], "abolition 1888, adopté par Branco"),
-    ("G", [("wa87", 67.00, 86.70), ("wa87", 87.75, 89.30)], "mai 1927 : l'école"),
-    ("I", [("wa87", 281.85, 290.55)], "des centaines d'élèves"),
-    ("J", [("wa87", 317.40, 329.40), ("wa87", 334.05, 339.86)], "la statue, 20 avril 2025"),
-    ("K", [("wa87", 350.90, 359.50)], "signature"),
+EDL = [  # version intégrale : tout l'enregistrement, seule la phrase répétée en fin de 1re prise est retirée
+    ("P1", [("wa86", 0.95, 74.0)], "1re prise : hook → naissance à Agouagon"),
+    ("P2", [("wa87", 1.15, 359.50)], "2e prise : esclavage → statue → signature"),
 ]
 
 

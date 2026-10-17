@@ -50,6 +50,28 @@
       #y1888 .cap2 { position: absolute; left: 0; right: 0; top: 1120px; text-align: center; font-family: "Playfair"; font-style: italic; font-size: 54px; color: #4a3019; opacity: 0; }
       #y1888 .line { position: absolute; left: 290px; width: 500px; top: 1095px; height: 4px; background: #3a2716; opacity: 0.8; transform-origin: 50% 50%; transform: scaleX(0); }
 
+      /* cartons parchemin génériques */
+      .card .ci { opacity: 0; }
+      .card .box { position: absolute; left: 70px; right: 70px; top: 420px; text-align: center; }
+      .k-ink { font-family: "Cinzel"; font-weight: 700; font-size: 58px; letter-spacing: 0.12em; color: #3a2716; }
+      .k-ink-s { font-family: "Cinzel"; font-weight: 700; font-size: 38px; letter-spacing: 0.22em; color: #5a3d22; }
+      .i-ink { font-family: "Playfair"; font-style: italic; font-size: 60px; color: #4a3019; line-height: 1.15; }
+      .n-ink { font-family: "Playfair"; font-weight: 900; font-size: 300px; line-height: 1; color: #3a2716; }
+      .rule { width: 420px; height: 4px; background: #3a2716; opacity: 0.8; margin: 34px auto; }
+      .red { color: #8e1d14; }
+      .card .stamp { position: static; display: block; margin: 40px 0; }
+      #ctl .row { display: flex; align-items: baseline; gap: 34px; margin: 0 0 46px 70px; text-align: left; }
+      #ctl .row b { font-family: "Playfair"; font-weight: 900; font-size: 104px; color: #3a2716; width: 270px; }
+      #ctl .row span { font-family: "Playfair"; font-style: italic; font-size: 50px; color: #4a3019; }
+      #cq .q { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 84px; line-height: 1.12; color: #3a2716; }
+      #map2 .ttl { position: absolute; left: 0; right: 0; top: 210px; text-align: center; font-family: "Cinzel"; font-weight: 700; font-size: 42px; letter-spacing: 0.16em; color: #3a2716; opacity: 0; }
+      #map2 svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+      #map2 .lbl { position: absolute; font-family: "Cinzel"; font-weight: 700; font-size: 44px; letter-spacing: 0.14em; color: #3a2716; opacity: 0; white-space: nowrap; }
+      #map2 .sub { display: block; font-family: "Playfair"; font-style: italic; font-weight: 400; font-size: 32px; letter-spacing: 0; color: #5a3d22; margin-top: 4px; }
+      #map2 #ship2 { position: absolute; left: 0; top: 0; width: 110px; height: 110px; opacity: 0; }
+      #st-succes { top: 1300px; }
+      #st-succes span { font-size: 58px; transform: rotate(-6deg); border-color: #2f4a1f; color: #2f4a1f; }
+
       /* ---------- titres ---------- */
       .t { position: absolute; left: 0; right: 0; text-align: center; z-index: 40; opacity: 0; }
       #t-hook { top: 300px; padding: 0 60px; }
@@ -59,7 +81,7 @@
       #t-name { top: 300px; }
       #t-name .n1 { font-family: "Playfair"; font-style: italic; font-weight: 700; font-size: 112px; line-height: 1; color: #f1e2c2; text-shadow: 0 4px 20px rgba(0,0,0,0.75); }
       #t-name .n2 { margin-top: 18px; font-family: "Cinzel"; font-weight: 700; font-size: 46px; letter-spacing: 0.35em; color: #f1e2c2; text-shadow: 0 2px 14px rgba(0,0,0,0.85); }
-      #t-ne, #t-mahi, #t-branco, #t-1927, #t-auj, #t-cent, #t-2025 { top: 300px; }
+      #t-ne, #t-mahi, #t-branco, #t-1927, #t-auj, #t-cent, #t-2025, #t-emancip, #t-lien { top: 300px; }
       .big { font-family: "Playfair"; font-weight: 900; font-size: 190px; line-height: 1; color: #f1e2c2; text-shadow: 0 6px 30px rgba(0,0,0,0.75); }
       .mid { font-family: "Cinzel"; font-weight: 700; font-size: 64px; letter-spacing: 0.12em; color: #f1e2c2; text-shadow: 0 4px 22px rgba(0,0,0,0.85); }
       .sm { margin-top: 18px; font-family: "Cinzel"; font-size: 38px; letter-spacing: 0.3em; color: #f6e6c4; text-shadow: 0 2px 14px rgba(0,0,0,0.9); }
@@ -89,7 +111,7 @@
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-duration="__DUR__" data-width="1080" data-height="1920">
 <!--CLIPS-->
-      <div class="parch" id="map" data-a="27.4" data-d="7.5">
+      <div class="parch" id="map">
         <div class="bg"></div>
         <div class="ttl">LA TRAITE TRANSATLANTIQUE</div>
         <div class="ttl2">XIXᵉ siècle</div>
@@ -113,7 +135,7 @@
         <div class="stamp" id="st-vendu"><span>VENDU COMME ESCLAVE</span></div>
         <div class="flick"></div>
       </div>
-      <div class="parch" id="y1888" data-a="39.7" data-d="5.6">
+      <div class="parch" id="y1888">
         <div class="bg"></div>
         <div class="stamp abol"><span>ABOLITION</span></div>
         <div class="num">1888</div>
@@ -121,6 +143,57 @@
         <div class="cap2">de l'esclavage au Brésil</div>
         <div class="flick"></div>
       </div>
+      <div class="parch" id="map2">
+        <div class="bg"></div>
+        <div class="ttl">DU BRÉSIL AU NIGERIA</div>
+        <svg viewBox="0 0 1080 1920">
+          <defs><mask id="draw2"><path id="route2-m" d="M 270 1150 Q 540 560 840 870" fill="none" stroke="#fff" stroke-width="14" stroke-dasharray="1000" stroke-dashoffset="1000" /></mask></defs>
+          <path d="M 270 1150 Q 540 560 840 870" fill="none" stroke="#3a2716" stroke-width="7" stroke-dasharray="20 16" stroke-linecap="round" mask="url(#draw2)" />
+          <g id="pin2-r" opacity="0"><circle cx="270" cy="1150" r="20" fill="#3a2716" /><circle cx="270" cy="1150" r="34" fill="none" stroke="#3a2716" stroke-width="3" /></g>
+          <g id="pin2-n" opacity="0"><circle cx="840" cy="870" r="20" fill="#2f4a1f" /><circle cx="840" cy="870" r="34" fill="none" stroke="#2f4a1f" stroke-width="3" /></g>
+          <g id="pin2-a" opacity="0"><circle cx="735" cy="845" r="11" fill="#7a1a12" /></g>
+        </svg>
+        <div class="lbl" id="lbl2-r" style="left: 120px; top: 1200px;">BRÉSIL<span class="sub">usine de cigarettes</span></div>
+        <div class="lbl" id="lbl2-n" style="left: 660px; top: 920px;">NIGERIA<span class="sub">sa propre usine</span></div>
+        <div class="lbl" id="lbl2-a" style="left: 500px; top: 848px; font-size: 30px;">AGOUAGON</div>
+        <svg id="ship2" viewBox="0 0 100 100"><path d="M10 70 L90 70 L78 86 L22 86 Z" fill="#3a2716" /><path d="M50 14 L50 68 L22 66 Z" fill="#5a3d22" /><path d="M54 22 L54 68 L78 66 Z" fill="#3a2716" /><rect x="49" y="10" width="3" height="60" fill="#3a2716" /></svg>
+        <div class="stamp" id="st-succes"><span>SUCCÈS</span></div>
+        <div class="flick"></div>
+      </div>
+      <div class="parch card" id="casc"><div class="bg"></div><div class="box" style="top: 470px">
+        <div class="ci k-ink" data-o="0.2">UNE ASCENSION</div>
+        <div class="ci i-ink" data-o="0.6">sociale et économique</div>
+        <div class="ci stamp" data-o="2.4" data-stamp="1"><span style="font-size: 78px">RARE</span></div>
+        <div class="ci i-ink red" data-o="4.6">pour un ancien esclave</div>
+      </div><div class="flick"></div></div>
+      <div class="parch card" id="c2017"><div class="bg"></div><div class="box" style="top: 380px">
+        <div class="ci k-ink-s" data-o="0.3">LA COMMUNAUTÉ MAHI CÉLÈBRE</div>
+        <div class="ci n-ink" data-o="1.3" data-pop="1">2017</div>
+        <div class="ci rule" data-o="1.8"></div>
+        <div class="ci k-ink" data-o="5.3" data-pop="1" style="font-size: 92px">90 ANS</div>
+        <div class="ci i-ink" data-o="5.8">de l'école primaire publique d'Agouagon</div>
+      </div><div class="flick"></div></div>
+      <div class="parch card" id="cada"><div class="bg"></div><div class="box" style="top: 380px">
+        <div class="ci k-ink-s" data-o="0.2">COMMÉMORATION ORGANISÉE PAR</div>
+        <div class="ci n-ink" data-o="2.8" data-pop="1" style="font-size: 190px; margin-top: 40px">ADA</div>
+        <div class="ci i-ink" data-o="3.0" style="font-size: 44px">Association de Développement d'Agouagon</div>
+        <div class="ci rule" data-o="3.4"></div>
+        <div class="ci n-ink" data-o="6.6" data-pop="1" style="font-size: 190px">AJAP</div>
+        <div class="ci i-ink" data-o="3.8" style="font-size: 44px">Association des Jeunes pour le Progrès d'Agouagon</div>
+      </div><div class="flick"></div></div>
+      <div class="parch card" id="ctl"><div class="bg"></div><div class="box" style="top: 300px; left: 40px; right: 40px">
+        <div class="ci k-ink" data-o="0.2" style="margin-bottom: 70px">UNE VIE, UN HÉRITAGE</div>
+        <div class="ci row" data-o="0.9"><b>1855</b><span>naissance à Agouagon</span></div>
+        <div class="ci row" data-o="2.1"><b>1888</b><span>abolition au Brésil</span></div>
+        <div class="ci row" data-o="3.3"><b>1927</b><span>fondation de l'école</span></div>
+        <div class="ci row" data-o="4.5"><b>2017</b><span>90 ans de l'école</span></div>
+        <div class="ci row" data-o="5.7"><b class="red">2025</b><span>la statue est dévoilée</span></div>
+      </div><div class="flick"></div></div>
+      <div class="parch card" id="cq"><div class="bg"></div><div class="box" style="top: 470px">
+        <div class="ci q" data-o="0.3">« L'éducation est l'une des clés fondamentales du développement. »</div>
+        <div class="ci rule" data-o="2.6"></div>
+        <div class="ci k-ink-s" data-o="3.0">L'HÉRITAGE DE JOACHIM BRANCO</div>
+      </div><div class="flick"></div></div>
       <div id="vig"></div>
       <div id="leak"></div>
       <div id="flash"></div>
@@ -131,6 +204,8 @@
       <div class="t" id="t-branco"><div class="scrim"></div><div class="sm">IL PREND LE NOM DE</div><div class="mid" style="font-size: 96px">BRANCO</div></div>
       <div class="t" id="t-1927"><div class="scrim"></div><div class="sm">MAI</div><div class="big">1927</div></div>
       <div class="t" id="t-auj"><div class="scrim"></div><div class="sm">ET AUJOURD'HUI ENCORE</div></div>
+      <div class="t" id="t-emancip"><div class="scrim"></div><div class="it">un outil</div><div class="mid">D'ÉMANCIPATION</div></div>
+      <div class="t" id="t-lien"><div class="scrim"></div><div class="it">un lien</div><div class="mid">ENTRE LES VILLAGES</div></div>
       <div class="t" id="t-cent"><div class="scrim"></div><div class="it">des centaines</div><div class="mid">D'ÉLÈVES</div></div>
       <div class="t" id="t-2025"><div class="scrim"></div><div class="sm">STATUE DÉVOILÉE LE</div><div class="mid" style="font-size: 92px">20 AVRIL 2025</div></div>
       <div class="t" id="t-sign"><div class="line"></div><div class="n1 gold">Cendrine Tamegnon</div><div class="n1b">LOUGBEGNON</div><div class="n2">FILLE D'AGOUAGON · FIÈRE DE L'ÊTRE</div></div>
@@ -157,7 +232,7 @@
         const cuts = [];
         D.clips.forEach((c, i) => {
           const w = "#w-" + c.id;
-          if (c.id === "s05r" || c.id === "s12") return;            // couches de fondu, gérées plus bas
+          if (D.layers.includes(c.id)) return;                     // couches de fondu, gérées plus bas
           if (i === 0) return;
           tl.fromTo(w, { scale: 1.12, filter: "blur(10px)" }, { scale: 1.0, filter: "blur(0px)", duration: 0.36, ease: E.o3 }, c.start);
           cuts.push(c.start);
@@ -168,8 +243,8 @@
           tl.to("#w-" + b, { autoAlpha: 1, duration: d, ease: "sine.inOut" }, t);
         });
         // scènes parchemin : entrée/sortie en fondu + scintillement de projection
-        ["#map", "#y1888"].forEach((s) => {
-          const el = document.querySelector(s), a = +el.dataset.a, d = +el.dataset.d;
+        Object.entries(D.parch).forEach(([id, [a, d]]) => {
+          const s = "#" + id;
           tl.set(s, { autoAlpha: 0 }, 0);
           tl.set(s, { autoAlpha: 1 }, a);
           tl.set(s, { autoAlpha: 0 }, a + d);
@@ -188,7 +263,7 @@
           tl.to("#leak", { autoAlpha: 0, x: i % 2 ? -500 : 500, duration: 0.45, ease: "power2.in" }, t + 0.1);
         });
         tl.set("#flash", { autoAlpha: 0 }, 0);
-        [9.45, 16.4, T.ecole - 0.1, 96.5].forEach((t) => {
+        D.flash.forEach((t) => {
           tl.fromTo("#flash", { autoAlpha: 0 }, { autoAlpha: 0.85, duration: 0.06, immediateRender: false }, t - 0.04);
           tl.to("#flash", { autoAlpha: 0, duration: 0.4, ease: "power2.out" }, t + 0.02);
         });
@@ -205,12 +280,22 @@
           tl.fromTo(sel, Object.assign({ autoAlpha: 0, y: 30, scale: 1.06 }, from || {}), { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, ease: E.o3 }, a);
           tl.to(sel, { autoAlpha: 0, y: -30, duration: 0.35, ease: "power2.in" }, b);
         };
-        show("#t-name", 16.6, T.ne - 0.45);
-        show("#t-ne", T.ne - 0.1, T.mahi - 0.6);
-        show("#t-mahi", T.mahi - 0.2, 27.1);
+        D.titles.forEach(([id, a, b]) => show("#" + id, a, b, id === "t-1927" || id === "t-2025" ? { scale: 1.45 } : null));
+
+        // ---------- cartons parchemin : éléments qui apparaissent l'un après l'autre ----------
+        document.querySelectorAll(".card").forEach((cd) => {
+          const a = D.parch[cd.id][0];
+          cd.querySelectorAll(".ci").forEach((el) => {
+            const t = a + (+el.dataset.o);
+            if (el.dataset.stamp) tl.fromTo(el, { autoAlpha: 0, scale: 2.3 }, { autoAlpha: 0.92, scale: 1, duration: 0.22, ease: "power4.in" }, t);
+            else if (el.dataset.pop) tl.fromTo(el, { autoAlpha: 0, scale: 1.5, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: E.o4 }, t);
+            else if (el.classList.contains("rule")) tl.fromTo(el, { autoAlpha: 0, scaleX: 0 }, { autoAlpha: 0.8, scaleX: 1, duration: 0.5, ease: E.io }, t);
+            else tl.fromTo(el, { autoAlpha: 0, y: 26 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, t);
+          });
+        });
 
         // ---------- carte : la traite ----------
-        const M = 27.4;
+        const M = D.parch.map[0];
         tl.fromTo("#map .ttl", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, M + 0.15);
         tl.fromTo("#map .ttl2", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, M + 0.45);
         tl.fromTo("#rose", { opacity: 0, rotation: -40, svgOrigin: "0 0" }, { opacity: 0.85, rotation: 0, duration: 1.2, ease: E.o3 }, M + 0.2);
@@ -235,13 +320,25 @@
         tl.fromTo("#y1888 .num", { autoAlpha: 0, scale: 1.6, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: E.o4 }, T.y1888 - 0.1);
         tl.to("#y1888 .line", { scaleX: 1, duration: 0.5, ease: E.io }, T.y1888 + 0.3);
         tl.fromTo("#y1888 .cap2", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, T.y1888 + 0.5);
-        show("#t-branco", T.nomme - 0.1, 51.5);
 
-        // ---------- 1927 → aujourd'hui ----------
-        show("#t-1927", T.y1927 - 0.15, 57.6, { scale: 1.5 });
-        show("#t-auj", T.ecole + 0.1, 71.6);
-        show("#t-cent", T.centaines - 0.1, 79.8);
-        show("#t-2025", T.y2025 - 0.2, 96.3, { scale: 1.4 });
+        // ---------- carte 2 : du Brésil au Nigeria ----------
+        const M2 = D.parch.map2[0];
+        tl.fromTo("#map2 .ttl", { autoAlpha: 0, y: -20 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: E.o3 }, M2 + 0.15);
+        tl.fromTo("#pin2-r", { opacity: 0 }, { opacity: 1, duration: 0.3 }, M2 + 0.3);
+        tl.fromTo("#pin2-a", { opacity: 0 }, { opacity: 0.8, duration: 0.3 }, M2 + 0.5);
+        tl.fromTo("#lbl2-a", { autoAlpha: 0 }, { autoAlpha: 0.75, duration: 0.4 }, M2 + 0.5);
+        tl.fromTo("#lbl2-r", { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.45, ease: E.o3 }, T.cigarettes - 0.2);
+        const r2 = T.emigra - 0.3, d2 = Math.max(1.4, T.nigeria - r2 + 0.5);
+        tl.to("#route2-m", { attr: { "stroke-dashoffset": 0 }, duration: d2, ease: "power1.inOut" }, r2);
+        const P2 = (u) => { const a = 1 - u; return [a * a * 270 + 2 * a * u * 540 + u * u * 840, a * a * 1150 + 2 * a * u * 560 + u * u * 870]; };
+        const kf2 = [];
+        for (let k = 0; k <= 16; k++) { const [x, y] = P2(k / 16); kf2.push({ x: x - 55, y: y - 95, duration: d2 / 16, ease: "none" }); }
+        tl.set("#ship2", { x: 215, y: 1055 }, 0);
+        tl.to("#ship2", { autoAlpha: 1, duration: 0.2 }, r2);
+        tl.to("#ship2", { keyframes: kf2 }, r2);
+        tl.fromTo("#pin2-n", { opacity: 0 }, { opacity: 1, duration: 0.3 }, T.nigeria - 0.1);
+        tl.fromTo("#lbl2-n", { autoAlpha: 0, x: 30 }, { autoAlpha: 1, x: 0, duration: 0.45, ease: E.o3 }, T.nigeria);
+        tl.fromTo("#st-succes", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 0.92, scale: 1, duration: 0.22, ease: "power4.in" }, T.succes);
 
         // ---------- signature ----------
         tl.fromTo("#t-sign", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, T.cetait);
@@ -249,10 +346,10 @@
         tl.fromTo("#t-sign .n1", { autoAlpha: 0, x: -60 }, { autoAlpha: 1, x: 0, duration: 0.6, ease: E.o3 }, T.cetait + 0.2);
         tl.fromTo("#t-sign .n1b", { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: E.o3 }, T.cetait + 0.45);
         tl.fromTo("#t-sign .n2", { autoAlpha: 0, x: -40 }, { autoAlpha: 1, x: 0, duration: 0.5, ease: E.o3 }, T.cetait + 2.6);
-        tl.to("#t-sign", { autoAlpha: 0, y: 40, duration: 0.4, ease: "power2.in" }, 104.6);
+        tl.to("#t-sign", { autoAlpha: 0, y: 40, duration: 0.4, ease: "power2.in" }, D.end - 0.3);
 
         // ---------- fin : logo Origines puis affiche de vote ----------
-        const e0 = 104.9;
+        const e0 = D.end;
         tl.fromTo("#shade", { autoAlpha: 0 }, { autoAlpha: 0.62, duration: 0.6 }, e0 - 0.3);
         tl.fromTo("#logo", { autoAlpha: 0, scale: 0.85, filter: "blur(10px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.9, ease: E.o3 }, e0 + 0.1);
         tl.to("#logo", { scale: 1.06, duration: 1.35, ease: "none" }, e0 + 1.0);
