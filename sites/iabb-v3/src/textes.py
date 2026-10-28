@@ -178,6 +178,8 @@ MERCI = [
     ("C'est tout ce dont tu as besoin pour lancer le mouvement — la suite viendra naturellement.", "C'est tout ce qu'il faut pour te lancer."),
     ("Réponds simplement à l'email de bienvenue — on est là et on répond vite. Pas de robot, un vrai humain.", "Réponds simplement à l'email de bienvenue, on te répond vite."),
     ("\n      🚀 Accéder à mon espace apprenant\n", "\n      Mon espace apprenant\n"),
+    # lien du portail client Chariow : la bonne adresse est portal.chariow.com, sans /login (demande d'Enock)
+    ('href="https://portal.chariow.com/login"', 'href="https://portal.chariow.com"'),
     ('<div class="reassure-icon">💬</div>', '<div class="reassure-icon">ICONE:message-circle</div>'),
 ]
 
