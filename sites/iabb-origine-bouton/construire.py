@@ -25,6 +25,29 @@ remplacer('  .stage{max-width:600px;',
  '  .passer-lien:hover{color:var(--amber)}\n'
  '  .stage{max-width:600px;')
 
+# 3. Validé par Enock (28 octobre 2026) : nombre réel de leçons sur Chariow (65 : 55 vidéos, 7 évaluations,
+#    module 2 = 10 avec le cas pratique), nom « AI Business Building » pour la formation,
+#    « AI Business Builder » pour la personne certifiée, et « Délivré par EMK Blue Diamond ».
+#    Les content_name envoyés à Meta NE changent PAS (statistiques et audiences existantes).
+remplacer('OFFICIELLEMENT RECONNU(E) <b>IA BUSINESS BUILDER</b> PAR EMK BLUE DIAMOND',
+          'RECONNU(E) <b>AI BUSINESS BUILDER</b> · DÉLIVRÉ PAR EMK BLUE DIAMOND')
+remplacer('57 LEÇONS', '65 LEÇONS')
+remplacer('<span class="emk-notif-action">a rejoint IA Business Building</span>', '<span class="emk-notif-action">a rejoint AI Business Building</span>')
+t = t.replace('IA%20Business%20Building', 'AI%20Business%20Building')
+remplacer('8 modules · 57 leçons', '8 modules · 65 leçons')
+remplacer('49 leçons vidéo et 7 évaluations', '55 leçons vidéo et 7 évaluations')
+remplacer('<title>Certification IA Business Builder', '<title>Certification AI Business Building')
+remplacer('« Certifié IA Business Builder »', '« Certifié AI Business Builder »')
+remplacer('<div class="compare-tag">Certifié IA Business Builder</div>', '<div class="compare-tag">Certifié AI Business Builder</div>')
+remplacer('<span>La certification IA Business Builder</span>', '<span>La certification AI Business Building</span>')
+remplacer("""              <span class="module-title">Module 2 : L'Automatisation des Tâches</span>
+              <span class="module-meta">9 leçons</span>""", """              <span class="module-title">Module 2 : L'Automatisation des Tâches</span>
+              <span class="module-meta">10 leçons</span>""")
+remplacer("""<span>Leçon 8 : Atelier final. Construire votre système d'exploitation business</span></li>
+""", """<span>Leçon 8 : Atelier final. Construire votre système d'exploitation business</span></li>
+              <li><span class="lesson-icon icon-eval">📄</span><span>Cas pratique : construire votre assistant de tri d'emails</span></li>
+""")
+
 SCRIPT = r'''
 <script>
 /* ===== Ajout : lien « Passer » (à partir de la question qui suit le prénom) =====
