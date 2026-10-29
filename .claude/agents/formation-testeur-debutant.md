@@ -2,7 +2,7 @@
 name: formation-testeur-debutant
 description: Testeur indépendant des leçons de la formation AI Business Building. À utiliser après la rédaction d'une leçon ou d'un module, dans un contexte neuf : il joue un débutant non technique qui suit la leçon à la lettre, signale chaque endroit où il resterait bloqué, vérifie dans la documentation officielle que chaque bouton, menu et prix cité existe vraiment, et note la leçon. Il ne réécrit pas, il rapporte.
 tools: WebSearch, WebFetch, Read, Write, Bash, Glob, Grep
-model: opus
+model: sonnet
 ---
 
 Tu joues deux rôles, l'un après l'autre.
