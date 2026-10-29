@@ -48,6 +48,25 @@ But : même travail, beaucoup moins de tokens. Un token n'est pas gratuit : **to
 - `/compact` dès que le contexte gonfle ; `/clear` entre deux sujets sans lien.
 - Clore les tâches (pas de boucles ouvertes qui obligent à tout relire).
 
+### 7. Un grand sujet = une nouvelle session (segmenter les longues conversations) — gain majeur sur la durée
+Le plus gros gouffre à long terme : une conversation qui **dure des jours et couvre beaucoup de sujets** (ex. tunnel, formation, certificats, Google…). Chaque nouveau message **re-traîne tout l'historique accumulé** → le coût par message ne fait que grimper, indéfiniment.
+
+**Règle.** Dès qu'un **nouveau grand sujet / titre important** apparaît (nouveau chantier, nouveau livrable, changement de thématique majeure), **ne pas l'empiler dans le fil en cours** : ouvrir une **nouvelle session dédiée**. On reste dans le même contexte projet, mais sur un fil **court et léger**.
+
+**Garder le contexte sans repartir de zéro.** La nouvelle session lit d'abord `SESSION-STATE.md` (+ un mini-brief du sujet) : elle sait où on en est **sans relire des jours d'historique**.
+
+**Signaux de bascule (quand ouvrir une nouvelle session) :**
+- un nouveau « grand titre » / thème distinct arrive dans la discussion principale ;
+- un jalon est atteint (« une fois X en ligne, on passe à Y ») ;
+- le fil devient long/lent/cher, ou mélange déjà 2-3 sujets.
+
+**Procédure de handoff (3 gestes) :**
+1. Mettre à jour `SESSION-STATE.md` + écrire un **mini-brief** du nouveau sujet (objectif, où trouver quoi, 1res étapes).
+2. Ouvrir une **nouvelle session** dédiée à ce sujet.
+3. Elle lit le brief + `SESSION-STATE.md`, **pas** tout l'historique.
+
+**Rôle de l'assistant (important).** Claude ne peut pas « forker » une session tout seul. Donc, dès qu'il détecte l'arrivée d'un **nouveau grand sujet** dans une longue conversation, il doit **le signaler et proposer d'ouvrir une nouvelle session dédiée** — avec le mini-brief prêt à coller — au lieu de continuer à alourdir le fil. L'utilisateur valide, et repart léger.
+
 ## Checklist — début de session
 - [ ] Lire `SESSION-STATE.md` (pas re-scanner tout le repo).
 - [ ] Vérifier le modèle : Sonnet par défaut, Haiku pour la recherche, Opus seulement si nécessaire.
@@ -56,6 +75,7 @@ But : même travail, beaucoup moins de tokens. Un token n'est pas gratuit : **to
 ## Checklist — fin de session
 - [ ] Mettre à jour `SESSION-STATE.md` (décisions, état, prochaines étapes).
 - [ ] `/compact` ou `/clear` avant de changer de sujet.
+- [ ] Un **nouveau grand sujet** en vue ? Proposer une **nouvelle session dédiée** (mini-brief + `SESSION-STATE.md`) au lieu d'alourdir le fil (règle 7).
 
 ## Skills complémentaires déjà disponibles
 `llm-cost-optimizer` (chiffrer/optimiser le coût LLM), `context-engine` (gestion de contexte), `handoff` / `remember` / `decision-logger` (mémoire & passation), `wiki-init`/`wiki-query`/`wiki-log` (base de connaissance compacte interrogeable).
