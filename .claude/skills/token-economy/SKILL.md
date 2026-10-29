@@ -21,6 +21,7 @@ But : même travail, beaucoup moins de tokens. Un token n'est pas gratuit : **to
 - **Sonnet** : défaut pour presque tout l'agentic coding (écriture de code, refactor, revue).
 - **Opus** : réservé au raisonnement vraiment difficile (architecture, arbitrage délicat). Pas « par défaut ».
 - Dans Claude Code : régler le modèle **par sous-agent** (frontmatter `model:` d'un agent, ou choix du modèle du sous-agent). Repasser en revue les agents « tout Opus » : c'est souvent 70 % d'économie immédiate.
+- **Règle de qualification (le moins cher qui fait la tâche à 100 %)** : pour CHAQUE tâche, se demander — est-ce *mécanique* (→ Haiku), *standard* (→ Sonnet), ou *raisonnement difficile à fort enjeu* (→ Opus) ? Prendre le moins cher plausible, puis **escalader d'un seul cran** seulement si le résultat est faux/incomplet après 1-2 essais — jamais sauter directement à Opus « par sécurité ». La matrice détaillée tâche → modèle est dans `references/model-matrix.md` (prix courants à vérifier via `/claude-api`).
 
 ### 2. Une mémoire de session compacte (tuer la re-recherche)
 - Tenir **un seul fichier court** `SESSION-STATE.md` (≤ 1 page) : objectif courant, décisions prises, état par chantier/agent, prochaines étapes, « où se trouve quoi ».
