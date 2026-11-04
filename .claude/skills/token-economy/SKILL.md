@@ -23,11 +23,14 @@ But : même travail, beaucoup moins de tokens. Un token n'est pas gratuit : **to
 - Dans Claude Code : régler le modèle **par sous-agent** (frontmatter `model:` d'un agent, ou choix du modèle du sous-agent). Repasser en revue les agents « tout Opus » : c'est souvent 70 % d'économie immédiate.
 - **Règle de qualification (le moins cher qui fait la tâche à 100 %)** : pour CHAQUE tâche, se demander — est-ce *mécanique* (→ Haiku), *standard* (→ Sonnet), ou *raisonnement difficile à fort enjeu* (→ Opus) ? Prendre le moins cher plausible, puis **escalader d'un seul cran** seulement si le résultat est faux/incomplet après 1-2 essais — jamais sauter directement à Opus « par sécurité ». La matrice détaillée tâche → modèle est dans `references/model-matrix.md` (prix courants à vérifier via `/claude-api`).
 
-### 2. Une mémoire de session compacte (tuer la re-recherche)
-- Tenir **un seul fichier court** `SESSION-STATE.md` (≤ 1 page) : objectif courant, décisions prises, état par chantier/agent, prochaines étapes, « où se trouve quoi ».
-- **Au démarrage / à la reprise** : lire CE fichier d'abord. Ne re-scanner le repo que pour la tranche précise nécessaire.
-- **À la fin de chaque session/tâche** : le mettre à jour en 5-10 lignes. (Template fourni : `references/SESSION-STATE.template.md`.)
-- Résultat : un agent n'a plus besoin d'« aller checker les 25 agents » — il lit l'état consolidé, puis ouvre seulement ce qui le concerne.
+### 2. Une mémoire-graphe compacte (tuer la re-recherche) — gain n°2
+La mémoire du projet ne doit **jamais** vivre dans le fil de chat (qui est jetable et refacturé en entier à chaque tour) : elle vit dans des **fichiers sur GitHub**, organisés en **graphe**.
+- **Le tronc** : un `INDEX.md` (≤ 1 page) qui liste les **branches** (un sujet = un fichier) avec une ligne de description et un lien vers chacune. C'est la carte.
+- **Une branche = un fichier par sujet** (`memoire/<sujet>.md`) : état courant, décisions, « où trouver quoi », prochaines étapes, et **liens vers les branches liées** (les arêtes du graphe).
+- **Au démarrage / à la reprise** : lire l'`INDEX`, puis **UNIQUEMENT la branche** qui concerne la question (et un lien seulement si nécessaire). Jamais tout le repo, jamais tout l'historique.
+- **Après un changement** : mettre à jour **seulement la branche touchée** (5-10 lignes), + un lien si une nouvelle relation apparaît.
+- Détails et gabarits : `references/memoire-graphe.md`. (Un `SESSION-STATE.md` à plat reste acceptable pour un tout petit projet ; dès que ça couvre plusieurs sujets, passer au graphe.)
+- Résultat : on retrouve toujours **où est tel sujet** (une branche nommée, pas 5 sessions éparpillées), et on ne recharge que la branche utile.
 
 ### 3. Lectures ciblées, jamais « lis tout »
 - `Grep`/`Glob` pour localiser, puis lire **une tranche** (offset/limit), pas le fichier entier.
@@ -48,37 +51,29 @@ But : même travail, beaucoup moins de tokens. Un token n'est pas gratuit : **to
 - `/compact` dès que le contexte gonfle ; `/clear` entre deux sujets sans lien.
 - Clore les tâches (pas de boucles ouvertes qui obligent à tout relire).
 
-### 7. Un grand sujet = une nouvelle session (segmenter les longues conversations) — gain majeur sur la durée
-Le plus gros gouffre à long terme : une conversation qui **dure des jours et couvre beaucoup de sujets** (ex. tunnel, formation, certificats, Google…). Chaque nouveau message **re-traîne tout l'historique accumulé** → le coût par message ne fait que grimper, indéfiniment.
+### 7. La mémoire-graphe remplace la « forêt de sessions » — gain majeur sur la durée
+Le plus gros gouffre à long terme : une conversation qui **dure des jours et couvre beaucoup de sujets**. Chaque nouveau message **re-traîne tout l'historique accumulé** → le coût par message ne fait que grimper.
 
-**Règle.** Dès qu'un **nouveau grand sujet / titre important** apparaît (nouveau chantier, nouveau livrable, changement de thématique majeure), **ne pas l'empiler dans le fil en cours** : ouvrir une **nouvelle session dédiée**. On reste dans le même contexte projet, mais sur un fil **court et léger**.
+**Le vrai problème n'est pas « une session vs plusieurs » — c'est : où vit la mémoire.** Si elle vit dans le fil de chat, tout est refacturé et on s'éparpille (« où ai-je commencé tel sujet ? »). Si elle vit dans la **mémoire-graphe** (règle 2, sur GitHub), le fil de chat devient **jetable** : la connaissance est ailleurs, permanente et navigable.
 
-**Garder le contexte sans repartir de zéro.** La nouvelle session lit d'abord `SESSION-STATE.md` (+ un mini-brief du sujet) : elle sait où on en est **sans relire des jours d'historique**.
+**Règle.** On s'appuie sur la **mémoire-graphe**, pas sur la longueur du fil. Pour un sujet X : lire `INDEX.md` → la branche X. Ouvrir une nouvelle session devient **optionnel** (uniquement quand le fil en cours est devenu vraiment lourd), **plus une obligation** à chaque sujet.
 
-**Signaux de bascule (quand ouvrir une nouvelle session) :**
-- un nouveau « grand titre » / thème distinct arrive dans la discussion principale ;
-- un jalon est atteint (« une fois X en ligne, on passe à Y ») ;
-- le fil devient long/lent/cher, ou mélange déjà 2-3 sujets.
+**Quand (optionnellement) ouvrir un fil neuf :** quand le fil courant est long/lent/cher. Alors : mettre à jour la branche concernée dans `memoire/`, ouvrir un fil neuf, qui lit `INDEX.md` + la branche — **pas** l'historique. Pas besoin de « mini-brief » séparé : la branche EST le brief.
 
-**Procédure de handoff (3 gestes) :**
-1. Mettre à jour `SESSION-STATE.md` + écrire un **mini-brief** du nouveau sujet (objectif, où trouver quoi, 1res étapes).
-2. Ouvrir une **nouvelle session** dédiée à ce sujet.
-3. Elle lit le brief + `SESSION-STATE.md`, **pas** tout l'historique.
-
-**Rôle de l'assistant (important).** Claude ne peut pas « forker » une session tout seul. Donc, dès qu'il détecte l'arrivée d'un **nouveau grand sujet** dans une longue conversation, il doit **le signaler et proposer d'ouvrir une nouvelle session dédiée** — avec le mini-brief prêt à coller — au lieu de continuer à alourdir le fil. L'utilisateur valide, et repart léger.
+**Rôle de l'assistant.** Quand un **nouveau grand sujet** apparaît, Claude **crée/met à jour sa branche** dans `memoire/` (pour que ce soit retrouvable), puis continue — sans forcer l'utilisateur à ouvrir une session à chaque fois. Il ne propose un fil neuf que si le fil courant est devenu trop lourd. (Claude ne peut pas forker une session seul ; mais désormais il n'en a plus besoin pour garder la mémoire.)
 
 ## Checklist — début de session
-- [ ] Lire `SESSION-STATE.md` (pas re-scanner tout le repo).
+- [ ] Lire `memoire/INDEX.md`, puis **seulement la branche** concernée (pas re-scanner tout le repo).
 - [ ] Vérifier le modèle : Sonnet par défaut, Haiku pour la recherche, Opus seulement si nécessaire.
 - [ ] Charger uniquement les fichiers de la tâche du jour.
 
 ## Checklist — fin de session
-- [ ] Mettre à jour `SESSION-STATE.md` (décisions, état, prochaines étapes).
-- [ ] `/compact` ou `/clear` avant de changer de sujet.
-- [ ] Un **nouveau grand sujet** en vue ? Proposer une **nouvelle session dédiée** (mini-brief + `SESSION-STATE.md`) au lieu d'alourdir le fil (règle 7).
+- [ ] Mettre à jour **la branche touchée** dans `memoire/` (décisions, état, prochaines étapes) — pas tout le repo.
+- [ ] Un **nouveau grand sujet** ? Créer/mettre à jour sa **branche** dans `memoire/` (+ l'ajouter à `INDEX.md`) pour qu'il reste retrouvable (règle 7).
+- [ ] `/compact` ou `/clear` si le fil est devenu lourd (optionnel — la mémoire est dans le graphe, pas dans le fil).
 
 ## Skills complémentaires déjà disponibles
 `llm-cost-optimizer` (chiffrer/optimiser le coût LLM), `context-engine` (gestion de contexte), `handoff` / `remember` / `decision-logger` (mémoire & passation), `wiki-init`/`wiki-query`/`wiki-log` (base de connaissance compacte interrogeable).
 
 ## Mesurer (pour savoir si ça marche)
-Comparer l'usage quota avant/après sur 2-3 sessions types. Les plus gros sauts viennent presque toujours de la règle 1 (modèle) et de la règle 2 (mémoire de session).
+Comparer l'usage quota avant/après sur 2-3 sessions types. Les plus gros sauts viennent presque toujours de la règle 1 (modèle) et de la règle 2 (mémoire-graphe).
