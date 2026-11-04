@@ -1,0 +1,51 @@
+== index.html : parcours complet (accueil -> 12 écrans de questions -> lead -> analyse -> résultat -> offre -> clic paiement)
+     ordre des appels (original) : ['3393043107543742', 'PageView', 'WelcomeCTA', 'QuizStart', 'ViewContent', 'QuizQ25', 'QuizMid', 'QuizQ75', 'Lead', 'QuizComplete', 'OfferReveal', 'PricingView', 'InitiateCheckout']
+  OK    mêmes écrans dans le même ordre (17 : q1 > q2 > qage > q3 > r1 > q4 > r2 > q5 > q6 > r3 > q7 > q9 > q8 > r4 > q10 > q11 > q12)
+  OK    écran résultat atteint des deux côtés
+  OK    mêmes appels fbq, même ordre, mêmes paramètres, même eventID (13 appels)
+  OK    eventID au format lead_ + 24 hexa : ['lead_c9bc4b2c9eec94b8b538ecb2']
+  OK    format des eventID identique
+  OK    PageView envoyé une fois (copie)
+  OK    WelcomeCTA envoyé une fois (copie)
+  OK    QuizStart envoyé une fois (copie)
+  OK    QuizQ25 envoyé une fois (copie)
+  OK    QuizMid envoyé une fois (copie)
+  OK    QuizQ75 envoyé une fois (copie)
+  OK    ViewContent envoyé une fois (copie)
+  OK    Lead envoyé une fois (copie)
+  OK    QuizComplete envoyé une fois (copie)
+  OK    OfferReveal envoyé une fois (copie)
+  OK    PricingView envoyé une fois (copie)
+  OK    InitiateCheckout envoyé une fois (copie)
+  OK    un seul envoi POST au /exec de chaque côté (1 / 1)
+  OK    corps du lead identique hors date
+  OK    lead complet (IP 2c0f:f0f8:1:2::3, source test)
+     corps du lead (copie) : {"prenom": "Aminata", "email": "Test.Local@Example.com", "age": "25-34", "situation": "entrepreneur", "frustration": "argent", "niveau_ia": "entendu", "objectif": "automatiser", "niveau_code": "curieux", "deja_essaye": "youtube", "temps_dispo": "30", "blocage": "temps", "projection": "client", "engagement": "essayer", "source": "test", "campagne": "regression", "page": "https://quizcertification.e
+  OK    mêmes lectures GET du /exec : ['action=recent-sales']
+  OK    localStorage emk_lead identique (hors ts)
+  OK    ipify appelé une fois (simulé) (1 / 1)
+  OK    aucune erreur JS ([] / [])
+== index.html COPIE : raccourci « Je connais déjà la formation »
+     appels fbq : ['3393043107543742', 'PageView', 'OfferReveal', 'PricingView', 'InitiateCheckout']
+  OK    l'offre s'affiche, l'accueil est masqué
+  OK    init + PageView au chargement comme d'habitude
+  OK    aucun Lead, aucun événement de quiz
+  OK    OfferReveal envoyé 1 fois, dès l'arrivée sur l'offre (par revealProduct existant)
+  OK    PricingView envoyé 1 fois, seulement quand la carte prix devient visible
+  OK    InitiateCheckout au clic sur le widget, comme d'habitude
+  OK    InitiateCheckout identique au parcours normal (mêmes paramètres)
+  OK    aucun envoi POST au /exec
+  OK    aucune erreur JS []
+== merci.html (avec localStorage emk_lead)
+     appels fbq : [('init', '3393043107543742'), ('track', 'PageView'), ('track', 'Purchase')]
+  OK    mêmes appels fbq (init avec em/fn, PageView, Purchase), mêmes paramètres et eventID
+  OK    Purchase unique, eventID purchase_ + 24 hexa : ['purchase_c9bc4b2c9eec94b8b538ecb2']
+  OK    un seul signal d'enrichissement chacun (1 / 1)
+  OK    signal identique hors _timestamp (_enrichment_ping, _fbc, _fbp, _clientIp)
+     signal (copie) : {"_enrichment_ping": true, "email": "Test.Local@Example.com", "_fbc": "fb.1.1.abc", "_fbp": "fb.1.1.def", "_userAgent": "Mozilla/5.0 (Linux; Android 13) TestEMK", "_eventSourceUrl": "https://quizcertification.emkbluediamond.online/merci.html", "_clientIp": "2c0f:f0f8:1:2::3"}
+  OK    prénom personnalisé identique : "Félicitations Aminata, tu l'as fait !"
+  OK    aucune erreur JS ([] / [])
+
+Requêtes coupées (jamais parties) : ['https://fonts.googleapis.com/css2', 'https://js.chariowcdn.com/v1/proof.min.js', 'https://js.chariowcdn.com/v1/widget.min.css', 'https://js.chariowcdn.com/v1/widget.min.js']
+
+RÉSULTAT : TOUT EST OK

@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bienvenue chez les AI Business Builders | EMK Blue Diamond</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+
+<!-- ============ META PIXEL — Purchase dédupliqué ============
+     L'événement Purchase est envoyé PAR LES 2 canaux (Pixel + CAPI Apps Script)
+     avec un event_id DÉTERMINISTE identique des 2 côtés (hash SHA-256 de l'email).
+     Meta déduplique automatiquement → 1 seul Purchase compté par vente.
+     Bonus : Advanced Matching enrichi avec email + prénom (score matching amélioré). -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+
+// Advanced Matching : on passe l'email et le prénom (récupérés du tunnel via localStorage)
+// à fbq('init') pour que TOUS les événements suivants soient enrichis avec ces données
+// de correspondance côté client. Meta les hashe automatiquement en interne.
+(function(){
+  var initParams = {};
+  try {
+    var lead = JSON.parse(localStorage.getItem('emk_lead') || '{}');
+    if (lead.email) initParams.em = String(lead.email).toLowerCase().trim();
+    if (lead.name)  initParams.fn = String(lead.name).toLowerCase().trim();
+  } catch(e) {}
+  fbq('init', '3393043107543742', initParams);
+  fbq('track', 'PageView');
+})();
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
+/></noscript>
+
+<style>
+  :root{
+    --amber:#D97706; --amber-dark:#B45309; --amber-soft:#FEF3C7; --amber-glow:#FFFBEB; --amber-deep:#78350F;
+    --sage:#059669; --sage-soft:#D1FAE5; --sage-deep:#065F46;
+    --sun:#FCD34D;
+    --ruby:#BE123C;
+    --ink:#0F172A; --ink-2:#334155; --muted:#64748B; --muted-soft:#94A3B8;
+    --border:#E2E8F0; --border-soft:#F1F5F9;
+    --cream:#FFFAF0; --cream-2:#FEF7E6; --card:#FFFFFF;
+    --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-pill:100px;
+    --shadow-md:0 6px 20px -4px rgba(15,23,42,.08);
+    --shadow-lg:0 20px 50px -12px rgba(15,23,42,.18);
+    --shadow-amber:0 12px 30px -8px rgba(217,119,6,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Manrope',sans-serif;background:var(--cream);color:var(--ink);
+    line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  h1,h2,h3{line-height:1.15;letter-spacing:-.02em;font-weight:800}
+  a{color:inherit;text-decoration:none}
+
+  nav.top{background:rgba(255,250,240,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(226,232,240,.5);padding:14px 20px}
+  .nav-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:center}
+  .logo{display:inline-flex;align-items:baseline;gap:6px}
+  .logo-emk{font-weight:800;font-size:14px;letter-spacing:.02em}
+  .logo-diamond{font-family:'Caveat',cursive;font-weight:700;font-size:24px;color:var(--amber)}
+
+  main{flex:1;padding:56px 20px 80px}
+  .wrap{max-width:720px;margin:0 auto;text-align:center}
+
+  /* Cocher animée */
+  .success-badge{
+    width:120px;height:120px;margin:0 auto 32px;
+    border-radius:50%;background:var(--sage-soft);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);
+  }
+  .success-badge::before{
+    content:"";position:absolute;inset:-8px;border-radius:50%;
+    background:radial-gradient(circle,rgba(5,150,105,.15) 0%,transparent 65%);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  .success-badge svg{width:64px;height:64px;stroke:var(--sage);z-index:2}
+  .success-badge svg path{
+    stroke-dasharray:64;stroke-dashoffset:64;
+    animation:draw .6s .3s ease-out forwards;
+  }
+  @keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.15);opacity:.3}}
+
+  .kicker{
+    display:inline-block;padding:8px 18px;border-radius:var(--r-pill);
+    background:var(--sage-soft);color:var(--sage-deep);
+    font-size:12.5px;font-weight:800;letter-spacing:.06em;
+    margin-bottom:24px;text-transform:uppercase;
+  }
+
+  h1{
+    font-size:clamp(32px,6vw,54px);margin-bottom:20px;
+  }
+  h1 .hl{color:var(--amber);position:relative;display:inline-block}
+  h1 .hl::after{
+    content:"";position:absolute;bottom:2px;left:0;right:0;height:11px;
+    background:var(--sun);border-radius:100px;opacity:.4;z-index:-1;
+  }
+
+  .lede{
+    font-size:clamp(17px,2vw,20px);color:var(--ink-2);
+    max-width:580px;margin:0 auto 20px;line-height:1.55;
+  }
+  .lede strong{color:var(--ink);font-weight:700}
+
+  .sig{
+    font-family:'Caveat',cursive;font-size:26px;color:var(--amber);
+    margin-bottom:44px;
+  }
+
+  /* Étapes de la suite */
+  .steps{
+    display:flex;flex-direction:column;gap:14px;
+    max-width:560px;margin:0 auto 40px;text-align:left;
+  }
+  .step{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:var(--r-lg);padding:20px 22px;
+    display:flex;gap:16px;align-items:flex-start;
+    transition:all .2s;
+  }
+  .step:hover{border-color:var(--amber-soft);transform:translateX(2px)}
+  .step-num{
+    flex-shrink:0;width:36px;height:36px;border-radius:50%;
+    background:var(--amber);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:15px;
+  }
+  .step h3{font-size:16px;margin-bottom:4px;font-weight:800}
+  .step p{color:var(--muted);font-size:14.5px;line-height:1.55;font-weight:500}
+  .step p b{color:var(--ink);font-weight:700}
+
+  /* CTA */
+  .portal-cta{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--amber);color:#fff;
+    padding:20px 40px;border-radius:var(--r-pill);
+    font-weight:800;font-size:16.5px;
+    box-shadow:var(--shadow-amber);transition:all .2s;
+    margin-bottom:16px;
+  }
+  .portal-cta:hover{background:var(--amber-dark);transform:translateY(-2px)}
+  .portal-hint{
+    font-size:13px;color:var(--muted);font-weight:500;
+    margin-bottom:44px;
+  }
+
+  /* Encart rassurant */
+  .reassure{
+    background:var(--cream-2);border-radius:var(--r-lg);
+    padding:24px 26px;max-width:560px;margin:0 auto;
+    display:flex;gap:14px;align-items:center;text-align:left;
+    border:1px solid var(--amber-soft);
+  }
+  .reassure-icon{
+    flex-shrink:0;width:48px;height:48px;border-radius:var(--r-md);
+    background:var(--amber-soft);
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+  }
+  .reassure h4{font-size:15px;font-weight:800;margin-bottom:2px}
+  .reassure p{font-size:13.5px;color:var(--muted);font-weight:500;line-height:1.5}
+
+  footer{
+    background:var(--ink);color:rgba(255,255,255,.6);
+    padding:32px 20px;text-align:center;font-size:13px;
+  }
+  footer .logo{margin-bottom:12px}
+  footer .logo-emk{color:#fff}
+  footer a{color:rgba(255,255,255,.6);margin:0 8px}
+  footer a:hover{color:var(--amber)}
+
+  /* Confettis */
+  .confetti{position:fixed;top:-20px;width:9px;height:14px;z-index:9999;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.1}}
+</style>
+<style>
+/* IABB v3.1 · merci : retouches légères après la feuille de style en ligne */
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+body{overflow-wrap:break-word}
+h1,h3{text-wrap:balance}
+.kicker{display:inline-flex;align-items:center;gap:7px}
+.kicker svg.i{width:16px;height:16px}
+.portal-cta{gap:10px;max-width:100%;line-height:1.25;text-align:center}
+.portal-cta svg.i{width:19px;height:19px}
+.reassure-icon{background:var(--cream)!important;border:1px solid #F1E3C4;color:var(--amber-dark)}
+.reassure>div:last-child,.step>div:last-child{min-width:0}
+.liens-pied{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px;margin-top:8px}
+.liens-pied a{margin:0!important;padding:4px 0}
+.insecable{white-space:nowrap}
+@media (max-width:380px){main{padding-left:16px;padding-right:16px}.portal-cta{padding:18px 22px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/> <path d="m12 5 7 7-7 7"/></symbol>
+<symbol id="i-badge-check" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/> <path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+</svg>
+
+<nav class="top">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <span class="logo-emk">EMK</span>
+      <span class="logo-diamond">Blue Diamond</span>
+    </a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <div class="success-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12l5 5L20 7"/>
+      </svg>
+    </div>
+
+    <div class="kicker"><svg class="i" aria-hidden="true"><use href="#i-badge-check"/></svg>Paiement confirmé</div>
+
+    <h1 id="greeting">Félicitations, <span class="hl">tu l’as fait</span> !</h1>
+
+    <p class="lede" id="lede">
+      Bienvenue. Ton accès est prêt.
+      Tu fais maintenant partie des <strong>AI Business Builders</strong>.
+    </p>
+
+    <p class="lede" id="lede2">
+      À partir de maintenant, on avance ensemble. Chaque semaine, tu apprends une compétence et tu construis un livrable réel. Tu ne seras jamais seul devant ton écran.
+    </p>
+
+    <div class="sig">Enock</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>Un email t’attend déjà</h3>
+          <p>Regarde ta boîte mail (et le dossier <b>spam</b> au cas où) : tu vas recevoir le lien d’accès à ton espace apprenant dans les minutes qui suivent ton paiement.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3><span class="insecable">Connecte-toi</span> à ton portail</h3>
+          <p>Tu accèdes à toutes tes leçons, tes bonus et tes ressources depuis ton espace personnel, <b>disponible 24h/24, à vie</b>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>Démarre par le module 1 dès aujourd’hui</h3>
+          <p>Prends 15 minutes pour la première leçon. C’est tout ce qu’il faut pour te lancer.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="https://portal.chariow.com" class="portal-cta">
+      Mon espace apprenant <svg class="i" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+    </a>
+    <div class="portal-hint">
+      Connecte-toi avec l’adresse email utilisée lors de ton inscription. Tu peux définir un mot de passe si tu le souhaites, mais ce n’est pas obligatoire.
+    </div>
+
+    <div class="reassure">
+      <div class="reassure-icon"><svg class="i" aria-hidden="true"><use href="#i-message-circle"/></svg></div>
+      <div>
+        <h4>Une question, un blocage ?</h4>
+        <p>Réponds simplement à l’email de bienvenue, on te répond vite.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="logo">
+    <span class="logo-emk">EMK</span>
+    <span class="logo-diamond">Blue Diamond</span>
+  </div>
+  <p>© 2026 EMK Blue Diamond</p>
+  <p style="margin-top:8px"><a href="#">Mentions légales</a> · <a href="#">CGV</a> · <a href="#">Confidentialité</a> · <a href="#">Contact</a></p>
+</footer>
+
+<script>
+  // Récupération des données du lead capturées dans le tunnel
+  var leadData = {};
+  try{
+    leadData = JSON.parse(localStorage.getItem('emk_lead')||'{}');
+  }catch(e){}
+
+  // Personnaliser le message avec le prénom
+  if(leadData.name){
+    var n = leadData.name;
+    document.getElementById('greeting').innerHTML = 'Félicitations '+n+', <span class="hl">tu l’as fait</span> !';
+    document.getElementById('lede').innerHTML =
+      n+', bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>AI Business Builders</strong>.';
+  }
+
+  // ===== TRACKING Purchase avec eventID déterministe =====
+  // On envoie Purchase depuis le navigateur AVEC le même event_id que celui
+  // que génère Apps Script côté serveur (SHA-256 de l'email en minuscule).
+  // → Meta déduplique automatiquement les 2 envois = 1 seul Purchase compté.
+    async function firePurchaseWithDedup(){
+    if(typeof fbq === 'undefined' || !leadData.email) return;
+
+    // ═══ PROTECTION ANTI-DOUBLE-FIRING ═══
+    // Empêche le Purchase d'être re-envoyé si le client :
+    //   - recharge la page (F5)
+    //   - fait retour arrière puis revient
+    //   - clique 2 fois sur le lien de confirmation dans son email
+    //   - reçoit une double redirection depuis Chariow
+    // Le flag est stocké dans localStorage et expire après 7 jours,
+    // ce qui laisse largement le temps à Meta de recevoir l'événement
+    // tout en évitant qu'il persiste indéfiniment pour un même appareil.
+    try {
+      const normalized = String(leadData.email).toLowerCase().trim();
+      const buffer = new TextEncoder().encode(normalized);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      const eventId = 'purchase_' + hashHex.substring(0, 24);
+
+      // Flag basé sur l'event_id lui-même : si on a déjà tiré ce Purchase
+      // pour cet email dans les 7 derniers jours, on ne re-tire pas.
+      const flagKey = 'emk_purchase_fired_' + eventId;
+      const alreadyFired = localStorage.getItem(flagKey);
+      if (alreadyFired) {
+        console.log('[EMK] Purchase déjà envoyé pour cet email — skip pour éviter le doublon');
+        return;
+      }
+
+      fbq('track', 'Purchase', {
+        value:        4999,
+        currency:     'XOF',
+        content_ids:  ['prd_qh7md6nj'],
+        content_name: 'IA Business Building',
+        content_type: 'product'
+      }, {eventID: eventId});
+
+      // ═══ v3.7 : ping d'enrichissement CAPI ═══
+      // Envoie fbc, fbp et User-Agent à Apps Script pour enrichir la CAPI serveur.
+      // Ces paramètres améliorent le score matching (5.4 → ~8/10) et alimentent
+      // les audiences similaires (lookalike). Le ping arrive AVANT le webhook
+      // Chariow, ce qui permet à handleSuccessfulSale_ de récupérer ces données
+      // en cache pour enrichir l'événement Purchase envoyé à Meta.
+      try {
+        // Récupération des cookies Meta (posés par le Pixel au chargement)
+        function getFbCookie(name){
+          try {
+            const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? match[2] : '';
+          } catch(e) { return ''; }
+        }
+
+        // Fallback : les cookies peuvent aussi être dans localStorage.emk_lead
+        // (index.html les sauvegarde lors du lead)
+        var fbcFallback = leadData.fbc || '';
+        var fbpFallback = leadData.fbp || '';
+
+        var enrichPayload = {
+          _enrichment_ping: true,
+          email:            leadData.email,
+          _fbc:             getFbCookie('_fbc') || fbcFallback,
+          _fbp:             getFbCookie('_fbp') || fbpFallback,
+          _userAgent:       navigator.userAgent || '',
+          _eventSourceUrl:  window.location.href,
+          _timestamp:       Date.now()
+        };
+
+        var ENRICH_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwURk44B53PNSlj850wxAcoSQGBsWQ73cxjQPuuOYqJi9B4N2PEFeI3Gwg96aZbq1ze/exec';
+
+        // v3.12 : adresse IP publique du navigateur (IPv6 si disponible, sinon IPv4),
+        // demandée à ipify. Le Pixel est déjà parti : seul ce signal attend, 1,5 s au plus.
+        // Un seul envoi garanti (drapeau pingEnvoye), même si le client quitte la page avant.
+        var pingEnvoye = false;
+        function envoyerPing(ip, aLaSortie){
+          if (pingEnvoye) return;
+          pingEnvoye = true;
+          if (ip) enrichPayload._clientIp = ip;
+          // Page en train de se fermer : sendBeacon est le plus sûr (marche même sans keepalive).
+          if (aLaSortie && navigator.sendBeacon) {
+            try {
+              if (navigator.sendBeacon(ENRICH_ENDPOINT, new Blob([JSON.stringify(enrichPayload)], {type: 'text/plain;charset=utf-8'}))) return;
+            } catch(e) {}
+          }
+          try {
+            fetch(ENRICH_ENDPOINT, {
+              method:    'POST',
+              mode:      'no-cors',
+              keepalive: true,
+              headers:   {'Content-Type':'text/plain;charset=utf-8'},
+              body:      JSON.stringify(enrichPayload)
+            }).catch(function(){});
+          } catch(e) {}
+        }
+        window.addEventListener('pagehide', function(){ envoyerPing('', true); });
+        // Mobile : l'onglet passe en arrière-plan (Wave, WhatsApp...) sans toujours déclencher pagehide.
+        document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') envoyerPing('', true); });
+        var delaiIp = setTimeout(function(){ envoyerPing(''); }, 1500);
+        try {
+          fetch('https://api64.ipify.org?format=json', {cache: 'no-store'})
+            .then(function(r){ return r.json(); })
+            .then(function(j){ clearTimeout(delaiIp); envoyerPing(j && j.ip ? String(j.ip) : ''); })
+            .catch(function(){ clearTimeout(delaiIp); envoyerPing(''); });
+        } catch(e) { clearTimeout(delaiIp); envoyerPing(''); }
+      } catch(e) {
+        // Silencieux : si l'enrichissement échoue, le Purchase CAPI part quand même
+        // avec les données de base (email hashé, prénom hashé)
+      }
+
+      // Marquer comme envoyé pour cet appareil, pendant 7 jours
+      try {
+        localStorage.setItem(flagKey, String(Date.now()));
+        // Nettoyage : on retire les vieux flags Purchase (>7j) pour ne pas polluer
+        Object.keys(localStorage).forEach(function(k){
+          if (k.indexOf('emk_purchase_fired_') === 0 && k !== flagKey) {
+            const ts = parseInt(localStorage.getItem(k), 10);
+            if (!ts || Date.now() - ts > 7 * 24 * 60 * 60 * 1000) {
+              localStorage.removeItem(k);
+            }
+          }
+        });
+      } catch(e) {}
+
+    } catch(e) {
+      // Fallback silencieux : en cas d'erreur crypto (très rare),
+      // le CAPI côté serveur remonte quand même le Purchase
+    }
+  }
+  firePurchaseWithDedup();
+
+  // Confettis à l'arrivée
+  (function(){
+    const colors=['#D97706','#FCD34D','#059669','#BE123C','#FDE68A'];
+    for(let i=0;i<70;i++){
+      const c=document.createElement('div');
+      c.className='confetti';
+      c.style.left=Math.random()*100+'vw';
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration=(2.2+Math.random()*1.8)+'s';
+      c.style.animationDelay=(Math.random()*.4)+'s';
+      c.style.borderRadius=Math.random()>.5?'50%':'2px';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),4600);
+    }
+  })();
+</script>
+<script>
+/* ============ Ajout v3.2 : accueil sans second prénom ============
+   Le prénom figure déjà dans le titre « Félicitations David… ». Le paragraphe d'accueil,
+   réécrit par le script d'origine avec le prénom, redevient neutre. Texte affiché seulement. */
+(function(){
+  var l = document.getElementById('lede');
+  if (l) l.innerHTML = 'Bienvenue. Ton accès est prêt. Tu fais maintenant partie des <strong>AI Business Builders</strong>.';
+})();
+</script>
+</body>
+</html>
