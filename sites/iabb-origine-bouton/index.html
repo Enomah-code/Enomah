@@ -1,0 +1,2534 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============ SÉCURITÉ ============ -->
+<!-- Empêche le navigateur de "deviner" le type MIME (protège contre les injections de fichiers déguisés) -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<!-- Contrôle ce qui est envoyé comme referer aux domaines externes (pas de fuite d'URL sensible) -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- Empêche que le site soit chargé dans un iframe pour du clickjacking -->
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+
+<title>Certification AI Business Building — Ton parcours personnalisé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --amber:#D97706; --amber-dark:#B45309; --amber-soft:#FEF3C7; --amber-glow:#FFFBEB; --amber-deep:#78350F;
+    --sage:#059669; --sage-soft:#D1FAE5; --sage-deep:#065F46;
+    --sun:#FCD34D; --sun-soft:#FEF9C3;
+    --ruby:#BE123C; --ruby-dark:#9F1239; --ruby-soft:#FFE4E6;
+    --ink:#0F172A; --ink-2:#334155; --muted:#64748B; --muted-soft:#94A3B8;
+    --border:#E2E8F0; --border-soft:#F1F5F9;
+    --cream:#FFFAF0; --cream-2:#FEF7E6; --card:#FFFFFF; --card-alt:#F8F7F4;
+    --ivory:#FDFBF5;
+    --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-pill:100px;
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+    --shadow-md:0 6px 20px -4px rgba(15,23,42,.08);
+    --shadow-lg:0 20px 50px -12px rgba(15,23,42,.18);
+    --shadow-amber:0 12px 30px -8px rgba(217,119,6,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Manrope',sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;font-size:16px}
+  h1,h2,h3,h4{line-height:1.15;letter-spacing:-.02em;font-weight:800}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  a{color:inherit;text-decoration:none}
+
+  /* ===== NAV TUNNEL ===== */
+  nav.tunnel-top{position:sticky;top:0;z-index:50;background:rgba(255,250,240,.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.5);padding:14px 20px}
+  .tunnel-top-inner{max-width:600px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .back-arrow{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px;font-weight:700;transition:all .15s;flex-shrink:0}
+  .back-arrow:hover{background:var(--card-alt);color:var(--ink)}
+  .back-arrow[disabled]{opacity:0;pointer-events:none}
+  .logo{display:flex;align-items:baseline;gap:6px;flex:1;justify-content:center}
+  .logo-emk{font-weight:800;font-size:14px;color:var(--ink);letter-spacing:.02em}
+  .logo-diamond{font-family:'Caveat',cursive;font-weight:700;font-size:24px;color:var(--amber)}
+  .progress-encouragement{font-size:12px;font-weight:700;color:var(--amber);text-align:right;flex-shrink:0;white-space:nowrap;transition:opacity .3s}
+  .progress-bar{height:3px;background:var(--border-soft);max-width:600px;margin:8px auto 0;border-radius:2px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--amber);border-radius:2px;transition:width .4s ease;width:0}
+
+  .passer-wrap{text-align:right;margin:-18px 0 6px}
+  .passer-wrap[hidden]{display:none}
+  .passer-lien{background:none;border:none;padding:8px 2px;color:var(--muted);font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .passer-lien:hover{color:var(--amber)}
+  .stage{max-width:600px;margin:0 auto;padding:32px 20px 40px;min-height:calc(100vh - 62px);display:flex;flex-direction:column}
+  .screen{display:none;flex-direction:column;flex:1;animation:fadeUp .4s cubic-bezier(.16,1,.3,1)}
+  .screen.active{display:flex}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  .q-kicker{text-align:center;font-size:13px;font-weight:700;color:var(--amber);margin-bottom:10px;letter-spacing:.01em}
+  .question-title{text-align:center;margin-bottom:10px;font-size:clamp(23px,4vw,29px);font-weight:800;line-height:1.22}
+  .question-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:28px;line-height:1.5}
+
+  .options{display:flex;flex-direction:column;gap:11px;margin-bottom:auto}
+  .option{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-md);padding:17px 18px;display:flex;align-items:center;gap:15px;transition:all .15s;text-align:left;width:100%;font-size:15.5px;color:var(--ink);font-weight:600}
+  .option:hover{border-color:var(--amber);background:var(--amber-glow);transform:translateY(-1px)}
+  .option.selected{border-color:var(--amber);background:var(--amber-soft);border-width:2px}
+  .option-emoji{font-size:27px;flex-shrink:0;width:42px;display:flex;align-items:center;justify-content:center}
+  .option-text{flex:1;line-height:1.35}
+
+  .input-wrap{margin-bottom:auto}
+  .text-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-md);padding:18px 20px;font-size:16px;font-family:inherit;font-weight:600;color:var(--ink);outline:none;transition:all .2s}
+  .text-input:focus{border-color:var(--amber);background:var(--amber-glow)}
+  .input-validated{display:flex;align-items:center;gap:6px;color:var(--sage);font-size:13.5px;font-weight:700;margin-top:10px;opacity:0;transition:opacity .25s}
+  .input-validated.show{opacity:1}
+
+  .continue-btn{background:var(--amber);color:#fff;padding:18px 28px;border-radius:var(--r-pill);font-weight:800;font-size:15.5px;transition:all .2s;width:100%;margin-top:24px;box-shadow:var(--shadow-amber)}
+  .continue-btn:hover:not(:disabled){background:var(--amber-dark);transform:translateY(-2px)}
+  .continue-btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+
+  /* ===== ÉCRANS DE RÉACTION ===== */
+  .reaction{text-align:center;padding:12px 0;display:flex;flex-direction:column;flex:1}
+  .reaction-visual{width:110px;height:110px;border-radius:50%;margin:0 auto 26px;display:flex;align-items:center;justify-content:center;font-size:56px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+  .rv-warm{background:linear-gradient(135deg,#FEF3C7,#FDE68A)}
+  .rv-sage{background:linear-gradient(135deg,#D1FAE5,#A7F3D0)}
+  .rv-ruby{background:linear-gradient(135deg,#FFE4E6,#FECDD3)}
+  .rv-sky{background:linear-gradient(135deg,#DBEAFE,#BFDBFE)}
+  .reaction h2{margin-bottom:16px;font-size:clamp(24px,4.2vw,31px);line-height:1.2}
+  .reaction h2 em{font-style:normal;color:var(--amber);position:relative;display:inline-block}
+  .reaction h2 em::after{content:"";position:absolute;bottom:1px;left:0;right:0;height:9px;background:var(--sun);border-radius:100px;opacity:.42;z-index:-1}
+  .reaction p{color:var(--ink-2);font-size:16.5px;line-height:1.62;max-width:480px;margin:0 auto 14px}
+  .reaction p strong{color:var(--ink);font-weight:800}
+  .reaction .signature-line{margin-top:20px;font-family:'Caveat',cursive;font-size:22px;color:var(--amber);font-weight:700}
+  .reaction-spacer{flex:1;min-height:16px}
+
+  .pull-quote{background:var(--card);border-left:4px solid var(--amber);border-radius:0 var(--r-md) var(--r-md) 0;padding:20px 22px;text-align:left;margin:22px auto 0;max-width:480px;box-shadow:var(--shadow-sm)}
+  .pull-quote p{font-size:15.5px;line-height:1.6;margin:0;color:var(--ink-2)}
+  .pull-quote .attr{font-size:13px;color:var(--muted);margin-top:10px;font-weight:700}
+
+  /* ===== ANALYSE ===== */
+  .analysis-wrap{text-align:center;padding:30px 20px;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center}
+  .gauge{position:relative;width:190px;height:190px;margin:0 auto 30px}
+  .gauge-bg{fill:none;stroke:var(--border);stroke-width:8}
+  .gauge-fill{fill:none;stroke:var(--amber);stroke-width:8;stroke-linecap:round;stroke-dasharray:534;stroke-dashoffset:534;transition:stroke-dashoffset .05s linear}
+  .gauge-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:46px;font-weight:800;letter-spacing:-.03em}
+  .analysis-text{font-size:16.5px;color:var(--muted);max-width:400px;margin:0 auto 30px;line-height:1.55}
+  .analysis-steps{display:flex;flex-direction:column;gap:11px;max-width:330px;margin:0 auto;width:100%}
+  .analysis-step{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);font-size:14px;font-weight:600;opacity:.3;transition:all .35s;text-align:left}
+  .analysis-step.done{opacity:1;border-color:var(--sage-soft);background:#F0FDF4}
+  .analysis-step .check{width:21px;height:21px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;flex-shrink:0;transition:all .35s}
+  .analysis-step.done .check{background:var(--sage)}
+
+  /* ===== RÉSULTAT ===== */
+  .result-lede{text-align:center;color:var(--ink-2);font-size:16.5px;max-width:490px;margin:0 auto 26px;line-height:1.6}
+  .result-lede strong{color:var(--ink);font-weight:800}
+  .result-level-card{background:var(--card-alt);border-radius:var(--r-lg);padding:26px 22px;text-align:center;margin-bottom:18px}
+  .result-level-label{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.14em;margin-bottom:6px;text-transform:uppercase}
+  .result-level-value{font-size:36px;font-weight:800;letter-spacing:-.03em;margin-bottom:16px}
+  .result-scale{display:flex;height:8px;border-radius:100px;margin-bottom:8px;background:linear-gradient(to right,#EF4444 0%,#EF4444 33%,#FCD34D 33%,#FCD34D 66%,#22C55E 66%,#22C55E 100%);position:relative}
+  .result-scale-marker{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--ink);transform:translateX(-50%);transition:left 1s cubic-bezier(.16,1,.3,1)}
+  .result-scale-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700}
+  .result-summary-list{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+  .result-summary-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 17px;display:flex;align-items:center;gap:14px}
+  .result-summary-emoji{width:38px;height:38px;border-radius:var(--r-sm);background:var(--amber-soft);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .result-summary-label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:2px}
+  .result-summary-value{font-size:15px;font-weight:700}
+
+  /* ===== PRODUCT PAGE ===== */
+  .product-page{display:none}
+  .product-page.active{display:block}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+  .wrap-sm{max-width:860px;margin:0 auto;padding:0 20px}
+
+  /* --- ENTÊTE FIXE : bandeau + nav restent collés ensemble en haut au scroll --- */
+  .product-sticky-head{position:sticky;top:0;z-index:60}
+
+  /* --- Quand l'utilisateur clique sur le bouton "Payer maintenant" du widget
+     Chariow, on cache TOUS les éléments qui pourraient passer devant le popup
+     de paiement (stickies + éléments avec z-index qui remontent devant).
+     Le scroll normal reste préservé — l'utilisateur peut naviguer dans
+     le formulaire de paiement sans problème. --- */
+  body.checkout-open .product-sticky-head,
+  body.checkout-open nav.tunnel-top{
+    display:none !important;
+  }
+  /* Empêcher .price-card, .price-nono et .guarantee de traverser le popup
+     via leur z-index élevé — on les remet au niveau le plus bas pendant le
+     checkout. Le popup Chariow s'affiche au-dessus, tout est propre. */
+  body.checkout-open .price-card,
+  body.checkout-open .price-nono,
+  body.checkout-open .guarantee,
+  body.checkout-open .product-hero,
+  body.checkout-open .price-section,
+  body.checkout-open section{
+    z-index:auto !important;
+    position:static !important;
+  }
+
+  nav.product-top{background:rgba(255,250,240,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(226,232,240,.5)}
+  .product-nav-inner{max-width:1160px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .product-nav-cta{padding:10px 18px;border-radius:var(--r-pill);background:var(--amber);color:#fff;font-weight:800;font-size:13px;transition:all .2s}
+  .product-nav-cta:hover{background:var(--amber-dark)}
+
+  /* --- BANDEAU OFFRE DÉBLOQUÉE --- */
+  .unlock-banner{background:linear-gradient(100deg,var(--ruby) 0%,var(--amber-dark) 55%,var(--amber) 100%);color:#fff;padding:14px 20px;text-align:center;position:relative;overflow:hidden;text-decoration:none;display:block;cursor:pointer;transition:filter .2s ease}
+  .unlock-banner:hover{filter:brightness(1.05)}
+  .unlock-banner::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:sweep 3.2s infinite}
+  @keyframes sweep{0%{left:-60%}55%,100%{left:130%}}
+  .unlock-banner-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;line-height:1.3}
+  .unlock-banner-title{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:14.5px;font-weight:800;letter-spacing:.01em}
+  .unlock-banner-sub{font-size:13px;font-weight:600;color:rgba(255,255,255,.92);letter-spacing:.01em}
+  .unlock-banner-sub strong{font-weight:800;color:#fff}
+  .unlock-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);padding:3px 11px;border-radius:var(--r-pill);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  @media (max-width:640px){
+    .unlock-banner{padding:12px 16px}
+    .unlock-banner-title{font-size:13px}
+    .unlock-banner-sub{font-size:12px}
+  }
+
+  .product-hero{padding:52px 0 60px;text-align:center;position:relative;overflow:hidden}
+  .product-hero-name{display:inline-block;padding:8px 18px;border-radius:var(--r-pill);background:var(--amber-soft);font-size:13px;font-weight:800;color:var(--amber-deep);margin-bottom:22px}
+
+  .product-hero h1{font-size:clamp(29px,5.2vw,50px);max-width:820px;margin:0 auto 18px;line-height:1.12}
+  .product-hero h1 .hl{color:var(--amber);position:relative;display:inline-block}
+  .product-hero h1 .hl::after{content:"";position:absolute;bottom:2px;left:0;right:0;height:11px;background:var(--sun);border-radius:100px;opacity:.4;z-index:-1}
+  .product-hero-sub{font-size:clamp(16px,2vw,18.5px);color:var(--muted);max-width:620px;margin:0 auto 40px;line-height:1.55}
+
+  /* ===== CERTIFICAT — fidèle au design original, rendu fixe (mobile = desktop) ===== */
+  .cert-showcase{max-width:680px;margin:0 auto;position:relative;padding-top:12px}
+  /* Le viewport n'a qu'une largeur ; sa hauteur est calculée en JS pour épouser
+     exactement le canvas mis à l'échelle — comme une image, jamais de reflow de texte. */
+  .cert-viewport{
+    width:100%;overflow:hidden;border-radius:4px;box-shadow:var(--shadow-lg);
+    position:relative;transform:rotate(-.6deg);
+    transition:transform .35s cubic-bezier(.16,1,.3,1);
+    border:1px solid #E5DBC4;background:#F1EADB;
+  }
+  .cert-viewport:hover{transform:rotate(0) translateY(-5px)}
+
+  /* Canvas à taille fixe (820px) — jamais redimensionné par le CSS responsive,
+     uniquement mis à l'échelle en bloc via transform:scale() en JS. */
+  .cert-canvas{
+    width:820px;background:#F1EADB;box-sizing:border-box;
+    padding:52px 58px 38px;position:relative;
+    transform-origin:top left;
+  }
+
+  /* Losange filigrane */
+  .cert-watermark{
+    position:absolute;top:50%;left:50%;width:360px;height:360px;
+    transform:translate(-50%,-46%) rotate(45deg);
+    background:rgba(30,40,70,.045);border-radius:8px;
+    z-index:1;pointer-events:none;
+  }
+
+  /* Crochets aux 4 coins */
+  .cert-corner{position:absolute;width:32px;height:32px;z-index:2}
+  .cert-corner::before,.cert-corner::after{content:"";position:absolute;background:#B08D48}
+  .cert-corner::before{width:100%;height:1.5px}
+  .cert-corner::after{width:1.5px;height:100%}
+  .cert-corner.tl{top:16px;left:16px}
+  .cert-corner.tr{top:16px;right:16px;transform:scaleX(-1)}
+  .cert-corner.bl{bottom:16px;left:16px;transform:scaleY(-1)}
+  .cert-corner.br{bottom:16px;right:16px;transform:scale(-1,-1)}
+
+  .cert-inner{text-align:center;position:relative;z-index:3}
+
+  .cert-diamond-top{width:14px;height:14px;background:#1E2846;transform:rotate(45deg);margin:0 auto 14px}
+  .cert-header-label{
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    font-size:12px;letter-spacing:4px;color:#1E2846;font-weight:800;
+    margin-bottom:10px;white-space:nowrap;
+  }
+  .cert-sep-diamond{width:7px;height:7px;background:#B08D48;transform:rotate(45deg);flex-shrink:0}
+  .cert-header-rule{width:64px;height:1.5px;background:#B08D48;margin:0 auto 38px}
+
+  .cert-award-line{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:#8B7355;margin-bottom:16px}
+  .cert-name{font-family:'Fraunces',serif;font-weight:600;font-size:54px;color:#1E2846;line-height:1;letter-spacing:-.01em;margin-bottom:14px}
+  .cert-name-rule{width:250px;height:1px;background:#B08D48;opacity:.5;margin:0 auto 30px}
+
+  .cert-formula{font-size:14px;color:#5D5443;margin-bottom:18px;font-weight:500}
+  .cert-title-main{font-family:'Manrope',sans-serif;font-weight:800;font-size:25px;color:#1E2846;letter-spacing:4px;margin-bottom:18px}
+  .cert-desc{font-size:13px;color:#5D5443;line-height:1.65;max-width:480px;margin:0 auto 16px}
+  .cert-recognized{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8B7355;font-weight:700;margin-bottom:16px;line-height:1.6}
+  .cert-recognized b{color:#1E2846;font-weight:800}
+  .cert-modules{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#8B7355;font-weight:700;margin-bottom:34px}
+
+  /* Pied — 3 colonnes, identique au format original */
+  .cert-footer{
+    display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
+    padding-top:22px;border-top:1px solid rgba(176,141,72,.3);
+  }
+  .cert-foot-col{flex:1;min-width:0}
+  .cert-foot-col.left{text-align:left}
+  .cert-foot-col.right{text-align:right}
+  .cert-foot-col.center{flex:0 0 auto;text-align:center;padding:0 16px}
+
+  /* Colonne gauche — signature masquée */
+  .cert-sig-mark{font-family:'Fraunces',serif;font-style:italic;font-size:24px;color:#1E2846;opacity:.3;margin-bottom:8px;line-height:1}
+  .cert-sig-rule{width:150px;height:1px;background:#1E2846;opacity:.22;margin-bottom:8px}
+  .cert-sig-label{font-size:10px;letter-spacing:2px;color:#1E2846;opacity:.55;font-weight:700}
+
+  /* Colonne centrale — marque EMK Blue Diamond, toujours affichée */
+  .cert-foot-diamond{width:10px;height:10px;background:#B08D48;transform:rotate(45deg);margin:0 auto 6px}
+  .cert-foot-brand{font-size:14px;font-weight:800;letter-spacing:2px;color:#1E2846;white-space:nowrap}
+  .cert-foot-brand em{font-family:'Fraunces',serif;font-style:italic;font-weight:500;color:#B08D48}
+
+  /* Colonne droite — n° certificat + date (ville masquée) + vérification */
+  .cert-foot-num{font-size:12px;font-weight:800;letter-spacing:1px;color:#1E2846;margin-bottom:4px}
+  .cert-foot-meta{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:#8B7355;font-weight:700;line-height:1.7}
+  .cert-foot-meta .link{color:#B08D48;font-weight:800}
+  .cert-foot-meta .x{opacity:.4;font-weight:400;letter-spacing:0}
+
+  .product-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--muted);font-weight:600;margin-top:38px}
+
+  section.product{padding:70px 0}
+  .section-eyebrow{display:inline-block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--amber-dark);margin-bottom:14px}
+  .section-title{margin-bottom:16px;max-width:820px}
+  .section-title .hl{color:var(--amber)}
+  .section-lede{font-size:17px;color:var(--muted);max-width:640px;margin-bottom:44px;line-height:1.55}
+  .center-heading{text-align:center;margin-bottom:44px}
+  .center-heading .section-title,.center-heading .section-lede{margin-left:auto;margin-right:auto}
+  h2{font-size:clamp(25px,4vw,38px)}
+
+  /* ===== SÉLECTEUR DE PROFIL ===== */
+  .profile-switch{display:flex;gap:8px;max-width:440px;margin:0 auto 40px;background:var(--card-alt);padding:6px;border-radius:var(--r-pill);border:1px solid var(--border)}
+  .profile-tab{flex:1;padding:12px 16px;border-radius:var(--r-pill);font-weight:800;font-size:14px;color:var(--muted);transition:all .25s;text-align:center}
+  .profile-tab.active{background:var(--amber);color:#fff;box-shadow:var(--shadow-amber)}
+  .profile-panel{display:none;animation:fadeUp .35s cubic-bezier(.16,1,.3,1)}
+  .profile-panel.active{display:block}
+
+  .outcomes{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:720px){.outcomes{grid-template-columns:1fr 1fr}}
+  @media(min-width:1000px){.outcomes{grid-template-columns:1fr 1fr 1fr}}
+  .outcome{background:var(--card);border-radius:var(--r-lg);padding:24px 22px;border:1px solid var(--border);transition:all .2s;display:flex;flex-direction:column;gap:13px}
+  .outcome:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--amber-soft)}
+  .outcome-emoji{width:52px;height:52px;border-radius:var(--r-md);background:var(--amber-soft);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .outcome h4{font-size:18px}
+  .outcome p{color:var(--muted);font-size:14.5px;line-height:1.55;font-weight:500}
+
+  /* COMPARAISON */
+  .compare-wrap{background:var(--cream-2);padding:70px 0}
+  .compare-grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:880px;margin:0 auto}
+  @media(min-width:720px){.compare-grid{grid-template-columns:1fr 1fr;gap:20px}}
+  .compare-card{border-radius:var(--r-xl);padding:28px 24px;border:2px solid transparent}
+  .compare-card.before{border-color:#FEE2E2;background:#FEF2F2}
+  .compare-card.after{border-color:#D1FAE5;background:#F0FDF4}
+  .compare-avatar{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
+  .compare-card.before .compare-avatar{background:#FEE2E2}
+  .compare-card.after .compare-avatar{background:#D1FAE5}
+  .compare-tag{display:inline-block;padding:4px 12px;border-radius:var(--r-pill);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+  .compare-card.before .compare-tag{background:#FCA5A5;color:#7F1D1D}
+  .compare-card.after .compare-tag{background:var(--sage);color:#fff}
+  .compare-card h4{margin-bottom:16px;font-size:21px}
+  .compare-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .compare-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.5;font-weight:500}
+  .compare-list li::before{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;margin-top:1px}
+  .compare-card.before .compare-list li::before{content:"✕";background:#FCA5A5;color:#7F1D1D}
+  .compare-card.after .compare-list li::before{content:"✓";background:var(--sage);color:#fff}
+
+  /* PROGRAMME */
+  .program-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:600px){.program-grid{grid-template-columns:repeat(4,1fr)}}
+  .week-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 14px;text-align:center;transition:all .2s;display:flex;flex-direction:column;gap:8px;align-items:center}
+  .week-card:hover{transform:translateY(-3px);border-color:var(--amber);box-shadow:var(--shadow-md)}
+  .week-icon{width:52px;height:52px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:28px}
+  .w1 .week-icon{background:#DBEAFE} .w2 .week-icon{background:#FEF3C7} .w3 .week-icon{background:#FED7AA}
+  .w4 .week-icon{background:#E0E7FF} .w5 .week-icon{background:#D1FAE5} .w6 .week-icon{background:#FBCFE8}
+  .w7 .week-icon{background:#FEF9C3} .w8 .week-icon{background:var(--amber-soft)}
+  .week-num{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+  .week-name{font-weight:800;font-size:13.5px;line-height:1.25}
+
+  /* ===== BONUS FLASH ===== */
+  .bonus-section{background:var(--ink);color:#fff;padding:80px 0;position:relative;overflow:hidden}
+  .bonus-section::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(217,119,6,.38) 0%,transparent 58%)}
+  .bonus-inner{position:relative;z-index:2}
+  .bonus-header{text-align:center;margin-bottom:40px}
+  .bonus-flash{display:inline-flex;align-items:center;gap:9px;padding:11px 22px;border-radius:var(--r-pill);background:linear-gradient(100deg,var(--ruby),var(--amber));color:#fff;font-size:13.5px;font-weight:800;letter-spacing:.02em;margin-bottom:22px;box-shadow:0 10px 30px -8px rgba(190,18,60,.6);position:relative;overflow:hidden}
+  .bonus-flash::after{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:sweep 2.6s infinite}
+  .bonus-flash span{position:relative;z-index:2}
+  .bonus-header h2{color:#fff;margin-bottom:14px}
+  .bonus-header h2 .hl{color:var(--sun)}
+  .bonus-header p{color:rgba(255,255,255,.68);font-size:16.5px;max-width:560px;margin:0 auto;line-height:1.55}
+  .bonus-value-strip{display:inline-flex;align-items:baseline;gap:10px;margin-top:22px;padding:10px 20px;border-radius:var(--r-pill);background:rgba(252,211,77,.13);border:1px solid rgba(252,211,77,.3)}
+  .bonus-value-strip .lbl{font-size:12.5px;color:rgba(255,255,255,.7);font-weight:700}
+  .bonus-value-strip .val{font-size:19px;font-weight:800;color:var(--sun)}
+
+  .bonus-grid{display:grid;grid-template-columns:1fr;gap:13px;max-width:900px;margin:0 auto}
+  @media(min-width:640px){.bonus-grid{grid-template-columns:1fr 1fr}}
+  .bonus-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-lg);padding:22px 20px;display:flex;gap:16px;align-items:flex-start;transition:all .25s;position:relative;overflow:hidden}
+  .bonus-card:hover{background:rgba(255,255,255,.1);border-color:var(--sun);transform:translateY(-3px)}
+  .bonus-card.wide{grid-column:1/-1}
+  .bonus-emoji{flex-shrink:0;width:52px;height:52px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--amber),var(--ruby));display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 16px -4px rgba(217,119,6,.5)}
+  .bonus-body{flex:1;min-width:0}
+  .bonus-body h4{margin-bottom:4px;font-size:17px;color:#fff}
+  .bonus-body p{color:rgba(255,255,255,.62);font-size:13.8px;line-height:1.5;font-weight:500}
+  .bonus-price{flex-shrink:0;text-align:right}
+  .bonus-price .was{font-size:12px;color:rgba(255,255,255,.4);text-decoration:line-through;display:block}
+  .bonus-price .now{font-size:12px;font-weight:800;color:var(--sage-soft);letter-spacing:.06em;text-transform:uppercase}
+
+  /* PRIX */
+  .price-section{background:linear-gradient(180deg,var(--ink) 0%,#1A1408 100%);color:#fff;padding:20px 0 80px;position:relative;overflow:hidden}
+  .price-section::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 8%,rgba(217,119,6,.3) 0%,transparent 52%)}
+  .price-header{text-align:center;position:relative;z-index:2;margin-bottom:38px}
+  .price-header .section-eyebrow{color:var(--sun)}
+  .price-header h2{color:#fff;margin-bottom:12px}
+  .price-header h2 .hl{color:var(--sun)}
+  .price-differentiator{display:inline-block;background:rgba(5,150,105,.16);border:1px solid rgba(5,150,105,.38);color:#6EE7B7;padding:9px 19px;border-radius:var(--r-pill);font-size:13px;font-weight:800;margin-bottom:18px}
+
+  .price-card{max-width:520px;margin:0 auto;background:var(--card);color:var(--ink);border-radius:var(--r-xl);padding:40px 30px;text-align:center;box-shadow:var(--shadow-lg);position:relative;z-index:2}
+  .price-unlock-tag{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:linear-gradient(100deg,var(--ruby),var(--amber));color:#fff;padding:8px 20px;border-radius:var(--r-pill);font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;box-shadow:0 8px 22px -6px rgba(190,18,60,.6)}
+  .price-forever{background:var(--sage-soft);color:var(--sage-deep);padding:8px 16px;border-radius:var(--r-pill);font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:6px;margin:12px 0 18px}
+  .price-was{font-size:18px;color:var(--muted);text-decoration:line-through;margin-bottom:2px}
+  .price-now{font-weight:800;font-size:clamp(54px,10vw,82px);line-height:1;color:var(--amber);letter-spacing:-.04em}
+  .price-now-unit{font-size:18px;font-weight:700;margin-bottom:8px}
+  .price-currencies{font-size:13px;color:var(--muted);margin-bottom:26px}
+  .price-currencies b{color:var(--ink);font-weight:700}
+  .price-includes{background:var(--card-alt);border-radius:var(--r-lg);padding:20px;margin-bottom:22px;text-align:left;display:flex;flex-direction:column;gap:9px}
+  .price-includes-title{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:5px}
+  .price-includes .item{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:600}
+  .price-btn{background:var(--amber);color:#fff;padding:19px 24px;width:100%;border-radius:var(--r-pill);font-weight:800;font-size:16.5px;box-shadow:var(--shadow-amber);transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .price-btn:hover{background:var(--amber-dark);transform:translateY(-2px)}
+
+  /* Emplacement du widget Chariow — centre le bouton lumineux et lui donne de l'air */
+  .chariow-slot{display:flex;justify-content:center;align-items:center;min-height:64px;margin:4px 0 6px}
+  .chariow-slot #chariow-widget{width:100%;display:flex;justify-content:center}
+  .price-payment{font-size:12px;color:var(--muted);margin-top:13px}
+
+  .price-nono{max-width:520px;margin:22px auto 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-lg);padding:20px;color:rgba(255,255,255,.9);font-size:14px;line-height:1.6;text-align:center;position:relative;z-index:2;font-weight:500}
+  .price-nono b{color:var(--sun);font-weight:800}
+
+  .guarantee{max-width:520px;margin:20px auto 0;background:var(--card);border-radius:var(--r-lg);padding:20px;display:flex;gap:14px;align-items:center;border:1px solid var(--sage-soft);position:relative;z-index:2}
+  .guarantee-emoji{flex-shrink:0;width:48px;height:48px;border-radius:var(--r-md);background:var(--sage-soft);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .guarantee-body h4{margin-bottom:2px;font-size:15px}
+  .guarantee-body p{color:var(--muted);font-size:13px;line-height:1.5;font-weight:500}
+
+  /* SECTION APRÈS PAIEMENT (section pleine avec vrai titre et 3 étapes) */
+  .after-payment-section{padding:70px 20px 60px;background:var(--cream)}
+  .after-payment-steps{max-width:640px;margin:40px auto 0;display:flex;flex-direction:column;gap:16px}
+  .after-step{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 24px;display:flex;gap:18px;align-items:flex-start;transition:all .2s}
+  .after-step:hover{border-color:var(--amber);box-shadow:0 8px 24px -6px rgba(217,119,6,.15);transform:translateY(-2px)}
+  .after-step-num{flex-shrink:0;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#D97706 0%,#B45309 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;box-shadow:0 4px 12px rgba(217,119,6,.35)}
+  .after-step-body{flex:1;min-width:0}
+  .after-step-body h4{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px;line-height:1.3}
+  .after-step-body p{font-size:14px;color:var(--ink-2);line-height:1.5;margin:0}
+  .after-payment-section .guarantee{margin-top:28px}
+  @media(min-width:640px){
+    .after-step-body h4{font-size:17px}
+    .after-step-body p{font-size:14.5px}
+  }
+
+  /* BULLES FLOTTANTES CONTACT (n'apparaissent qu'au bas de page)
+     Deux boutons ronds empilés à droite, cachés par défaut,
+     révélés via IntersectionObserver quand le footer devient visible. */
+  .contact-bubbles{position:fixed;bottom:20px;right:20px;z-index:80;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(20px) scale(.85);transition:opacity .35s ease,transform .35s cubic-bezier(.16,1,.3,1);pointer-events:none}
+  .contact-bubbles.visible{opacity:1;transform:none;pointer-events:auto}
+  .contact-bubble{width:56px;height:56px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:26px;box-shadow:0 8px 24px -6px rgba(15,23,42,.35);transition:transform .2s,box-shadow .2s}
+  .contact-bubble:hover{transform:scale(1.08);box-shadow:0 12px 32px -6px rgba(15,23,42,.45)}
+  .contact-bubble-wa{background:#25D366}
+  .contact-bubble-mail{background:var(--amber)}
+  @media(max-width:640px){
+    .contact-bubbles{bottom:16px;right:16px;gap:10px}
+    .contact-bubble{width:52px;height:52px;font-size:24px}
+  }
+
+  /* FAQ */
+  details{background:var(--card);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;border:1px solid var(--border);transition:all .2s}
+  details[open]{border-color:var(--amber)}
+  summary{padding:20px 22px;cursor:pointer;font-weight:700;font-size:15.5px;display:flex;justify-content:space-between;align-items:center;gap:18px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--amber-soft);color:var(--amber-dark);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:400;transition:transform .3s}
+  details[open] summary::after{transform:rotate(45deg);background:var(--amber);color:#fff}
+  details p{padding:0 22px 21px;color:var(--muted);font-size:14.5px;line-height:1.65;font-weight:500}
+
+  .final-cta{background:var(--ink);color:#fff;padding:80px 0;text-align:center;position:relative;overflow:hidden}
+  .final-cta::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center top,rgba(217,119,6,.36) 0%,transparent 55%)}
+  .final-cta-inner{position:relative;z-index:2;max-width:780px;margin:0 auto}
+  .final-cta h2{color:#fff;margin-bottom:16px}
+  .final-cta h2 .hl{color:var(--sun)}
+  .final-cta p{font-size:17px;color:rgba(255,255,255,.75);max-width:550px;margin:0 auto 32px;font-weight:500}
+
+  footer.tunnel-footer{background:var(--cream);padding:24px 20px;text-align:center;font-size:12px;color:var(--muted);border-top:1px solid var(--border-soft)}
+  footer.tunnel-footer a{color:var(--muted);margin:0 6px}
+  footer.tunnel-footer a:hover{color:var(--amber)}
+  footer.tunnel-footer .logo{margin-bottom:10px}
+  footer.product-footer{background:var(--ink);color:rgba(255,255,255,.6);padding:32px 0;text-align:center;font-size:13px}
+  footer.product-footer .logo{justify-content:center;margin-bottom:12px}
+  footer.product-footer .logo-emk{color:#fff}
+  footer.product-footer a{color:rgba(255,255,255,.6);margin:0 8px}
+  footer.product-footer a:hover{color:var(--amber)}
+
+  /* PROGRAMME COMPLET (ACCORDÉON MODULES) */
+  .program-section{padding:70px 20px 40px;background:var(--cream)}
+  .modules-list{max-width:720px;margin:38px auto 0;display:flex;flex-direction:column;gap:12px}
+  .module-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:all .22s}
+  .module-item[open]{border-color:var(--amber);box-shadow:0 8px 24px -6px rgba(217,119,6,.18)}
+  .module-summary{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
+  .module-summary::-webkit-details-marker{display:none}
+  .module-summary::marker{content:""}
+  .module-icon-wrap{flex-shrink:0;width:44px;height:44px;border-radius:var(--r-md);background:var(--amber-soft);display:inline-flex;align-items:center;justify-content:center}
+  .module-icon{font-size:22px;line-height:1}
+  .module-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .module-title{font-weight:800;font-size:15px;color:var(--ink);line-height:1.32}
+  .module-meta{font-size:12.5px;color:var(--muted);font-weight:600}
+  .module-chevron{flex-shrink:0;font-size:20px;color:var(--muted);transition:transform .28s;font-weight:800;line-height:1}
+  .module-item[open] .module-chevron{transform:rotate(180deg);color:var(--amber)}
+  .module-content{padding:6px 20px 22px 20px;border-top:1px solid var(--border-soft);animation:moduleOpen .3s ease-out}
+  @keyframes moduleOpen{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .module-promise{font-size:14px;color:var(--amber-dark);font-weight:700;font-style:italic;margin:14px 0 16px;padding-left:12px;border-left:3px solid var(--amber);line-height:1.4}
+  .lessons-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+  .lessons-list li{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;color:var(--ink-2);line-height:1.5;padding:8px 0}
+  .lesson-icon{flex-shrink:0;width:28px;height:28px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+  .icon-video{background:rgba(217,119,6,.11)}
+  .icon-eval{background:rgba(5,150,105,.15)}
+  .module-bonus-hint{font-size:14px;color:var(--ink-2);font-weight:500;line-height:1.55;margin:0}
+  @media(min-width:640px){
+    .module-title{font-size:16px}
+    .lessons-list li{font-size:14px}
+  }
+
+  /* AVIS CLIENTS */
+  .reviews-section{padding:80px 20px 40px;background:var(--cream)}
+  .reviews-widget{max-width:960px;margin:0 auto}
+  .reviews-widget #chariow-proof{width:100%}
+
+  /* CONFETTIS */
+  .confetti{position:fixed;top:-20px;width:9px;height:14px;z-index:9999;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.1}}
+
+  /* ============ ÉCRAN D'ACCUEIL ============ */
+  #welcomeScreen{min-height:100vh;background:var(--cream);display:flex;flex-direction:column;animation:fadeIn .5s ease-out}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .welcome-nav{padding:18px 20px;border-bottom:1px solid rgba(226,232,240,.5);text-align:center;background:rgba(255,250,240,.85);backdrop-filter:blur(10px)}
+  .welcome-content{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 24px;max-width:560px;margin:0 auto;width:100%}
+  .welcome-icon{font-size:64px;margin-bottom:24px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1) .2s both}
+  @keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+  .welcome-title{font-size:clamp(30px,7vw,44px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;color:var(--ink)}
+  .welcome-sub{font-size:clamp(16px,4vw,19px);color:var(--muted);line-height:1.55;margin-bottom:36px;max-width:460px;font-weight:500}
+  .welcome-btn{background:var(--amber);color:#fff;border:none;padding:18px 44px;border-radius:100px;font-size:17px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 12px 30px -8px rgba(217,119,6,.5);transition:all .2s;letter-spacing:.01em}
+  .welcome-btn:hover{background:var(--amber-dark);transform:translateY(-2px);box-shadow:0 16px 36px -8px rgba(217,119,6,.55)}
+  .welcome-btn:active{transform:translateY(0)}
+  .welcome-footnote{margin-top:24px;font-size:13px;color:var(--muted);font-weight:500}
+</style>
+<!-- ============ META PIXEL — code de base ============ -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '3393043107543742');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=3393043107543742&ev=PageView&noscript=1"
+/></noscript>
+
+<!-- ═══ WIDGET NOTIFICATIONS SOCIALES — style ═══ -->
+<style>
+.emk-notif-widget{
+  position:fixed;top:20px;right:20px;z-index:9999;
+  background:#FFFFFF;
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius:16px;
+  padding:12px 40px 12px 14px;
+  box-shadow:
+    0 20px 40px -12px rgba(15,23,42,0.25),
+    0 8px 16px -6px rgba(15,23,42,0.15),
+    0 0 0 1px rgba(15,23,42,0.04);
+  font-family:'Manrope',-apple-system,BlinkMacSystemFont,sans-serif;
+  color:#0F172A;
+  max-width:340px;min-width:280px;
+  display:flex;align-items:center;gap:12px;
+  transform:translateX(120%) scale(0.92);opacity:0;
+  transition:
+    transform 0.55s cubic-bezier(0.34,1.56,0.64,1),
+    opacity 0.35s ease;
+  pointer-events:none;
+}
+.emk-notif-widget.emk-notif-show{
+  transform:translateX(0) scale(1);opacity:1;pointer-events:auto;
+}
+.emk-notif-widget .emk-notif-avatar{
+  position:relative;flex-shrink:0;
+  width:44px;height:44px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#fff;font-size:17px;font-weight:800;letter-spacing:-0.02em;
+  text-shadow:0 1px 2px rgba(0,0,0,0.15);
+  box-shadow:0 2px 6px rgba(15,23,42,0.12);
+}
+.emk-notif-widget .emk-notif-check{
+  position:absolute;bottom:-2px;right:-2px;
+  width:18px;height:18px;border-radius:50%;
+  background:#059669;color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;line-height:1;
+  border:2.5px solid #fff;
+  box-shadow:0 1px 3px rgba(5,150,105,0.4);
+}
+.emk-notif-widget .emk-notif-content{flex:1;min-width:0;line-height:1.35}
+.emk-notif-widget .emk-notif-title{
+  font-size:11.5px;font-weight:800;letter-spacing:0.08em;
+  text-transform:uppercase;color:#D97706;
+  display:block;margin-bottom:3px;
+}
+.emk-notif-widget .emk-notif-name{
+  font-weight:800;color:#0F172A;font-size:14.5px;
+  display:block;line-height:1.35;
+}
+.emk-notif-widget .emk-notif-action{
+  font-size:12.5px;color:#64748B;font-weight:500;
+  display:block;line-height:1.3;
+}
+.emk-notif-widget .emk-notif-close{
+  position:absolute;top:8px;right:10px;
+  background:none;border:none;padding:2px 4px;
+  color:#CBD5E1;cursor:pointer;font-size:16px;line-height:1;font-family:inherit;
+  transition:color 0.2s;
+}
+.emk-notif-widget .emk-notif-close:hover{color:#64748B}
+@media (max-width:640px){
+  .emk-notif-widget{
+    top:12px;right:12px;left:12px;max-width:none;min-width:0;
+    padding:11px 38px 11px 12px;
+  }
+  .emk-notif-widget .emk-notif-avatar{width:40px;height:40px;font-size:16px}
+  .emk-notif-widget .emk-notif-check{width:16px;height:16px;font-size:10px;border-width:2px}
+  .emk-notif-widget .emk-notif-name{font-size:14px}
+  .emk-notif-widget .emk-notif-action{font-size:12px}
+  .emk-notif-widget .emk-notif-title{font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){
+  .emk-notif-widget{transition:opacity 0.2s ease;transform:none}
+}
+</style>
+
+</head>
+<body>
+
+<!-- ============ ÉCRAN D'ACCUEIL (LANDING) ============ -->
+<div id="welcomeScreen">
+  <nav class="welcome-nav">
+    <a href="/" class="logo"><span class="logo-emk">EMK</span><span class="logo-diamond">Blue Diamond</span></a>
+  </nav>
+  <div class="welcome-content">
+    <div class="welcome-icon">✨</div>
+    <h1 class="welcome-title">3 minutes pour te connaître</h1>
+    <p class="welcome-sub">Et concevoir un programme sur mesure adapté à ton profil.</p>
+    <button class="welcome-btn" onclick="startQuizFromWelcome()">C'est parti 🚀</button>
+    <div class="welcome-footnote">Aucune bonne ou mauvaise réponse — juste toi.</div>
+  </div>
+</div>
+
+<!-- ============ TUNNEL ============ -->
+<div id="tunnel" style="display:none">
+  <nav class="tunnel-top">
+    <div class="tunnel-top-inner">
+      <button class="back-arrow" id="backBtn" onclick="goBack()">←</button>
+      <a href="/" class="logo"><span class="logo-emk">EMK</span><span class="logo-diamond">Blue Diamond</span></a>
+      <div class="progress-encouragement" id="progressEncouragement">🌱 On commence !</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </nav>
+
+  <div class="stage">
+    <div class="passer-wrap" id="passerWrap" hidden><button type="button" class="passer-lien" onclick="passerVersOffre()">Passer →</button></div>
+
+    <!-- Q1 PRÉNOM -->
+    <div class="screen active" data-screen="q1">
+      <div class="q-kicker">Salut!!!😊 Ravi de te retrouver. Avant de commencer</div>
+      <div class="question-title">Quel est ton prénom ? ?</div>
+      <div class="question-sub">Ce parcours va être construit rien que pour toi. Autant se tutoyer.</div>
+      <div class="input-wrap">
+        <input type="text" id="nameInput" class="text-input" placeholder="Ton prénom" oninput="validateName()" />
+        <div class="input-validated" id="nameValid">✓ Enchanté !</div>
+      </div>
+      <button class="continue-btn" id="nameBtn" onclick="next()" disabled>C'est parti</button>
+    </div>
+
+    <!-- Q2 SITUATION -->
+    <div class="screen" data-screen="q2">
+      <div class="question-title">Aujourd'hui, tu te lèves le matin pour quoi ?</div>
+      <div class="question-sub">Il n'y a pas de bonne réponse. Juste la tienne.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'situation','salarie')"><span class="option-emoji">💼</span><span class="option-text">Un boulot salarié</span></button>
+        <button class="option" onclick="pick(this,'situation','entrepreneur')"><span class="option-emoji">🚀</span><span class="option-text">Mon business, que je gère déjà</span></button>
+        <button class="option" onclick="pick(this,'situation','freelance')"><span class="option-emoji">💻</span><span class="option-text">Mes clients, je suis à mon compte</span></button>
+        <button class="option" onclick="pick(this,'situation','etudiant')"><span class="option-emoji">🎓</span><span class="option-text">Mes études, je démarre dans la vie</span></button>
+        <button class="option" onclick="pick(this,'situation','transition')"><span class="option-emoji">🌱</span><span class="option-text">Je cherche encore ma voie</span></button>
+      </div>
+    </div>
+
+    <!-- QAGE TRANCHE D'ÂGE -->
+    <div class="screen" data-screen="qage">
+      <div class="question-title">Tu as quel âge ?</div>
+      <div class="question-sub">Ça nous aide à adapter les exemples et le rythme.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'age','18-24')"><span class="option-emoji">🌱</span><span class="option-text">18 – 24 ans</span></button>
+        <button class="option" onclick="pick(this,'age','25-34')"><span class="option-emoji">🚀</span><span class="option-text">25 – 34 ans</span></button>
+        <button class="option" onclick="pick(this,'age','35-44')"><span class="option-emoji">💪</span><span class="option-text">35 – 44 ans</span></button>
+        <button class="option" onclick="pick(this,'age','45-54')"><span class="option-emoji">🎯</span><span class="option-text">45 – 54 ans</span></button>
+        <button class="option" onclick="pick(this,'age','55+')"><span class="option-emoji">🌟</span><span class="option-text">55 ans et plus</span></button>
+      </div>
+    </div>
+
+    <!-- Q3 FRUSTRATION -->
+    <div class="screen" data-screen="q3">
+      <div class="question-title">Qu'est-ce qui te ronge le plus en ce moment ?</div>
+      <div class="question-sub">Sois honnête. C'est entre nous.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'pain','temps')"><span class="option-emoji">😮‍💨</span><span class="option-text">Je bosse tout le temps et je n'avance pas</span></button>
+        <button class="option" onclick="pick(this,'pain','argent')"><span class="option-emoji">💸</span><span class="option-text">Mes revenus ne suivent pas mes efforts</span></button>
+        <button class="option" onclick="pick(this,'pain','retard')"><span class="option-emoji">😰</span><span class="option-text">J'ai peur d'être largué par ceux qui utilisent l'IA</span></button>
+        <button class="option" onclick="pick(this,'pain','bloque')"><span class="option-emoji">🧱</span><span class="option-text">J'ai des idées mais je ne sais pas les concrétiser</span></button>
+        <button class="option" onclick="pick(this,'pain','routine')"><span class="option-emoji">🔁</span><span class="option-text">Je fais les mêmes tâches en boucle, ça m'épuise</span></button>
+      </div>
+    </div>
+
+    <!-- R1 RÉACTION EMPATHIE -->
+    <div class="screen" data-screen="r1">
+      <div class="reaction">
+        <div class="reaction-visual rv-warm" id="r1Visual">🫱</div>
+        <h2 id="r1Title">Tu n'es <em>pas seul</em> à ressentir ça</h2>
+        <p id="r1Body">Ce que tu viens de décrire, on l'entend tous les jours.</p>
+        <div class="pull-quote">
+          <p id="r1Quote">La vérité, c'est que ce n'est pas un problème de motivation. C'est un problème d'outils.</p>
+          <div class="attr">— Ce que 9 personnes sur 10 découvrent trop tard</div>
+        </div>
+        <div class="reaction-spacer"></div>
+      </div>
+      <button class="continue-btn" onclick="next()">Je continue</button>
+    </div>
+
+    <!-- Q4 NIVEAU -->
+    <div class="screen" data-screen="q4">
+      <div class="question-title">Franchement, tu en es où avec l'IA ?</div>
+      <div class="question-sub">Zéro jugement. On part de là où tu es.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'level','zero')"><span class="option-emoji">🤷</span><span class="option-text">Non, je n'y connais rien du tout</span></button>
+        <button class="option" onclick="pick(this,'level','entendu')"><span class="option-emoji">👂</span><span class="option-text">J'en ai entendu parler, sans plus</span></button>
+        <button class="option" onclick="pick(this,'level','essaye')"><span class="option-emoji">🧪</span><span class="option-text">J'ai déjà essayé ChatGPT deux ou trois fois</span></button>
+        <button class="option" onclick="pick(this,'level','regulier')"><span class="option-emoji">💻</span><span class="option-text">Je l'utilise régulièrement, pour du basique</span></button>
+        <button class="option" onclick="pick(this,'level','avance')"><span class="option-emoji">🧠</span><span class="option-text">Je bidouille déjà des trucs sérieux</span></button>
+      </div>
+    </div>
+
+    <!-- R2 RÉACTION ADAPTATIVE (rassurer OU valoriser) -->
+    <div class="screen" data-screen="r2">
+      <div class="reaction">
+        <div class="reaction-visual rv-sage" id="r2Visual">🌿</div>
+        <h2 id="r2Title">Bonne nouvelle</h2>
+        <p id="r2Body"></p>
+        <p id="r2Body2" style="color:var(--muted);font-size:15.5px"></p>
+        <div class="signature-line" id="r2Sig"></div>
+        <div class="reaction-spacer"></div>
+      </div>
+      <button class="continue-btn" onclick="next()">Continuer</button>
+    </div>
+
+    <!-- Q5 RÊVE / OBJECTIF (avantages vendeurs) -->
+    <div class="screen" data-screen="q5">
+      <div class="question-title">Si tu pouvais maîtriser <em style="font-style:normal;color:var(--amber)">une seule</em> chose, ce serait laquelle ?</div>
+      <div class="question-sub">Celle qui changerait vraiment ton quotidien.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'dream','agent')"><span class="option-emoji">🤖</span><span class="option-text">Créer mon agent IA qui bosse pour moi 24h/24</span></button>
+        <button class="option" onclick="pick(this,'dream','automatiser')"><span class="option-emoji">⚡</span><span class="option-text">Automatiser mes tâches et libérer mes journées</span></button>
+        <button class="option" onclick="pick(this,'dream','vendre')"><span class="option-emoji">🛒</span><span class="option-text">Vendre en ligne, même pendant que je dors</span></button>
+        <button class="option" onclick="pick(this,'dream','site')"><span class="option-emoji">🌐</span><span class="option-text">Créer des sites et applis sans savoir coder</span></button>
+        <button class="option" onclick="pick(this,'dream','prestation')"><span class="option-emoji">💰</span><span class="option-text">Vendre des prestations IA à des clients</span></button>
+      </div>
+    </div>
+
+    <!-- Q6 CODE -->
+    <div class="screen" data-screen="q6">
+      <div class="question-title">Et le code, dans tout ça ?</div>
+      <div class="question-sub">Attention, ta réponse ne change rien à ce que tu peux accomplir.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'code','non')"><span class="option-emoji">🙅</span><span class="option-text">Zéro. Et honnêtement ça me fait peur</span></button>
+        <button class="option" onclick="pick(this,'code','curieux')"><span class="option-emoji">👀</span><span class="option-text">J'ai déjà regardé, ça m'a découragé</span></button>
+        <button class="option" onclick="pick(this,'code','peu')"><span class="option-emoji">🤏</span><span class="option-text">Quelques bases, rien de solide</span></button>
+        <button class="option" onclick="pick(this,'code','oui')"><span class="option-emoji">👨‍💻</span><span class="option-text">Oui, je sais coder</span></button>
+      </div>
+    </div>
+
+    <!-- R3 RÉACTION CODE -->
+    <div class="screen" data-screen="r3">
+      <div class="reaction">
+        <div class="reaction-visual rv-sky" id="r3Visual">🔓</div>
+        <h2 id="r3Title">C'était vrai <em>il y a 3 ans</em>. Plus aujourd'hui.</h2>
+        <p id="r3Body">Aujourd'hui, tu décris ce que tu veux <strong>en français</strong>, et l'IA le construit. Un site, une application, un agent qui répond à tes clients — tout ça sans écrire une seule ligne de code.</p>
+        <p style="color:var(--muted);font-size:15.5px">La barrière technique qui t'a bloqué pendant des années vient de tomber. La seule question qui reste : <strong style="color:var(--ink)">est-ce que tu vas en profiter avant les autres ?</strong></p>
+        <div class="reaction-spacer"></div>
+      </div>
+      <button class="continue-btn" onclick="next()">Montre-moi ça</button>
+    </div>
+
+    <!-- Q7 TENTATIVES -->
+    <div class="screen" data-screen="q7">
+      <div class="question-title">Tu as déjà essayé d'apprendre l'IA quelque part ?</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'tried','jamais')"><span class="option-emoji">🆕</span><span class="option-text">Non, jamais. C'est ma première fois</span></button>
+        <button class="option" onclick="pick(this,'tried','youtube')"><span class="option-emoji">📺</span><span class="option-text">YouTube, des vidéos par-ci par-là</span></button>
+        <button class="option" onclick="pick(this,'tried','abandonne')"><span class="option-emoji">😞</span><span class="option-text">J'ai commencé une formation et j'ai abandonné</span></button>
+        <button class="option" onclick="pick(this,'tried','paye')"><span class="option-emoji">💳</span><span class="option-text">J'ai payé pour un truc qui ne valait pas le prix</span></button>
+      </div>
+    </div>
+
+    <!-- Q8 TEMPS -->
+    <div class="screen" data-screen="q8">
+      <div class="question-title">Combien de temps tu peux vraiment y consacrer ?</div>
+      <div class="question-sub">Sois réaliste — on adaptera le rythme à ta vraie vie.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'time','10')"><span class="option-emoji">☕</span><span class="option-text">10 minutes, entre deux choses</span></button>
+        <button class="option" onclick="pick(this,'time','30')"><span class="option-emoji">🌆</span><span class="option-text">30 minutes, le soir ou le matin</span></button>
+        <button class="option" onclick="pick(this,'time','60')"><span class="option-emoji">🔥</span><span class="option-text">Une heure ou plus, je suis motivé</span></button>
+      </div>
+    </div>
+
+    <!-- Q9 BLOCAGE -->
+    <div class="screen" data-screen="q9">
+      <div class="question-title">Qu'est-ce qui t'a empêché de t'y mettre jusqu'ici ?</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'blocker','methode')"><span class="option-emoji">🧭</span><span class="option-text">Je ne sais pas par où commencer</span></button>
+        <button class="option" onclick="pick(this,'blocker','temps')"><span class="option-emoji">⏳</span><span class="option-text">Je n'ai jamais le temps</span></button>
+        <button class="option" onclick="pick(this,'blocker','complique')"><span class="option-emoji">😵‍💫</span><span class="option-text">Ça a l'air trop compliqué pour moi</span></button>
+        <button class="option" onclick="pick(this,'blocker','confiance')"><span class="option-emoji">💭</span><span class="option-text">Je doute d'y arriver, tout simplement</span></button>
+      </div>
+    </div>
+
+    <!-- R4 RÉACTION FORTE -->
+    <div class="screen" data-screen="r4">
+      <div class="reaction">
+        <div class="reaction-visual rv-ruby" id="r4Visual">💛</div>
+        <h2 id="r4Title"></h2>
+        <p id="r4Body"></p>
+        <div class="pull-quote">
+          <p>« L'IA ne remplacera pas les humains. Mais les humains qui utilisent l'IA remplaceront ceux qui ne l'utilisent pas. »</p>
+          <div class="attr">— Karim Lakhani, professeur à Harvard Business School</div>
+        </div>
+        <p style="margin-top:18px;color:var(--ink-2);font-size:15.5px">Alors aujourd'hui, on va faire de toi <strong style="color:var(--ink)">celui qui maîtrise l'IA</strong> — pour que tu ne sois jamais remplacé par quelqu'un qui la maîtrise.</p>
+        <p style="margin-top:12px;color:var(--muted);font-size:15.5px">Une personne qui maîtrise l'IA travaille <strong style="color:var(--amber)">trois fois plus vite</strong> et abat le travail de trois personnes à elle seule. Voilà exactement ce que tu vas devenir.</p>
+        <div class="reaction-spacer"></div>
+      </div>
+      <button class="continue-btn" onclick="next()">Je veux être du bon côté</button>
+    </div>
+
+    <!-- Q10 PROJECTION -->
+    <div class="screen" data-screen="q10">
+      <div class="question-title">Imagine : dans 8 semaines, ça marche. Tu fais quoi en premier ?</div>
+      <div class="question-sub">Ferme les yeux deux secondes. Vraiment.</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'celebrate','annoncer')"><span class="option-emoji">📣</span><span class="option-text">Je l'annonce à mes proches, fier de moi</span></button>
+        <button class="option" onclick="pick(this,'celebrate','client')"><span class="option-emoji">🤝</span><span class="option-text">Je décroche mon premier client</span></button>
+        <button class="option" onclick="pick(this,'celebrate','respirer')"><span class="option-emoji">🌴</span><span class="option-text">Je respire enfin, mon temps m'appartient</span></button>
+        <button class="option" onclick="pick(this,'celebrate','investir')"><span class="option-emoji">📈</span><span class="option-text">Je réinvestis pour aller encore plus loin</span></button>
+      </div>
+    </div>
+
+    <!-- Q11 ENGAGEMENT -->
+    <div class="screen" data-screen="q11">
+      <div class="question-title">Dernière question, la plus importante</div>
+      <div class="question-sub">Est-ce que tu es prêt à y consacrer 8 semaines pour de vrai ?</div>
+      <div class="options">
+        <button class="option" onclick="pick(this,'commit','oui')"><span class="option-emoji">🔥</span><span class="option-text">Oui. Cette fois je vais au bout</span></button>
+        <button class="option" onclick="pick(this,'commit','essayer')"><span class="option-emoji">💪</span><span class="option-text">Je vais tout faire pour</span></button>
+      </div>
+    </div>
+
+    <!-- Q12 EMAIL -->
+    <div class="screen" data-screen="q12">
+      <div class="q-kicker">Presque terminé</div>
+      <div class="question-title" id="emailTitle">Où on t'envoie ton plan ?</div>
+      <div class="question-sub">Ton parcours personnalisé + ta date de certification t'attendent.</div>
+      <div class="input-wrap">
+        <input type="email" id="emailInput" class="text-input" placeholder="✉️  ton@email.com" oninput="validateEmail()" />
+        <div class="input-validated" id="emailValid">✓ Parfait, on y est presque</div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.55;font-weight:500">🔒 Zéro spam, jamais. Tu peux te désinscrire en un clic.</p>
+      </div>
+      <button class="continue-btn" id="emailBtn" onclick="startAnalysis()" disabled>Découvrir mon plan →</button>
+    </div>
+
+    <!-- ANALYSE -->
+    <div class="screen" data-screen="analysis">
+      <div class="analysis-wrap">
+        <div class="gauge">
+          <svg width="190" height="190" style="transform:rotate(-90deg)">
+            <circle class="gauge-bg" cx="95" cy="95" r="85"/>
+            <circle class="gauge-fill" id="gaugeFill" cx="95" cy="95" r="85"/>
+          </svg>
+          <div class="gauge-pct" id="gaugePct">0%</div>
+        </div>
+        <div class="analysis-text" id="analysisText">On analyse tes réponses pour construire <strong>ton</strong> parcours de certification…</div>
+        <div class="analysis-steps">
+          <div class="analysis-step" id="step1"><div class="check">✓</div>Lecture de ton profil</div>
+          <div class="analysis-step" id="step2"><div class="check">✓</div>Sélection de tes modules prioritaires</div>
+          <div class="analysis-step" id="step3"><div class="check">✓</div>Calcul de ta date de certification</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div class="screen" data-screen="result">
+      <h2 style="text-align:center;margin-bottom:14px;font-size:clamp(25px,4.4vw,33px)" id="resultTitle">Ton bilan personnalisé</h2>
+      <p class="result-lede" id="resultLede"></p>
+
+      <div class="result-level-card">
+        <div class="result-level-label">Ton potentiel de réussite</div>
+        <div class="result-level-value" id="resultLevel">Élevé</div>
+        <div class="result-scale"><div class="result-scale-marker" id="scaleMarker" style="left:50%"></div></div>
+        <div class="result-scale-labels"><span>Faible</span><span>Moyen</span><span>Élevé</span></div>
+      </div>
+
+      <div class="result-summary-list">
+        <div class="result-summary-item">
+          <div class="result-summary-emoji">🎯</div>
+          <div><div class="result-summary-label">Ce que tu veux maîtriser</div><div class="result-summary-value" id="sumDream">—</div></div>
+        </div>
+        <div class="result-summary-item">
+          <div class="result-summary-emoji">📍</div>
+          <div><div class="result-summary-label">Ton point de départ</div><div class="result-summary-value" id="sumLevel">—</div></div>
+        </div>
+        <div class="result-summary-item">
+          <div class="result-summary-emoji">⏰</div>
+          <div><div class="result-summary-label">Ton rythme sur mesure</div><div class="result-summary-value" id="sumTime">—</div></div>
+        </div>
+        <div class="result-summary-item">
+          <div class="result-summary-emoji">🏆</div>
+          <div><div class="result-summary-label">Ta certification obtenue d'ici</div><div class="result-summary-value" id="sumDate">—</div></div>
+        </div>
+      </div>
+
+      <button class="continue-btn" onclick="revealProduct()">Voir mon programme →</button>
+    </div>
+  </div>
+
+  <footer class="tunnel-footer">
+    <div class="logo"><span class="logo-emk">EMK</span><span class="logo-diamond">Blue Diamond</span></div>
+    <p>© 2026 EMK Blue Diamond</p>
+    <p style="margin-top:8px"><a href="mentions-legales.html">Mentions légales</a> · <a href="cgv.html">CGV</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="contact.html">Contact</a></p>
+  </footer>
+</div>
+
+<!-- ============ PAGE PRODUIT ============ -->
+<div class="product-page" id="productPage">
+
+  <div class="product-sticky-head">
+    <a href="#offre" class="unlock-banner" aria-label="Voir mon offre avec les 5 bonus offerts">
+      <div class="unlock-banner-inner">
+        <div class="unlock-banner-title">
+          <span class="unlock-pill">🎁 Débloqué</span>
+          <span id="unlockText">Offre de lancement activée suite à ton bilan</span>
+        </div>
+        <div class="unlock-banner-sub"><strong>5 bonus offerts</strong> si tu commences maintenant</div>
+      </div>
+    </a>
+
+    <nav class="product-top">
+      <div class="product-nav-inner">
+        <a href="/" class="logo"><span class="logo-emk">EMK</span><span class="logo-diamond">Blue Diamond</span></a>
+        <a href="#offre" class="product-nav-cta">Voir mon offre →</a>
+      </div>
+    </nav>
+  </div>
+
+  <header class="product-hero">
+    <div class="wrap">
+      <div class="product-hero-name" id="heroName">Programme personnalisé</div>
+      <h1>Voici le diplôme<br>que <span class="hl">tu vas décrocher</span></h1>
+      <p class="product-hero-sub" id="heroSub">8 semaines. 8 livrables réels. Et une certification qui prouve à tout le monde — y compris à toi — que tu maîtrises.</p>
+
+      <div class="cert-showcase">
+        <div class="cert-viewport" id="certViewport">
+          <div class="cert-canvas" id="certCanvas">
+            <span class="cert-corner tl"></span><span class="cert-corner tr"></span>
+            <span class="cert-corner bl"></span><span class="cert-corner br"></span>
+
+            <!-- Losange filigrane -->
+            <div class="cert-watermark" aria-hidden="true"></div>
+
+            <div class="cert-inner">
+              <!-- Header : diamant navy + label + trait doré -->
+              <div class="cert-diamond-top" aria-hidden="true"></div>
+              <div class="cert-header-label">
+                <span>EMK BLUE DIAMOND</span>
+                <span class="cert-sep-diamond" aria-hidden="true"></span>
+                <span>CERTIFICAT DE FORMATION</span>
+              </div>
+              <div class="cert-header-rule"></div>
+
+              <!-- Corps -->
+              <div class="cert-award-line">Ce certificat est décerné à</div>
+              <div class="cert-name">Prénom NOM</div>
+              <div class="cert-name-rule"></div>
+
+              <div class="cert-formula">pour avoir suivi et validé avec succès la formation</div>
+              <div class="cert-title-main">AI BUSINESS BUILDING</div>
+              <div class="cert-desc">
+                Maîtriser l'IA, l'automatisation, la création de sites et d'applications<br>
+                pour bâtir et monétiser une activité numérique.
+              </div>
+              <div class="cert-recognized">
+                RECONNU(E) <b>AI BUSINESS BUILDER</b> · DÉLIVRÉ PAR EMK BLUE DIAMOND
+              </div>
+              <div class="cert-modules">8 MODULES &nbsp;|&nbsp; 65 LEÇONS &nbsp;|&nbsp; PROJET PORTFOLIO VALIDÉ</div>
+
+              <!-- Pied : 3 colonnes, format identique à l'original -->
+              <div class="cert-footer">
+                <div class="cert-foot-col left">
+                  <div class="cert-sig-mark">×</div>
+                  <div class="cert-sig-rule"></div>
+                  <div class="cert-sig-label">SIGNATAIRE</div>
+                </div>
+
+                <div class="cert-foot-col center">
+                  <div class="cert-foot-diamond" aria-hidden="true"></div>
+                  <div class="cert-foot-brand">EMK <em>BLUE</em> DIAMOND</div>
+                </div>
+
+                <div class="cert-foot-col right">
+                  <div class="cert-foot-num">N° EMK-IABB-2026-0001</div>
+                  <div class="cert-foot-meta">
+                    DÉLIVRÉ LE JJ MOIS 2026 — <span class="x">×</span><br>
+                    VÉRIFIER · <span class="link">EMKBLUEDIAMOND.ONLINE/VERIFIER</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- BÉNÉFICES ADAPTATIFS -->
+  <section class="product">
+    <div class="wrap">
+      <div class="center-heading">
+        <div class="section-eyebrow">◆ Ce que ça change pour toi</div>
+        <h2 class="section-title">Concrètement, <span class="hl">tu en fais quoi ?</span></h2>
+        <p class="section-lede">Choisis ton profil — les bénéfices ne sont pas les mêmes.</p>
+      </div>
+
+      <div class="profile-switch">
+        <button class="profile-tab" id="tabSalarie" onclick="switchProfile('salarie')">💼 Salarié</button>
+        <button class="profile-tab" id="tabFreelance" onclick="switchProfile('freelance')">💻 Freelance</button>
+        <button class="profile-tab" id="tabEntrepreneur" onclick="switchProfile('entrepreneur')">🚀 Entrepreneur</button>
+      </div>
+
+      <!-- PANEL FREELANCE -->
+      <div class="profile-panel" id="panelFreelance">
+        <div class="outcomes">
+          <div class="outcome">
+            <div class="outcome-emoji">⚡</div>
+            <h4>Tu livres 3x plus vite tes missions</h4>
+            <p>Ce qui te prenait 3 jours, tu le sors en une après-midi. Même prix facturé, même qualité livrée. Ton taux horaire réel explose sans changer tes tarifs.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">💰</div>
+            <h4>Tu montes en gamme sans plus travailler</h4>
+            <p>Tu factures désormais des prestations IA (agents, automatisations, sites intelligents) 3 à 10 fois plus cher que tes services classiques. Même effort, panier moyen multiplié.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🎯</div>
+            <h4>Tu deviens irremplaçable pour tes clients</h4>
+            <p>Ils t'appellent en premier pour tout ce qui touche à l'IA. Tu passes de « un freelance parmi d'autres » à « le référent IA de leur boîte ». Un statut qui vaut de l'or.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🤖</div>
+            <h4>Ta prospection tourne pendant que tu bosses</h4>
+            <p>Agents qui identifient tes prospects, qui relancent, qui préqualifient. Tu te réveilles avec des rendez-vous déjà pris. Fini la course perpétuelle après le prochain client.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">📈</div>
+            <h4>Tu peux prendre plus de missions sans t'épuiser</h4>
+            <p>L'IA absorbe la charge répétitive (recherches, rédaction, mise en forme, reporting). Tu gères 2 à 3 fois plus de clients avec la même énergie qu'avant.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🎓</div>
+            <h4>Tu obtiens une preuve concrète à afficher</h4>
+            <p>Un certificat sur ton profil LinkedIn, ton portfolio, tes propositions commerciales. « Certifié AI Business Builder » — la crédibilité qui justifie tes nouveaux tarifs.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL SALARIÉ -->
+      <div class="profile-panel" id="panelSalarie">
+        <div class="outcomes">
+          <div class="outcome">
+            <div class="outcome-emoji">⚡</div>
+            <h4>Tu finis à 16h ce qui te prenait la journée</h4>
+            <p>Rapports, emails, comptes-rendus, présentations, recherches. Ce que tes collègues font en 3 heures, tu le sors en 20 minutes.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">📈</div>
+            <h4>Tu deviens celui qu'on vient consulter</h4>
+            <p>Quand ton équipe galère sur un dossier, c'est vers toi qu'on se tourne. Cette réputation, ça se négocie en entretien annuel.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🛡️</div>
+            <h4>Tu sécurises ton poste</h4>
+            <p>Les postes qui disparaissent sont ceux que l'IA remplace. Les postes qui montent sont ceux qui la pilotent. Tu choisis ton camp.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">💰</div>
+            <h4>Tu montes une activité le soir</h4>
+            <p>Sites, agents WhatsApp, automatisations : des prestations facturées 500 à 2 000 € que tu livres en un week-end. Sans quitter ton emploi.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🤖</div>
+            <h4>Tu te crées des assistants</h4>
+            <p>Un agent qui trie tes emails, un autre qui rédige tes comptes-rendus, un autre qui surveille ta veille. Ton équipe invisible.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🎓</div>
+            <h4>Tu obtiens une preuve concrète</h4>
+            <p>Un certificat à poser sur ton LinkedIn et ton CV. Ce n'est plus « je m'intéresse à l'IA » — c'est « je suis certifié ».</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL ENTREPRENEUR -->
+      <div class="profile-panel" id="panelEntrepreneur">
+        <div class="outcomes">
+          <div class="outcome">
+            <div class="outcome-emoji">💬</div>
+            <h4>Un agent WhatsApp qui vend pour toi</h4>
+            <p>Il accueille, conseille, répond aux objections et prend les commandes. À 3h du matin comme à 15h. Ton premier employé qui ne dort jamais.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🌐</div>
+            <h4>Ton site pro en un week-end</h4>
+            <p>Ce que les agences facturent 300 à 3 000 €, tu le construis toi-même. Ton domaine, ta page de vente, ton design.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🔄</div>
+            <h4>Un business qui tourne sans toi</h4>
+            <p>Contenu publié, prospects relancés, factures envoyées, paiements suivis. Automatiquement. 8 à 15 heures libérées chaque semaine.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">💳</div>
+            <h4>Une plateforme qui encaisse</h4>
+            <p>Espace client, comptes membres, paiement par carte et Mobile Money. Tes clients achètent directement chez toi.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">🛒</div>
+            <h4>Une nouvelle ligne de revenus</h4>
+            <p>Tout ce que tu apprends devient vendable. Tu deviens le prestataire IA de ton marché local, où la concurrence est encore inexistante.</p>
+          </div>
+          <div class="outcome">
+            <div class="outcome-emoji">📱</div>
+            <h4>Ta propre application</h4>
+            <p>Installable sur téléphone, sans les frais des stores, avec l'IA intégrée dedans. L'idée que tu repousses depuis deux ans devient réelle.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARAISON -->
+  <div class="compare-wrap">
+    <div class="wrap">
+      <div class="center-heading">
+        <h2 class="section-title" style="margin:0 auto 14px">Dans 6 mois, <span class="hl">deux versions de toi</span> auront existé</h2>
+        <p class="section-lede" style="margin:0 auto">Une seule aura décidé aujourd'hui.</p>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-card before">
+          <div class="compare-avatar">😔</div>
+          <div class="compare-tag">Si tu ne fais rien</div>
+          <h4>Tu regardes passer le train</h4>
+          <ul class="compare-list">
+            <li>Tu ouvres ChatGPT sans savoir quoi lui demander</li>
+            <li>Tes collègues et concurrents prennent de l'avance</li>
+            <li>Tu paies encore quelqu'un pour ce que tu pourrais faire</li>
+            <li>Les mêmes tâches répétitives, chaque semaine</li>
+            <li>Cette petite voix : « j'aurais dû commencer plus tôt »</li>
+          </ul>
+        </div>
+        <div class="compare-card after">
+          <div class="compare-avatar">😎</div>
+          <div class="compare-tag">Certifié AI Business Builder</div>
+          <h4>Tu es celui qu'on cite en exemple</h4>
+          <ul class="compare-list">
+            <li>Tu construis en une soirée ce qui prenait des semaines</li>
+            <li>On vient te demander comment tu fais</li>
+            <li>Une nouvelle source de revenus, activée</li>
+            <li>Des machines qui travaillent pendant que tu dors</li>
+            <li>Un certificat qui prouve que tu es passé à l'action</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRAMME COMPLET -->
+  <section class="program-section">
+    <div class="wrap">
+      <div class="center-heading">
+        <div class="section-eyebrow">◆ Ton parcours</div>
+        <h2 class="section-title" style="margin:0 auto 14px">Le programme <span class="hl">complet</span></h2>
+        <p class="section-lede" style="margin:0 auto">8 modules progressifs, 55 leçons vidéo et 7 évaluations. Chaque semaine, une nouvelle compétence et un livrable qui existe pour de vrai.</p>
+      </div>
+
+      <div class="modules-list">
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">🧠</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 1 : Les Fondations de l'IA</span>
+              <span class="module-meta">6 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Devenez un pilote, pas un spectateur.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : Comprendre l'IA générative sans jargon</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : Le paysage des outils IA. Choisir son arsenal</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : L'art du prompt. La méthode R.O.C.C.T.</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : Créer sa bibliothèque de prompts. Votre coffre-fort productivité</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : Atelier pratique. Vos 10 premiers prompts professionnels</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">⚙️</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 2 : L'Automatisation des Tâches</span>
+              <span class="module-meta">10 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Votre business travaille pendant que vous dormez.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : La logique de l'automatisation. Déclencheur, action, résultat</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : Prise en main de Make. Votre chef d'orchestre</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : Première automatisation. L'assistant email intelligent</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : La machine à contenu. Publier chaque jour sans y penser</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : La machine à prospects. Capturer, qualifier, relancer</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 6 : Automatiser l'administratif. Devis, factures et relances de paiement</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 7 : n8n, l'alternative gratuite et illimitée pour passer à l'échelle</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 8 : Atelier final. Construire votre système d'exploitation business</span></li>
+              <li><span class="lesson-icon icon-eval">📄</span><span>Cas pratique : construire votre assistant de tri d'emails</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">🤖</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 3 : Les Agents IA</span>
+              <span class="module-meta">9 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Recrutez vos premiers employés numériques.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : Automatisation vs Agent IA. Le train et le chauffeur</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : Votre premier agent. L'assistant qui connaît votre business par cœur</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : Le RAG. Connecter l'agent à vos documents</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : Des agents qui agissent. Donner des outils à votre employé numérique</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : L'agent commercial WhatsApp. Votre vendeur qui ne dort jamais</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 6 : Les systèmes multi-agents. Faire travailler une équipe</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 7 : Sécurité et supervision. Rester le patron de ses agents</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 8 : Atelier final. Déployer un agent complet en conditions réelles</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">🎨</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 4 : Créer des Sites Internet avec l'IA</span>
+              <span class="module-meta">9 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Le frontend, sans écrire une ligne de code.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : Comprendre le web en 30 minutes. La salle et la cuisine</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : Le vibe coding. Coder en parlant français</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : Votre premier site avec Lovable et Bolt. De la description à la réalité</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : La landing page qui convertit. L'architecture de la persuasion</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : Design et identité visuelle. Être reconnaissable au premier regard</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 6 : Mobile first. Penser téléphone d'abord</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 7 : La mise en ligne. Votre site sur internet, à votre adresse</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 8 : Atelier final. Un site complet en 48 heures</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">🗄️</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 5 : Le Backend, la Cuisine de Votre Site</span>
+              <span class="module-meta">8 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Équipez la cuisine de votre site.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : Le backend expliqué à un débutant. Le garde-manger, les cuisiniers et le passe-plat</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : Votre première base de données. Le garde-manger bien rangé</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : Formulaires et collecte de données. Remplir le garde-manger</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : L'authentification. Des comptes clients et un espace membre</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : Encaisser sur votre site. Mobile Money et cartes bancaires</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 6 : Les API. Le passe-plat qui connecte votre site au monde</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 7 : Atelier final. De la vitrine à la plateforme</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">📱</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 6 : Créer des Applications avec l'IA</span>
+              <span class="module-meta">9 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">De l'idée à l'app dans la poche de vos clients.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : App web, PWA ou native. Choisir le bon format</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : De l'idée au cahier des charges. L'IA comme chef de produit</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : Construire le MVP. Votre application web complète</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : L'application dans la poche. Transformer votre app en PWA installable</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : L'IA dans votre app. Greffer un cerveau à votre création</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 6 : Tester, corriger, itérer. Le contrôle qualité d'un studio</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 7 : Publier et lancer. Votre app rencontre son public</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 8 : Atelier final. Votre application signature</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">💰</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 7 : La Monétisation</span>
+              <span class="module-meta">6 leçons</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Transformez vos compétences en revenus réguliers.</p>
+            <ul class="lessons-list">
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 1 : Les 4 modèles de revenus. Choisir votre chemin vers l'argent</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 2 : Votre offre packagée. Quoi vendre, à quel prix, comment le dire</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 3 : Vos 3 premiers clients. Le plan d'acquisition de départ</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 4 : Vendre à l'international. Facturer en euros depuis chez vous</span></li>
+              <li><span class="lesson-icon icon-video">🎬</span><span>Leçon 5 : Étude de cas. De 0 à 500 000 F par mois en 6 mois</span></li>
+              <li><span class="lesson-icon icon-eval">📝</span><span>Évaluation de connaissances</span></li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="module-item module-item-bonus">
+          <summary class="module-summary">
+            <span class="module-icon-wrap"><span class="module-icon">🎁</span></span>
+            <span class="module-info">
+              <span class="module-title">Module 8 : Bonus et Ressources</span>
+              <span class="module-meta">5 bonus offerts</span>
+            </span>
+            <span class="module-chevron">⌄</span>
+          </summary>
+          <div class="module-content">
+            <p class="module-promise">Votre armurerie complète pour aller plus vite.</p>
+            <p class="module-bonus-hint">Découvre la liste complète des bonus offerts dans la section juste en dessous 👇</p>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BONUS FLASH -->
+  <div class="bonus-section">
+    <div class="wrap bonus-inner">
+      <div class="bonus-header">
+        <div class="bonus-flash"><span>🎁 5 bonus débloqués par ton bilan</span></div>
+        <h2>Et ce n'est <span class="hl">pas tout</span></h2>
+        <p>Ces ressources sont vendues séparément ailleurs. Elles t'appartiennent dès ton inscription — sans un centime de plus.</p>
+        <div class="bonus-value-strip">
+          <span class="lbl">Valeur réelle des bonus</span>
+          <span class="val">+ 47 000 F</span>
+        </div>
+      </div>
+
+      <div class="bonus-grid">
+        <div class="bonus-card wide">
+          <div class="bonus-emoji">📝</div>
+          <div class="bonus-body">
+            <h4>106 prompts professionnels prêts à l'emploi</h4>
+            <p>Vente, contenu, business, technique, agents. Tu remplaces les crochets, tu lances, tu encaisses. Ceux qui les utilisent gagnent des heures dès le premier jour.</p>
+          </div>
+          <div class="bonus-price"><span class="was">15 000 F</span><span class="now">Offert</span></div>
+        </div>
+        <div class="bonus-card">
+          <div class="bonus-emoji">⚡</div>
+          <div class="bonus-body">
+            <h4>10 automatisations prêtes</h4>
+            <p>Assistant email, machine à prospects, facturier, gardien des paiements. Recréables en 15 minutes chacune.</p>
+          </div>
+          <div class="bonus-price"><span class="was">12 000 F</span><span class="now">Offert</span></div>
+        </div>
+        <div class="bonus-card">
+          <div class="bonus-emoji">✅</div>
+          <div class="bonus-body">
+            <h4>4 checklists de lancement</h4>
+            <p>Site, SEO, agent IA, application. Le filet de sécurité que les pros utilisent avant chaque mise en ligne.</p>
+          </div>
+          <div class="bonus-price"><span class="was">8 000 F</span><span class="now">Offert</span></div>
+        </div>
+        <div class="bonus-card">
+          <div class="bonus-emoji">📄</div>
+          <div class="bonus-body">
+            <h4>Tes documents business</h4>
+            <p>Devis, facture, contrat de prestation, taillés pour les services IA. À ton nom en 5 minutes.</p>
+          </div>
+          <div class="bonus-price"><span class="was">7 000 F</span><span class="now">Offert</span></div>
+        </div>
+        <div class="bonus-card">
+          <div class="bonus-emoji">🔄</div>
+          <div class="bonus-body">
+            <h4>Mises à jour à vie</h4>
+            <p>L'IA évolue chaque mois. Ta formation évolue avec — sans jamais repayer un centime.</p>
+          </div>
+          <div class="bonus-price"><span class="was">5 000 F/an</span><span class="now">Offert</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AVIS CLIENTS (widget Chariow Proof) -->
+  <section class="reviews-section">
+    <div class="wrap">
+      <div class="center-heading">
+        <div class="section-kicker">💬 Ils l'ont déjà fait</div>
+        <h2 class="section-title" style="margin:0 auto 14px">Ce qu'en <span class="hl">disent nos apprenants</span></h2>
+        <p class="section-lede" style="margin:0 auto 32px">Des personnes comme toi qui ont franchi le pas et transformé leur quotidien.</p>
+      </div>
+      <div class="reviews-widget">
+        <div id="chariow-proof" data-store-domain="emkbluediamond.mychariow.shop" data-proof-id="proof_8azhwek1"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIX -->
+  <section class="price-section" id="offre">
+    <div class="wrap">
+      <div class="price-header">
+        <div class="price-differentiator">🔒 Un seul paiement · aucun prélèvement · tarif bloqué à vie</div>
+        <h2 class="section-title" style="margin:0 auto 12px">Le prix d'un dîner<br>pour <span class="hl">changer ton année</span></h2>
+      </div>
+
+      <div class="price-card">
+        <div class="price-unlock-tag">🎁 Offre débloquée par ton bilan</div>
+        <div class="price-forever">🎉 Tarif de lancement — accès à vie garanti</div>
+        <div class="price-was">35 000 F CFA</div>
+        <div class="price-now">4 999</div>
+        <div class="price-now-unit">F CFA</div>
+        <div class="price-currencies">soit <b>~7,60 €</b> · <b>~10,50 CAD</b> · <b>~8,50 $</b></div>
+
+        <div class="price-includes">
+          <div class="price-includes-title">Tout ce qui t'appartient</div>
+          <div class="item"><span>🎓</span><span>La certification AI Business Building</span></div>
+          <div class="item"><span>📚</span><span>8 modules · 65 leçons — accès à vie</span></div>
+          <div class="item"><span>🎁</span><span>Les 5 bonus (valeur 47 000 F) — offerts</span></div>
+          <div class="item"><span>🔄</span><span>Toutes les mises à jour futures</span></div>
+          <div class="item"><span>🛡️</span><span>Garantie satisfait ou remboursé 7 jours</span></div>
+        </div>
+
+        <!-- Widget Chariow — bouton lumineux, prix synchronisé, paiement sans redirection -->
+        <div class="chariow-slot">
+          <div id="chariow-widget"
+               data-product-id="prd_qh7md6nj"
+               data-store-domain="emkbluediamond.mychariow.shop"
+               data-style="tap"
+               data-border-style="rounded"
+               data-cta-width="xs"
+               data-background-color="#FFFFFF"
+               data-cta-animation="pulse_glow"
+               data-locale="fr"
+               data-primary-color="#d97706"></div>
+        </div>
+        <div class="price-payment">💳 Carte bancaire &nbsp;·&nbsp; 📱 Mobile Money &nbsp;·&nbsp; 100% sécurisé</div>
+      </div>
+
+      <div class="price-nono">
+        <b>✨ Ce n'est pas un abonnement.</b><br>
+        Tu paies <b>une seule fois</b>. Pas de prélèvement le mois prochain. Pas de reconduction cachée. Pas de désabonnement à chercher dans les paramètres. Tu gardes tout, à vie.
+      </div>
+    </div>
+  </section>
+
+  <!-- APRÈS PAIEMENT (section rassurante avec vrai titre fort) -->
+  <section class="after-payment-section">
+    <div class="wrap">
+      <div class="center-heading">
+        <div class="section-eyebrow">◆ La suite</div>
+        <h2 class="section-title" style="margin:0 auto 14px">Comment ça se passe <span class="hl">après ton achat</span></h2>
+        <p class="section-lede" style="margin:0 auto 32px">Zéro complication, zéro attente. Tu es opérationnel dans les 60 secondes qui suivent ton paiement.</p>
+      </div>
+
+      <div class="after-payment-steps">
+        <div class="after-step">
+          <div class="after-step-num">1</div>
+          <div class="after-step-body">
+            <h4>Confirmation immédiate</h4>
+            <p>Dès que ton paiement est validé, tu reçois par email ta confirmation d'inscription et un lien d'accès direct.</p>
+          </div>
+        </div>
+        <div class="after-step">
+          <div class="after-step-num">2</div>
+          <div class="after-step-body">
+            <h4>Accès à ton espace privé</h4>
+            <p>Tu accèdes à ton espace personnel en entrant simplement l'adresse email utilisée lors du paiement. Aucun mot de passe à créer.</p>
+          </div>
+        </div>
+        <div class="after-step">
+          <div class="after-step-num">3</div>
+          <div class="after-step-body">
+            <h4>Tu commences quand tu veux</h4>
+            <p>Ton cours est déjà là, prêt à être visionné dès la première minute. Tu suis à ton rythme, l'accès est à vie.</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--muted)">📩 Si l'email met plus de 5 min à arriver, vérifie tes spams ou écris-nous.</p>
+
+      <div class="guarantee">
+        <div class="guarantee-emoji">🛡️</div>
+        <div class="guarantee-body">
+          <h4>7 jours pour changer d'avis</h4>
+          <p>Suis le premier module, teste la méthode. Si ce n'est pas pour toi, un simple email suffit. Remboursement intégral, sans justification.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="product">
+    <div class="wrap-sm">
+      <div class="center-heading">
+        <div class="section-eyebrow">◆ Questions fréquentes</div>
+        <h2 class="section-title" style="margin:0 auto 12px">Ce que <span class="hl">tu veux savoir</span></h2>
+      </div>
+      <details open>
+        <summary>Je n'y connais vraiment rien. C'est pour moi ?</summary>
+        <p>Oui. Le premier module part de zéro absolu — pas de prérequis, pas de jargon. Si tu sais utiliser WhatsApp et un navigateur, tu as le niveau. La méthode « l'IA comme guide » t'accompagne clic par clic à chaque blocage.</p>
+      </details>
+      <details>
+        <summary>C'est un abonnement ? Je vais être prélevé plus tard ?</summary>
+        <p><strong>Non, jamais.</strong> Un seul paiement, une seule fois. Aucune reconduction. Aucune surprise sur ta carte le mois prochain. C'est précisément le point sur lequel nous refusons de suivre les autres programmes du marché.</p>
+      </details>
+      <details>
+        <summary>Je suis salarié, pas entrepreneur. Ça me sert à quoi ?</summary>
+        <p>Énormément. Tu gagnes des heures chaque semaine sur ton travail actuel, tu deviens la personne de référence sur l'IA dans ton équipe, tu sécurises ton poste — et si tu veux, tu montes une activité rémunératrice le soir avec exactement les mêmes compétences.</p>
+      </details>
+      <details>
+        <summary>Comment je paie depuis mon pays ?</summary>
+        <p>Carte bancaire (Visa, Mastercard) pour l'Europe, le Canada et le reste du monde. Mobile Money (MTN, Moov, Orange Money, Wave) pour l'Afrique de l'Ouest. Ton accès est débloqué immédiatement après paiement.</p>
+      </details>
+      <details>
+        <summary>Le certificat est-il reconnu officiellement ?</summary>
+        <p>C'est un certificat de formation privée délivré par EMK Blue Diamond, avec numéro unique et page de vérification publique. Il n'émane pas d'un ministère — comme la quasi-totalité des certifications en ligne — mais il atteste des livrables réels que tu auras construits, et se partage sur LinkedIn.</p>
+      </details>
+      <details>
+        <summary>Et si je bloque en cours de route ?</summary>
+        <p>La méthode « l'IA comme guide », enseignée dès le premier module, t'apprend à te débloquer toi-même avec ton assistant IA. C'est la compétence la plus précieuse du programme : tu n'as plus jamais besoin d'attendre l'aide de quelqu'un.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="final-cta">
+    <div class="wrap final-cta-inner">
+      <h2 id="finalTitle">Dans 2 ans, piloter l'IA sera aussi banal que <span class="hl">savoir lire un email</span></h2>
+      <p>Ceux qui en tireront le plus sont ceux qui construisent maintenant, pendant que la compétence est rare et que la demande explose. Cette fenêtre ne restera pas ouverte éternellement.</p>
+      <a href="#offre" class="price-btn" style="max-width:360px;margin:0 auto">Je décroche ma certification →</a>
+    </div>
+  </section>
+
+  <footer class="product-footer">
+    <div class="wrap">
+      <div class="logo"><span class="logo-emk">EMK</span><span class="logo-diamond">Blue Diamond</span></div>
+      <p>© 2026 EMK Blue Diamond</p>
+      <p style="margin-top:8px"><a href="mentions-legales.html">Mentions légales</a> · <a href="cgv.html">CGV</a> · <a href="confidentialite.html">Confidentialité</a> · <a href="contact.html">Contact</a></p>
+    </div>
+  </footer>
+</div>
+
+<script>
+const screens=['q1','q2','qage','q3','r1','q4','r2','q5','q6','r3','q7','q9','q8','r4','q10','q11','q12'];
+const state={name:'',a:{}};
+let idx=0;
+
+/* ============================================================
+ *  SAUVEGARDE AUTOMATIQUE DU QUIZ (anti-perte de lead)
+ *  ────────────────────────────────────────────────────────────
+ *  À chaque réponse, on sauvegarde dans localStorage :
+ *    - state (nom + toutes les réponses)
+ *    - idx (l'étape courante)
+ *    - ts (timestamp)
+ *
+ *  Si le prospect revient dans les 24h avec une progression
+ *  entamée, on lui propose de reprendre où il en était.
+ *  Après soumission finale, on nettoie tout automatiquement.
+ * ============================================================ */
+const QUIZ_STORAGE_KEY = 'emk_quiz_progress';
+const QUIZ_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 heures
+
+function saveQuizProgress(){
+  try{
+    localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify({
+      state: state,
+      idx: idx,
+      ts: Date.now()
+    }));
+  }catch(e){}
+}
+
+function clearQuizProgress(){
+  try{ localStorage.removeItem(QUIZ_STORAGE_KEY); }catch(e){}
+}
+
+function getSavedProgress(){
+  try{
+    const raw = localStorage.getItem(QUIZ_STORAGE_KEY);
+    if(!raw) return null;
+    const saved = JSON.parse(raw);
+    // Expiration : si plus de 24h, on ignore
+    if(!saved.ts || Date.now() - saved.ts > QUIZ_EXPIRY_MS){
+      clearQuizProgress();
+      return null;
+    }
+    // On propose la reprise dans 2 cas :
+    // 1. Le prospect est en cours de quiz (a répondu à au moins 1 question)
+    // 2. Le prospect avait déjà atteint la page produit (on le remet dessus direct)
+    const reachedProduct = saved.state && saved.state.a && saved.state.a.reached_product;
+    if(reachedProduct) return saved;
+    if(saved.idx < 1 || saved.idx >= screens.length - 1) return null;
+    return saved;
+  }catch(e){ return null; }
+}
+
+function formatTimeAgo(ts){
+  const mins = Math.floor((Date.now() - ts) / 60000);
+  if(mins < 1) return 'à l\'instant';
+  if(mins < 60) return 'il y a ' + mins + ' min';
+  const hours = Math.floor(mins / 60);
+  if(hours < 24) return 'il y a ' + hours + 'h';
+  return 'hier';
+}
+
+function offerQuizResume(){
+  const saved = getSavedProgress();
+  if(!saved) return false;
+
+  // Message adapté selon l'avancée du prospect
+  const reachedProduct = saved.state && saved.state.a && saved.state.a.reached_product;
+  const prenom = saved.state.name || '';
+  const ago = formatTimeAgo(saved.ts);
+  const message = reachedProduct
+    ? '<strong>Bon retour ' + prenom + ' !</strong> Ton offre personnalisée t\'attend. On te ramène directement dessus ?'
+    : '<strong>Bon retour ' + prenom + ' !</strong> Tu avais commencé ton bilan ' + ago + '. Tu veux reprendre où tu t\'étais arrêté ?';
+  const btnLabel = reachedProduct ? 'Voir mon offre' : 'Oui, je continue';
+
+  // On construit une petite bannière de reprise, injectée en haut du tunnel
+  const banner = document.createElement('div');
+  banner.id = 'resumeBanner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:100;background:linear-gradient(135deg,#FEF3C7 0%,#FDE68A 100%);border-bottom:2px solid #D97706;padding:14px 16px;box-shadow:0 4px 14px -2px rgba(217,119,6,.25);animation:slideDown .4s cubic-bezier(.16,1,.3,1)';
+  banner.innerHTML =
+    '<div style="max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:10px">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<span style="font-size:22px">👋</span>' +
+        '<div style="flex:1;font-size:14px;color:#78350F;line-height:1.4">' + message + '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px">' +
+        '<button onclick="resumeQuiz()" style="flex:1;background:#D97706;color:#fff;border:none;padding:10px 16px;border-radius:100px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">' + btnLabel + '</button>' +
+        '<button onclick="restartQuiz()" style="background:transparent;color:#78350F;border:1px solid #D97706;padding:10px 16px;border-radius:100px;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit">Recommencer</button>' +
+      '</div>' +
+    '</div>';
+
+  // Animation d'entrée
+  const style = document.createElement('style');
+  style.textContent = '@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}';
+  document.head.appendChild(style);
+  document.body.appendChild(banner);
+  return true;
+}
+
+function resumeQuiz(){
+  const saved = getSavedProgress();
+  if(!saved) return;
+
+  // Restaure le state complet
+  state.name = saved.state.name || '';
+  state.a = saved.state.a || {};
+  idx = saved.idx;
+
+  // Ferme l'écran d'accueil
+  const welcome = document.getElementById('welcomeScreen');
+  if(welcome) welcome.style.display = 'none';
+
+  // Retire la bannière
+  const banner = document.getElementById('resumeBanner');
+  if(banner) banner.remove();
+
+  // CAS 1 : Le prospect avait déjà atteint la page produit → on l'y remet direct
+  if(state.a.reached_product){
+    revealProduct();
+    return;
+  }
+
+  // CAS 2 : Le prospect était en cours de quiz → on le remet là où il en était
+  document.getElementById('tunnel').style.display = 'block';
+
+  // Prépare les écrans de réaction adaptatifs si on reprend dessus
+  if(screens[idx] === 'r1') buildR1();
+  if(screens[idx] === 'r2') buildR2();
+  if(screens[idx] === 'r4') buildR4();
+  if(screens[idx] === 'q12') buildEmailTitle();
+
+  // Restaure aussi les valeurs dans les champs de texte si présents
+  if(state.name){
+    const nameInput = document.getElementById('nameInput');
+    if(nameInput){
+      nameInput.value = state.name;
+      validateName();
+    }
+  }
+  if(state.a.email){
+    const emailInput = document.getElementById('emailInput');
+    if(emailInput){
+      emailInput.value = state.a.email;
+      validateEmail();
+    }
+  }
+
+  // Restaure les sélections d'options sur l'écran courant
+  restoreScreenSelections();
+
+  showScreen(screens[idx]);
+  updateProgress();
+}
+
+function restartQuiz(){
+  clearQuizProgress();
+  const banner = document.getElementById('resumeBanner');
+  if(banner) banner.remove();
+}
+
+/* Restaure visuellement les .option.selected sur l'écran courant
+   en se basant sur les valeurs stockées dans state.a */
+function restoreScreenSelections(){
+  const currentScreen = document.querySelector('[data-screen="' + screens[idx] + '"]');
+  if(!currentScreen) return;
+  currentScreen.querySelectorAll('.option[onclick*="pick"]').forEach(opt => {
+    const onclickAttr = opt.getAttribute('onclick') || '';
+    // On extrait la clé et la valeur du onclick="pick(this,'key','val')"
+    const match = onclickAttr.match(/pick\(this\s*,\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\)/);
+    if(match){
+      const key = match[1];
+      const val = match[2];
+      if(state.a[key] === val){
+        opt.classList.add('selected');
+      }
+    }
+  });
+}
+
+function getEncouragement(pct){
+  if(pct<15) return '🌱 On commence !';
+  if(pct<30) return '💪 Tu avances bien';
+  if(pct<45) return '🎯 Plus qu\'une petite minute';
+  if(pct<60) return '🔥 On est à mi-chemin';
+  if(pct<75) return '✨ Presque fini';
+  if(pct<90) return '🚀 Plus que quelques secondes';
+  return '🎁 Ton bilan arrive';
+}
+function startQuizFromWelcome(){
+  document.getElementById('welcomeScreen').style.display='none';
+  document.getElementById('tunnel').style.display='block';
+  updateProgress();
+  window.scrollTo(0,0);
+  if(typeof trackCustom==='function') trackCustom('WelcomeCTA');
+}
+function updateProgress(){
+  const pct=((idx+1)/screens.length)*100;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressEncouragement').textContent=getEncouragement(pct);
+  document.getElementById('backBtn').disabled=idx===0;
+}
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelector('[data-screen="'+n+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+function next(){
+  if(idx<screens.length-1){
+    idx++;
+    // Préparer les écrans de réaction avant affichage
+    if(screens[idx]==='r1') buildR1();
+    if(screens[idx]==='r2') buildR2();
+    if(screens[idx]==='r4') buildR4();
+    if(screens[idx]==='q12') buildEmailTitle();
+    showScreen(screens[idx]); updateProgress();
+
+    // ===== SAUVEGARDE AUTO — anti-perte de lead =====
+    saveQuizProgress();
+
+    // ===== TRACKING =====
+    if(idx===1 && !window._tr.start){ trackCustom('QuizStart'); window._tr.start=true; }
+    const pct=(idx/screens.length)*100;
+    if(pct>=25 && !window._tr.q25){ trackCustom('QuizQ25'); window._tr.q25=true; }
+    if(pct>=50 && !window._tr.q50){ trackCustom('QuizMid'); window._tr.q50=true; }
+    if(pct>=75 && !window._tr.q75){ trackCustom('QuizQ75'); window._tr.q75=true; }
+  }
+}
+function goBack(){ if(idx>0){ idx--; showScreen(screens[idx]); updateProgress(); saveQuizProgress(); } }
+function pick(el,key,val){
+  el.parentElement.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.a[key]=val;
+  saveQuizProgress();
+
+  // ===== TRACKING ViewContent — dès qu'une frustration est exprimée =====
+  if(key==='pain' && !window._tr.vc){
+    trackStd('ViewContent',{content_name:'Tunnel IA Business Builder — frustration : '+val});
+    window._tr.vc=true;
+  }
+
+  setTimeout(next,320);
+}
+function validateName(){
+  const v=document.getElementById('nameInput').value.trim();
+  const ok=v.length>=2;
+  document.getElementById('nameBtn').disabled=!ok;
+  document.getElementById('nameValid').classList.toggle('show',ok);
+  if(ok){
+    state.name=v.charAt(0).toUpperCase()+v.slice(1);
+    saveQuizProgress();
+  }
+}
+function validateEmail(){
+  const v=document.getElementById('emailInput').value.trim();
+  const ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  document.getElementById('emailBtn').disabled=!ok;
+  document.getElementById('emailValid').classList.toggle('show',ok);
+  if(ok){
+    state.a.email=v;
+    saveQuizProgress();
+    // Sauvegarde locale pour personnaliser la page merci après paiement
+    // v3.7 : on stocke aussi les cookies Meta pour que merci.html puisse enrichir le Purchase
+    try{
+      localStorage.setItem('emk_lead',JSON.stringify({
+        name:  state.name,
+        email: v,
+        ts:    Date.now(),
+        fbc:   getFbCookie('_fbc'),
+        fbp:   getFbCookie('_fbp')
+      }));
+    }catch(e){}
+  }
+}
+
+/* ===== ÉCRANS DE RÉACTION ADAPTATIFS ===== */
+function buildR1(){
+  const n=state.name||'toi';
+  const map={
+    temps:{v:'🤗',t:'Ne t\'inquiète pas, <em>je suis là pour ça</em>',
+      b:'Si tu es ici, c\'est que quelque chose doit changer — et c\'est exactement ce qu\'on va faire ensemble. Ce problème de temps, on va le régler définitivement, pas le contourner.',
+      q:'Tu n\'as rien fait de mal. Tu as juste travaillé sans les bons outils. Et ça, ça se corrige.'},
+    argent:{v:'🤝',t:'Je comprends, '+'et <em>on va y remédier</em>',
+      b:'Tes efforts méritent mieux que ce qu\'ils te rapportent aujourd\'hui. Ce n\'est pas une question de valeur — c\'est une question de levier. Et le levier, ça s\'apprend.',
+      q:'Ceux qui gagnent bien aujourd\'hui ne travaillent pas plus que toi. Ils ont simplement appris à construire des choses qui tournent sans eux.'},
+    retard:{v:'💛',t:'Respire, <em>tu n\'es pas en retard</em>',
+      b:'Le fait même que tu sois ici prouve que tu as compris avant beaucoup d\'autres. La majorité des gens ne réaliseront qu\'il fallait bouger que dans deux ou trois ans. Toi, tu es en avance.',
+      q:'On va faire de toi quelqu\'un qui maîtrise l\'IA. Pas quelqu\'un qui la subit.'},
+    bloque:{v:'💡',t:'Tes idées sont bonnes. <em>Je vais te donner le pont</em>',
+      b:'Entre « j\'ai une idée » et « ça existe et ça marche », il y avait un fossé technique énorme. Ce fossé vient de disparaître — et je vais te montrer exactement comment le traverser.',
+      q:'Ce qui te manquait, ce n\'était ni l\'idée ni la volonté. C\'était l\'outil. On s\'en occupe.'},
+    routine:{v:'🌿',t:'Ces tâches répétitives, <em>on va les faire disparaître</em>',
+      b:'Les mêmes gestes chaque semaine, ça épuise. Mais voilà la bonne nouvelle : tout ce qui se répète peut être automatisé. Absolument tout. Et tu vas apprendre à le faire toi-même.',
+      q:'Imagine récupérer 8 à 15 heures par semaine. Ce n\'est pas un rêve — c\'est ce que font mes apprenants dès le deuxième module.'}
+  };
+  const d=map[state.a.pain]||map.temps;
+  document.getElementById('r1Visual').textContent=d.v;
+  document.getElementById('r1Title').innerHTML=n+', '+d.t;
+  document.getElementById('r1Body').innerHTML=d.b;
+  document.getElementById('r1Quote').textContent=d.q;
+}
+
+function buildR2(){
+  const n=state.name||'Toi';
+  const lvl=state.a.level;
+  const debutant=['zero','entendu'].includes(lvl);
+  const inter=lvl==='essaye';
+  const avance=['regulier','avance'].includes(lvl);
+  const el={v:document.getElementById('r2Visual'),t:document.getElementById('r2Title'),
+    b:document.getElementById('r2Body'),b2:document.getElementById('r2Body2'),s:document.getElementById('r2Sig')};
+
+  if(debutant){
+    el.v.textContent='🌱'; el.v.className='reaction-visual rv-sage';
+    el.t.innerHTML='Parfait, '+n+' — <em>c\'est le meilleur départ</em>';
+    el.b.innerHTML='Ne t\'inquiète surtout pas : partir de zéro est <strong>un vrai avantage</strong>. Aucune mauvaise habitude à désapprendre, aucune idée reçue à corriger. On construit directement sur du propre.';
+    el.b2.innerHTML='Je vais te prendre par la main dès la première leçon. Et d\'ici la <strong>semaine 3</strong>, tu utiliseras l\'IA avec une aisance qui va te surprendre toi-même.';
+    el.s.textContent='On avance ensemble, à ton rythme.';
+  } else if(inter){
+    el.v.textContent='🎉'; el.v.className='reaction-visual rv-warm';
+    el.t.innerHTML='C\'est super — <em>le plus dur est déjà fait</em> !';
+    el.b.innerHTML='Tu as osé essayer. Beaucoup de gens n\'ouvrent même jamais l\'application. Toi, tu as franchi la première marche : <strong>tu sais que ça fonctionne</strong>.';
+    el.b2.innerHTML='Maintenant on va approfondir. Tu vas apprendre à utiliser ChatGPT et les autres IA très simplement, et d\'ici la <strong>semaine 4</strong>, tu seras à un niveau que la plupart des gens n\'atteignent jamais.';
+    el.s.textContent='La suite va te plaire.';
+  } else {
+    el.v.textContent='🚀'; el.v.className='reaction-visual rv-sky';
+    el.t.innerHTML='Excellent, '+n+' — <em>tu pars avec une longueur d\'avance</em>';
+    el.b.innerHTML='Tu n\'as pas besoin qu\'on t\'explique ce qu\'est un prompt. Ce dont tu as besoin, c\'est de <strong>structurer, professionnaliser et monétiser</strong> ce que tu sais déjà faire.';
+    el.b2.innerHTML='C\'est exactement le rôle de cette certification : transformer tes compétences éparpillées en une expertise reconnue, prouvable et vendable. Et d\'ici la <strong>semaine 6</strong>, tu construiras des choses que tu ne pensais pas possibles.';
+    el.s.textContent='On passe à la vitesse supérieure.';
+  }
+}
+
+function buildR4(){
+  const n=state.name||'toi';
+  const map={
+    methode:{t:'Je vais te donner <em>la carte qui te manquait</em>',
+      b:'Personne ne traverse une forêt sans chemin. Ce qui t\'a manqué, ce n\'est ni l\'intelligence ni la volonté — c\'est quelqu\'un qui te dise : commence ici, puis fais ça, puis ça. C\'est précisément ce que je vais faire, semaine après semaine.'},
+    temps:{t:'Je vais t\'aider à <em>récupérer bien plus de temps</em> que tu ne l\'imagines',
+      b:'Aujourd\'hui tu es débordé, donc tu n\'as pas le temps de te former — et comme tu ne te formes pas, tu restes débordé. Mais laisse-moi te dire une chose : si tu intègres l\'IA à tes habitudes, tu vas automatiser tes tâches et récupérer des heures entières pour toi. Chaque semaine.'},
+    complique:{t:'C\'était compliqué. <em>Ça ne l\'est plus du tout</em>',
+      b:'Il y a trois ans, il fallait être développeur. Aujourd\'hui, tu écris ce que tu veux en français et ça se construit tout seul. Ce qui te semblait hors de portée est devenu accessible — et je vais te le prouver dès la première semaine.'},
+    confiance:{t:'Ce doute, <em>je vais le faire disparaître</em>',
+      b:'Tous ceux qui vendent aujourd\'hui des prestations IA à 2 000 € sont passés par là. La différence ? Ils ont commencé quand même. Et le doute a reculé dès leur premier résultat concret. Le tien arrivera dans les 7 premiers jours.'}
+  };
+  const d=map[state.a.blocker]||map.methode;
+  document.getElementById('r4Title').innerHTML=d.t;
+  document.getElementById('r4Body').innerHTML=d.b;
+}
+
+function buildEmailTitle(){
+  const n=state.name||'toi';
+  document.getElementById('emailTitle').textContent=n+', où on t\'envoie ton plan ?';
+}
+
+/* ===== TRACKING META PIXEL =====
+   Helpers safe : si fbq n'est pas chargé (bloqueur de pub, connexion lente),
+   les appels échouent silencieusement sans casser le tunnel. */
+
+/* Génère un event_id déterministe basé sur l'email + le nom de l'événement.
+   Doit produire EXACTEMENT le même résultat que generatePixelMatchEventId_ dans Apps Script.
+   Permet à Meta de dédupliquer les événements envoyés par Pixel + CAPI. */
+async function generatePixelMatchEventId(email, eventName){
+  if(!email) return '';
+  const normalized = String(email).toLowerCase().trim();
+  const buffer = new TextEncoder().encode(normalized);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return (eventName || 'evt').toLowerCase() + '_' + hashHex.substring(0, 24);
+}
+
+function trackStd(event, params, options){
+  if(typeof fbq === 'undefined') return;
+  try{
+    if(options && options.eventID){
+      fbq('track', event, params || {}, {eventID: options.eventID});
+    } else {
+      fbq('track', event, params || {});
+    }
+  }catch(e){}
+}
+function trackCustom(event, params){
+  if(typeof fbq === 'undefined') return;
+  try{ fbq('trackCustom', event, params || {}); }catch(e){}
+}
+window._tr = {}; // registre des events déjà tirés (évite les doublons)
+
+/* ===== ENREGISTREMENT DU LEAD =====
+   Toutes les réponses du tunnel sont regroupées ici puis envoyées.
+   ➜ Remplace ENDPOINT par ton webhook (n8n, Make, Formspree, Google Sheets…).
+   Tant que ENDPOINT vaut null, les données sont juste affichées en console. */
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwURk44B53PNSlj850wxAcoSQGBsWQ73cxjQPuuOYqJi9B4N2PEFeI3Gwg96aZbq1ze/exec';
+
+function saveLead(){
+  const payload = {
+    prenom:        state.name,
+    email:         state.a.email || '',
+    age:           state.a.age || '',
+    situation:     state.a.situation || '',
+    frustration:   state.a.pain || '',
+    niveau_ia:     state.a.level || '',
+    objectif:      state.a.dream || '',
+    niveau_code:   state.a.code || '',
+    deja_essaye:   state.a.tried || '',
+    temps_dispo:   state.a.time || '',
+    blocage:       state.a.blocker || '',
+    projection:    state.a.celebrate || '',
+    engagement:    state.a.commit || '',
+    date:          new Date().toISOString(),
+    source:        new URLSearchParams(window.location.search).get('utm_source') || 'direct',
+    campagne:      new URLSearchParams(window.location.search).get('utm_campaign') || '',
+    page:          window.location.href,
+    // v3.7 : enrichissement Meta CAPI (score matching + audience lookalike)
+    _fbc:            getFbCookie('_fbc'),
+    _fbp:            getFbCookie('_fbp'),
+    _userAgent:      navigator.userAgent || '',
+    _clientIp:       window._emkIp || '',
+    _eventSourceUrl: window.location.href
+  };
+
+  if(!ENDPOINT){ console.log('[LEAD — à envoyer]', payload); return; }
+
+  // no-cors + text/plain : évite le préflight CORS qui bloque silencieusement les envois vers Apps Script
+  fetch(ENDPOINT,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(payload)
+  }).catch(e=>console.warn('Envoi du lead échoué',e));
+}
+
+/* v3.12 : adresse IP publique du navigateur (IPv6 si disponible, sinon IPv4), demandée une fois
+   au chargement, sans rien bloquer. Si elle n'est pas encore là quand le lead part, il part sans. */
+window._emkIp = '';
+try {
+  fetch('https://api64.ipify.org?format=json', {cache: 'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(j){ if (j && j.ip) window._emkIp = String(j.ip); })
+    .catch(function(){});
+} catch(e) {}
+
+/* Récupère un cookie Meta (_fbc = fbclid, _fbp = browser ID Facebook).
+   Ces cookies sont posés automatiquement par le Pixel Meta au chargement.
+   Ils sont critiques pour améliorer le matching CAPI et alimenter les LAL. */
+function getFbCookie(name){
+  try {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : '';
+  } catch(e) {
+    return '';
+  }
+}
+
+/* ===== ANALYSE ===== */
+function startAnalysis(){
+  saveLead();
+  // On NE VIDE PAS la sauvegarde ici — le prospect peut vouloir quitter
+  // la page produit pour consulter CGV/mentions, puis revenir. On garde
+  // le state pour pouvoir le ramener directement sur la page produit.
+
+  // ===== TRACKING Lead — avec eventID déterministe pour dédupliquer avec la CAPI serveur =====
+  generatePixelMatchEventId(state.a.email, 'lead').then(function(eventId){
+    trackStd('Lead',
+      {content_name:'IA Business Builder', value:0, currency:'XOF'},
+      {eventID: eventId}
+    );
+  }).catch(function(){
+    // Fallback : si la crypto échoue, on envoie sans eventID
+    trackStd('Lead',{content_name:'IA Business Builder',value:0,currency:'XOF'});
+  });
+
+  idx=screens.length;
+  showScreen('analysis');
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('progressEncouragement').textContent='🎁 Ton bilan arrive';
+  document.getElementById('backBtn').disabled=true;
+  const n=state.name||'toi';
+  document.getElementById('analysisText').innerHTML='On analyse tes réponses pour construire le parcours de <strong>'+n+'</strong>…';
+
+  let pct=0;
+  const fill=document.getElementById('gaugeFill');
+  const pctEl=document.getElementById('gaugePct');
+  const C=534;
+  const iv=setInterval(()=>{
+    pct++;
+    pctEl.textContent=pct+'%';
+    fill.style.strokeDashoffset=C-(C*pct/100);
+    if(pct===32) document.getElementById('step1').classList.add('done');
+    if(pct===66) document.getElementById('step2').classList.add('done');
+    if(pct>=100){
+      document.getElementById('step3').classList.add('done');
+      clearInterval(iv);
+      trackCustom('QuizComplete');
+      setTimeout(showResult,600);
+    }
+  },55);
+}
+
+function showResult(){
+  const n=state.name||'Toi';
+  document.getElementById('resultTitle').textContent=n+', voici ton bilan';
+
+  const dreamMap={
+    agent:'Créer ton agent IA qui travaille 24h/24',
+    automatiser:'Automatiser tes tâches et libérer tes journées',
+    vendre:'Vendre en ligne, même en dormant',
+    site:'Créer sites et applications sans coder',
+    prestation:'Vendre des prestations IA à des clients'
+  };
+  document.getElementById('sumDream').textContent=dreamMap[state.a.dream]||'—';
+
+  const levelMap={
+    zero:'Débutant complet — le meilleur point de départ',
+    entendu:'Curieux — prêt à passer à la pratique',
+    essaye:'Explorateur — prêt à structurer',
+    regulier:'Utilisateur régulier — prêt à monétiser',
+    avance:'Déjà avancé — prêt à professionnaliser'
+  };
+  let lvlTxt=levelMap[state.a.level]||'—';
+  if(state.a.level==='essaye') lvlTxt='Explorateur — prêt à structurer';
+  document.getElementById('sumLevel').textContent=lvlTxt;
+
+  const timeMap={'10':'10 minutes par jour · format court','30':'30 minutes par jour · format standard','60':'1 heure par jour · format intensif'};
+  document.getElementById('sumTime').textContent=timeMap[state.a.time]||'—';
+
+  const d=new Date(); d.setDate(d.getDate()+56);
+  const mo=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  document.getElementById('sumDate').textContent=d.getDate()+' '+mo[d.getMonth()]+' '+d.getFullYear();
+
+  // Score
+  let s=72;
+  if(state.a.level==='zero') s=68;
+  if(state.a.level==='entendu') s=72;
+  if(state.a.level==='essaye') s=78;
+  if(state.a.level==='regulier') s=86;
+  if(state.a.level==='avance') s=92;
+  if(state.a.commit==='oui') s=Math.min(96,s+8);
+  if(state.a.commit==='essayer') s=Math.min(94,s+4);
+  if(state.a.time==='60') s=Math.min(96,s+3);
+  setTimeout(()=>{document.getElementById('scaleMarker').style.left=s+'%';},250);
+
+  let lbl='Élevé';
+  if(s<72) lbl='Prometteur';
+  if(s>=88) lbl='Excellent';
+  document.getElementById('resultLevel').textContent=lbl;
+
+  const ledeMap={
+    methode:'ce qui t\'a freiné, ce n\'est ni ton intelligence ni ta volonté — c\'est simplement que <strong>personne ne t\'a donné la carte</strong>.',
+    temps:'ce qui t\'a freiné, c\'est <strong>le manque de temps</strong>, pas tes capacités. Et c\'est précisément ce qu\'on va régler en premier.',
+    complique:'ce qui t\'a freiné, c\'est <strong>une complexité qui n\'existe plus</strong>. Le monde a changé plus vite que ta perception de lui.',
+    confiance:'ce qui t\'a freiné, c\'est <strong>un doute</strong> — et le doute recule toujours devant le premier résultat concret.'
+  };
+  document.getElementById('resultLede').innerHTML='Tes réponses le montrent clairement : '+(ledeMap[state.a.blocker]||ledeMap.methode);
+
+  showScreen('result');
+}
+
+/* ===== RÉVÉLATION PRODUIT ===== */
+function revealProduct(){
+  document.getElementById('tunnel').style.display='none';
+  document.getElementById('productPage').classList.add('active');
+
+  // Marquer qu'on a atteint la page produit pour pouvoir y revenir directement
+  // si le prospect quitte vers CGV/mentions et revient
+  state.a.reached_product = true;
+  saveQuizProgress();
+
+  const n=state.name||'toi';
+  document.getElementById('heroName').textContent='🎯 Programme personnalisé pour '+n;
+  document.getElementById('unlockText').textContent=n+', ton offre de lancement est activée';
+
+  // Profil par défaut selon la réponse Q2
+  const situation=state.a.situation;
+  let defaultProfile='entrepreneur';
+  if(['salarie','etudiant','transition'].includes(situation)) defaultProfile='salarie';
+  else if(situation==='freelance') defaultProfile='freelance';
+  switchProfile(defaultProfile);
+
+  window.scrollTo(0,0);
+  fireConfetti();
+
+  // Le certificat n'est mesurable qu'une fois la page rendue visible (display:none → block)
+  requestAnimationFrame(()=>requestAnimationFrame(scaleCert));
+
+  // ===== TRACKING OfferReveal =====
+  trackCustom('OfferReveal');
+
+  // ===== TRACKING PricingView — dès que la carte prix entre à l'écran =====
+  const priceCard=document.querySelector('.price-card');
+  if(priceCard && 'IntersectionObserver' in window){
+    const obs=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting && !window._tr.pv){
+          trackCustom('PricingView');
+          window._tr.pv=true;
+          obs.disconnect();
+        }
+      });
+    },{threshold:.5});
+    obs.observe(priceCard);
+  }
+
+  // ===== TRACKING InitiateCheckout — clic sur le widget Chariow =====
+  const slot=document.querySelector('.chariow-slot');
+  if(slot && !slot._trackedIC){
+    slot.addEventListener('click',()=>{
+      trackStd('InitiateCheckout',{
+        content_ids:['prd_qh7md6nj'],
+        content_name:'IA Business Building',
+        content_type:'product',
+        value:4999,
+        currency:'XOF'
+      });
+    });
+    slot._trackedIC=true;
+  }
+
+  // ===== FIX POPUP CHARIOW — Cacher les éléments z-index qui traversent
+  // le popup, dès que l'utilisateur clique pour payer =====
+  if(!window._chariowCheckoutSetup){
+    window._chariowCheckoutSetup=true;
+
+    // BULLES CONTACT — apparaissent quand n'importe quel footer devient visible
+    // (footer.tunnel-footer sur le quiz, footer.product-footer sur la page produit)
+    const bubbles = document.getElementById('contactBubbles');
+    const footers = document.querySelectorAll('footer');
+    if(bubbles && footers.length && 'IntersectionObserver' in window){
+      let visibleFooters = 0;
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting) visibleFooters++;
+          else visibleFooters = Math.max(0, visibleFooters - 1);
+        });
+        bubbles.classList.toggle('visible', visibleFooters > 0);
+      },{threshold:0.15});
+      footers.forEach(f => obs.observe(f));
+    }
+
+    // Sélecteur qui identifie SEULEMENT le vrai popup Chariow (iframe/modal)
+    // pas la carte prix elle-même
+    const CW_POPUP_SEL='iframe[src*="chariow"],iframe[src*="checkout"],iframe[src*="mychariow"],[id*="chariow-modal"],[class*="chariow-modal"],[class*="chariow-checkout"],[class*="chariow-overlay"]';
+
+    // MutationObserver BIDIRECTIONNEL : active checkout-open quand le popup apparaît,
+    // le désactive automatiquement quand le popup disparaît.
+    // Résultat : la sticky bar "Voir mon offre" reste TOUJOURS visible tant que le popup
+    // n'est pas ouvert, et redevient visible dès que le popup se ferme.
+    const syncCheckoutState=()=>{
+      const hasPopup=!!document.querySelector(CW_POPUP_SEL);
+      document.body.classList.toggle('checkout-open',hasPopup);
+    };
+    const cwObs=new MutationObserver(syncCheckoutState);
+    cwObs.observe(document.body,{childList:true,subtree:true});
+
+    // Escape ferme le mode checkout (clavier desktop)
+    document.addEventListener('keydown',(e)=>{
+      if(e.key==='Escape' && document.body.classList.contains('checkout-open')){
+        setTimeout(syncCheckoutState,400);
+      }
+    });
+  }
+}
+
+/* ===== CERTIFICAT — mise à l'échelle fixe, identique mobile/desktop =====
+   Le canvas est dessiné à une largeur fixe (820px). On le réduit en bloc
+   via transform:scale() pour qu'il occupe toujours 100% du viewport
+   disponible — texte, espacements et proportions ne bougent jamais,
+   exactement comme le ferait une image. */
+function scaleCert(){
+  const viewport=document.getElementById('certViewport');
+  const canvas=document.getElementById('certCanvas');
+  if(!viewport||!canvas) return;
+  const scale=viewport.clientWidth/820;
+  canvas.style.transform='scale('+scale+')';
+  viewport.style.height=(canvas.offsetHeight*scale)+'px';
+}
+window.addEventListener('resize',()=>{
+  if(document.getElementById('productPage').classList.contains('active')) scaleCert();
+});
+
+function switchProfile(p){
+  document.getElementById('tabSalarie').classList.toggle('active',p==='salarie');
+  document.getElementById('tabFreelance').classList.toggle('active',p==='freelance');
+  document.getElementById('tabEntrepreneur').classList.toggle('active',p==='entrepreneur');
+  document.getElementById('panelSalarie').classList.toggle('active',p==='salarie');
+  document.getElementById('panelFreelance').classList.toggle('active',p==='freelance');
+  document.getElementById('panelEntrepreneur').classList.toggle('active',p==='entrepreneur');
+}
+
+function fireConfetti(){
+  const colors=['#D97706','#FCD34D','#BE123C','#059669','#FDE68A'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(2.2+Math.random()*1.8)+'s';
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4600);
+  }
+}
+
+updateProgress();
+
+// Au chargement : si le prospect a une progression sauvegardée récente,
+// on lui propose de reprendre où il en était (bannière en haut de page)
+if(typeof offerQuizResume === 'function') offerQuizResume();
+</script>
+
+<!-- ============ CHARIOW WIDGET LOADER ============ -->
+<script>
+(function(){
+  var s=document.createElement('script');
+  s.src='https://js.chariowcdn.com/v1/widget.min.js';
+  s.async=true;
+  document.head.appendChild(s);
+
+  var l=document.createElement('link');
+  l.rel='stylesheet';
+  l.href='https://js.chariowcdn.com/v1/widget.min.css';
+  document.head.appendChild(l);
+})();
+</script>
+
+<!-- ============ CHARIOW PROOF WIDGET LOADER ============ -->
+<script>
+(function(){
+  var s=document.createElement('script');
+  s.src='https://js.chariowcdn.com/v1/proof.min.js';
+  s.async=true;
+  document.head.appendChild(s);
+})();
+</script>
+
+<!-- ============ BULLES FLOTTANTES CONTACT ============
+     Placées HORS des conteneurs qui peuvent être cachés (tunnel, product-page)
+     pour rester visibles sur toute la page, quel que soit l'écran affiché. -->
+<div class="contact-bubbles" id="contactBubbles">
+  <a href="https://wa.me/22995726957?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20la%20formation%20AI%20Business%20Building" target="_blank" rel="noopener" class="contact-bubble contact-bubble-wa" title="WhatsApp" aria-label="Contacter par WhatsApp">💬</a>
+  <a href="mailto:contact@emkbluediamond.online?subject=Question%20sur%20AI%20Business%20Building" class="contact-bubble contact-bubble-mail" title="Email" aria-label="Contacter par email">✉️</a>
+</div>
+
+<!-- ═══ WIDGET NOTIFICATIONS SOCIALES — HTML + logique ═══ -->
+<div class="emk-notif-widget" id="emkNotif" role="status" aria-live="polite">
+  <div class="emk-notif-avatar" id="emkNotifAvatar">
+    <span id="emkNotifInitial">?</span>
+    <span class="emk-notif-check" aria-hidden="true">✓</span>
+  </div>
+  <div class="emk-notif-content">
+    <span class="emk-notif-title">Nouvelle inscription 🎉</span>
+    <span class="emk-notif-name" id="emkNotifName"></span>
+    <span class="emk-notif-action">a rejoint AI Business Building</span>
+  </div>
+  <button type="button" class="emk-notif-close" id="emkNotifClose" aria-label="Fermer">×</button>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var API_URL='https://script.google.com/macros/s/AKfycbwURk44B53PNSlj850wxAcoSQGBsWQ73cxjQPuuOYqJi9B4N2PEFeI3Gwg96aZbq1ze/exec?action=recent-sales';
+  var FIRST_DELAY_MS=20000;
+  var MIN_INTERVAL_MS=45000;
+  var MAX_INTERVAL_MS=70000;
+  var DISPLAY_MS=10000;
+  var CACHE_KEY='emk_recent_sales';
+  var CACHE_TTL_MS=5*60*1000;
+
+  // Palette de dégradés variés pour l'avatar (choisi selon le prénom, donc stable pour chaque personne)
+  var AVATAR_GRADIENTS=[
+    'linear-gradient(135deg,#D97706 0%,#B45309 100%)',   // ambre EMK
+    'linear-gradient(135deg,#7C3AED 0%,#5B21B6 100%)',   // violet
+    'linear-gradient(135deg,#0EA5E9 0%,#0369A1 100%)',   // bleu
+    'linear-gradient(135deg,#059669 0%,#065F46 100%)',   // vert
+    'linear-gradient(135deg,#DB2777 0%,#9D174D 100%)',   // rose
+    'linear-gradient(135deg,#0891B2 0%,#155E75 100%)',   // cyan
+    'linear-gradient(135deg,#EA580C 0%,#9A3412 100%)',   // orange
+    'linear-gradient(135deg,#4F46E5 0%,#3730A3 100%)',   // indigo
+    'linear-gradient(135deg,#65A30D 0%,#3F6212 100%)',   // lime
+    'linear-gradient(135deg,#BE123C 0%,#881337 100%)'    // rubis
+  ];
+
+  var widget=document.getElementById('emkNotif');
+  var avatarEl=document.getElementById('emkNotifAvatar');
+  var initialEl=document.getElementById('emkNotifInitial');
+  var nameEl=document.getElementById('emkNotifName');
+  var closeBtn=document.getElementById('emkNotifClose');
+  if(!widget||!nameEl)return;
+
+  var salesPool=[];
+  var shownIdx=[];
+  var currentTimer=null;
+  var stopped=false;
+
+  closeBtn.addEventListener('click',function(){
+    stopped=true;
+    hide();
+    if(currentTimer)clearTimeout(currentTimer);
+  });
+
+  function loadSales(){
+    try{
+      var cached=localStorage.getItem(CACHE_KEY);
+      if(cached){
+        var parsed=JSON.parse(cached);
+        if(parsed&&parsed.ts&&(Date.now()-parsed.ts)<CACHE_TTL_MS){
+          salesPool=parsed.sales||[];
+          return Promise.resolve();
+        }
+      }
+    }catch(e){}
+    return fetch(API_URL,{method:'GET',cache:'no-cache'})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data&&data.status==='ok'&&Array.isArray(data.sales)){
+          salesPool=data.sales;
+          try{
+            localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),sales:salesPool}));
+          }catch(e){}
+        }
+      })
+      .catch(function(){salesPool=[];});
+  }
+
+  function pickNext(){
+    if(!salesPool.length)return null;
+    if(shownIdx.length>=salesPool.length)shownIdx=[];
+    var candidates=[];
+    for(var i=0;i<salesPool.length;i++){
+      if(shownIdx.indexOf(i)===-1)candidates.push(i);
+    }
+    if(!candidates.length)return null;
+    var idx=candidates[Math.floor(Math.random()*candidates.length)];
+    shownIdx.push(idx);
+    return salesPool[idx];
+  }
+
+  // Génère une couleur stable pour un prénom donné (même prénom = même couleur toujours)
+  function gradientForName(name){
+    if(!name)return AVATAR_GRADIENTS[0];
+    var hash=0;
+    for(var i=0;i<name.length;i++){
+      hash=((hash<<5)-hash)+name.charCodeAt(i);
+      hash|=0;
+    }
+    var idx=Math.abs(hash)%AVATAR_GRADIENTS.length;
+    return AVATAR_GRADIENTS[idx];
+  }
+
+  function show(sale){
+    if(!sale||!sale.firstName||stopped)return;
+    var firstName=sale.firstName;
+    var initial=firstName.charAt(0).toUpperCase();
+    initialEl.textContent=initial;
+    avatarEl.style.background=gradientForName(firstName);
+    nameEl.textContent=firstName;
+    widget.classList.add('emk-notif-show');
+    setTimeout(function(){hide();},DISPLAY_MS);
+  }
+
+  function hide(){
+    widget.classList.remove('emk-notif-show');
+  }
+
+  function scheduleNext(delay){
+    if(stopped)return;
+    if(currentTimer)clearTimeout(currentTimer);
+    currentTimer=setTimeout(function(){
+      var sale=pickNext();
+      if(sale){
+        show(sale);
+        var randomInterval=MIN_INTERVAL_MS+Math.random()*(MAX_INTERVAL_MS-MIN_INTERVAL_MS);
+        scheduleNext(DISPLAY_MS+randomInterval);
+      }else{
+        scheduleNext(30000);
+      }
+    },delay);
+  }
+
+  loadSales().then(function(){
+    if(salesPool.length>0)scheduleNext(FIRST_DELAY_MS);
+  });
+
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){
+      if(currentTimer)clearTimeout(currentTimer);
+    }else if(!stopped&&salesPool.length>0){
+      scheduleNext(15000);
+    }
+  });
+})();
+</script>
+
+
+<script>
+/* ===== Ajout : lien « Passer » (à partir de la question qui suit le prénom) =====
+   Il affiche l'écran email EXISTANT (q12) avec un titre adapté, puis va directement à l'offre.
+   Le lead part avec la fonction existante saveLead(), et l'événement Lead exactement comme dans
+   startAnalysis() (même eventID déterministe, donc dédupliqué avec l'API Conversions).
+   Pas de QuizComplete : la personne n'a pas fini le quiz. */
+var _passer = null;
+var _showScreenOrigine = showScreen;
+showScreen = function(n){
+  _showScreenOrigine(n);
+  var w = document.getElementById('passerWrap');
+  if (w) w.hidden = (_passer !== null) || ['q1','q12','analysis','result'].indexOf(n) !== -1;
+};
+function passerVersOffre(){
+  var sous = document.querySelector('[data-screen="q12"] .question-sub');
+  _passer = { idx: idx, titre: document.getElementById('emailTitle').innerHTML, sous: sous.innerHTML };
+  sous.textContent = 'Ton offre de lancement s\'affiche juste après.';
+  idx = screens.indexOf('q12');
+  document.getElementById('emailTitle').textContent = 'Où on t\'envoie ton offre de lancement ?';
+  document.getElementById('emailBtn').setAttribute('onclick', 'terminerPasser()');
+  document.getElementById('emailBtn').textContent = 'Voir mon offre →';
+  showScreen('q12'); updateProgress(); validateEmail();
+}
+var _goBackOrigine = goBack;
+goBack = function(){
+  if (_passer && screens[idx] === 'q12') {
+    idx = _passer.idx;
+    document.getElementById('emailTitle').innerHTML = _passer.titre;
+    document.querySelector('[data-screen="q12"] .question-sub').innerHTML = _passer.sous;
+    document.getElementById('emailBtn').setAttribute('onclick', 'startAnalysis()');
+    document.getElementById('emailBtn').textContent = 'Découvrir mon plan →';
+    _passer = null;
+    showScreen(screens[idx]); updateProgress(); saveQuizProgress();
+    return;
+  }
+  _goBackOrigine();
+};
+function terminerPasser(){
+  if (!state.a.email) return;
+  saveLead();
+  generatePixelMatchEventId(state.a.email, 'lead').then(function(eventId){
+    trackStd('Lead', {content_name:'IA Business Builder', value:0, currency:'XOF'}, {eventID: eventId});
+  }).catch(function(){
+    trackStd('Lead', {content_name:'IA Business Builder', value:0, currency:'XOF'});
+  });
+  revealProduct();
+}
+/* ===== Correctif : le bandeau « Bon retour » restait figé en haut de l'écran
+   pendant tout le quiz puis sur l'offre, si le visiteur ne cliquait sur aucun de ses deux boutons. ===== */
+function retirerReprise(){ var b=document.getElementById('resumeBanner'); if(b) b.remove(); }
+(function(){
+  var bilan=document.querySelector('#welcomeScreen .welcome-btn');
+  if(bilan) bilan.addEventListener('click', retirerReprise);
+  var page=document.getElementById('productPage');
+  if(page && 'MutationObserver' in window) new MutationObserver(function(){ if(page.classList.contains('active')) retirerReprise(); })
+    .observe(page,{attributes:true,attributeFilter:['class']});
+})();
+</script>
+</body>
+</html>

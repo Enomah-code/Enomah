@@ -1,0 +1,14 @@
+/* IABB v3.1 · merci : retouches légères après la feuille de style en ligne */
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+body{overflow-wrap:break-word}
+h1,h3{text-wrap:balance}
+.kicker{display:inline-flex;align-items:center;gap:7px}
+.kicker svg.i{width:16px;height:16px}
+.portal-cta{gap:10px;max-width:100%;line-height:1.25;text-align:center}
+.portal-cta svg.i{width:19px;height:19px}
+.reassure-icon{background:var(--cream)!important;border:1px solid #F1E3C4;color:var(--amber-dark)}
+.reassure>div:last-child,.step>div:last-child{min-width:0}
+.liens-pied{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px;margin-top:8px}
+.liens-pied a{margin:0!important;padding:4px 0}
+.insecable{white-space:nowrap}
+@media (max-width:380px){main{padding-left:16px;padding-right:16px}.portal-cta{padding:18px 22px}}

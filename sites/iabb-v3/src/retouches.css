@@ -1,0 +1,133 @@
+/* =====================================================================
+   IABB v3.1 · retouches légères, posées APRÈS la feuille de style en ligne
+   (polices, fond, couleurs, barres et jauges d'origine conservés).
+   ===================================================================== */
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+body{overflow-wrap:break-word}
+h1,h2,h3,h4,.question-title{text-wrap:balance}
+p,li{text-wrap:pretty}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:10px}
+img{max-width:100%;height:auto}
+
+/* ---- Icônes : un seul style sobre partout (fond crème à peine plus foncé, filet fin, icône ambre) ---- */
+.option-emoji,.result-summary-emoji,.outcome-emoji,.module-icon-wrap,.guarantee-emoji,.lesson-icon,.compare-avatar,.gs-ic{
+  background:var(--cream-2)!important;border:1px solid #F1E3C4;color:var(--amber-dark);box-shadow:none!important}
+.option-emoji{width:40px;height:40px;border-radius:12px}
+.option.selected .option-emoji{background:#fff!important;border-color:var(--amber)}
+.result-summary-emoji{width:38px;height:38px;border-radius:10px}
+.outcome-emoji{width:46px;height:46px;border-radius:12px}
+.outcome-emoji svg.i{width:22px;height:22px}
+.module-icon-wrap{width:42px;height:42px;border-radius:12px}
+.module-icon{display:inline-flex}
+.lesson-icon{width:28px;height:28px;border-radius:8px}
+.lesson-icon svg.i{width:15px;height:15px}
+.compare-avatar{width:48px;height:48px;border-radius:14px}
+.compare-avatar svg.i{width:24px;height:24px}
+.compare-card.before .compare-avatar,.compare-card.after .compare-avatar{background:#fff!important}
+/* sur fond encre (bonus) : même logique, en clair */
+.bonus-emoji{background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.14);box-shadow:none!important;color:var(--sun)}
+.bonus-emoji svg.i{width:22px;height:22px}
+/* pastilles de texte : sans emoji, mêmes couleurs d'origine */
+.unlock-pill,.bonus-flash,.price-differentiator,.price-unlock-tag,.price-forever,.section-kicker,.profile-tab{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.unlock-pill svg.i,.bonus-flash svg.i,.price-differentiator svg.i,.price-unlock-tag svg.i,.price-forever svg.i,.section-kicker svg.i,.profile-tab svg.i{width:15px;height:15px}
+.price-unlock-tag{max-width:calc(100% - 24px)}
+.price-includes .item svg.i{color:var(--sage);margin-top:1px}
+
+/* ---- Réactions : l'emoji posé par le JS est masqué, une icône au trait le remplace ---- */
+.reaction-visual{width:96px;height:96px;font-size:0;color:transparent;background:var(--cream-2)!important;border:1px solid #F1E3C4}
+.reaction-visual::before{content:"";width:40px;height:40px;background:var(--amber-dark);-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat}
+#r1Visual{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/%3E%3Cpath d='M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66'/%3E%3Cpath d='m18 15-2-2'/%3E%3Cpath d='m15 18-2-2'/%3E%3C/svg%3E")}
+.rv-sage{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 20h10'/%3E%3Cpath d='M10 20c5.5-2.5.8-6.4 3-10'/%3E%3Cpath d='M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z'/%3E%3Cpath d='M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z'/%3E%3C/svg%3E")}
+.rv-warm{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.13a.5.5 0 0 1 .96 0L14.06 8.5A2 2 0 0 0 15.5 9.94l6.13 1.58a.5.5 0 0 1 0 .96L15.5 14.06a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z'/%3E%3C/svg%3E")}
+.rv-sky{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z'/%3E%3Cpath d='m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z'/%3E%3Cpath d='M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'/%3E%3C/svg%3E")}
+#r3Visual{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2' ry='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 9.9-1'/%3E%3C/svg%3E")}
+.rv-ruby{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E")}
+
+/* ---- Accueil : même mise en page qu'en ligne (colonne centrée), deux boutons ---- */
+.welcome-content{padding:32px 20px 40px}
+.welcome-icon{width:72px;height:72px;margin:0 auto 22px;border-radius:50%;background:var(--amber-soft);color:var(--amber);display:flex;align-items:center;justify-content:center}
+.welcome-icon svg.i{width:34px;height:34px;stroke-width:1.7}
+.welcome-sub{margin-bottom:28px}
+.welcome-paths{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:stretch;gap:10px}
+.welcome-btn,.welcome-alt{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;padding:14px 22px;line-height:1.25;text-align:center}
+.welcome-btn svg.i,.welcome-alt svg.i{width:19px;height:19px;transition:transform .2s}
+.welcome-alt{background:#fff;color:var(--ink);border:1.5px solid var(--ink);border-radius:100px;font:800 16px/1.25 'Manrope',sans-serif;cursor:pointer;transition:all .2s}
+.welcome-alt:hover{background:var(--amber-glow);border-color:var(--amber-dark)}
+.welcome-footnote{margin-top:2px;margin-bottom:8px}
+.welcome-or{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:700;color:var(--muted)}
+.welcome-or::before,.welcome-or::after{content:"";flex:1;height:1px;background:var(--border)}
+.welcome-alt-note{font-size:13px;color:var(--muted);font-weight:500;line-height:1.45}
+
+/* ---- Quiz : l'en-tête ne s'écrase jamais (le message d'étape passe sous la barre) ---- */
+.tunnel-top-inner{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:0}
+.back-arrow{width:44px;height:44px}
+.tunnel-top .logo{grid-column:2;justify-self:center}
+.progress-encouragement{grid-column:1/-1;grid-row:2;justify-self:end;max-width:100%;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.option{min-height:60px;padding:12px 14px;gap:12px}
+.option-text{min-width:0}
+.continue-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px}
+.note-discrete{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:var(--muted);margin-top:14px;line-height:1.55;font-weight:500}
+.note-discrete svg.i{width:15px;height:15px;margin-top:2px}
+/* pas de survol « collé » au doigt sur téléphone */
+@media (hover:none){
+  .option:hover{border-color:var(--border);background:var(--card);transform:none}
+  .option.selected:hover{border-color:var(--amber);background:var(--amber-soft)}
+}
+
+/* ---- Offre : tient sur tous les téléphones ---- */
+.unlock-banner-title #unlockText{min-width:0}
+.product-nav-cta{white-space:nowrap}
+.profile-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.profile-tab{min-height:44px;padding:0 6px;font-size:clamp(12.5px,3.6vw,14px);min-width:0}
+@media (max-width:379px){.profile-tab svg.i{display:none}}
+.bonus-card{min-width:0}
+.bonus-body{min-width:0}
+.price-card{padding-left:clamp(18px,6vw,30px);padding-right:clamp(18px,6vw,30px)}
+.price-btn{display:inline-flex}
+.moyens{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin:12px 0 0}
+.moyens li{display:flex;align-items:center;justify-content:center;height:34px;min-width:48px;padding:0 8px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.moyens img{width:auto;height:22px;display:block}
+.moyens img[src$=".svg"]{height:16px}
+.moyens img[src*="mastercard"]{height:20px}
+.price-payment{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px}
+.price-payment svg.i{width:14px;height:14px}
+.garantie-simple{max-width:520px;margin:20px auto 0;background:var(--card);border:1px solid var(--sage-soft);border-radius:var(--r-lg);padding:20px;position:relative;z-index:2;text-align:left;color:var(--ink)}
+.garantie-simple .gs-tete{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.garantie-simple .gs-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--sage)}
+.garantie-simple h3{font-size:16.5px;line-height:1.25}
+.garantie-simple ol{list-style:none;counter-reset:g;display:grid;gap:10px}
+.garantie-simple li{counter-increment:g;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;font-size:14px;line-height:1.55;color:var(--ink-2);font-weight:500}
+.garantie-simple li::before{content:counter(g);width:26px;height:26px;border-radius:50%;background:var(--sage-soft);color:var(--sage-deep);font-weight:800;font-size:13px;display:grid;place-items:center}
+.garantie-simple li b{color:var(--ink)}
+.garantie-simple a{color:var(--amber-dark);font-weight:700;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+body.checkout-open .garantie-simple{z-index:auto !important;position:static !important}
+.note-centre{display:flex;align-items:flex-start;justify-content:center;gap:8px;max-width:640px;margin:24px auto 0;font-size:13px;color:var(--muted)}
+.note-centre svg.i{width:15px;height:15px;margin-top:2px}
+.contact-bubble svg.i{width:24px;height:24px}
+.liens-pied{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 14px;margin-top:8px}
+.liens-pied a{margin:0!important;padding:4px 0}
+.insecable{white-space:nowrap}
+.cert-name{overflow-wrap:normal}
+@media (max-width:380px){
+  .stage{padding-left:16px;padding-right:16px}
+  .wrap,.wrap-sm{padding-left:16px;padding-right:16px}
+  .price-card{padding-top:34px}
+  .unlock-banner{padding-left:12px;padding-right:12px}
+}
+/* bouton désactivé : teinte pleine (l'opacité d'origine dessinait un rectangle autour du texte et de l'icône) */
+.continue-btn:disabled{opacity:1;background:#F3D3A8;color:#fff;box-shadow:none}
+
+/* ---- v3.2 ---- */
+/* sélecteur de profil : chaque onglet prend la largeur de son mot, sans icône sur téléphone */
+.profile-switch{display:flex;gap:4px}
+.profile-tab{flex:1 1 auto;padding:0 10px;white-space:nowrap}
+@media (max-width:414px){.profile-tab svg.i{display:none}.profile-tab{font-size:13px;padding:0 8px}}
+/* lueurs : la brillance du bandeau passe deux fois puis s'arrête hors champ ; plus de halo sous la pastille */
+.unlock-banner::after{animation:sweep 3.2s ease-in-out 2 forwards}
+.bonus-flash::after{animation:sweep 2.6s ease-in-out 2 forwards}
+.price-unlock-tag,.bonus-flash{box-shadow:none!important}
+/* en-têtes collants opaques : plus de texte fantôme dessous */
+nav.product-top,nav.tunnel-top,.welcome-nav{background:var(--cream)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* accueil : bloc remonté, pas de grand vide en haut */
+.welcome-content{justify-content:flex-start;padding-top:40px}
+@media (min-width:900px){.welcome-content{padding-top:72px}}
